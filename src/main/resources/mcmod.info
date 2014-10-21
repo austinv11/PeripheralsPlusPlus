@@ -1,0 +1,21 @@
+{
+  "modListVersion": 2,
+  "modList": [{
+    "modid": "PeripheralsPlusPlus",
+    "name": "Peripherals++",
+    "description": "A psuedo-port of MiscPeripherals",
+    "version": "1.0.0",
+    "mcversion": "1.7.10",
+    "url": "austinv11.com",
+    "updateUrl": "",
+    "authorList": ["austinv11"],
+    "credits": "Made by austinv11, some ideas were taken from RichardG",
+    "logoFile": "",
+    "screenshots": [],
+    "parent": "",
+    "requiredMods": ["Forge","ComputerCraft"],
+    "dependencies": [],
+    "dependants": [],
+    "useDependencyInformation": false
+  }]
+}
