@@ -9,6 +9,6 @@ import net.minecraftforge.common.config.Configuration;
 
 public class ConfigGUI extends GuiConfig{
 	public ConfigGUI(GuiScreen guiScreen){
-		super(guiScreen/*parent gui*/, new ConfigElement(ConfigurationHandler.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements()/*list of elements*/, Reference.MOD_ID/*modid*/, false/*requireWorldRestart*/, false/*requireMCRestart*/, GuiConfig.getAbridgedConfigPath(ConfigurationHandler.config.toString())/*title*/);
+		super(guiScreen, new ConfigElement(ConfigurationHandler.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), Reference.MOD_ID, false/*requireWorldRestart*/, false/*requireMCRestart*/, GuiConfig.getAbridgedConfigPath(ConfigurationHandler.config.toString())/*title*/);
 	}
 }

@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
+import com.austinv11.peripheralsplusplus.creativetab.PPPCreativeTab;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -11,7 +12,7 @@ public class PPPBlock extends Block{
 
 	public PPPBlock(Material material){
 		super(material);
-		//this.setCreativeTab(PPPCreativeTab.PPP_TAB);TODO
+		this.setCreativeTab(PPPCreativeTab.PPP_TAB);
 	}
 
 	public PPPBlock(){
@@ -20,7 +21,7 @@ public class PPPBlock extends Block{
 
 	@Override
 	public String getUnlocalizedName(){//Formats the name
-		return String.format("tile.%s%s", Reference.MOD_ID+":", getUnwrappedUnlocalizedName(getUnwrappedUnlocalizedName(super.getUnlocalizedName())));
+		return String.format("tile.%s%s", Reference.MOD_ID.toLowerCase()+":", getUnwrappedUnlocalizedName(getUnwrappedUnlocalizedName(super.getUnlocalizedName())));
 	}
 
 	@Override

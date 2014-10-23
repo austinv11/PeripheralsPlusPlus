@@ -13,17 +13,17 @@ public class PPPItem extends Item {
 	public PPPItem() {
 		super();
 		this.setMaxStackSize(64);
-		//this.setCreativeTab(PPPCreativeTab.PPP_TAB);TODO
+		this.setCreativeTab(PPPCreativeTab.PPP_TAB);
 	}
 
 	@Override
 	public String getUnlocalizedName(){//Formats the name
-		return String.format("item.%s%s", Reference.MOD_ID+":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+		return String.format("item.%s%s", Reference.MOD_ID.toLowerCase()+":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 	}
 
 	@Override
 	public String getUnlocalizedName(ItemStack item){//Formats the name
-		return String.format("item.%s%s", Reference.MOD_ID+":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
+		return String.format("item.%s%s", Reference.MOD_ID.toLowerCase()+":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 	}
 
 	@Override
