@@ -28,6 +28,9 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 	public static String publicName = "tileEntityChatBox";
 	private  String name = "tileEntityChatBox";
 	private HashMap<IComputerAccess,Boolean> computers = new HashMap<IComputerAccess,Boolean>();
+	private static final int TICKER_INTERVAL = 20;
+	private int ticker = 0;
+	private int subticker = 0;
 
 	public TileEntityChatBox (World w) {
 		super();
@@ -49,12 +52,15 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 	}
 
 	@Override public void updateEntity() {
-		//Logger.info("test2");
+		if (subticker > 0)
+			subticker--;
+		if (subticker == 0 && ticker != 0)
+			ticker = 0;
 	}
 
 	public void onChat(EntityPlayer player, String message) {
 		for (IComputerAccess computer : computers.keySet())
-			computer.queueEvent("chat", new Object[] {player.getCommandSenderName(), message});
+			computer.queueEvent("chat", new Object[] {player.getDisplayName(), message});
 	}
 
 	public void onDeath(EntityPlayer player, DamageSource source) {
@@ -65,7 +71,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 				killer = ent.getCommandSenderName();
 		}
 		for (IComputerAccess computer : computers.keySet())
-			computer.queueEvent("chat", new Object[] {player.getCommandSenderName(), killer, source.damageType});
+			computer.queueEvent("chat", new Object[] {player.getDisplayName(), killer, source.damageType});
 	}
 
 	@Override
@@ -80,101 +86,117 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		try {
-			if (Config.enableChatBox) {
-				if (method == 0) {
-					if (arguments.length < 1)
-						throw new LuaException("Too few arguments");
-					if (!(arguments[0] instanceof String))
-						throw new LuaException("Bad argument #1 (expected string)");
-					if (arguments.length > 1 && !(arguments[1] instanceof Double))
-						throw new LuaException("Bad argument #2 (expected number)");
-					if (arguments.length > 2 && !(arguments[2] instanceof Boolean))
-						throw new LuaException("Bad argument #3 (expected boolean)");
-					if (arguments.length > 3 && Config.logCoords && !(arguments[3] instanceof String)) {
-						if (Config.logCoords) {
-							throw new LuaException("Coordinate logging is enabled, disable this to enable naming");
-						}
-						throw new LuaException("Bad argument #4 (expected string)");
+		//try {
+		if (Config.enableChatBox) {
+			if (method == 0) {
+				if (arguments.length < 1)
+					throw new LuaException("Too few arguments");
+				if (!(arguments[0] instanceof String))
+					throw new LuaException("Bad argument #1 (expected string)");
+				if (arguments.length > 1 && !(arguments[1] instanceof Double))
+					throw new LuaException("Bad argument #2 (expected number)");
+				if (arguments.length > 2 && !(arguments[2] instanceof Boolean))
+					throw new LuaException("Bad argument #3 (expected boolean)");
+				if (arguments.length > 3 && Config.logCoords && !(arguments[3] instanceof String)) {
+					if (Config.logCoords) {
+						throw new LuaException("Coordinate logging is enabled, disable this to enable naming");
 					}
-					ChatComponentText message;
-					if (Config.logCoords)
-						message = new ChatComponentText("[#" + this.xCoord + "," + this.yCoord + "," + this.zCoord + "] " + (String) arguments[0]);
-					if (!Config.logCoords && arguments.length > 3) {
-						message = new ChatComponentText("[@] " + (String) arguments[0]);
-					}else {
-						message = new ChatComponentText("[" + (String) arguments[3] + "] " + (String) arguments[0]);
-					}
-					double range;
-					if (Config.sayRange < 0) {
-						range = Double.MAX_VALUE;
-					}else {
-
-					}
-					if (arguments.length > 1)
-						range = (Double) arguments[1];
-					for (EntityPlayer player : (Iterable<EntityPlayer>) this.getWorldObj().playerEntities) {
-						Vec3 playerPos = player.getPosition(1f);
-						if (arguments.length > 2 && !((Boolean) arguments[2]))
-							playerPos.yCoord = this.yCoord;
-						if (playerPos.distanceTo(Vec3.createVectorHelper(this.xCoord, this.yCoord, this.zCoord)) > range)
-							continue;
-						player.addChatComponentMessage(message);
-					}
-					return new Object[]{true};
-				} else if (method == 1) {
-					if (arguments.length < 2)
-						throw new LuaException("Too few arguments");
-					if (!(arguments[0] instanceof String))
-						throw new LuaException("Bad argument #1 (expected string)");
-					if (!(arguments[1] instanceof String))
-						throw new LuaException("Bad argument #2 (expected string)");
-					else if (arguments.length > 2 && !(arguments[2] instanceof Double))
-						throw new LuaException("Bad argument #3 (expected number)");
-					else if (arguments.length > 3 && !(arguments[3] instanceof Boolean))
-						throw new LuaException("Bad argument #4 (expected boolean)");
-					if (arguments.length > 4 && Config.logCoords && !(arguments[4] instanceof String)) {
-						if (Config.logCoords) {
-							throw new LuaException("Coordinate logging is enabled, disable this to enable naming");
-						}
-						throw new LuaException("Bad argument #5 (expected string)");
-					}
-					ChatComponentText message;
-					if (Config.logCoords)
-						message = new ChatComponentText("[#" + this.xCoord + "," + this.yCoord + "," + this.zCoord + "] " + (String) arguments[1]);
-					if (!Config.logCoords && arguments.length > 3) {
-						message = new ChatComponentText("[@] " + (String) arguments[1]);
-					}else {
-						message = new ChatComponentText("[" + (String) arguments[3] + "] " + (String) arguments[1]);
-					}
-					double range = Double.MAX_VALUE;
-					if (arguments.length > 2)
-						range = (Double) arguments[2];
-					EntityPlayer player = getPlayer((String) arguments[0]);
-					if (player != null) {
-						Vec3 playerPos = player.getPosition(1f);
-						if (arguments.length > 3 && !((Boolean) arguments[3]))
-							playerPos.yCoord = this.yCoord;
-						if (playerPos.distanceTo(Vec3.createVectorHelper(this.xCoord, this.yCoord, this.zCoord)) > range)
-							return new Object[]{false};
-						player.addChatComponentMessage(message);
-					} else {
-						return new Object[]{false};
-					}
+					throw new LuaException("Bad argument #4 (expected string)");
 				}
-			}else {
-				throw new LuaException("Chat boxes have been disabled");
+				if (ticker == Config.sayRate) {
+					throw new LuaException("Please try again later, you are sending messages too often");
+				}
+				ChatComponentText message;
+				if (Config.logCoords)
+					message = new ChatComponentText("[#" + this.xCoord + "," + this.yCoord + "," + this.zCoord + "] " + (String) arguments[0]);
+				if (!Config.logCoords && arguments.length > 3) {
+					message = new ChatComponentText("[" + (String) arguments[3] + "] " + (String) arguments[0]);
+				}else {
+					message = new ChatComponentText("[@] " + (String) arguments[0]);
+				}
+				double range;
+				if (Config.sayRange < 0) {
+					range = Double.MAX_VALUE;
+				}else {
+					range = Config.sayRange;
+				}
+				if (arguments.length > 1)
+					range = (Double) arguments[1];
+				for (EntityPlayer player : (Iterable<EntityPlayer>) this.getWorldObj().playerEntities) {
+					Vec3 playerPos = player.getPosition(1f);
+					if (arguments.length > 2 && (Boolean) arguments[2] && Config.allowUnlimitedVertical)
+						playerPos.yCoord = this.yCoord;
+					if (playerPos.distanceTo(Vec3.createVectorHelper(this.xCoord, this.yCoord, this.zCoord)) > range)
+						continue;
+					player.addChatComponentMessage(message);
+					subticker = TICKER_INTERVAL;
+					ticker++;
+				}
+				return new Object[]{true};
+			} else if (method == 1) {
+				if (arguments.length < 2)
+					throw new LuaException("Too few arguments");
+				if (!(arguments[0] instanceof String))
+					throw new LuaException("Bad argument #1 (expected string)");
+				if (!(arguments[1] instanceof String))
+					throw new LuaException("Bad argument #2 (expected string)");
+				else if (arguments.length > 2 && !(arguments[2] instanceof Double))
+					throw new LuaException("Bad argument #3 (expected number)");
+				else if (arguments.length > 3 && !(arguments[3] instanceof Boolean))
+					throw new LuaException("Bad argument #4 (expected boolean)");
+				if (arguments.length > 4 && Config.logCoords && !(arguments[4] instanceof String)) {
+					if (Config.logCoords) {
+						throw new LuaException("Coordinate logging is enabled, disable this to enable naming");
+					}
+					throw new LuaException("Bad argument #5 (expected string)");
+				}
+				if (ticker == Config.sayRate) {
+					throw new LuaException("Please try again later, you are sending messages too often");
+				}
+				ChatComponentText message;
+				if (Config.logCoords)
+					message = new ChatComponentText("[#" + this.xCoord + "," + this.yCoord + "," + this.zCoord + "] " + (String) arguments[1]);
+				if (!Config.logCoords && arguments.length > 3) {
+					message = new ChatComponentText("[" + (String) arguments[3] + "] " + (String) arguments[0]);
+				}else {
+					message = new ChatComponentText("[@] " + (String) arguments[0]);
+				}
+				double range;
+				if (Config.sayRange < 0) {
+					range = Double.MAX_VALUE;
+				}else {
+					range = Config.sayRange;
+				}
+				if (arguments.length > 2)
+					range = (Double) arguments[2];
+				EntityPlayer player = getPlayer((String) arguments[0]);
+				if (player != null) {
+					Vec3 playerPos = player.getPosition(1f);
+					if (arguments.length > 3 && (Boolean) arguments[3] && Config.allowUnlimitedVertical)
+						playerPos.yCoord = this.yCoord;
+					if (playerPos.distanceTo(Vec3.createVectorHelper(this.xCoord, this.yCoord, this.zCoord)) > range)
+						return new Object[]{false};
+					player.addChatComponentMessage(message);
+					subticker = TICKER_INTERVAL;
+					ticker++;
+					return new Object[]{true};
+				} else {
+					return new Object[]{false};
+				}
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		}else {
+			throw new LuaException("Chat boxes have been disabled");
 		}
+		/*} catch (Exception e) {
+			e.printStackTrace();
+		}*/
 		return new Object[0];
 	}
 
 	private EntityPlayer getPlayer(String ign) {
 		List<EntityPlayer> players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
 		for (EntityPlayer p : players) {
-			if (p.getCommandSenderName().equalsIgnoreCase(ign))
+			if (p.getDisplayName().equalsIgnoreCase(ign))
 				return p;
 		}
 		return null;

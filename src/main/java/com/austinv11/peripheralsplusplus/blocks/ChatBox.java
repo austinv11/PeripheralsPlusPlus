@@ -27,7 +27,7 @@ public class ChatBox extends PPPBlock implements ITileEntityProvider, IPeriphera
 	}
 
 	@Override
-	public IPeripheral getPeripheral( World world, int x, int y, int z, int side ) {
-		return (new TileEntityChatBox(world));
+	public IPeripheral getPeripheral(World world, int x, int y, int z, int side ) {
+		return new TileEntityChatBox(world);
 	}
 }
