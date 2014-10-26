@@ -2,24 +2,24 @@ package com.austinv11.peripheralsplusplus.turtles;
 
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
+import com.austinv11.peripheralsplusplus.tiles.TileEntityPlayerSensor;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 
-public class TurtleChatBox implements ITurtleUpgrade {
+public class TurtlePlayerSensor implements ITurtleUpgrade {
 
-	TileEntityChatBox chatBox;
+	TileEntityPlayerSensor playerSensor;
 
 	@Override
 	public int getUpgradeID() {
-		return Reference.CHAT_BOX_UPGRADE;
+		return Reference.PLAYER_SENSOR_UPGRADE;
 	}
 
 	@Override
 	public String getUnlocalisedAdjective() {
-		return Reference.MOD_ID.toLowerCase()+".turtleUpgrade.chatBox";
+		return Reference.MOD_ID.toLowerCase()+".turtleUpgrade.playerSensor";
 	}
 
 	@Override
@@ -29,13 +29,13 @@ public class TurtleChatBox implements ITurtleUpgrade {
 
 	@Override
 	public ItemStack getCraftingItem() {
-		return new ItemStack(ModBlocks.chatBox);
+		return new ItemStack(ModBlocks.playerSensor);
 	}
 
 	@Override
 	public IPeripheral createPeripheral(ITurtleAccess turtle, TurtleSide side) {
-		chatBox = new TileEntityChatBox(turtle);
-		return chatBox;
+		playerSensor = new TileEntityPlayerSensor(turtle);
+		return playerSensor;
 	}
 
 	@Override
@@ -45,12 +45,11 @@ public class TurtleChatBox implements ITurtleUpgrade {
 
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
-		return ModBlocks.chatBox.getIcon(1, 0);
+		return ModBlocks.playerSensor.getIcon(1, 0);
 	}
 
 	@Override
-	public void update(ITurtleAccess turtle, TurtleSide side) {
-		if (chatBox != null)
-			chatBox.updateEntity(true);
+	public void update(ITurtleAccess turtle, TurtleSide side) {//Nothing
+
 	}
 }
