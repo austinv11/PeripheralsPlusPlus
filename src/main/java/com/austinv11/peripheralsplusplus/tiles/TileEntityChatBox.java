@@ -1,6 +1,8 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
+import com.austinv11.peripheralsplusplus.utils.ChatUtil;
+import com.austinv11.peripheralsplusplus.utils.Location;
 import com.austinv11.peripheralsplusplus.utils.Logger;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -20,6 +22,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -31,10 +34,15 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 	private static final int TICKER_INTERVAL = 20;
 	private int ticker = 0;
 	private int subticker = 0;
+	private Location location;
+	private double x,y,z;
 
-	public TileEntityChatBox (World w) {
+	public TileEntityChatBox() {
 		super();
-		this.setWorldObj(w);
+		this.location = new Location(xCoord,yCoord,zCoord,getWorldObj());
+		x = location.getX();
+		y = location.getY();
+		z = location.getZ();
 	}
 
 	public String getName() {
@@ -108,7 +116,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 				}
 				ChatComponentText message;
 				if (Config.logCoords)
-					message = new ChatComponentText("[#" + this.xCoord + "," + this.yCoord + "," + this.zCoord + "] " + (String) arguments[0]);
+					message = new ChatComponentText("[#" + x + "," + y + "," + z + "] " + (String) arguments[0]);
 				if (!Config.logCoords && arguments.length > 3) {
 					message = new ChatComponentText("[" + (String) arguments[3] + "] " + (String) arguments[0]);
 				}else {
@@ -122,16 +130,9 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 				}
 				if (arguments.length > 1)
 					range = (Double) arguments[1];
-				for (EntityPlayer player : (Iterable<EntityPlayer>) this.getWorldObj().playerEntities) {
-					Vec3 playerPos = player.getPosition(1f);
-					if (arguments.length > 2 && (Boolean) arguments[2] && Config.allowUnlimitedVertical)
-						playerPos.yCoord = this.yCoord;
-					if (playerPos.distanceTo(Vec3.createVectorHelper(this.xCoord, this.yCoord, this.zCoord)) > range)
-						continue;
-					player.addChatComponentMessage(message);
-					subticker = TICKER_INTERVAL;
-					ticker++;
-				}
+				ChatUtil.sendMessage(this, message, range, (arguments.length > 2 && (Boolean) arguments[2] && Config.allowUnlimitedVertical));
+				subticker = TICKER_INTERVAL;
+				ticker++;
 				return new Object[]{true};
 			} else if (method == 1) {
 				if (arguments.length < 2)
@@ -154,12 +155,12 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 					throw new LuaException("Please try again later, you are sending messages too often");
 				}
 				ChatComponentText message;
-				if (Config.logCoords)
-					message = new ChatComponentText("[#" + this.xCoord + "," + this.yCoord + "," + this.zCoord + "] " + (String) arguments[1]);
-				if (!Config.logCoords && arguments.length > 3) {
-					message = new ChatComponentText("[" + (String) arguments[3] + "] " + (String) arguments[0]);
+				if (Config.logCoords) {
+					message = new ChatComponentText("[#" + x + "," + y + "," + z + "] " + (String) arguments[1]);
+				}else if (!Config.logCoords && arguments.length > 3) {
+					message = new ChatComponentText("[" + (String) arguments[3] + "] " + (String) arguments[1]);
 				}else {
-					message = new ChatComponentText("[@] " + (String) arguments[0]);
+					message = new ChatComponentText("[@] " + (String) arguments[1]);
 				}
 				double range;
 				if (Config.sayRange < 0) {
@@ -169,27 +170,16 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 				}
 				if (arguments.length > 2)
 					range = (Double) arguments[2];
-				EntityPlayer player = getPlayer((String) arguments[0]);
-				if (player != null) {
-					Vec3 playerPos = player.getPosition(1f);
-					if (arguments.length > 3 && (Boolean) arguments[3] && Config.allowUnlimitedVertical)
-						playerPos.yCoord = this.yCoord;
-					if (playerPos.distanceTo(Vec3.createVectorHelper(this.xCoord, this.yCoord, this.zCoord)) > range)
-						return new Object[]{false};
-					player.addChatComponentMessage(message);
-					subticker = TICKER_INTERVAL;
-					ticker++;
-					return new Object[]{true};
-				} else {
-					return new Object[]{false};
-				}
+				subticker = TICKER_INTERVAL;
+				ticker++;
+				return new Object[]{ChatUtil.sendMessage((String) arguments[0], this, message, range, (arguments.length > 3 && (Boolean) arguments[3] && Config.allowUnlimitedVertical))};
 			}
 		}else {
 			throw new LuaException("Chat boxes have been disabled");
 		}
-		/*} catch (Exception e) {
-			e.printStackTrace();
-		}*/
+		//} catch (Exception e) {
+		//	e.printStackTrace();
+		//}
 		return new Object[0];
 	}
 
@@ -204,7 +194,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 
 	@Override
 	public void attach(IComputerAccess computer) {
-		//Logger.info("yay!");
+		Logger.info("yay!");
 		if (computers.size() == 0)
 			ChatListener.chatBoxMap.put(this,true);
 		computers.put(computer, true);

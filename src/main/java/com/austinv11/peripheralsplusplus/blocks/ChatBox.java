@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 
 public class ChatBox extends PPPBlock implements ITileEntityProvider, IPeripheralProvider {
 
+
 	public ChatBox () {
 		super();
 		this.setBlockName("chatBox");
@@ -18,7 +19,7 @@ public class ChatBox extends PPPBlock implements ITileEntityProvider, IPeriphera
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
 		//Logger.info("test");
-		return new TileEntityChatBox(p_149915_1_);
+		return new TileEntityChatBox();
 	}
 
 	@Override
@@ -28,6 +29,6 @@ public class ChatBox extends PPPBlock implements ITileEntityProvider, IPeriphera
 
 	@Override
 	public IPeripheral getPeripheral(World world, int x, int y, int z, int side ) {
-		return new TileEntityChatBox(world);
+		return (IPeripheral) world.getTileEntity(x,y,z);
 	}
 }
