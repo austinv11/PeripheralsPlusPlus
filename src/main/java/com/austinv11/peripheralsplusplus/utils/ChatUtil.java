@@ -45,4 +45,8 @@ public class ChatUtil {
 		}
 		return null;
 	}
+
+	public static String getCoordsPrefix(TileEntity te) {
+		return "[#" + te.xCoord + "," + te.yCoord + "," + te.zCoord + "] ";
+	}
 }

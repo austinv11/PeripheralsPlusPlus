@@ -1,11 +1,13 @@
 package com.austinv11.peripheralsplusplus;
 
 import com.austinv11.peripheralsplusplus.blocks.ChatBox;
+import com.austinv11.peripheralsplusplus.blocks.PlayerSensor;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.Recipes;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
+import com.austinv11.peripheralsplusplus.turtles.TurtleChatBox;
 import com.austinv11.peripheralsplusplus.utils.ConfigurationHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -39,6 +41,8 @@ public class PeripheralsPlusPlus {
 		Recipes.init();
 		proxy.registerTileEntities();
 		ComputerCraftAPI.registerPeripheralProvider(new ChatBox());
+		ComputerCraftAPI.registerPeripheralProvider(new PlayerSensor());
+		ComputerCraftAPI.registerTurtleUpgrade(new TurtleChatBox());
 	}
 
 	@Mod.EventHandler

@@ -35,7 +35,11 @@ public class ConfigurationHandler {
 			double sayRange = config.get("Chatbox", "sayRange", 64.0, "Range for the Chat Box peripheral's say/tell function. Negative values indicate infinite").getDouble(64.0);
 			int sayRate = config.get("Chatbox", "sayRate", 1, "Maximum number of messages per second a Chat Box peripheral can say").getInt(1);
 			boolean allowUnlimitedVertical = config.get("Chatbox", "allowUnlimitedVertical", true, "Allow the Chat Box peripheral to send messages with unlimited vertical distance, but only if so the program chooses").getBoolean(true);
-			reSyncConfig(enableChatBox, logCoords, readRange, sayRange, sayRate, allowUnlimitedVertical);
+			boolean enablePlayerSensor = config.get("Player Sensor", "enablePlayerSensor", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
+			boolean additionalMethods = config.get("Player Sensor", "additionalMethods", true, "This enables the getNearbyPlayers and getAllPlayers functions").getBoolean(true);
+			double sensorRange = config.get("Player Sensor", "sensorRange", 64.0, "The maximum range a player sensor could search for players").getDouble(64.0);
+			reSyncConfig(enableChatBox, logCoords, readRange, sayRange, sayRate, allowUnlimitedVertical,
+					enablePlayerSensor, additionalMethods, sensorRange);
 		}catch (Exception e){//Log exception
 			Logger.warn("Config exception!");
 			Logger.warn(e.getStackTrace());
@@ -46,12 +50,15 @@ public class ConfigurationHandler {
 		}
 	}
 
-	private static void reSyncConfig(boolean v0, boolean v1, double v2, double v3, int v4, boolean v5){
+	private static void reSyncConfig(boolean v0, boolean v1, double v2, double v3, int v4, boolean v5, boolean v6, boolean v7, double v8){
 		Config.enableChatBox = v0;
 		Config.logCoords = v1;
 		Config.readRange = v2;
 		Config.sayRange = v3;
 		Config.sayRate = v4;
 		Config.allowUnlimitedVertical = v5;
+		Config.enablePlayerSensor = v6;
+		Config.additionalMethods = v7;
+		Config.sensorRange = v8;
 	}
 }

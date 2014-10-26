@@ -13,6 +13,7 @@ public class PPPBlock extends Block{
 	public PPPBlock(Material material){
 		super(material);
 		this.setCreativeTab(PPPCreativeTab.PPP_TAB);
+		this.setHardness(4f);
 	}
 
 	public PPPBlock(){

@@ -9,6 +9,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
@@ -35,14 +36,20 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 	private int ticker = 0;
 	private int subticker = 0;
 	private Location location;
-	private double x,y,z;
+	private ITurtleAccess turtle;
 
 	public TileEntityChatBox() {
 		super();
 		this.location = new Location(xCoord,yCoord,zCoord,getWorldObj());
-		x = location.getX();
-		y = location.getY();
-		z = location.getZ();
+	}
+
+	public TileEntityChatBox(ITurtleAccess turtle) {
+		this.location = new Location(turtle.getPosition().posX, turtle.getPosition().posY, turtle.getPosition().posZ, turtle.getWorld());
+		this.xCoord = (int) location.getX();
+		this.yCoord = (int) location.getY();
+		this.zCoord = (int) location.getZ();
+		this.setWorldObj(location.getWorld());
+		this.turtle = turtle;
 	}
 
 	public String getName() {
@@ -59,11 +66,21 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 		super.writeToNBT(nbttagcompound);
 	}
 
-	@Override public void updateEntity() {
+	@Override
+	public void updateEntity() {
 		if (subticker > 0)
 			subticker--;
 		if (subticker == 0 && ticker != 0)
 			ticker = 0;
+	}
+
+	public void updateEntity(boolean turtle) {
+		if (turtle) {
+			this.xCoord = this.turtle.getPosition().posX;
+			this.yCoord = this.turtle.getPosition().posY;
+			this.zCoord = this.turtle.getPosition().posZ;
+		}
+		updateEntity();
 	}
 
 	public void onChat(EntityPlayer player, String message) {
@@ -94,7 +111,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		//try {
+		//try { TODO Remember to document the new arg
 		if (Config.enableChatBox) {
 			if (method == 0) {
 				if (arguments.length < 1)
@@ -115,9 +132,9 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 					throw new LuaException("Please try again later, you are sending messages too often");
 				}
 				ChatComponentText message;
-				if (Config.logCoords)
-					message = new ChatComponentText("[#" + x + "," + y + "," + z + "] " + (String) arguments[0]);
-				if (!Config.logCoords && arguments.length > 3) {
+				if (Config.logCoords) {
+					message = new ChatComponentText(ChatUtil.getCoordsPrefix(this) + (String) arguments[0]);
+				}else if (!Config.logCoords && arguments.length > 3) {
 					message = new ChatComponentText("[" + (String) arguments[3] + "] " + (String) arguments[0]);
 				}else {
 					message = new ChatComponentText("[@] " + (String) arguments[0]);
@@ -156,7 +173,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 				}
 				ChatComponentText message;
 				if (Config.logCoords) {
-					message = new ChatComponentText("[#" + x + "," + y + "," + z + "] " + (String) arguments[1]);
+					message = new ChatComponentText(ChatUtil.getCoordsPrefix(this) + (String) arguments[1]);
 				}else if (!Config.logCoords && arguments.length > 3) {
 					message = new ChatComponentText("[" + (String) arguments[3] + "] " + (String) arguments[1]);
 				}else {
@@ -194,7 +211,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 
 	@Override
 	public void attach(IComputerAccess computer) {
-		Logger.info("yay!");
+		//Logger.info("yay!");
 		if (computers.size() == 0)
 			ChatListener.chatBoxMap.put(this,true);
 		computers.put(computer, true);
