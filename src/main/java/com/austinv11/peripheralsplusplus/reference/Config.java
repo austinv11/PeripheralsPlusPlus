@@ -10,5 +10,4 @@ public class Config {
 	public static boolean enablePlayerSensor = true;
 	public static boolean additionalMethods = true;
 	public static double sensorRange = 64.0;
-	public static boolean enableMEBridge = true;
 }
