@@ -19,7 +19,7 @@ import java.util.List;
 public class TileEntityPlayerSensor extends TileEntity implements IPeripheral {
 
 	public static String publicName = "playerSensor";
-	private String name = "tileEntityChatBox";
+	private String name = "tileEntityPlayerSensor";
 	private HashMap<IComputerAccess,Boolean> computers = new HashMap<IComputerAccess,Boolean>();
 	private Location location;
 	private ITurtleAccess turtle;
