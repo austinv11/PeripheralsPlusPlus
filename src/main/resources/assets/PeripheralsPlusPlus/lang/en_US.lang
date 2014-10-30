@@ -1,6 +1,7 @@
 #Blocks
 tile.peripheralsplusplus:chatBox.name=Chat Box
 tile.peripheralsplusplus:playerSensor.name=Player Sensor
+tile.peripheralsplusplus:rfCharger.name=Turtle Charger (RF)
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++

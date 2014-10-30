@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TileEntityRFCharger extends TileEntity implements IEnergyHandler{
-	private EnergyStorage storage = new EnergyStorage(400000);//Leadstone
+	private EnergyStorage storage = new EnergyStorage(80000);//Leadstone Capacitor
 
 	public static String publicName = "rfCharger";
 	private String name = "tileEntityrfCharger";
@@ -46,15 +46,15 @@ public class TileEntityRFCharger extends TileEntity implements IEnergyHandler{
 		for (int i = 0; i < 6; i++) {
 			int x = this.xCoord + dirs[i].offsetX;
 			int y = this.yCoord + dirs[i].offsetY;
-			int z = this.yCoord + dirs[i].offsetZ;
+			int z = this.zCoord + dirs[i].offsetZ;
 			if (!getWorldObj().blockExists(x, y, z))
 				continue;
 			Block t = getWorldObj().getBlock(x, y, z);
 			TileEntity te = getWorldObj().getTileEntity(x, y, z);
-			if (t != null)
-				Logger.info(t.getUnlocalizedName());
-			if (te instanceof ITurtleAccess)
+			if (te instanceof ITurtleAccess) {
 				turtles.add((ITurtleAccess) te);
+				Logger.info(":D");
+			}
 		}
 		int rate = ((int) Math.floor((float) 6 / (float) turtles.size())) * Config.fuelRF;
 		for (ITurtleAccess turtle : turtles) {
