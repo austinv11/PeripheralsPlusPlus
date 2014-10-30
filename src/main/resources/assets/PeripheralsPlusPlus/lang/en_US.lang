@@ -9,3 +9,4 @@ itemGroup.peripheralsplusplus=Peripherals++
 #Turtle adjectives
 peripheralsplusplus.turtleUpgrade.chatBox=Chatty
 peripheralsplusplus.turtleUpgrade.playerSensor=Radar
+peripheralsplusplus.turtleUpgrade.compass=Navigator
