@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.turtles;
 
+import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -27,6 +28,8 @@ public class PeripheralCompass implements IPeripheral {
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 		if (method == 0) {
+			if (!Config.enableNavigationTurtle)
+				throw new LuaException("The compass upgrade has been disabled");
 			return new Object[]{turtle.getDirection()};
 		}
 		return new Object[0];

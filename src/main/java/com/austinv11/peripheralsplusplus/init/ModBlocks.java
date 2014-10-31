@@ -14,7 +14,7 @@ public class ModBlocks {
 	public static final PPPBlock playerSensor = new PlayerSensor();
 	public static PPPBlock rfCharger;
 
-	public static void init(){//Registers all the blocks
+	public static void init(){
 		GameRegistry.registerBlock(chatBox, "chatBox");
 		GameRegistry.registerBlock(playerSensor, "playerSensor");
 		if (Loader.isModLoaded("ThermalExpansion")) {

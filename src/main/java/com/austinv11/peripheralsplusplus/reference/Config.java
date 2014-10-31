@@ -12,4 +12,5 @@ public class Config {
 	public static double sensorRange = 64.0;
 	public static boolean enableRFCharger = true;
 	public static int fuelRF = 200;
+	public static boolean enableNavigationTurtle = true;
 }

@@ -3,10 +3,13 @@ tile.peripheralsplusplus:chatBox.name=Chat Box
 tile.peripheralsplusplus:playerSensor.name=Player Sensor
 tile.peripheralsplusplus:rfCharger.name=Turtle Charger (RF)
 
+#Items
+item.peripheralsplusplus:upgradeBase.name=Base Turtle Upgrade
+
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++
 
 #Turtle adjectives
 peripheralsplusplus.turtleUpgrade.chatBox=Chatty
 peripheralsplusplus.turtleUpgrade.playerSensor=Radar
-peripheralsplusplus.turtleUpgrade.compass=Navigator
+peripheralsplusplus.turtleUpgrade.upgradeCompass=Navigational

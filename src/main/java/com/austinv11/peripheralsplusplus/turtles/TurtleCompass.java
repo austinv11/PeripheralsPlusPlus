@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.turtles;
 
+import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
@@ -27,7 +28,7 @@ public class TurtleCompass implements ITurtleUpgrade {
 
 	@Override
 	public ItemStack getCraftingItem() {
-		return new ItemStack(Items.compass);
+		return new ItemStack(ModItems.upgradeCompass);
 	}
 
 	@Override
@@ -42,7 +43,7 @@ public class TurtleCompass implements ITurtleUpgrade {
 
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
-		return Items.compass.getIconFromDamage(1);
+		return ModItems.upgradeCompass.getIconFromDamage(1);
 	}
 
 	@Override

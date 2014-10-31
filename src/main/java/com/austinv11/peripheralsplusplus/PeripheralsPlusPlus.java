@@ -3,6 +3,7 @@ package com.austinv11.peripheralsplusplus;
 import com.austinv11.peripheralsplusplus.blocks.ChatBox;
 import com.austinv11.peripheralsplusplus.blocks.PlayerSensor;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
+import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Reference;
@@ -34,7 +35,7 @@ public class PeripheralsPlusPlus {
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
-		//ModItems.init();TODO
+		ModItems.init();
 		ModBlocks.init();
 	}
 
