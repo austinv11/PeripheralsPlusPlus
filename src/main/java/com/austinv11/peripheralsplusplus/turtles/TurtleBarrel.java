@@ -41,7 +41,7 @@ public class TurtleBarrel implements ITurtleUpgrade {
 
 	@Override
 	public IPeripheral createPeripheral(ITurtleAccess turtle, TurtleSide side) {
-		return new PeripheralBarrel();
+		return new PeripheralBarrel(turtle);
 	}
 
 	@Override
