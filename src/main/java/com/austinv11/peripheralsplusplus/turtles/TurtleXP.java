@@ -53,6 +53,7 @@ public class TurtleXP implements ITurtleUpgrade {
 
 	@Override
 	public void update(ITurtleAccess turtle, TurtleSide side) {
-		xp.update();
+		if (xp != null)
+			xp.update();
 	}
 }

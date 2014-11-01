@@ -11,6 +11,7 @@ import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
 import com.austinv11.peripheralsplusplus.turtles.TurtleChatBox;
 import com.austinv11.peripheralsplusplus.turtles.TurtleCompass;
 import com.austinv11.peripheralsplusplus.turtles.TurtlePlayerSensor;
+import com.austinv11.peripheralsplusplus.turtles.TurtleXP;
 import com.austinv11.peripheralsplusplus.utils.ConfigurationHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
@@ -48,6 +49,7 @@ public class PeripheralsPlusPlus {
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtleChatBox());
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtlePlayerSensor());
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtleCompass());
+		ComputerCraftAPI.registerTurtleUpgrade(new TurtleXP());
 	}
 
 	@Mod.EventHandler

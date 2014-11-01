@@ -17,7 +17,7 @@ public class TurtleCompass implements ITurtleUpgrade{
 
 	@Override
 	public String getUnlocalisedAdjective() {
-		return "peripheralsplusplus.turtleUpgrade.upgradeCompass";
+		return "peripheralsplusplus.turtleUpgrade.compass";
 	}
 
 	@Override
