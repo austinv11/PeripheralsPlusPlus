@@ -6,6 +6,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class PeripheralCompass implements IPeripheral {
 
@@ -30,7 +31,7 @@ public class PeripheralCompass implements IPeripheral {
 		if (method == 0) {
 			if (!Config.enableNavigationTurtle)
 				throw new LuaException("The compass upgrade has been disabled");
-			return new Object[]{turtle.getDirection()};
+			return new Object[]{ForgeDirection.getOrientation(turtle.getDirection()).name().toLowerCase()};
 		}
 		return new Object[0];
 	}

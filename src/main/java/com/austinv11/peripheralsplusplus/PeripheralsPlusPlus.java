@@ -13,6 +13,7 @@ import com.austinv11.peripheralsplusplus.turtles.TurtleCompass;
 import com.austinv11.peripheralsplusplus.turtles.TurtlePlayerSensor;
 import com.austinv11.peripheralsplusplus.turtles.TurtleXP;
 import com.austinv11.peripheralsplusplus.utils.ConfigurationHandler;
+import com.austinv11.peripheralsplusplus.utils.IconManager;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -34,8 +35,10 @@ public class PeripheralsPlusPlus {
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
+		IconManager.upgrades.add(new TurtleCompass());
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
+		MinecraftForge.EVENT_BUS.register(new IconManager());
 		ModItems.init();
 		ModBlocks.init();
 	}

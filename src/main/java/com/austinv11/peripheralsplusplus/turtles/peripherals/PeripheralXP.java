@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.turtles.peripherals;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
+import com.austinv11.peripheralsplusplus.utils.Logger;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -13,6 +14,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 
@@ -23,7 +25,7 @@ public class PeripheralXP implements IPeripheral {//Beware, a lot of the math wa
 
 	private static final int MAX_LEVEL = 30;
 	private static final double COLLECT_RANGE = 2.0D;
-	private final Random random = new Random();
+	private final BetterRandom random = new BetterRandom();
 	private int experience = 0;
 	private int experienceRemainder = 0;
 	private int experienceLevel = 0;
@@ -187,5 +189,19 @@ public class PeripheralXP implements IPeripheral {//Beware, a lot of the math wa
 	@Override
 	public boolean equals(IPeripheral other) {
 		return (other == this);
+	}
+
+	private class BetterRandom extends Random {
+		private long seed;
+
+		@Override
+		public void setSeed(long seed) {
+			super.setSeed(seed);
+			this.seed = seed;
+		}
+
+		public long getSeed() {
+			return seed;
+		}
 	}
 }
