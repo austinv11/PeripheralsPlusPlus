@@ -8,8 +8,4 @@ public class UpgradeCompass extends PPPItem {
 		super();
 		this.setUnlocalizedName("upgradeCompass");
 	}
-
-	public IIcon getIcon(){
-		return this.itemIcon;
-	}
 }
