@@ -58,6 +58,7 @@ public class PeripheralXP implements IPeripheral {//Beware, a lot of the math wa
 			tag.setInteger("experienceLevel", experienceLevel);
 			tag.setLong("rndSeed", random.getSeed());
 			turtle.updateUpgradeNBTData(side);
+			changed = false;
 		}
 	}
 
