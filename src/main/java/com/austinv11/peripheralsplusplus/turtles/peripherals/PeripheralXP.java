@@ -7,6 +7,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
+import dan200.computercraft.api.turtle.TurtleSide;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -14,7 +15,6 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.Vec3;
 
@@ -31,16 +31,33 @@ public class PeripheralXP implements IPeripheral {//Beware, a lot of the math wa
 	private int experienceLevel = 0;
 	private boolean autoCollect = false;
 	private int ticker = random.nextInt(20);
-	ITurtleAccess turtle;
+	public boolean changed = false;
+	private ITurtleAccess turtle;
+	private TurtleSide side;
 
-	public PeripheralXP(ITurtleAccess turtleAccess) {
+	public PeripheralXP(ITurtleAccess turtleAccess, TurtleSide side) {
 		turtle = turtleAccess;
+		this.side = side;
+		NBTTagCompound tag = turtle.getUpgradeNBTData(side);
+		experience = tag.getInteger("experience");
+		experienceRemainder = tag.getInteger("experienceRemainder");
+		experienceLevel = tag.getInteger("experienceLevel");
+		random.setSeed(tag.getLong("rndSeed"));
 	}
 
 	public void update() {
 		if (autoCollect && ++ticker >= 20) {
 			ticker = 0;
 			addExperience(collect());
+			changed = true;
+		}
+		if (changed) {
+			NBTTagCompound tag = turtle.getUpgradeNBTData(side);
+			tag.setInteger("experience", experience);
+			tag.setInteger("experienceRemainder", experienceRemainder);
+			tag.setInteger("experienceLevel", experienceLevel);
+			tag.setLong("rndSeed", random.getSeed());
+			turtle.updateUpgradeNBTData(side);
 		}
 	}
 
@@ -123,6 +140,7 @@ public class PeripheralXP implements IPeripheral {//Beware, a lot of the math wa
 						slot = null;
 					turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), slot);
 				}
+				changed = true;
 				return new Object[] {recharge};
 			case 1:
 				return new Object[] {experience};
@@ -131,6 +149,7 @@ public class PeripheralXP implements IPeripheral {//Beware, a lot of the math wa
 			case 3:
 				int collected = collect();
 				addExperience(collected);
+				changed = true;
 				return new Object[] {collected};
 			case 4:
 				boolean ac = !autoCollect;
@@ -175,6 +194,7 @@ public class PeripheralXP implements IPeripheral {//Beware, a lot of the math wa
 				}
 				addLevels(-levels, true);
 				turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), enchanted);
+				changed = true;
 				return new Object[] {true};
 		}
 		return new Object[0];

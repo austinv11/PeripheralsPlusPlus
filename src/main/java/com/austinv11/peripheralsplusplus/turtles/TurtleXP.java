@@ -37,7 +37,7 @@ public class TurtleXP implements ITurtleUpgrade {
 
 	@Override
 	public IPeripheral createPeripheral(ITurtleAccess turtle, TurtleSide side) {
-		xp = new PeripheralXP(turtle);
+		xp = new PeripheralXP(turtle, side);
 		return xp;
 	}
 

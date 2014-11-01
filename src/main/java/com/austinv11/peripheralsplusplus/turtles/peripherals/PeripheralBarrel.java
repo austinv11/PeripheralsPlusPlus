@@ -6,10 +6,12 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
+import dan200.computercraft.api.turtle.TurtleSide;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class PeripheralBarrel implements IPeripheral {
 
@@ -18,9 +20,26 @@ public class PeripheralBarrel implements IPeripheral {
 	private Object ITEM_TYPE_STORED = null;
 	private int CURRENT_USAGE = 0;
 	private ITurtleAccess turtle;
+	private TurtleSide side;
+	public boolean changed = false;
 
-	public PeripheralBarrel(ITurtleAccess turtle) {
+	public PeripheralBarrel(ITurtleAccess turtle, TurtleSide side) {
 		this.turtle = turtle;
+		this.side = side;
+		NBTTagCompound tag = turtle.getUpgradeNBTData(side);
+		if (tag.getInteger("maxSize") > 0)
+			MAX_SIZE = tag.getInteger("maxSize");
+		if (tag.getInteger("stackSize") > 0)
+			STACK_SIZE = tag.getInteger("stackSize");
+		CURRENT_USAGE = tag.getInteger("currentUsage");
+		if (tag.getBoolean("isKnown")) {
+			if (tag.getBoolean("isBlock")) {
+				ITEM_TYPE_STORED = Block.getBlockById(tag.getInteger("itemID"));
+			}else {
+				ITEM_TYPE_STORED = Item.getItemById(tag.getInteger("itemID"));
+			}
+		}
+		checkUsageStats();
 	}
 
 	private void checkUsageStats() {
@@ -74,6 +93,7 @@ public class PeripheralBarrel implements IPeripheral {
 				CURRENT_USAGE = CURRENT_USAGE - amount;
 				checkUsageStats();
 				turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), stack);
+				changed = true;
 				return new Object[]{amount};
 			}else if (ITEM_TYPE_STORED instanceof Item) {
 				Item itemStored = (Item) ITEM_TYPE_STORED;
@@ -87,6 +107,7 @@ public class PeripheralBarrel implements IPeripheral {
 				CURRENT_USAGE = CURRENT_USAGE - amount;
 				checkUsageStats();
 				turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), stack);
+				changed = true;
 				return new Object[]{amount};
 			}
 			throw new LuaException("Unknown storage exception - please tell the mod author");
@@ -134,6 +155,7 @@ public class PeripheralBarrel implements IPeripheral {
 				newStack.stackSize = items.stackSize - amount;
 			}
 			turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), newStack);
+			changed = true;
 			return new Object[]{amount};
 		}else if (method == 2) {
 			if (ITEM_TYPE_STORED != null) {
@@ -157,5 +179,24 @@ public class PeripheralBarrel implements IPeripheral {
 	@Override
 	public boolean equals(IPeripheral other) {
 		return (this == other);
+	}
+
+	public void update() {
+		NBTTagCompound tag = turtle.getUpgradeNBTData(side);
+		tag.setInteger("maxSize", MAX_SIZE);
+		tag.setInteger("stackSize", STACK_SIZE);
+		tag.setInteger("currentUsage", CURRENT_USAGE);
+		if (ITEM_TYPE_STORED == null) {
+			tag.setBoolean("isKnown", false);
+		}else {
+			tag.setBoolean("isKnown", true);
+			if (ITEM_TYPE_STORED instanceof Block) {
+				tag.setBoolean("isBlock", true);
+				tag.setInteger("itemID", Block.getIdFromBlock((Block)ITEM_TYPE_STORED));
+			}else {
+				tag.setBoolean("isBlock", false);
+				tag.setInteger("itemID", Item.getIdFromItem((Item)ITEM_TYPE_STORED));
+			}
+		}
 	}
 }

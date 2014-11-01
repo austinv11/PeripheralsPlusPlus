@@ -13,6 +13,8 @@ import net.minecraft.util.IIcon;
 
 public class TurtleBarrel implements ITurtleUpgrade {
 
+	PeripheralBarrel barrel;
+
 	@Override
 	public int getUpgradeID() {
 		return Reference.BARREL_UPGRADE;
@@ -41,7 +43,8 @@ public class TurtleBarrel implements ITurtleUpgrade {
 
 	@Override
 	public IPeripheral createPeripheral(ITurtleAccess turtle, TurtleSide side) {
-		return new PeripheralBarrel(turtle);
+		barrel = new PeripheralBarrel(turtle, side);
+		return barrel;
 	}
 
 	@Override
@@ -55,5 +58,8 @@ public class TurtleBarrel implements ITurtleUpgrade {
 	}
 
 	@Override
-	public void update(ITurtleAccess turtle, TurtleSide side) {}
+	public void update(ITurtleAccess turtle, TurtleSide side) {
+		if (barrel.changed)
+			barrel.update();
+	}
 }
