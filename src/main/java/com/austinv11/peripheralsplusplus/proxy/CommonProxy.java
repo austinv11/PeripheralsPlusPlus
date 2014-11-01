@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.proxy;
 
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
+import com.austinv11.peripheralsplusplus.tiles.TileEntityOreDictionary;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityPlayerSensor;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityRFCharger;
 import cpw.mods.fml.common.Loader;
@@ -13,5 +14,6 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEntityPlayerSensor.class, TileEntityPlayerSensor.publicName);
 		if (Loader.isModLoaded("ThermalExpansion"))
 			GameRegistry.registerTileEntity(TileEntityRFCharger.class, TileEntityRFCharger.publicName);
+		GameRegistry.registerTileEntity(TileEntityOreDictionary.class, TileEntityOreDictionary.publicName);
 	}
 }

@@ -29,7 +29,7 @@ import java.util.List;
 
 public class TileEntityChatBox extends TileEntity implements IPeripheral{
 
-	public static String publicName = "tileEntityChatBox";
+	public static String publicName = "chatBox";
 	private  String name = "tileEntityChatBox";
 	private HashMap<IComputerAccess,Boolean> computers = new HashMap<IComputerAccess,Boolean>();
 	private static final int TICKER_INTERVAL = 20;

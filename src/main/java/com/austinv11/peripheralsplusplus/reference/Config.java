@@ -15,4 +15,6 @@ public class Config {
 	public static boolean enableNavigationTurtle = true;
 	public static boolean enableXPTurtle = true;
 	public static boolean enableBarrelTurtle = true;
+	public static boolean enableOreDictionary = true;
+	public static boolean oreDictionaryMessage = false;
 }

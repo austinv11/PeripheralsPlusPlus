@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus;
 
 import com.austinv11.peripheralsplusplus.blocks.ChatBox;
+import com.austinv11.peripheralsplusplus.blocks.OreDictionaryBlock;
 import com.austinv11.peripheralsplusplus.blocks.PlayerSensor;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
@@ -47,6 +48,7 @@ public class PeripheralsPlusPlus {
 		proxy.registerTileEntities();
 		ComputerCraftAPI.registerPeripheralProvider(new ChatBox());
 		ComputerCraftAPI.registerPeripheralProvider(new PlayerSensor());
+		ComputerCraftAPI.registerPeripheralProvider(new OreDictionaryBlock());
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtleChatBox());
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtlePlayerSensor());
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtleCompass());

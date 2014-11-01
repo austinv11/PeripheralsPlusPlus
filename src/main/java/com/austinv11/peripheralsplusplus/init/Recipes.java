@@ -18,5 +18,7 @@ public class Recipes {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.playerSensor), "grg", "ede", "grg", 'g', "ingotGold", 'r', "dustRedstone", 'e', new ItemStack(Items.ender_eye), 'd', "gemDiamond"));
 		if (Config.enableRFCharger && Loader.isModLoaded("ThermalExpansion"))
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.rfCharger), "rlr", "lcl", "rer", 'r', "dustRedstone", 'l', "ingotLead", 'c', new ItemStack(GameRegistry.findItem("ThermalExpansion", "capacitor"), 1, 2), 'e', new ItemStack(GameRegistry.findItem("ThermalExpansion", "material"), 1, 3)));
+		if (Config.enableOreDictionary)
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.oreDictionary), "isi", "sbs", "isi", 'i', "ingotIron", 's', "stone", 'b', new ItemStack(Items.book)));
 	}
 }
