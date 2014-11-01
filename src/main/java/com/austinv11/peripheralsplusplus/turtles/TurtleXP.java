@@ -48,7 +48,7 @@ public class TurtleXP implements ITurtleUpgrade {
 
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
-		return Blocks.enchanting_table.getIcon(0, 0);
+		return Blocks.enchanting_table.getIcon(1, 0);
 	}
 
 	@Override
