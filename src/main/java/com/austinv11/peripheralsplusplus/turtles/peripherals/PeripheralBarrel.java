@@ -12,6 +12,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.StatCollector;
 
 public class PeripheralBarrel implements IPeripheral {
 
@@ -57,7 +58,7 @@ public class PeripheralBarrel implements IPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[]{"get", "put", "getItem"};
+		return new String[]{"get", "put", "getUnlocalizedItemName", "getLocalizedItemName", "getItemID", "getAmount"};
 	}
 
 	@Override
@@ -125,9 +126,19 @@ public class PeripheralBarrel implements IPeripheral {
 				changed = true;
 				return new Object[]{amount};
 			} else if (method == 2) {
-				if (ITEM_TYPE_STORED != null) {
-					return new Object[]{getUnwrappedUnlocalizedName(((Item) ITEM_TYPE_STORED).getUnlocalizedName())};
-				}
+				if (ITEM_TYPE_STORED != null)
+					return new Object[]{getUnwrappedUnlocalizedName(ITEM_TYPE_STORED.getUnlocalizedName())};
+			} else if (method == 3) {
+				if (ITEM_TYPE_STORED != null)
+					return new Object[]{StatCollector.translateToLocal(ITEM_TYPE_STORED.getUnlocalizedName())};
+			} else if (method == 4) {
+				if (ITEM_TYPE_STORED != null)
+					return new Object[]{Item.getIdFromItem(ITEM_TYPE_STORED)};
+			} else if (method == 5) {
+				int amount = 0;
+				if (ITEM_TYPE_STORED != null)
+					amount = CURRENT_USAGE;
+				return new Object[]{amount};
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
