@@ -14,4 +14,5 @@ public class Config {
 	public static int fuelRF = 200;
 	public static boolean enableNavigationTurtle = true;
 	public static boolean enableXPTurtle = true;
+	public static boolean enableBarrelTurtle = true;
 }

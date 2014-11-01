@@ -8,13 +8,11 @@ import com.austinv11.peripheralsplusplus.init.Recipes;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
-import com.austinv11.peripheralsplusplus.turtles.TurtleChatBox;
-import com.austinv11.peripheralsplusplus.turtles.TurtleCompass;
-import com.austinv11.peripheralsplusplus.turtles.TurtlePlayerSensor;
-import com.austinv11.peripheralsplusplus.turtles.TurtleXP;
+import com.austinv11.peripheralsplusplus.turtles.*;
 import com.austinv11.peripheralsplusplus.utils.ConfigurationHandler;
 import com.austinv11.peripheralsplusplus.utils.IconManager;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
@@ -53,6 +51,8 @@ public class PeripheralsPlusPlus {
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtlePlayerSensor());
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtleCompass());
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtleXP());
+		if (Loader.isModLoaded("factorization") || Loader.isModLoaded("JABBA"))
+			ComputerCraftAPI.registerTurtleUpgrade(new TurtleBarrel());
 	}
 
 	@Mod.EventHandler
