@@ -41,8 +41,10 @@ public class ConfigurationHandler {
 			boolean enableRFCharger = config.get("Turtle Chargers", "enableRFCharger", true, "If disabled, the recipe will be disabled").getBoolean(true);
 			int fuelRF = config.get("Turtle Chargers", "fuelRF", 200, "Amount of RF per turtle fuel value").getInt(200);
 			boolean enableNavigationTurtle = config.get("Navigational Turtle", "enableNavigationTurtle", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
+			boolean enableXPTurtle = config.get("XP Turtle", "enableXPTurtle", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
 			reSyncConfig(enableChatBox, logCoords, readRange, sayRange, sayRate, allowUnlimitedVertical,
-					enablePlayerSensor, additionalMethods, sensorRange, enableRFCharger, fuelRF, enableNavigationTurtle);
+					enablePlayerSensor, additionalMethods, sensorRange, enableRFCharger, fuelRF, enableNavigationTurtle,
+					enableXPTurtle);
 		}catch (Exception e){//Log exception
 			Logger.warn("Config exception!");
 			Logger.warn(e.getStackTrace());
@@ -54,7 +56,7 @@ public class ConfigurationHandler {
 	}
 
 	private static void reSyncConfig(boolean v0, boolean v1, double v2, double v3, int v4, boolean v5, boolean v6, boolean v7, double v8, boolean v9,
-									 int v10, boolean v11){
+									 int v10, boolean v11, boolean v12){
 		Config.enableChatBox = v0;
 		Config.logCoords = v1;
 		Config.readRange = v2;
@@ -67,5 +69,6 @@ public class ConfigurationHandler {
 		Config.enableRFCharger = v9;
 		Config.fuelRF = v10;
 		Config.enableNavigationTurtle = v11;
+		Config.enableXPTurtle = v12;
 	}
 }

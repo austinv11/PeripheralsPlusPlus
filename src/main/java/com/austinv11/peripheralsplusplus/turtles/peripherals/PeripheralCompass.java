@@ -1,4 +1,4 @@
-package com.austinv11.peripheralsplusplus.turtles;
+package com.austinv11.peripheralsplusplus.turtles.peripherals;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
