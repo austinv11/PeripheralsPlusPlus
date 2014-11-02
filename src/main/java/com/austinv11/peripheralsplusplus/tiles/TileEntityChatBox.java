@@ -96,7 +96,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 				killer = ent.getCommandSenderName();
 		}
 		for (IComputerAccess computer : computers.keySet())
-			computer.queueEvent("chat", new Object[] {player.getDisplayName(), killer, source.damageType});
+			computer.queueEvent("death", new Object[] {player.getDisplayName(), killer, source.damageType});
 	}
 
 	@Override
