@@ -4,6 +4,8 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyHandler;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.Logger;
+import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
+import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
@@ -49,29 +51,32 @@ public class TileEntityRFCharger extends TileEntity implements IEnergyHandler{
 			int z = this.zCoord + dirs[i].offsetZ;
 			if (!getWorldObj().blockExists(x, y, z))
 				continue;
-			Block t = getWorldObj().getBlock(x, y, z);
 			TileEntity te = getWorldObj().getTileEntity(x, y, z);
-			if (te instanceof ITurtleAccess) {
-				turtles.add((ITurtleAccess) te);
-				Logger.info(":D");
+			if (te != null) {
+				try {
+					ITurtleAccess turtle = ReflectionHelper.getTurtle(te);
+					if (turtle != null) {
+						turtles.add(turtle);
+						//Logger.info(":D");
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 		}
-		int rate = ((int) Math.floor((float) 6 / (float) turtles.size())) * Config.fuelRF;
+		int rate = ((int) Math.floor((float) 6 / (float) turtles.size()));
 		for (ITurtleAccess turtle : turtles) {
-			if (storage.getEnergyStored() >= Config.fuelRF)
-				storage.extractEnergy(addFuel(turtle, rate), false);
+			if (storage.getEnergyStored() >= rate)
+				storage.extractEnergy(addFuel(turtle, rate) * Config.fuelRF, false);
 		}
 	}
 
 	private int addFuel(ITurtleAccess turtle, int rate) {
-		if (Integer.MAX_VALUE - rate <= turtle.getFuelLevel()) {
-			int added = Integer.MAX_VALUE - turtle.getFuelLevel();
-			turtle.consumeFuel(-added);
-			return added;
-		}else {
-			turtle.consumeFuel(-rate);
+		if (turtle.getFuelLimit() > turtle.getFuelLevel()) {
+			turtle.addFuel(rate);
 			return rate;
 		}
+		return 0;
 	}
 
 	@Override
