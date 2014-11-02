@@ -12,4 +12,5 @@ public class Reference {
 	public static final int COMPASS_UPGRADE = 103;
 	public static final int XP_UPGRADE = 104;
 	public static final int BARREL_UPGRADE = 105;
+	public static final int ORE_DICTIONARY_UPGRADE = 106;
 }

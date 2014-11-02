@@ -59,12 +59,104 @@ public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
 	@Override
 	public String[] getMethodNames() {
 		if (isTurtle())
-			return new String[]{"getEntries"/*getEntries() - returns table w/ all oredict entries*/, "combineStacks"/*combineStacks(slotNum,slotNum2) - returns boolean and places new stack in selected slot*/, "transmute"/*transmute() - transmutes selected items to next oreDict possibility*/};
+			return new String[]{"getEntries"/*getEntries() - returns table w/ all oredict entries*/, "combineStacks"/*combineStacks(slotNum,slotNum2) - returns boolean and places new stack in selected slot*/, "transmute"/*transmute() - transmutes selected items to next oreDict possibility*/, "doItemsMatch"/*doItemsMatch(slotNum, slotNum2) - returns whether the two items match*/};
 		return new String[0];
 	}
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+		if (!Config.enableOreDictionary)
+			throw new LuaException("Ore Dictionaries have been disabled");
+		try {
+			if (method == 0) {
+				ItemStack slot = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot());
+				return new Object[]{getEntries(slot)};
+			} else if (method == 1) {
+				if (!(arguments.length > 0) || !(arguments[0] instanceof Double))
+					throw new LuaException("Bad argument #1 (expected number)");
+				if (!(arguments.length > 1) || !(arguments[1] instanceof Double))
+					throw new LuaException("Bad argument #2 (expected number)");
+				double arg1 = (Double) arguments[0];
+				double arg2 = (Double) arguments[1];
+				arg1--;
+				arg2--;
+				ItemStack slot = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot());
+				ItemStack stack1 = turtle.getInventory().getStackInSlot((int)arg1);
+				ItemStack stack2 = turtle.getInventory().getStackInSlot((int)arg2);
+				if (stack1 == null || stack2 == null)
+					throw new LuaException("One or more selected slots have nil items");
+				if (!compare(stack1,stack2))
+					return new Object[]{false};
+				if (!compare(stack1, slot) && slot != null)
+					throw new LuaException("The destination slot is incompatible");
+				int maxMoveSize = 0;
+				if (slot != null) {
+					maxMoveSize = slot.getMaxStackSize() - slot.stackSize;
+				}else {
+					maxMoveSize = stack1.getMaxStackSize() - stack1.stackSize;
+				}
+				int move1 = stack1.stackSize;
+				int move2 = stack2.stackSize;
+				if (move1 + move2 > maxMoveSize) {
+					if (move1 >= maxMoveSize)
+						move1 = maxMoveSize;
+					move2 = maxMoveSize - move1;
+				}
+				stack1.stackSize = stack1.stackSize - move1;
+				stack2.stackSize = stack2.stackSize - move2;
+				if (slot != null) {
+					slot.stackSize = move1 + move2;
+					turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), slot.copy());
+					if (stack1.stackSize <= 0) {
+						turtle.getInventory().setInventorySlotContents((int) arg1, null);
+					}else {
+						turtle.getInventory().setInventorySlotContents((int) arg1, stack1.copy());
+					}
+					if (stack2.stackSize <= 0) {
+						turtle.getInventory().setInventorySlotContents((int) arg2, null);
+					}else {
+						turtle.getInventory().setInventorySlotContents((int) arg2, stack2.copy());
+					}
+				}else {
+					ItemStack newStack = new ItemStack(stack1.getItem());
+					newStack.stackSize = move1 + move2;
+					turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), newStack.copy());
+					if (stack1.stackSize <= 0) {
+						turtle.getInventory().setInventorySlotContents((int) arg1, null);
+					}else {
+						turtle.getInventory().setInventorySlotContents((int) arg1, stack1.copy());
+					}
+					if (stack2.stackSize <= 0) {
+						turtle.getInventory().setInventorySlotContents((int) arg2, null);
+					}else {
+						turtle.getInventory().setInventorySlotContents((int) arg2, stack2.copy());
+					}
+				}
+				return new Object[]{true};
+			} else if (method == 2) {
+				ItemStack slot = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot());
+				if (slot == null)
+					throw new LuaException("Selected slot's item is nil");
+				ItemStack newStack = transmute(slot);
+				if (newStack == null || newStack.isItemEqual(slot))
+					return new Object[]{false};
+				newStack.stackSize = slot.stackSize;
+				turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), newStack);
+				return new Object[]{true};
+			} else if (method == 3) {
+				if (!(arguments.length > 0) || !(arguments[0] instanceof Double))
+					throw new LuaException("Bad argument #1 (expected number)");
+				if (!(arguments.length > 1) || !(arguments[1] instanceof Double))
+					throw new LuaException("Bad argument #2 (expected number)");
+				double arg1 = (Double) arguments[0];
+				double arg2 = (Double) arguments[1];
+				arg1--;
+				arg2--;
+				return new Object[]{compare(turtle.getInventory().getStackInSlot((int)arg1), turtle.getInventory().getStackInSlot((int)arg1))};
+			}
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
 		return new Object[0];
 	}
 
@@ -86,6 +178,26 @@ public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
 		return (other == this);
 	}
 
+	private ItemStack transmute(ItemStack item) {
+		HashMap<Integer, String> entries = getEntries(item);
+		int i = 0;
+		boolean test = false;
+		for (String v : entries.values()) {
+			for (ItemStack stack : OreDictionary.getOres(v)) {
+				if (test)
+					return stack.copy();
+				if (stack.isItemEqual(item)) {
+					test = true;
+				}
+				i++;
+			}
+			if (test)
+				return OreDictionary.getOres(v).get(0).copy();
+			i = 0;
+		}
+		return null;
+	}
+
 	private HashMap<Integer, String> getEntries(ItemStack stack) {
 		int[] ids = OreDictionary.getOreIDs(stack);
 		HashMap<Integer, String> entries = new HashMap<Integer,String>();
@@ -93,6 +205,15 @@ public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
 			entries.put(i, OreDictionary.getOreName(ids[i]));
 		}
 		return entries;
+	}
+
+	private boolean compare(ItemStack stack1, ItemStack stack2) {
+		if (!(stack1 == null || stack2 == null))
+			for (String key : getEntries(stack1).values()) {
+				if (getEntries(stack2).containsValue(key))
+					return true;
+			}
+		return false;
 	}
 
 	public void blockActivated(EntityPlayer player) {

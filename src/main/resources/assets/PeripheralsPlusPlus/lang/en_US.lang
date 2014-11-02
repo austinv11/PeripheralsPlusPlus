@@ -13,7 +13,8 @@ itemGroup.peripheralsplusplus=Peripherals++
 
 #Turtle adjectives
 peripheralsplusplus.turtleUpgrade.chatBox=Chatty
-peripheralsplusplus.turtleUpgrade.playerSensor=Radar
+peripheralsplusplus.turtleUpgrade.playerSensor=Player Noticing
 peripheralsplusplus.turtleUpgrade.compass=Navigational
 peripheralsplusplus.turtleUpgrade.xp=XP
 peripheralsplusplus.turtleUpgrade.barrel=Barrel
+peripheralsplusplus.turtleUpgrade.oreDictionary=Equivalence Checking
