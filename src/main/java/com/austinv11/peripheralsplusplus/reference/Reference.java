@@ -14,4 +14,8 @@ public class Reference {
 	public static final int BARREL_UPGRADE = 105;
 	public static final int ORE_DICTIONARY_UPGRADE = 106;
 	public static final int WRENCH_UPGRADE = 107;
+
+	public static enum GUIs {
+		ANALYZER;
+	}
 }

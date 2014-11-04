@@ -3,6 +3,7 @@ package com.austinv11.peripheralsplusplus;
 import com.austinv11.peripheralsplusplus.blocks.ChatBox;
 import com.austinv11.peripheralsplusplus.blocks.OreDictionaryBlock;
 import com.austinv11.peripheralsplusplus.blocks.PlayerSensor;
+import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
@@ -19,6 +20,7 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import dan200.computercraft.api.ComputerCraftAPI;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -44,6 +46,7 @@ public class PeripheralsPlusPlus {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
+		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 		Recipes.init();
 		proxy.registerTileEntities();
 		ComputerCraftAPI.registerPeripheralProvider(new ChatBox());
