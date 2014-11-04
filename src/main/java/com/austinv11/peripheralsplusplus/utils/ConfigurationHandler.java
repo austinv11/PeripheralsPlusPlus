@@ -45,9 +45,10 @@ public class ConfigurationHandler {
 			boolean enableBarrelTurtle = config.get("Barrel Turtle", "enableBarrelTurtle", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
 			boolean enableOreDictionary = config.get("OreDictionary Block", "enableOreDictionary", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
 			boolean oreDictionaryMessage = config.get("OreDictionary Block", "oreDictionaryMessage", false, "If enabled, the Ore Dictionary peripheral will display a chat message with the Ore Dictionary entries - useful for debugging").getBoolean(false);
+			//boolean enableWrenchTurtle = config.get("Wrench Turtle", "enableWrenchTurtle", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
 			reSyncConfig(enableChatBox, logCoords, readRange, sayRange, sayRate, allowUnlimitedVertical,
 					enablePlayerSensor, additionalMethods, sensorRange, enableRFCharger, fuelRF, enableNavigationTurtle,
-					enableXPTurtle, enableBarrelTurtle, enableOreDictionary, oreDictionaryMessage);
+					enableXPTurtle, enableBarrelTurtle, enableOreDictionary, oreDictionaryMessage, /*enableWrenchTurtle*/false);
 		}catch (Exception e){//Log exception
 			Logger.warn("Config exception!");
 			Logger.warn(e.getStackTrace());
@@ -59,7 +60,7 @@ public class ConfigurationHandler {
 	}
 
 	private static void reSyncConfig(boolean v0, boolean v1, double v2, double v3, int v4, boolean v5, boolean v6, boolean v7, double v8, boolean v9,
-									 int v10, boolean v11, boolean v12, boolean v13, boolean v14, boolean v15){
+									 int v10, boolean v11, boolean v12, boolean v13, boolean v14, boolean v15, boolean v16){
 		Config.enableChatBox = v0;
 		Config.logCoords = v1;
 		Config.readRange = v2;
@@ -76,5 +77,6 @@ public class ConfigurationHandler {
 		Config.enableBarrelTurtle = v13;
 		Config.enableOreDictionary = v14;
 		Config.oreDictionaryMessage = v15;
+		Config.enableWrenchTurtle = v16;
 	}
 }

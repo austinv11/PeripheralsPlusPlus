@@ -56,6 +56,8 @@ public class PeripheralsPlusPlus {
 		if (Loader.isModLoaded("factorization") || Loader.isModLoaded("JABBA"))
 			ComputerCraftAPI.registerTurtleUpgrade(new TurtleBarrel());
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtleOreDictionary());
+		//if (TurtleWrench.isUsable())
+		//	ComputerCraftAPI.registerTurtleUpgrade(new TurtleWrench());
 	}
 
 	@Mod.EventHandler
