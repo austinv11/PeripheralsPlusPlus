@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -51,6 +52,8 @@ public abstract class TileEntityAnalyzer extends TileEntityInv implements IPerip
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+		if (!Config.enableAnalyzers)
+			throw new LuaException("Analyzers have been disabled");
 		switch (method) {
 			case 0:
 				ISpeciesRoot root = getRoot();
