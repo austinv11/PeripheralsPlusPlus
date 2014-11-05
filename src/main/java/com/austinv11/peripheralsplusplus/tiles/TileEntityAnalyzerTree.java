@@ -9,13 +9,20 @@ import java.util.HashMap;
 
 public class TileEntityAnalyzerTree extends TileEntityAnalyzer {
 
+	public static String publicName = "treeAnalyzer";
+
 	public TileEntityAnalyzerTree() {
-		this.publicName = "treeAnalyzer";
+		super();
 	}
 
 	@Override
 	public String getName(){
 		return "tileEntityTreeAnalyzer";
+	}
+
+	@Override
+	public String getPublicName() {
+		return publicName;
 	}
 
 	@Override

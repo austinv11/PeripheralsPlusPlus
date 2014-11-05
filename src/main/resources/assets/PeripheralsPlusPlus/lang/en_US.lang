@@ -3,6 +3,9 @@ tile.peripheralsplusplus:chatBox.name=Chat Box
 tile.peripheralsplusplus:playerSensor.name=Player Sensor
 tile.peripheralsplusplus:rfCharger.name=Turtle Charger (RF)
 tile.peripheralsplusplus:oreDictionary.name=Ore Dictionary
+tile.peripheralsplusplus:beeAnalyzer.name=Bee Analyzer
+tile.peripheralsplusplus:treeAnalyzer.name=Tree Analyzer
+tile.peripheralsplusplus:butterflyAnalyzer.name=Butterfly Analyzer
 
 #Items
 item.peripheralsplusplus:upgradeBase.name=Base Turtle Upgrade

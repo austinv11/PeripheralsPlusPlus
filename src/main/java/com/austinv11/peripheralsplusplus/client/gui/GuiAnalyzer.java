@@ -20,15 +20,14 @@ public class GuiAnalyzer extends GuiContainer {
 	private ResourceLocation backgroundimage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" + "textures/gui/guiAnalyzer.png");
 
 	public GuiAnalyzer(EntityPlayer player, World world, int x, int y, int z) {
-		super(new ContainerAnalyzer(player, (IInventory)world.getTileEntity(x,y,z), 176, 176));
-		Logger.info(":D");
+		super(new ContainerAnalyzer(player, (IInventory)world.getTileEntity(x,y,z), 176, 166));
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.player = player;
 		this.world = world;
 		sizeX = 176;
-		sizeY = 176;
+		sizeY = 166;
 	}
 
 	@Override
@@ -38,6 +37,7 @@ public class GuiAnalyzer extends GuiContainer {
 		int x = (width - sizeX) / 2;
 		int y = (height - sizeY) / 2;
 		drawTexturedModalRect(x, y, 0, 0, sizeX, sizeY);
+		fontRendererObj.drawString("Analyzer", x+65, y+3, 0x313131);
 	}
 
 	@Override

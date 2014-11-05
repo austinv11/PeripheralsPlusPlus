@@ -18,4 +18,5 @@ public class Config {
 	public static boolean enableOreDictionary = true;
 	public static boolean oreDictionaryMessage = false;
 	public static boolean enableWrenchTurtle = true;
+	public static boolean enableAnalyzers = true;
 }

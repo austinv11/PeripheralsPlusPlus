@@ -20,5 +20,10 @@ public class Recipes {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.rfCharger), "rlr", "lcl", "rer", 'r', "dustRedstone", 'l', "ingotLead", 'c', new ItemStack(GameRegistry.findItem("ThermalExpansion", "capacitor"), 1, 2), 'e', new ItemStack(GameRegistry.findItem("ThermalExpansion", "material"), 1, 3)));
 		if (Config.enableOreDictionary)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.oreDictionary), "isi", "sbs", "isi", 'i', "ingotIron", 's', "stone", 'b', new ItemStack(Items.book)));
+		if (Config.enableAnalyzers && Loader.isModLoaded("Forestry")) {
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.beeAnalyzer), "grg", "rar", "grg", 'g', "ingotGold", 'r', "dustRedstone", 'a', new ItemStack(GameRegistry.findItem("Forestry", "beealyzer"))));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.butterflyAnalyzer), "grg", "rar", "grg", 'g', "ingotGold", 'r', "dustRedstone", 'a', new ItemStack(GameRegistry.findItem("Forestry", "flutterlyzer"))));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.treeAnalyzer), "grg", "rar", "grg", 'g', "ingotGold", 'r', "dustRedstone", 'a', new ItemStack(GameRegistry.findItem("Forestry", "treealyzer"))));
+		}
 	}
 }

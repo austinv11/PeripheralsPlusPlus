@@ -17,6 +17,11 @@ public abstract class TileEntityInv extends TileEntity implements IInventory{
 	private int numUsingPlayers = 0;
 
 	@Override
+	public void updateEntity() {
+		super.updateEntity();
+	}
+
+	@Override
 	public void readFromNBT(NBTTagCompound nbttagcompound) {
 		super.readFromNBT(nbttagcompound);
 		NBTTagList nbttaglist = nbttagcompound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
@@ -52,49 +57,53 @@ public abstract class TileEntityInv extends TileEntity implements IInventory{
 
 	@Override
 	public ItemStack getStackInSlot(int p_70301_1_) {
-		return items[p_70301_1_];
+		if (items.length > p_70301_1_)
+			return items[p_70301_1_];
+		return null;
 	}
 
 	@Override
 	public ItemStack decrStackSize(int p_70298_1_, int p_70298_2_) {
-		if (items[p_70298_1_] != null) {
-			if (items[p_70298_1_].stackSize <= p_70298_2_) {
-				ItemStack item = items[p_70298_1_];
-				items[p_70298_1_] = null;
+		if (items.length > p_70298_1_) {
+			if (items[p_70298_1_] != null) {
+				if (items[p_70298_1_].stackSize <= p_70298_2_) {
+					ItemStack item = items[p_70298_1_];
+					items[p_70298_1_] = null;
+					markDirty();
+					return item;
+				}
+				ItemStack item = items[p_70298_1_].splitStack(p_70298_2_);
+				if (items[p_70298_1_].stackSize == 0) {
+					items[p_70298_1_] = null;
+				}
 				markDirty();
 				return item;
 			}
-			ItemStack item = items[p_70298_1_].splitStack(p_70298_2_);
-			if (items[p_70298_1_].stackSize == 0)
-			{
-				items[p_70298_1_] = null;
-			}
-			markDirty();
-			return item;
 		}
 		return null;
 	}
 
 	@Override
 	public ItemStack getStackInSlotOnClosing(int p_70304_1_) {
-		if (this.items[p_70304_1_] != null) {
-			ItemStack item = this.items[p_70304_1_];
-			this.items[p_70304_1_] = null;
-			return item;
+		if (items.length > p_70304_1_) {
+			if (this.items[p_70304_1_] != null) {
+				ItemStack item = this.items[p_70304_1_];
+				this.items[p_70304_1_] = null;
+				return item;
+			}
 		}
-		else {
-			return null;
-		}
+		return null;
 	}
 
 	@Override
 	public void setInventorySlotContents(int p_70299_1_, ItemStack p_70299_2_) {
-		items[p_70299_1_] = p_70299_2_;
-		if (p_70299_2_ != null && p_70299_2_.stackSize > getInventoryStackLimit())
-		{
-			p_70299_2_.stackSize = getInventoryStackLimit();
+		if (items.length > p_70299_1_) {
+			items[p_70299_1_] = p_70299_2_;
+			if (p_70299_2_ != null && p_70299_2_.stackSize > getInventoryStackLimit()) {
+				p_70299_2_.stackSize = getInventoryStackLimit();
+			}
+			markDirty();
 		}
-		markDirty();
 	}
 
 	@Override

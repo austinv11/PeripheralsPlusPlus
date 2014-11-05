@@ -12,7 +12,9 @@ public class ModBlocks {
 	public static final PPPBlock playerSensor = new PlayerSensor();
 	public static PPPBlock rfCharger;
 	public static final PPPBlock oreDictionary = new OreDictionaryBlock();
-	public static final BlockContainer beeAnalyzer = new AnalyzerBee();
+	public static BlockContainer beeAnalyzer;
+	public static BlockContainer treeAnalyzer;
+	public static BlockContainer butterflyAnalyzer;
 
 	public static void init(){
 		GameRegistry.registerBlock(chatBox, "chatBox");
@@ -22,6 +24,13 @@ public class ModBlocks {
 			GameRegistry.registerBlock(rfCharger, "rfCharger");
 		}
 		GameRegistry.registerBlock(oreDictionary, "oreDictionary");
-		GameRegistry.registerBlock(beeAnalyzer, "beeAnalyzer");
+		if (Loader.isModLoaded("Forestry")) {
+			beeAnalyzer = new AnalyzerBee();
+			GameRegistry.registerBlock(beeAnalyzer, "beeAnalyzer");
+			treeAnalyzer = new AnalyzerTree();
+			GameRegistry.registerBlock(treeAnalyzer, "treeAnalyzer");
+			butterflyAnalyzer = new AnalyzerButterfly();
+			GameRegistry.registerBlock(butterflyAnalyzer, "butterflyAnalyzer");
+		}
 	}
 }

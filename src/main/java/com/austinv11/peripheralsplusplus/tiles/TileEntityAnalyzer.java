@@ -15,7 +15,6 @@ import java.util.HashMap;
 
 public abstract class TileEntityAnalyzer extends TileEntityInv implements IPeripheral{
 
-	public static String publicName = "analyzer";
 	private String name = "tileEntityAnalyzer";
 
 	public TileEntityAnalyzer() {
@@ -27,6 +26,8 @@ public abstract class TileEntityAnalyzer extends TileEntityInv implements IPerip
 	public String getName() {
 		return name;
 	}
+
+	public abstract String getPublicName();
 
 	@Override
 	public void readFromNBT(NBTTagCompound nbttagcompound) {
@@ -40,7 +41,7 @@ public abstract class TileEntityAnalyzer extends TileEntityInv implements IPerip
 
 	@Override
 	public String getType() {
-		return publicName;
+		return getPublicName();
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public abstract class TileEntityAnalyzer extends TileEntityInv implements IPerip
 				HashMap<String, Object> ret = new HashMap<String, Object>();
 				addGenome(stack, individual.getGenome(), ret);
 				return new Object[] {ret};
-			case 2:
+			case 1:
 				ItemStack specimen = getStackInSlot(0);
 				if (specimen == null || !getRoot().isMember(specimen))
 					return new Object[] {false};

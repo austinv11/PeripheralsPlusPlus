@@ -1,8 +1,6 @@
 package com.austinv11.peripheralsplusplus;
 
-import com.austinv11.peripheralsplusplus.blocks.ChatBox;
-import com.austinv11.peripheralsplusplus.blocks.OreDictionaryBlock;
-import com.austinv11.peripheralsplusplus.blocks.PlayerSensor;
+import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
@@ -52,6 +50,11 @@ public class PeripheralsPlusPlus {
 		ComputerCraftAPI.registerPeripheralProvider(new ChatBox());
 		ComputerCraftAPI.registerPeripheralProvider(new PlayerSensor());
 		ComputerCraftAPI.registerPeripheralProvider(new OreDictionaryBlock());
+		if (Loader.isModLoaded("Forestry")) {
+			ComputerCraftAPI.registerPeripheralProvider(new AnalyzerBee());
+			ComputerCraftAPI.registerPeripheralProvider(new AnalyzerTree());
+			ComputerCraftAPI.registerPeripheralProvider(new AnalyzerButterfly());
+		}
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtleChatBox());
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtlePlayerSensor());
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtleCompass());

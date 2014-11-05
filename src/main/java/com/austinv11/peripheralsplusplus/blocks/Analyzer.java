@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.blocks;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.creativetab.PPPCreativeTab;
+import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzer;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzerBee;
@@ -12,6 +13,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -30,22 +32,24 @@ public abstract class Analyzer extends BlockContainer implements IPeripheralProv
 		this.setHardness(4f);
 	}
 
+	public abstract Block getBlock();
+
+	public abstract TileEntityAnalyzer getInstance();
+
 	@Override
 	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
 		ArrayList<ItemStack> items = Lists.newArrayList();
-		ItemStack stack = new ItemStack(this,1,metadata);
+		ItemStack stack = new ItemStack(getBlock(),1,metadata);
 		items.add(stack);
-		TileEntityAnalyzer analyzer = (TileEntityAnalyzer) world.getTileEntity(x,y,z);
-		for (int i = 0; i < analyzer.getSizeInventory(); i++) {
-			if (analyzer.getStackInSlot(i) != null)
-				items.add(analyzer.getStackInSlot(i));
-		}
+		TileEntityAnalyzer analyzer = getInstance();
+		if (analyzer.getStackInSlot(0) != null)
+			items.add(analyzer.getStackInSlot(0));
 		return items;
 	}
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int meta, float hitX, float hitY, float hitZ){
-		TileEntity te = world.getTileEntity(x,y,z);
+		TileEntity te = world.getTileEntity(x, y, z);
 		if (!world.isRemote) {
 			if (te != null)
 				player.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.ANALYZER.ordinal(), world, x, y, z);
@@ -92,6 +96,15 @@ public abstract class Analyzer extends BlockContainer implements IPeripheralProv
 		public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
 			return new TileEntityAnalyzerTree();
 		}
+
+		public Block getBlock(){
+			return null;
+		}
+
+		@Override
+		public TileEntityAnalyzer getInstance() {
+			return null;
+		}
 	}
 
 	public class AnalyzerButterfly extends Analyzer{
@@ -104,6 +117,15 @@ public abstract class Analyzer extends BlockContainer implements IPeripheralProv
 		@Override
 		public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
 			return new TileEntityAnalyzerButterfly();
+		}
+
+		public Block getBlock(){
+			return null;
+		}
+
+		@Override
+		public TileEntityAnalyzer getInstance() {
+			return null;
 		}
 	}
 }
