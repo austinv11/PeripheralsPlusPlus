@@ -19,7 +19,7 @@ apply plugin: 'forge'
 
 version = "1.7.10-1.0.0"
 group= "com.austinv11.peripheralsplusplus" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "modid"
+archivesBaseName = "Peripherals++"
 
 minecraft {
     version = "1.7.10-10.13.2.1230"
