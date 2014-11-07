@@ -55,6 +55,8 @@ public class PeripheralsPlusPlus {
 			ComputerCraftAPI.registerPeripheralProvider(new AnalyzerTree());
 			ComputerCraftAPI.registerPeripheralProvider(new AnalyzerButterfly());
 		}
+		ComputerCraftAPI.registerPeripheralProvider(new Teleporter());
+		ComputerCraftAPI.registerPeripheralProvider(new TeleporterT2());
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtleChatBox());
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtlePlayerSensor());
 		ComputerCraftAPI.registerTurtleUpgrade(new TurtleCompass());
