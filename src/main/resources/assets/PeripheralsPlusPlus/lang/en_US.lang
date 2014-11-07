@@ -7,6 +7,7 @@ tile.peripheralsplusplus:beeAnalyzer.name=Bee Analyzer
 tile.peripheralsplusplus:treeAnalyzer.name=Tree Analyzer
 tile.peripheralsplusplus:butterflyAnalyzer.name=Butterfly Analyzer
 tile.peripheralsplusplus:teleporter.name=Turtle Teleporter
+tile.peripheralsplusplus:teleporterT2.name=Advanced Turtle Teleporter
 
 #Items
 item.peripheralsplusplus:upgradeBase.name=Base Turtle Upgrade
