@@ -6,6 +6,7 @@ tile.peripheralsplusplus:oreDictionary.name=Ore Dictionary
 tile.peripheralsplusplus:beeAnalyzer.name=Bee Analyzer
 tile.peripheralsplusplus:treeAnalyzer.name=Tree Analyzer
 tile.peripheralsplusplus:butterflyAnalyzer.name=Butterfly Analyzer
+tile.peripheralsplusplus:teleporter.name=Turtle Teleporter
 
 #Items
 item.peripheralsplusplus:upgradeBase.name=Base Turtle Upgrade

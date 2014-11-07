@@ -49,7 +49,7 @@ public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
 
 	@Override
 	public String getType() {
-		return "oreDictionary";
+		return publicName;
 	}
 
 	private boolean isTurtle() {

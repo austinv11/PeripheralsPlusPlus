@@ -53,7 +53,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 	}
 
 	public String getName() {
-		return name;
+		return publicName;
 	}
 
 	@Override

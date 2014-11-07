@@ -11,7 +11,7 @@ import java.util.List;
 
 public class IconManager {
 
-	public static List<ITurtleUpgrade> upgrades = new ArrayList<ITurtleUpgrade>();
+	public static List<Object> upgrades = new ArrayList<Object>();
 
 	@SubscribeEvent
 	public void onPreTextureStitch(TextureStitchEvent.Pre event) {
@@ -19,7 +19,7 @@ public class IconManager {
 	}
 
 	private void registerTextures(TextureMap map) {
-		for (ITurtleUpgrade upgrade : upgrades) {
+		for (Object upgrade : upgrades) {
 			if (upgrade instanceof IIconNeeded) {
 				((IIconNeeded)upgrade).registerIcon(map);
 			}

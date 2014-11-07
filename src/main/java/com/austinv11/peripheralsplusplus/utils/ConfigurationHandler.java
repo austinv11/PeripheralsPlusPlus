@@ -47,10 +47,12 @@ public class ConfigurationHandler {
 			boolean oreDictionaryMessage = config.get("OreDictionary Block", "oreDictionaryMessage", false, "If enabled, the Ore Dictionary peripheral will display a chat message with the Ore Dictionary entries - useful for debugging").getBoolean(false);
 			//boolean enableWrenchTurtle = config.get("Wrench Turtle", "enableWrenchTurtle", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
 			boolean enableAnalyzers = config.get("Forestry Analyzers", "enableAnalyzers", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
+			boolean enableTurtleTeleporter = config.get("Turtle Teleporters", "enableTurtleTeleporter", true, "If disabled, the recipe will be disabled").getBoolean(true);
+			double teleporterPenalty = config.get("Turtle Teleporters", "teleporterPenalty", 2.0, "Fuel penalty for using a Turtle Teleporter. For example, 1.0 is a 0% penalty, or 2.0 (default) is a 100% penalty").getDouble(2.0);
 			reSyncConfig(enableChatBox, logCoords, readRange, sayRange, sayRate, allowUnlimitedVertical,
 					enablePlayerSensor, additionalMethods, sensorRange, enableRFCharger, fuelRF, enableNavigationTurtle,
 					enableXPTurtle, enableBarrelTurtle, enableOreDictionary, oreDictionaryMessage, /*enableWrenchTurtle*/false,
-					enableAnalyzers);
+					enableAnalyzers, enableTurtleTeleporter, teleporterPenalty);
 		}catch (Exception e){//Log exception
 			Logger.warn("Config exception!");
 			Logger.warn(e.getStackTrace());
@@ -62,7 +64,8 @@ public class ConfigurationHandler {
 	}
 
 	private static void reSyncConfig(boolean v0, boolean v1, double v2, double v3, int v4, boolean v5, boolean v6, boolean v7, double v8, boolean v9,
-									 int v10, boolean v11, boolean v12, boolean v13, boolean v14, boolean v15, boolean v16, boolean v17){
+									 int v10, boolean v11, boolean v12, boolean v13, boolean v14, boolean v15, boolean v16, boolean v17,
+									 boolean v18, double v19){
 		Config.enableChatBox = v0;
 		Config.logCoords = v1;
 		Config.readRange = v2;
@@ -81,5 +84,7 @@ public class ConfigurationHandler {
 		Config.oreDictionaryMessage = v15;
 		Config.enableWrenchTurtle = v16;
 		Config.enableAnalyzers = v17;
+		Config.enableTurtleTeleporter = v18;
+		Config.teleporterPenalty = v19;
 	}
 }
