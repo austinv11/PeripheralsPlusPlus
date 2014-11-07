@@ -70,6 +70,6 @@ public class Teleporter extends PPPBlock implements ITileEntityProvider, IPeriph
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister){//Registers the block icon(s)
 		blockIcon = iconRegister.registerIcon(String.format("%s", getUnwrappedUnlocalizedName(this.getUnlocalizedName())));
-		frontIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()+":teleporter(front)");
+		frontIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()+":teleporterFront");
 	}
 }
