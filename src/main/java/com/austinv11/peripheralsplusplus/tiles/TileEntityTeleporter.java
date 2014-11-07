@@ -5,6 +5,8 @@ import com.austinv11.peripheralsplusplus.utils.Logger;
 import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.Loader;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -47,11 +49,11 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 	@Override
 	public void readFromNBT(NBTTagCompound nbttagcompound) {
 		super.readFromNBT(nbttagcompound);
-		NBTTagList links = nbttagcompound.getTagList("links", Constants.NBT.TAG_LIST);
+		NBTTagList links = nbttagcompound.getTagList("links", Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < links.tagCount(); i++) {
 			NBTTagCompound link = links.getCompoundTagAt(i);
 			if (link.hasKey("linkX") && link.hasKey("linkY") && link.hasKey("linkZ") && link.hasKey("linkDim")) {
-				this.links.add(new LinkData(nbttagcompound.getInteger("linkDim"), new ChunkCoordinates(nbttagcompound.getInteger("linkX"), nbttagcompound.getInteger("linkY"), nbttagcompound.getInteger("linkZ"))));
+				this.links.add(new LinkData(link.getInteger("linkDim"), new ChunkCoordinates(link.getInteger("linkX"), link.getInteger("linkY"), link.getInteger("linkZ"))));
 			}
 		}
 	}
@@ -124,16 +126,31 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 			ITurtleAccess turtle = null;
 			try {
 				turtle = ReflectionHelper.getTurtle(te);
-			}catch (Exception e) {}
+			}catch (Exception ignored) {}
 			if (!turtle.consumeFuel(Math.abs((int)Math.ceil((xdif + ydif + zdif) * (Math.abs(worldObj.provider.dimensionId - destWorld.provider.dimensionId) + 1) * Config.teleporterPenalty))))
 				throw new LuaException("Not enough fuel");
 			boolean result = turtle.teleportTo(destWorld, linkToX, linkToY, linkToZ);
 			if (result) {
-				//TODO: Add particle effects
+				//int flag = worldObj.provider.dimensionId != destWorld.provider.dimensionId ? 1 : 0;
+				//onTeleport((byte)flag);TODO
+				//teleporter.onTeleport((byte)flag);
 			}
 			return new Object[]{result};
 		}
 		return new Object[0];
+	}
+
+	public void onTeleport(byte flag) {//FIXME
+		if (!FMLCommonHandler.instance().getEffectiveSide().isServer()) {
+			int facing = getBlockMetadata();
+			for (int j = 0; j < 32; j++) {
+				worldObj.spawnParticle("portal", xCoord + 0.5D + 1.0D * Facing.offsetsXForSide[facing], yCoord + 1.0D * Facing.offsetsYForSide[facing] + worldObj.rand.nextDouble() * 2.0D, zCoord + 0.5D + 1.0D * Facing.offsetsZForSide[getBlockMetadata()], worldObj.rand.nextGaussian(), 0.0D, worldObj.rand.nextGaussian());
+			}
+		} else {
+			String sound = "mob.endermen.portal";
+			if (Loader.isModLoaded("Mystcraft")) sound = flag == 1 ? "myst.sound.link-portal" : "myst.sound.link-intra";
+			worldObj.playSoundEffect(xCoord + 0.5D, yCoord + 0.5D, zCoord + 0.5D, sound, 1.0F, 1.0F);
+		}
 	}
 
 	@Override
@@ -217,6 +234,7 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 	}
 
 	public int addLink(int linkDim, ChunkCoordinates link) {
+		Logger.info(link);
 		links.add(new LinkData(linkDim, link));
 		while (links.size() > getMaxLinks())
 			links.pop();
