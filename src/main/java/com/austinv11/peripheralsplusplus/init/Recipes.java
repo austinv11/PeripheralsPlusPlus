@@ -25,7 +25,9 @@ public class Recipes {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.butterflyAnalyzer), "grg", "rar", "grg", 'g', "ingotGold", 'r', "dustRedstone", 'a', new ItemStack(GameRegistry.findItem("Forestry", "flutterlyzer"))));
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.treeAnalyzer), "grg", "rar", "grg", 'g', "ingotGold", 'r', "dustRedstone", 'a', new ItemStack(GameRegistry.findItem("Forestry", "treealyzer"))));
 		}
-		if (Config.enableTurtleTeleporter)
+		if (Config.enableTurtleTeleporter) {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.teleporter), "pep", "pop", "pep", 'p', new ItemStack(Items.ender_pearl), 'e', new ItemStack(Items.ender_eye), 'o', new ItemStack(Blocks.obsidian)));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.teleporterT2), "ere", "EtE", "ere", 'r', "dustRedstone", 'e', new ItemStack(Items.ender_eye), 't', new ItemStack(ModBlocks.teleporter), 'E', "gemEmerald"));
+		}
 	}
 }

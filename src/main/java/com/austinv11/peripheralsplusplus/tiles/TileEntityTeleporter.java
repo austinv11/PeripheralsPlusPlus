@@ -42,7 +42,7 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 		return name;
 	}
 
-	public static int getMaxLinks() {
+	public int getMaxLinks() {
 		return 1;
 	}
 
