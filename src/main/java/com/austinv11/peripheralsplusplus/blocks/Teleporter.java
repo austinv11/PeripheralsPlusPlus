@@ -57,6 +57,14 @@ public class Teleporter extends PPPBlock implements ITileEntityProvider, IPeriph
 	}
 
 	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getIcon(int side, int meta) {
+		if (side == 1)
+			return this.frontIcon;
+		return this.blockIcon;
+	}
+
+	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int meta, float hitX, float hitY, float hitZ) {
 		TileEntityTeleporter tp = (TileEntityTeleporter)world.getTileEntity(x,y,z);
 		if (player.getCurrentEquippedItem() == null || !player.getCurrentEquippedItem().isItemEqual(new ItemStack(Items.repeater)))

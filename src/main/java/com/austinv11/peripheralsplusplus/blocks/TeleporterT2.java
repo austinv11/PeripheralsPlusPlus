@@ -23,7 +23,7 @@ public class TeleporterT2 extends Teleporter{
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister){//Registers the block icon(s)
-		blockIcon = iconRegister.registerIcon(String.format("%s", getUnwrappedUnlocalizedName(this.getUnlocalizedName())));
+		blockIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()+":teleporter");
 		frontIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()+":teleporterT2Front");
 	}
 }
