@@ -26,6 +26,7 @@ import net.minecraft.util.Facing;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
+import java.util.HashMap;
 import java.util.Stack;
 
 public class TileEntityTeleporter extends TileEntity implements IPeripheral {
@@ -83,7 +84,7 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[] {"teleport"};
+		return new String[] {"teleport","getLinks"};
 	}
 
 	@Override
@@ -136,6 +137,17 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 				//teleporter.onTeleport((byte)flag);
 			}
 			return new Object[]{result};
+		}else if (method == 1) {
+			HashMap<Integer, Object> map1 = new HashMap<Integer,Object>();
+			for (int i = 0; i < links.size(); i++) {
+				HashMap<String,Integer> map2 = new HashMap<String,Integer>();
+				map2.put("dim", links.get(i).linkDim);
+				map2.put("x", links.get(i).link.posX);
+				map2.put("y", links.get(i).link.posY);
+				map2.put("z", links.get(i).link.posZ);
+				map1.put(i, map2.clone());
+			}
+			return new Object[]{map1};
 		}
 		return new Object[0];
 	}
