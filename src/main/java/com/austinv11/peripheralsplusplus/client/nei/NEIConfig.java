@@ -18,7 +18,7 @@ public class NEIConfig implements IConfigureNEI{
 		List<ITurtleUpgrade> list = PPPCreativeTab.upgrades;
 		ItemStack base = GameRegistry.findItemStack("ComputerCraft", "CC-TurtleExpanded", 1);
 		if (base != null) {
-			for (ITurtleUpgrade upgrade : upgrades) {
+			for (ITurtleUpgrade upgrade : list) {
 				ItemStack upg1 = base.copy();
 				upg1.stackTagCompound = new NBTTagCompound();
 				upg1.stackTagCompound.setShort("leftUpgrade", (short) upgrade.getUpgradeID());
