@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus;
 
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
+import com.austinv11.peripheralsplusplus.creativetab.PPPCreativeTab;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
@@ -20,6 +21,7 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import dan200.computercraft.api.ComputerCraftAPI;
+import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraftforge.common.MinecraftForge;
 
 @Mod(modid= Reference.MOD_ID,name = Reference.MOD_NAME,version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS)
@@ -57,19 +59,24 @@ public class PeripheralsPlusPlus {
 		}
 		ComputerCraftAPI.registerPeripheralProvider(new Teleporter());
 		ComputerCraftAPI.registerPeripheralProvider(new TeleporterT2());
-		ComputerCraftAPI.registerTurtleUpgrade(new TurtleChatBox());
-		ComputerCraftAPI.registerTurtleUpgrade(new TurtlePlayerSensor());
-		ComputerCraftAPI.registerTurtleUpgrade(new TurtleCompass());
-		ComputerCraftAPI.registerTurtleUpgrade(new TurtleXP());
+		registerUpgrade(new TurtleChatBox());
+		registerUpgrade(new TurtlePlayerSensor());
+		registerUpgrade(new TurtleCompass());
+		registerUpgrade(new TurtleXP());
 		if (Loader.isModLoaded("factorization") || Loader.isModLoaded("JABBA"))
-			ComputerCraftAPI.registerTurtleUpgrade(new TurtleBarrel());
-		ComputerCraftAPI.registerTurtleUpgrade(new TurtleOreDictionary());
+			registerUpgrade(new TurtleBarrel());
+		registerUpgrade(new TurtleOreDictionary());
 		//if (TurtleWrench.isUsable())
-		//	ComputerCraftAPI.registerTurtleUpgrade(new TurtleWrench());
+		//	registerUpgrade(new TurtleWrench());
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
 
+	}
+	
+	public static void registerUpgrade(ITurtleUpgrade u) {
+		ComputerCraftAPI.registerTurtleUpgrade(u);
+		PPPCreativeTab.upgrades.add(u);
 	}
 }
