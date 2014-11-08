@@ -59,7 +59,9 @@ public class TurtleBarrel implements ITurtleUpgrade {
 
 	@Override
 	public void update(ITurtleAccess turtle, TurtleSide side) {
-		if (barrel.changed)
-			barrel.update();
+		if (barrel != null) {
+			if (barrel.changed)
+				barrel.update();
+		}
 	}
 }

@@ -3,8 +3,6 @@ package com.austinv11.peripheralsplusplus.tiles;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.Logger;
 import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
-import com.google.common.io.ByteArrayDataOutput;
-import com.google.common.io.ByteStreams;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -131,6 +129,10 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 			if (!turtle.consumeFuel(Math.abs((int)Math.ceil((xdif + ydif + zdif) * (Math.abs(worldObj.provider.dimensionId - destWorld.provider.dimensionId) + 1) * Config.teleporterPenalty))))
 				throw new LuaException("Not enough fuel");
 			boolean result = turtle.teleportTo(destWorld, linkToX, linkToY, linkToZ);
+			destWorld.markBlockForUpdate(linkToX,linkToY,linkToZ);
+			worldObj.markBlockForUpdate(xCoord + Facing.offsetsXForSide[getBlockMetadata()], yCoord + Facing.offsetsYForSide[getBlockMetadata()], zCoord + Facing.offsetsZForSide[getBlockMetadata()]);
+			destWorld.notifyBlockChange(linkToX,linkToY,linkToZ, te.blockType);
+			worldObj.notifyBlockChange(xCoord + Facing.offsetsXForSide[getBlockMetadata()], yCoord + Facing.offsetsYForSide[getBlockMetadata()], zCoord + Facing.offsetsZForSide[getBlockMetadata()], null);
 			if (result) {
 				//int flag = worldObj.provider.dimensionId != destWorld.provider.dimensionId ? 1 : 0;
 				//onTeleport((byte)flag);TODO
