@@ -2,7 +2,6 @@ package com.austinv11.peripheralsplusplus.client.gui;
 
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.containers.ContainerAnalyzer;
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import cpw.mods.fml.common.network.IGuiHandler;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -12,7 +11,10 @@ public class GuiHandler implements IGuiHandler {
 
 	@Override
 	public Object getServerGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
-		return new ContainerAnalyzer(player, (IInventory) world.getTileEntity(x,y,z), 176, 166);
+		if (id == Reference.GUIs.ANALYZER.ordinal()) {
+			return new ContainerAnalyzer(player, (IInventory) world.getTileEntity(x, y, z), 176, 166);
+		}
+		return null;
 	}
 
 	@Override
