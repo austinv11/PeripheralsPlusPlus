@@ -17,6 +17,7 @@ public class ModBlocks {
 	public static BlockContainer butterflyAnalyzer;
 	public static final PPPBlock teleporter = new Teleporter();
 	public static final PPPBlock teleporterT2 = new TeleporterT2();
+	public static final PPPBlock environmentScanner = new EnvironmnetScanner();
 
 	public static void init(){
 		GameRegistry.registerBlock(chatBox, "chatBox");
@@ -36,5 +37,6 @@ public class ModBlocks {
 		}
 		GameRegistry.registerBlock(teleporter, "teleporter");
 		GameRegistry.registerBlock(teleporterT2, "teleporterT2");
+		GameRegistry.registerBlock(environmentScanner, "environmentScanner");
 	}
 }
