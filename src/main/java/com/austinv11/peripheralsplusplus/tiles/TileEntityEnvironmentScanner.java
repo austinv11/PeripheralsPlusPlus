@@ -37,10 +37,12 @@ public class TileEntityEnvironmentScanner extends TileEntity implements IPeriphe
 
 	@Override
 	public void updateEntity() {
-		isRaining = worldObj.isRaining();
-		biome = worldObj.getBiomeGenForCoords(xCoord,zCoord).biomeName;
-		temp = worldObj.getBiomeGenForCoords(xCoord,zCoord).getTempCategory().name();
-		isSnow = worldObj.getBiomeGenForCoords(xCoord,zCoord).getEnableSnow();
+		if (worldObj != null) {
+			isRaining = worldObj.isRaining();
+			biome = worldObj.getBiomeGenForCoords(xCoord, zCoord).biomeName;
+			temp = worldObj.getBiomeGenForCoords(xCoord, zCoord).getTempCategory().name();
+			isSnow = worldObj.getBiomeGenForCoords(xCoord, zCoord).getEnableSnow();
+		}
 	}
 
 	@Override

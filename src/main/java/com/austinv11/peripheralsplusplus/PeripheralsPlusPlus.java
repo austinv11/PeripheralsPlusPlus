@@ -67,6 +67,7 @@ public class PeripheralsPlusPlus {
 		if (Loader.isModLoaded("factorization") || Loader.isModLoaded("JABBA"))
 			registerUpgrade(new TurtleBarrel());
 		registerUpgrade(new TurtleOreDictionary());
+		registerUpgrade(new TurtleEnvironmentScanner());
 		//if (TurtleWrench.isUsable())
 		//	registerUpgrade(new TurtleWrench());
 	}
