@@ -7,6 +7,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 
 public class PPPItem extends Item {
 
@@ -34,5 +35,9 @@ public class PPPItem extends Item {
 
 	protected String getUnwrappedUnlocalizedName(String unlocalizedName){//Removes the "item." from the item name
 		return unlocalizedName.substring(unlocalizedName.indexOf(".")+1);
+	}
+
+	public IIcon getSimpleIcon() {
+		return itemIcon;
 	}
 }

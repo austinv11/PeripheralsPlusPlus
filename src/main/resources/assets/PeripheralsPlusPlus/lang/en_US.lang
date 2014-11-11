@@ -11,8 +11,7 @@ tile.peripheralsplusplus:teleporterT2.name=Advanced Turtle Teleporter
 tile.peripheralsplusplus:environmentScanner.name=Environment Scanner
 
 #Items
-item.peripheralsplusplus:upgradeBase.name=Base Turtle Upgrade
-item.peripheralsplusplus:upgradeCompass.name=Compass Turtle Upgrade
+item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++
@@ -26,3 +25,4 @@ peripheralsplusplus.turtleUpgrade.barrel=Barrel
 peripheralsplusplus.turtleUpgrade.oreDictionary=Equivalence Checking
 peripheralsplusplus.turtleUpgrade.wrench=Engineering
 peripheralsplusplus.turtleUpgrade.environmentScanner=Environmentalist
+peripheralsplusplus.turtleUpgrade.feeder=Feeding
