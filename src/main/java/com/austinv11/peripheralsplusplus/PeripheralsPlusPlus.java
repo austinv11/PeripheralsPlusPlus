@@ -24,7 +24,7 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraftforge.common.MinecraftForge;
 
-@Mod(modid= Reference.MOD_ID,name = Reference.MOD_NAME,version = Reference.VERSION, guiFactory = Reference.GUI_FACTORY_CLASS)
+@Mod(modid= Reference.MOD_ID,name = Reference.MOD_NAME,version = Reference.VERSION/*, guiFactory = Reference.GUI_FACTORY_CLASS*/)
 public class PeripheralsPlusPlus {
 
 	@Mod.Instance(Reference.MOD_ID)
