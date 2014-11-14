@@ -10,8 +10,6 @@ import net.minecraft.util.IIcon;
 
 public class TurtlePlayerSensor implements ITurtleUpgrade {
 
-	TileEntityPlayerSensor playerSensor;
-
 	@Override
 	public int getUpgradeID() {
 		return Reference.PLAYER_SENSOR_UPGRADE;
@@ -34,8 +32,7 @@ public class TurtlePlayerSensor implements ITurtleUpgrade {
 
 	@Override
 	public IPeripheral createPeripheral(ITurtleAccess turtle, TurtleSide side) {
-		playerSensor = new TileEntityPlayerSensor(turtle);
-		return playerSensor;
+		return new TileEntityPlayerSensor(turtle);
 	}
 
 	@Override

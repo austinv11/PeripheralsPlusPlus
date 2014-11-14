@@ -11,8 +11,6 @@ import net.minecraft.util.IIcon;
 
 public class TurtleXP implements ITurtleUpgrade {
 
-	PeripheralXP xp;
-
 	@Override
 	public int getUpgradeID() {
 		return Reference.XP_UPGRADE;
@@ -37,8 +35,7 @@ public class TurtleXP implements ITurtleUpgrade {
 
 	@Override
 	public IPeripheral createPeripheral(ITurtleAccess turtle, TurtleSide side) {
-		xp = new PeripheralXP(turtle, side);
-		return xp;
+		return new PeripheralXP(turtle, side);
 	}
 
 	@Override
@@ -53,7 +50,8 @@ public class TurtleXP implements ITurtleUpgrade {
 
 	@Override
 	public void update(ITurtleAccess turtle, TurtleSide side) {
-		if (xp != null)
-			xp.update();
+		IPeripheral peripheral = turtle.getPeripheral(side);
+		if (peripheral instanceof PeripheralXP)
+			((PeripheralXP)peripheral).update();
 	}
 }

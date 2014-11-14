@@ -10,8 +10,6 @@ import net.minecraft.util.IIcon;
 
 public class TurtleChatBox implements ITurtleUpgrade {
 
-	TileEntityChatBox chatBox;
-
 	@Override
 	public int getUpgradeID() {
 		return Reference.CHAT_BOX_UPGRADE;
@@ -34,8 +32,7 @@ public class TurtleChatBox implements ITurtleUpgrade {
 
 	@Override
 	public IPeripheral createPeripheral(ITurtleAccess turtle, TurtleSide side) {
-		chatBox = new TileEntityChatBox(turtle);
-		return chatBox;
+		return new TileEntityChatBox(turtle);
 	}
 
 	@Override
@@ -50,7 +47,8 @@ public class TurtleChatBox implements ITurtleUpgrade {
 
 	@Override
 	public void update(ITurtleAccess turtle, TurtleSide side) {
-		if (chatBox != null)
-			chatBox.updateEntity(true);
+		IPeripheral peripheral = turtle.getPeripheral(side);
+		if (peripheral instanceof TileEntityChatBox)
+			((TileEntityChatBox)peripheral).updateEntity(true);
 	}
 }

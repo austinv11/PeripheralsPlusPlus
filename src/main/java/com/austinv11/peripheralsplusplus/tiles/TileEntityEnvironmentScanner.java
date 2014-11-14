@@ -5,6 +5,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -16,9 +17,14 @@ public class TileEntityEnvironmentScanner extends TileEntity implements IPeriphe
 	private String biome;
 	private String temp;
 	private boolean isSnow;
+	private ITurtleAccess turtle;
 
 	public TileEntityEnvironmentScanner() {
 		super();
+	}
+
+	public TileEntityEnvironmentScanner(ITurtleAccess turtle) {
+		this.turtle = turtle;
 	}
 
 	public String getName() {
@@ -42,6 +48,11 @@ public class TileEntityEnvironmentScanner extends TileEntity implements IPeriphe
 			biome = worldObj.getBiomeGenForCoords(xCoord, zCoord).biomeName;
 			temp = worldObj.getBiomeGenForCoords(xCoord, zCoord).getTempCategory().name();
 			isSnow = worldObj.getBiomeGenForCoords(xCoord, zCoord).getEnableSnow();
+		}
+		if (turtle != null) {
+			this.setWorldObj(turtle.getWorld());
+			this.xCoord = turtle.getPosition().posX;
+			this.zCoord = turtle.getPosition().posZ;
 		}
 	}
 

@@ -10,8 +10,6 @@ import net.minecraft.util.IIcon;
 
 public class TurtleEnvironmentScanner implements ITurtleUpgrade {
 
-	private TileEntityEnvironmentScanner te;
-
 	@Override
 	public int getUpgradeID() {
 		return Reference.ENVIRONMENT_UPGRADE;
@@ -34,10 +32,10 @@ public class TurtleEnvironmentScanner implements ITurtleUpgrade {
 
 	@Override
 	public IPeripheral createPeripheral(ITurtleAccess turtle, TurtleSide side) {
-		te = new TileEntityEnvironmentScanner();
+		TileEntityEnvironmentScanner te = new TileEntityEnvironmentScanner(turtle);
 		te.setWorldObj(turtle.getWorld());
 		te.xCoord = turtle.getPosition().posX;
-		te.zCoord = turtle.getPosition().posY;
+		te.zCoord = turtle.getPosition().posZ;
 		return te;
 	}
 
@@ -53,7 +51,8 @@ public class TurtleEnvironmentScanner implements ITurtleUpgrade {
 
 	@Override
 	public void update(ITurtleAccess turtle, TurtleSide side) {
-		if (te != null)
-			te.updateEntity();
+		IPeripheral peripheral = turtle.getPeripheral(side);
+		if (peripheral instanceof TileEntityEnvironmentScanner)
+			((TileEntityEnvironmentScanner)peripheral).updateEntity();
 	}
 }
