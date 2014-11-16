@@ -23,4 +23,5 @@ public class Config {
 	public static double teleporterPenalty = 2.0;
 	public static boolean enableEnvironmentScanner = true;
 	public static boolean enableFeederTurtle = true;
+	public static boolean enableSatellites = true;
 }

@@ -32,5 +32,9 @@ public class Recipes {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.environmentScanner), "iei", "rmr", "iri", 'i', "ingotIron", 'e', new ItemStack(Items.ender_eye), 'r', "dustRedstone", 'm', Items.map));
 		if (Config.enableFeederTurtle)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.feederUpgrade), "iwi", "wew", "iwi", 'i', "ingotIron", 'w', new ItemStack(Items.wheat), 'e', new ItemStack(Items.ender_eye)));
+		if (Config.enableSatellites) {
+			for (int i = 0; i < ModItems.SATELLITE_UPGRADE_REGISTRY.size(); i++)
+				GameRegistry.addRecipe(ModItems.SATELLITE_UPGRADE_REGISTRY.get(i).getUpgrade().getRecipe());
+		}
 	}
 }

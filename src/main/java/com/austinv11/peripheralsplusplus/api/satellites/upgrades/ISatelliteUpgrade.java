@@ -4,15 +4,22 @@ import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import net.minecraft.util.IIcon;
+import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.util.ResourceLocation;
 
 public interface ISatelliteUpgrade {
 
 	/**
 	 * Returns the icon used in the physical Satellite Upgrade item
-	 * @return The IIcon used
+	 * @return The ResourceLocation used
 	 */
-	public IIcon getIcon();
+	public ResourceLocation getIcon();
+
+	/**
+	 * Returns the recipe to get the Satellite Upgrade item
+	 * @return The recipe
+	 */
+	public IRecipe getRecipe();
 
 	/**
 	 * Called to update the satellite (only when it's a MAIN upgrade)
@@ -25,6 +32,12 @@ public interface ISatelliteUpgrade {
 	 * @return The SatelliteUpgradeType that fits for this upgrade
 	 */
 	public SatelliteUpgradeType getType();
+
+	/**
+	 * Used internally for naming the physical item, basically the same as IPeripheral.getType()
+	 * @return Name of the upgrade (MUST be unlocalised)
+	 */
+	public String getName();
 
 	/**
 	 * Called to get the String identifier of the upgrade

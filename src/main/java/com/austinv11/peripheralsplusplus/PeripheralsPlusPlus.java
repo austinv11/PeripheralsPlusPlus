@@ -46,13 +46,14 @@ public class PeripheralsPlusPlus {
 		proxy.iconManagerInit();
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
-		ModItems.init();
+		ModItems.preInit();
 		ModBlocks.init();
 	}
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
+		ModItems.init();//Inits satellite upgrades
 		Recipes.init();
 		proxy.registerTileEntities();
 		ComputerCraftAPI.registerPeripheralProvider(new ChatBox());
