@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus;
 
+import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
 import com.austinv11.peripheralsplusplus.creativetab.PPPCreativeTab;
@@ -23,8 +24,15 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraftforge.common.MinecraftForge;
 
+import java.util.HashMap;
+
 @Mod(modid= Reference.MOD_ID,name = Reference.MOD_NAME,version = Reference.VERSION/*, guiFactory = Reference.GUI_FACTORY_CLASS*/)
 public class PeripheralsPlusPlus {
+
+	/**
+	 * Object containing all registered upgrades Key = upgrade Value = isMainUpgrade
+	 */
+	public final HashMap<ISatelliteUpgrade, Boolean> UPGRADE_REGISTY = new HashMap<ISatelliteUpgrade,Boolean>();
 
 	@Mod.Instance(Reference.MOD_ID)
 	public static PeripheralsPlusPlus instance;
