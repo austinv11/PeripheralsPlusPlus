@@ -52,11 +52,12 @@ public class ConfigurationHandler {
 			boolean enableEnvironmentScanner = config.get("Environment Scanner", "enableEnvironmentScanner", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
 			boolean enableFeederTurtle = config.get("Feeder Turtle", "enableFeederTurtle", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
 			boolean enableSatellites = config.get("Satellites", "enableSatellites", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
+			int[] dims = config.get("Satellites", "dimWhitelist", new int[] {0}, "Whitelist for dimensions that could have a satellite launch in, input dimension ids (e.g. 0 is the overworld").getIntList();
 			reSyncConfig(enableChatBox, logCoords, readRange, sayRange, sayRate, allowUnlimitedVertical,
 					enablePlayerSensor, additionalMethods, sensorRange, enableRFCharger, fuelRF, enableNavigationTurtle,
 					enableXPTurtle, enableBarrelTurtle, enableOreDictionary, oreDictionaryMessage, /*enableWrenchTurtle*/false,
 					enableAnalyzers, enableTurtleTeleporter, teleporterPenalty, enableEnvironmentScanner, enableFeederTurtle,
-					enableSatellites);
+					enableSatellites, dims);
 		}catch (Exception e){//Log exception
 			Logger.warn("Config exception!");
 			Logger.warn(e.getStackTrace());
@@ -69,7 +70,7 @@ public class ConfigurationHandler {
 
 	private static void reSyncConfig(boolean v0, boolean v1, double v2, double v3, int v4, boolean v5, boolean v6, boolean v7, double v8, boolean v9,
 									 int v10, boolean v11, boolean v12, boolean v13, boolean v14, boolean v15, boolean v16, boolean v17,
-									 boolean v18, double v19, boolean v20, boolean v21, boolean v22){
+									 boolean v18, double v19, boolean v20, boolean v21, boolean v22, int[] v23){
 		Config.enableChatBox = v0;
 		Config.logCoords = v1;
 		Config.readRange = v2;
@@ -93,5 +94,6 @@ public class ConfigurationHandler {
 		Config.enableEnvironmentScanner = v20;
 		Config.enableFeederTurtle = v21;
 		Config.enableSatellites = v22;
+		Config.setWhitelist(v23);
 	}
 }

@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.api.satellites;
 
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.world.World;
 
 import java.util.List;
 
@@ -24,6 +25,12 @@ public interface ISatellite {
 	 * @return List of addons
 	 */
 	public List<ISatelliteUpgrade> getAddons();
+
+	/**
+	 * Gets the world the satellite is orbiting
+	 * @return The world
+	 */
+	public World getWorld();
 
 	/**
 	 * Causes satellite to crash back down to Earth

@@ -1,5 +1,8 @@
 package com.austinv11.peripheralsplusplus.reference;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Config {
 	public static boolean enableChatBox = true;
 	public static boolean logCoords = true;
@@ -24,4 +27,10 @@ public class Config {
 	public static boolean enableEnvironmentScanner = true;
 	public static boolean enableFeederTurtle = true;
 	public static boolean enableSatellites = true;
+	public static List<Integer> dimWhitelist = new ArrayList<Integer>();
+
+	public static void setWhitelist(int[] dims) {
+		for (int i : dims)
+			dimWhitelist.add(i);
+	}
 }

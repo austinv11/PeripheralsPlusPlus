@@ -10,6 +10,10 @@ import net.minecraft.item.ItemStack;
 
 public class PeripheralsPlusPlusAPI {
 
+	/**
+	 * Registers the given satellite upgrade
+	 * @param upgrade The upgrade to register
+	 */
 	public static void registerSatelliteUpgrade(final ISatelliteUpgrade upgrade) {
 		PeripheralsPlusPlus.instance.UPGRADE_REGISTY.put(upgrade, (upgrade.getType() == SatelliteUpgradeType.MAIN));
 		ModItems.SATELLITE_UPGRADE_REGISTRY.add(new SatelliteUpgradeBase() {
