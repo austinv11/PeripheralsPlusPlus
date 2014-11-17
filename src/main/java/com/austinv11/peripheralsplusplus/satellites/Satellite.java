@@ -5,6 +5,8 @@ import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.SatelliteUpgradeType;
 import com.austinv11.peripheralsplusplus.utils.Logger;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChunkCoordinates;
@@ -93,8 +95,25 @@ public class Satellite implements ISatellite{
 	}
 
 	@Override
-	public void recall() {
-		//TODO
+	public ChunkCoordinates recall(boolean doExplode, List<ItemStack> drops) {
+		int x = coords.posX;
+		int y = coords.posY;
+		int z = coords.posZ;
+		while (world.isAirBlock(x, y, z))
+			y--;
+		y++;
+		ChunkCoordinates dropCoords = new ChunkCoordinates(x, y, z);
+		if (doExplode)
+			if (!world.isRemote) {
+				float radius = (float)5*((coords.posY-y)/4);
+				world.createExplosion(null, x, y, z, radius > 0 ? radius : 0, true);
+			}
+		for (ItemStack i : drops)
+			world.spawnEntityInWorld(new EntityItem(world, x, y+10, z, i));
+		SatelliteData data = SatelliteData.forWorld(world);
+		data.satellites.remove(this.id);
+		data.markDirty();
+		return dropCoords;
 	}
 
 	@Override

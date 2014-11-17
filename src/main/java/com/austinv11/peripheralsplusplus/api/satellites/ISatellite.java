@@ -1,11 +1,15 @@
 package com.austinv11.peripheralsplusplus.api.satellites;
 
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
 import java.util.List;
 
+/**
+ * Do NOT implement this, this is just used as a wrapper for my satellite class
+ */
 public interface ISatellite {
 
 	/**
@@ -34,8 +38,11 @@ public interface ISatellite {
 
 	/**
 	 * Causes satellite to crash back down to Earth
+	 * @param doExplode Whether the satellite causes an explosion
+	 * @param drops The items dropped by the satellite
+	 * @return The coordinates of where the satellite landed
 	 */
-	public void recall();
+	public ChunkCoordinates recall(boolean doExplode, List<ItemStack> drops);
 
 	/**
 	 * Gets the unique id of the satellite

@@ -12,6 +12,8 @@ tile.peripheralsplusplus:environmentScanner.name=Environment Scanner
 
 #Items
 item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade
+item.peripheralsplusplus:satellite.name=Satellite
+item.peripheralsplusplus:rocket.name=Rocket
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++

@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.init;
 
+import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -33,8 +34,10 @@ public class Recipes {
 		if (Config.enableFeederTurtle)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.feederUpgrade), "iwi", "wew", "iwi", 'i', "ingotIron", 'w', new ItemStack(Items.wheat), 'e', new ItemStack(Items.ender_eye)));
 		if (Config.enableSatellites) {
-			for (int i = 0; i < ModItems.SATELLITE_UPGRADE_REGISTRY.size(); i++)
-				GameRegistry.addRecipe(ModItems.SATELLITE_UPGRADE_REGISTRY.get(i).getUpgrade().getRecipe());
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.satellite), "ded", "ptp", "iii", 'd', new ItemStack(Blocks.daylight_detector), 'e', new ItemStack(Items.ender_eye), 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate), 't', new ItemStack(GameRegistry.findBlock("ComputerCraft", "CC-TurtleAdvanced")), 'i', "ingotIron"));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.rocket), " r ", " b ", "ibi", 'r', new ItemStack(Blocks.redstone_torch), 'b', new ItemStack(Blocks.iron_block), 'i', new ItemStack(Blocks.iron_bars)));
+			for (int i = 0; i < PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.size(); i++)
+				GameRegistry.addRecipe(PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.get(i)).getUpgrade().getRecipe());
 		}
 	}
 }

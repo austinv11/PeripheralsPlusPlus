@@ -39,16 +39,22 @@ public class SatelliteData extends WorldSavedData {
 		return (Config.dimWhitelist.contains(world.provider.dimensionId));
 	}
 
-	public void save() {
-		this.markDirty();
+	public int assignNextId() {
+		int id = 0;
+		for (ISatellite s : satellites)
+			id = s.getID() >= id ? s.getID() : id;
+		id++;
+		return id;
 	}
 
 	@Override
 	public void readFromNBT(NBTTagCompound p_76184_1_) {
 		satellites.clear();
 		NBTTagList list = p_76184_1_.getTagList("satellites", Constants.NBT.TAG_COMPOUND);
-		for (int i = 0; i < list.tagCount(); i++)
-			satellites.add(Satellite.fromNBT(list.getCompoundTagAt(i)));
+		for (int i = 0; i < list.tagCount(); i++) {
+			Satellite sat = Satellite.fromNBT(list.getCompoundTagAt(i));
+			satellites.add(sat.getID(), sat);
+		}
 	}
 
 	@Override
