@@ -1,14 +1,21 @@
 package com.austinv11.peripheralsplusplus.satellites;
 
+import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.storage.MapStorage;
+import net.minecraftforge.common.util.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SatelliteData extends WorldSavedData {
 
 	private static final String key = "com.austinv11.ppp.satellites";
+	public List<ISatellite> satellites = new ArrayList<ISatellite>();
 
 	public SatelliteData(String mapName) {
 		super(mapName);
@@ -38,11 +45,18 @@ public class SatelliteData extends WorldSavedData {
 
 	@Override
 	public void readFromNBT(NBTTagCompound p_76184_1_) {
-		//TODO
+		satellites.clear();
+		NBTTagList list = p_76184_1_.getTagList("satellites", Constants.NBT.TAG_COMPOUND);
+		for (int i = 0; i < list.tagCount(); i++)
+			satellites.add(Satellite.fromNBT(list.getCompoundTagAt(i)));
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound p_76187_1_) {
-		//TODO
+		NBTTagList list = new NBTTagList();
+		for (ISatellite s : satellites) {
+			list.appendTag(((Satellite)s).toNBT());
+		}
+		p_76187_1_.setTag("satellites", list);
 	}
 }

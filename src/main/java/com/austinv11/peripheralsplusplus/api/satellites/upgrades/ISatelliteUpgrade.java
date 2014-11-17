@@ -43,7 +43,7 @@ public interface ISatelliteUpgrade {
 	 * Called to get the String identifier of the upgrade
 	 * @return The identifier
 	 */
-	public String getUpgradeID();
+	public int getUpgradeID();
 
 	/**
 	 * Only called when an ADDON upgrade, get's the size of the addon

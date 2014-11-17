@@ -24,15 +24,15 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 @Mod(modid= Reference.MOD_ID,name = Reference.MOD_NAME,version = Reference.VERSION/*, guiFactory = Reference.GUI_FACTORY_CLASS*/)
 public class PeripheralsPlusPlus {
 
 	/**
-	 * Object containing all registered upgrades Key = upgrade Value = isMainUpgrade
+	 * Object containing all registered upgrades, the iterator is the upgrade id
 	 */
-	public final HashMap<ISatelliteUpgrade, Boolean> UPGRADE_REGISTY = new HashMap<ISatelliteUpgrade,Boolean>();
+	public final ArrayList<ISatelliteUpgrade> UPGRADE_REGISTY = new ArrayList<ISatelliteUpgrade>();
 
 	@Mod.Instance(Reference.MOD_ID)
 	public static PeripheralsPlusPlus instance;

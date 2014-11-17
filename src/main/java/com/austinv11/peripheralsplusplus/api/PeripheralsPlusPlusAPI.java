@@ -2,7 +2,6 @@ package com.austinv11.peripheralsplusplus.api;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
-import com.austinv11.peripheralsplusplus.api.satellites.upgrades.SatelliteUpgradeType;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.items.SatelliteUpgradeBase;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -15,7 +14,7 @@ public class PeripheralsPlusPlusAPI {
 	 * @param upgrade The upgrade to register
 	 */
 	public static void registerSatelliteUpgrade(final ISatelliteUpgrade upgrade) {
-		PeripheralsPlusPlus.instance.UPGRADE_REGISTY.put(upgrade, (upgrade.getType() == SatelliteUpgradeType.MAIN));
+		PeripheralsPlusPlus.instance.UPGRADE_REGISTY.add(upgrade.getUpgradeID(), upgrade);
 		ModItems.SATELLITE_UPGRADE_REGISTRY.add(new SatelliteUpgradeBase() {
 			@Override
 			public String getUnlocalizedName() {

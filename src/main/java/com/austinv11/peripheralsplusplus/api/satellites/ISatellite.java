@@ -36,4 +36,24 @@ public interface ISatellite {
 	 * Causes satellite to crash back down to Earth
 	 */
 	public void recall();
+
+	/**
+	 * Gets the unique id of the satellite
+	 * @return The id of the satellite
+	 */
+	public int getID();
+
+	/**
+	 * Sets the main upgrade of the satellite
+	 * @param upgrade The upgrade
+	 * @throws Exception Thrown when the upgrade is not a MAIN upgrade
+	 */
+	public void setMainUpgrade(ISatelliteUpgrade upgrade) throws Exception;
+
+	/**
+	 * Sets the addon upgrades list of the satellite
+	 * @param addons The list of addons
+	 * @throws Exception Thrown when the list contains an upgrade that is not a MODIFIER upgrade
+	 */
+	public void setAddons(List<ISatelliteUpgrade> addons) throws Exception;
 }
