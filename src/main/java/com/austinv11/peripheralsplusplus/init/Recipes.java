@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.init;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
+import com.austinv11.peripheralsplusplus.recipe.UpgradeRecipe;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -38,6 +39,7 @@ public class Recipes {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.rocket), " r ", " b ", "ibi", 'r', new ItemStack(Blocks.redstone_torch), 'b', new ItemStack(Blocks.iron_block), 'i', new ItemStack(Blocks.iron_bars)));
 			for (int i = 0; i < PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.size(); i++)
 				GameRegistry.addRecipe(PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.get(i)).getUpgrade().getRecipe());
+			GameRegistry.addRecipe(new UpgradeRecipe());
 		}
 	}
 }

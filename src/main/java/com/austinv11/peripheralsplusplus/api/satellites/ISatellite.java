@@ -37,12 +37,21 @@ public interface ISatellite {
 	public World getWorld();
 
 	/**
-	 * Causes satellite to crash back down to Earth
+	 * Causes satellite to crash back down to Earth with a default explosion radius
 	 * @param doExplode Whether the satellite causes an explosion
 	 * @param drops The items dropped by the satellite
 	 * @return The coordinates of where the satellite landed
 	 */
 	public ChunkCoordinates recall(boolean doExplode, List<ItemStack> drops);
+
+	/**
+	 * Causes satellite to crash back down to Earth with a set explosion radius
+	 * @param doExplode Whether the satellite causes an explosion
+	 * @param drops The items dropped by the satellite
+	 * @param explosionRadius The radius of the explosion (if doExplode is true)
+	 * @return The coordinates of where the satellite landed
+	 */
+	public ChunkCoordinates recall(boolean doExplode, List<ItemStack> drops, float explosionRadius);
 
 	/**
 	 * Gets the unique id of the satellite

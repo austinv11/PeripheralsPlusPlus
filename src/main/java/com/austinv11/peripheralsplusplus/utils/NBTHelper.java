@@ -1,7 +1,13 @@
 package com.austinv11.peripheralsplusplus.utils;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraftforge.common.util.Constants;
+
+import java.util.List;
 
 public class NBTHelper {
 	public static boolean hasTag(ItemStack itemStack, String keyName){
@@ -137,5 +143,45 @@ public class NBTHelper {
 	public static void setDouble(ItemStack itemStack, String keyName, double keyValue){
 		initNBTTagCompound(itemStack);
 		itemStack.stackTagCompound.setDouble(keyName, keyValue);
+	}
+
+	public static NBTTagList getList(ItemStack itemStack, String keyName, int type) {
+		initNBTTagCompound(itemStack);
+		if (!itemStack.stackTagCompound.hasKey(keyName)){
+			setList(itemStack, keyName, new NBTTagList());
+		}
+		return itemStack.stackTagCompound.getTagList(keyName, type);
+	}
+
+	public static void setList(ItemStack itemStack, String keyName, NBTBase tag) {
+		initNBTTagCompound(itemStack);
+		itemStack.stackTagCompound.setTag(keyName, tag);
+	}
+
+	public static void addInfo(ItemStack itemStack, List<String> text) {
+		initNBTTagCompound(itemStack);
+		if (hasTag(itemStack, "display")) {
+			NBTTagCompound display = itemStack.stackTagCompound.getCompoundTag("display");
+			NBTTagList list = display.getTagList("Lore", Constants.NBT.TAG_STRING);
+			for (String s : text)
+				list.appendTag(new NBTTagString(s));
+			display.setTag("Lore", list);
+			itemStack.stackTagCompound.setTag("display", display);
+		}else {
+			NBTTagCompound display = new NBTTagCompound();
+			NBTTagList list = new NBTTagList();
+			for (String s : text)
+				list.appendTag(new NBTTagString(s));
+			display.setTag("Lore", list);
+			itemStack.stackTagCompound.setTag("display", display);
+		}
+	}
+
+	public static void removeInfo(ItemStack itemStack) {
+		if (hasTag(itemStack, "display")) {
+			NBTTagCompound display = itemStack.stackTagCompound.getCompoundTag("display");
+			display.removeTag("Lore");
+			itemStack.stackTagCompound.setTag("display", display);
+		}
 	}
 }
