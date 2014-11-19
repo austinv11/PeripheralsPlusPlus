@@ -28,3 +28,6 @@ peripheralsplusplus.turtleUpgrade.oreDictionary=Equivalence Checking
 peripheralsplusplus.turtleUpgrade.wrench=Engineering
 peripheralsplusplus.turtleUpgrade.environmentScanner=Environmentalist
 peripheralsplusplus.turtleUpgrade.feeder=Feeding
+
+#GUIs
+peripheralsplusplus.inv.rocket=Rocket

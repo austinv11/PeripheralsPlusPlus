@@ -18,7 +18,7 @@ public class Reference {
 	public static final int FEEDER_UPGRADE = 109;
 
 	public static enum GUIs {
-		ANALYZER;
+		ANALYZER,ROCKET;
 	}
 
 	public static class Colors {

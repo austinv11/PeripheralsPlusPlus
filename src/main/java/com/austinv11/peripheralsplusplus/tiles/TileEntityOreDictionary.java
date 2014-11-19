@@ -2,7 +2,7 @@ package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ChatUtil;
-import com.austinv11.peripheralsplusplus.utils.Logger;
+import com.austinv11.peripheralsplusplus.utils.Util;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -70,7 +70,7 @@ public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
 		try {
 			if (method == 0) {
 				ItemStack slot = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot());
-				return new Object[]{getEntries(slot)};
+				return new Object[]{Util.getEntries(slot)};
 			} else if (method == 1) {
 				if (!(arguments.length > 0) || !(arguments[0] instanceof Double))
 					throw new LuaException("Bad argument #1 (expected number)");
@@ -85,9 +85,9 @@ public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
 				ItemStack stack2 = turtle.getInventory().getStackInSlot((int)arg2);
 				if (stack1 == null || stack2 == null)
 					throw new LuaException("One or more selected slots have nil items");
-				if (!compare(stack1,stack2))
+				if (!Util.compare(stack1, stack2))
 					return new Object[]{false};
-				if (!compare(stack1, slot) && slot != null)
+				if (!Util.compare(stack1, slot) && slot != null)
 					throw new LuaException("The destination slot is incompatible");
 				int maxMoveSize = 0;
 				if (slot != null) {
@@ -152,7 +152,7 @@ public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
 				double arg2 = (Double) arguments[1];
 				arg1--;
 				arg2--;
-				return new Object[]{compare(turtle.getInventory().getStackInSlot((int)arg1), turtle.getInventory().getStackInSlot((int)arg1))};
+				return new Object[]{Util.compare(turtle.getInventory().getStackInSlot((int) arg1), turtle.getInventory().getStackInSlot((int) arg1))};
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
@@ -179,7 +179,7 @@ public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
 	}
 
 	private ItemStack transmute(ItemStack item) {
-		HashMap<Integer, String> entries = getEntries(item);
+		HashMap<Integer, String> entries = Util.getEntries(item);
 		int i = 0;
 		boolean test = false;
 		for (String v : entries.values()) {
@@ -198,31 +198,13 @@ public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
 		return null;
 	}
 
-	private HashMap<Integer, String> getEntries(ItemStack stack) {
-		int[] ids = OreDictionary.getOreIDs(stack);
-		HashMap<Integer, String> entries = new HashMap<Integer,String>();
-		for (int i = 0; i < ids.length; i++) {
-			entries.put(i, OreDictionary.getOreName(ids[i]));
-		}
-		return entries;
-	}
-
-	private boolean compare(ItemStack stack1, ItemStack stack2) {
-		if (!(stack1 == null || stack2 == null))
-			for (String key : getEntries(stack1).values()) {
-				if (getEntries(stack2).containsValue(key))
-					return true;
-			}
-		return false;
-	}
-
 	public void blockActivated(EntityPlayer player) {
 		if (player.getHeldItem() != null) {
 			for (IComputerAccess computer : computers.keySet()) {
-				computer.queueEvent("oreDict", new Object[]{getEntries(player.getHeldItem())});
+				computer.queueEvent("oreDict", new Object[]{Util.getEntries(player.getHeldItem())});
 			}
 			if (Config.oreDictionaryMessage)
-				ChatUtil.sendMessage(player.getDisplayName(), this, new ChatComponentText(getEntries(player.getHeldItem()).entrySet().toString()), 100, true);
+				ChatUtil.sendMessage(player.getDisplayName(), this, new ChatComponentText(Util.getEntries(player.getHeldItem()).entrySet().toString()), 100, true);
 		}
 	}
 }
