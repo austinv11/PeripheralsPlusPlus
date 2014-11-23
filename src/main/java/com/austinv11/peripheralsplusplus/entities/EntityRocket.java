@@ -8,7 +8,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 public class EntityRocket extends EntityInventory {
@@ -24,7 +23,7 @@ public class EntityRocket extends EntityInventory {
 
 	@Override
 	public String getInventoryName() {
-		return StatCollector.translateToLocal("peripheralsplusplus.inv.rocket");
+		return "Rocket";
 	}
 
 	@Override

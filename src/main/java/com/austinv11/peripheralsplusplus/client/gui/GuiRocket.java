@@ -1,7 +1,7 @@
 package com.austinv11.peripheralsplusplus.client.gui;
 
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.tiles.containers.ContainerAnalyzer;
+import com.austinv11.peripheralsplusplus.tiles.containers.ContainerRocket;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -10,16 +10,16 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
-public class GuiAnalyzer extends GuiContainer {
+public class GuiRocket extends GuiContainer {
 
 	private int x, y, z;
 	private EntityPlayer player;
 	private World world;
 	private int sizeX, sizeY;
-	private ResourceLocation backgroundimage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" + "textures/gui/guiAnalyzer.png");
+	private ResourceLocation backgroundimage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" + "textures/gui/guiRocket.png");
 
-	public GuiAnalyzer(EntityPlayer player, World world, int x, int y, int z) {
-		super(new ContainerAnalyzer(player, (IInventory)world.getTileEntity(x,y,z), 176, 166));
+	public GuiRocket(EntityPlayer player, World world, int x, int y, int z) {
+		super(new ContainerRocket(player, (IInventory)world.getTileEntity(x,y,z), 176, 166));
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -36,7 +36,9 @@ public class GuiAnalyzer extends GuiContainer {
 		int x = (width - sizeX) / 2;
 		int y = (height - sizeY) / 2;
 		drawTexturedModalRect(x, y, 0, 0, sizeX, sizeY);
-		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.analyzer"), x+65, y+3, 0x313131);
+		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.rocket.0"), x+62, y+3, 0x313131);
+		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.rocket.1"), x+85, y+23, 0x313131);
+		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.rocket.2"), x+105, y+23, 0x313131);
 	}
 
 	@Override

@@ -30,4 +30,7 @@ peripheralsplusplus.turtleUpgrade.environmentScanner=Environmentalist
 peripheralsplusplus.turtleUpgrade.feeder=Feeding
 
 #GUIs
-peripheralsplusplus.inv.rocket=Rocket
+peripheralsplusplus.inv.analyzer=Analyzer
+peripheralsplusplus.inv.rocket.0=Rocket
+peripheralsplusplus.inv.rocket.1=Fuel
+peripheralsplusplus.inv.rocket.2=Oxidizer
