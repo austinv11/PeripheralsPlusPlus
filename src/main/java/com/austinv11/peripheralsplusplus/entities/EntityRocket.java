@@ -16,6 +16,13 @@ public class EntityRocket extends EntityInventory {
 		super(p_i1582_1_);
 	}
 
+	public EntityRocket(World p_i1582_1_, int x, int y, int z) {
+		this(p_i1582_1_);
+		this.posX = x;
+		this.posY = y;
+		this.posZ = z;
+	}
+
 	@Override
 	public int getSizeInventory() {
 		return 3;
@@ -46,7 +53,7 @@ public class EntityRocket extends EntityInventory {
 	}
 
 	@Override
-	public boolean interactFirst(EntityPlayer p_130002_1_) {
+	public boolean interact(EntityPlayer p_130002_1_) {
 		if (!worldObj.isRemote) {
 			p_130002_1_.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.ROCKET.ordinal(), worldObj, (int) Math.ceil(this.posX), (int) Math.ceil(this.posY), (int) Math.ceil(this.posZ));
 			return true;

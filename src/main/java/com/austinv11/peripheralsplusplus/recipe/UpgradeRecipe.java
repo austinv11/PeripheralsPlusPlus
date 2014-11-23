@@ -24,12 +24,13 @@ public class UpgradeRecipe implements IRecipe {
 		int sats = 0;
 		float weight = 0.0F;
 		for (int i = 0; i < p_77569_1_.getSizeInventory(); i++) {
-			if (p_77569_1_.getStackInSlot(i).isItemEqual(new ItemStack(ModItems.satellite)))
-				sats++;
-			else if (!(p_77569_1_.getStackInSlot(i).getItem() instanceof SatelliteUpgradeBase))
-				return false;
-			else
-				weight += ((SatelliteUpgradeBase)p_77569_1_.getStackInSlot(i).getItem()).getUpgrade().getAddonWeight();
+			if (p_77569_1_.getStackInSlot(i) != null)
+				if (p_77569_1_.getStackInSlot(i).isItemEqual(new ItemStack(ModItems.satellite)))
+					sats++;
+				else if (!(p_77569_1_.getStackInSlot(i).getItem() instanceof SatelliteUpgradeBase))
+					return false;
+				else
+					weight += ((SatelliteUpgradeBase)p_77569_1_.getStackInSlot(i).getItem()).getUpgrade().getAddonWeight();
 		}
 		return (sats == 1 && weight <= 1.0F);
 	}

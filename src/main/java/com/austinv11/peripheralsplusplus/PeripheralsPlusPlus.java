@@ -4,6 +4,7 @@ import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgra
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
 import com.austinv11.peripheralsplusplus.creativetab.PPPCreativeTab;
+import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
@@ -21,6 +22,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.registry.EntityRegistry;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraftforge.common.MinecraftForge;
@@ -53,6 +55,8 @@ public class PeripheralsPlusPlus {
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
 		ModItems.preInit();
 		ModBlocks.init();
+		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
+		EntityRegistry.registerModEntity(EntityRocket.class, "Bullet", 0, this.instance, 64, 20, true);
 	}
 
 	@Mod.EventHandler
@@ -83,6 +87,7 @@ public class PeripheralsPlusPlus {
 		//	registerUpgrade(new TurtleWrench());
 		registerUpgrade(new TurtleEnvironmentScanner());
 		registerUpgrade(new TurtleFeeder());
+		proxy.registerRenderers();
 	}
 
 	@Mod.EventHandler

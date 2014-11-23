@@ -23,4 +23,6 @@ public class CommonProxy {
 	}
 
 	public void iconManagerInit() {}
+
+	public void registerRenderers() {}
 }
