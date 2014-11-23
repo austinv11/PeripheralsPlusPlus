@@ -55,8 +55,6 @@ public class PeripheralsPlusPlus {
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
 		ModItems.preInit();
 		ModBlocks.init();
-		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
-		EntityRegistry.registerModEntity(EntityRocket.class, "Bullet", 0, this.instance, 64, 20, true);
 	}
 
 	@Mod.EventHandler
@@ -87,6 +85,8 @@ public class PeripheralsPlusPlus {
 		//	registerUpgrade(new TurtleWrench());
 		registerUpgrade(new TurtleEnvironmentScanner());
 		registerUpgrade(new TurtleFeeder());
+		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
+		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, this.instance, 64, 20, true);
 		proxy.registerRenderers();
 	}
 
