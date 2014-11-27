@@ -59,14 +59,14 @@ public class Satellite implements ISatellite{
 				MinecraftServer.getServer().worldServerForDimension(nbt.getInteger("dim")));
 		sat.setID(nbt.getInteger("id"));
 		try {
-			sat.setMainUpgrade(PeripheralsPlusPlus.instance.UPGRADE_REGISTY.get(nbt.getInteger("mainId")));
+			sat.setMainUpgrade(PeripheralsPlusPlus.instance.UPGRADE_REGISTRY.get(nbt.getInteger("mainId")));
 		} catch (Exception e) {
 			Logger.error("There was a problem loading the upgrade for satellite "+sat.getID());
 		}
 		try {
 			List<ISatelliteUpgrade> upgrades = new ArrayList<ISatelliteUpgrade>();
 			for (int i : nbt.getIntArray("addonIds"))
-				upgrades.add(PeripheralsPlusPlus.instance.UPGRADE_REGISTY.get(i));
+				upgrades.add(PeripheralsPlusPlus.instance.UPGRADE_REGISTRY.get(i));
 			sat.setAddons(upgrades);
 		} catch (Exception e) {
 			Logger.error("There was a problem loading the addons for satellite "+sat.getID());

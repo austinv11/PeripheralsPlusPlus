@@ -39,7 +39,7 @@ public class PeripheralsPlusPlus {
 	/**
 	 * Object containing all registered upgrades, the iterator is the upgrade id
 	 */
-	public final ArrayList<ISatelliteUpgrade> UPGRADE_REGISTY = new ArrayList<ISatelliteUpgrade>();
+	public final ArrayList<ISatelliteUpgrade> UPGRADE_REGISTRY = new ArrayList<ISatelliteUpgrade>();
 
 	@Mod.Instance(Reference.MOD_ID)
 	public static PeripheralsPlusPlus instance;

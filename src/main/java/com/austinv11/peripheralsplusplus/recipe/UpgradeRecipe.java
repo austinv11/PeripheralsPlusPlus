@@ -40,6 +40,8 @@ public class UpgradeRecipe implements IRecipe {
 		List<ISatelliteUpgrade> upgrades = new ArrayList<ISatelliteUpgrade>();
 		ItemStack result = new ItemStack(ModItems.satellite);
 		for (int i = 0; i < p_77572_1_.getSizeInventory(); i++) {
+			if (p_77572_1_.getStackInSlot(i) != null)
+				continue;
 			if (p_77572_1_.getStackInSlot(i).isItemEqual(new ItemStack(ModItems.satellite)))
 				result = p_77572_1_.getStackInSlot(i).copy();
 			else if (!(p_77572_1_.getStackInSlot(i).getItem() instanceof SatelliteUpgradeBase))

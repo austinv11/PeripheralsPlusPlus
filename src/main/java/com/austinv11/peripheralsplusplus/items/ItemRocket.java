@@ -17,8 +17,10 @@ public class ItemRocket extends PPPItem {
 
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
-		world.spawnEntityInWorld(new EntityRocket(world, x+Facing.offsetsXForSide[side], y+Facing.offsetsYForSide[side], z+Facing.offsetsZForSide[side]));
-		stack.stackSize -= 1;
+		if (!world.isRemote) {
+			world.spawnEntityInWorld(new EntityRocket(world, (int)Math.ceil(x+Facing.offsetsXForSide[side]), (int)Math.ceil(y+Facing.offsetsYForSide[side]), (int)Math.ceil(z+Facing.offsetsZForSide[side])));
+			stack.stackSize -= 1;
+		}
 		return true;
 	}
 
@@ -29,6 +31,6 @@ public class ItemRocket extends PPPItem {
 
 	@Override
 	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-		return new EntityRocket(world);
+		return new EntityRocket(world, (int)Math.ceil(location.posX), (int)Math.ceil(location.posY), (int)Math.ceil(location.posZ));
 	}
 }

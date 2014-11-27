@@ -16,7 +16,7 @@ public class PeripheralsPlusPlusAPI {
 	 * @param upgrade The upgrade to register
 	 */
 	public static void registerSatelliteUpgrade(final ISatelliteUpgrade upgrade) {
-		PeripheralsPlusPlus.instance.UPGRADE_REGISTY.add(upgrade.getUpgradeID(), upgrade);
+		PeripheralsPlusPlus.instance.UPGRADE_REGISTRY.add(upgrade.getUpgradeID(), upgrade);
 		PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.add(new SatelliteUpgradeBase() {
 			@Override
 			public String getUnlocalizedName() {
