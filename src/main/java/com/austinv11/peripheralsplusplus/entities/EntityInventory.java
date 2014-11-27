@@ -1,7 +1,7 @@
 package com.austinv11.peripheralsplusplus.entities;
 
 import com.austinv11.peripheralsplusplus.init.ModItems;
-import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -11,7 +11,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.Constants;
 
-public abstract class EntityInventory extends EntityLiving implements IInventory {
+public abstract class EntityInventory extends Entity implements IInventory {
 
 	ItemStack[] items;
 
@@ -25,7 +25,6 @@ public abstract class EntityInventory extends EntityLiving implements IInventory
 
 	@Override
 	public void readEntityFromNBT(NBTTagCompound p_70037_1_) {
-		super.readEntityFromNBT(p_70037_1_);
 		NBTTagList nbttaglist = p_70037_1_.getTagList("Items", Constants.NBT.TAG_COMPOUND);
 		items = new ItemStack[getSizeInventory()];
 		for (int i = 0; i < nbttaglist.tagCount(); i++) {
@@ -39,7 +38,6 @@ public abstract class EntityInventory extends EntityLiving implements IInventory
 
 	@Override
 	public void writeEntityToNBT(NBTTagCompound p_70014_1_) {
-		super.writeEntityToNBT(p_70014_1_);
 		NBTTagList nbttaglist = new NBTTagList();
 		for (int i = 0; i < items.length; i++) {
 			if (items[i] != null) {
@@ -133,7 +131,7 @@ public abstract class EntityInventory extends EntityLiving implements IInventory
 	public abstract boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_);
 
 	@Override
-	public abstract boolean interact(EntityPlayer p_130002_1_);
+	public abstract boolean interactFirst(EntityPlayer p_130002_1_);
 
 	@Override
 	public void onKillEntity(EntityLivingBase p_70074_1_) {

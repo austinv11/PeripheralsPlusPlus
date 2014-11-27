@@ -53,7 +53,7 @@ public class EntityRocket extends EntityInventory {
 	}
 
 	@Override
-	public boolean interact(EntityPlayer p_130002_1_) {
+	public boolean interactFirst(EntityPlayer p_130002_1_) {
 		if (!worldObj.isRemote) {
 			p_130002_1_.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.ROCKET.ordinal(), worldObj, (int) Math.ceil(this.posX), (int) Math.ceil(this.posY), (int) Math.ceil(this.posZ));
 			return true;
