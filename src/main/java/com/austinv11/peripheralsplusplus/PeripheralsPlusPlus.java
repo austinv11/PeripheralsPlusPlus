@@ -85,9 +85,9 @@ public class PeripheralsPlusPlus {
 		//	registerUpgrade(new TurtleWrench());
 		registerUpgrade(new TurtleEnvironmentScanner());
 		registerUpgrade(new TurtleFeeder());
+		proxy.registerRenderers();
 		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, this.instance, 64, 20, true);
-		proxy.registerRenderers();
 	}
 
 	@Mod.EventHandler

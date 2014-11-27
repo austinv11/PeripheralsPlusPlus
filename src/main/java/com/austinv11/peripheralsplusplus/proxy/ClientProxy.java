@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus.proxy;
 
-import com.austinv11.peripheralsplusplus.client.models.ModelRocket;
 import com.austinv11.peripheralsplusplus.client.models.RenderRocket;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.turtles.TurtleCompass;
@@ -18,6 +17,6 @@ public class ClientProxy extends CommonProxy {
 
 	@Override
 	public void registerRenderers() {
-		RenderingRegistry.registerEntityRenderingHandler(EntityRocket.class, new RenderRocket(new ModelRocket(), 1F));
+		RenderingRegistry.registerEntityRenderingHandler(EntityRocket.class, new RenderRocket());
 	}
 }

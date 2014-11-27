@@ -40,7 +40,7 @@ public class UpgradeRecipe implements IRecipe {
 		List<ISatelliteUpgrade> upgrades = new ArrayList<ISatelliteUpgrade>();
 		ItemStack result = new ItemStack(ModItems.satellite);
 		for (int i = 0; i < p_77572_1_.getSizeInventory(); i++) {
-			if (p_77572_1_.getStackInSlot(i) != null)
+			if (p_77572_1_.getStackInSlot(i) == null)
 				continue;
 			if (p_77572_1_.getStackInSlot(i).isItemEqual(new ItemStack(ModItems.satellite)))
 				result = p_77572_1_.getStackInSlot(i).copy();
@@ -55,7 +55,8 @@ public class UpgradeRecipe implements IRecipe {
 				map.put(s, 1);
 		}
 		List<String> text = new ArrayList<String>();
-		text.add(Reference.Colors.RESET+Reference.Colors.UNDERLINE+"Current Upgrades:");
+		if (map.keySet().size() > 0 && !result.hasTagCompound())
+			text.add(Reference.Colors.RESET+Reference.Colors.UNDERLINE+"Current Upgrades:");
 		NBTTagList ids = new NBTTagList();
 		for (ISatelliteUpgrade s : map.keySet()) {
 			int lvl = map.get(s);
