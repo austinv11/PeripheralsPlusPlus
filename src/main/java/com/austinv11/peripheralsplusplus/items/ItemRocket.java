@@ -21,12 +21,13 @@ public class ItemRocket extends PPPItem {
 			world.spawnEntityInWorld(new EntityRocket(world, (int)Math.ceil(x+Facing.offsetsXForSide[side]), (int)Math.ceil(y+Facing.offsetsYForSide[side]), (int)Math.ceil(z+Facing.offsetsZForSide[side])));
 			stack.stackSize -= 1;
 		}
-		return true;
+		return false;
 	}
 
 	@Override
 	public boolean hasCustomEntity(ItemStack stack) {
-		return true;
+		//return true;
+		return false;
 	}
 
 	@Override

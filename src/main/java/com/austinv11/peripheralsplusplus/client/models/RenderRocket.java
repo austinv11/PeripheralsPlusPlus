@@ -8,6 +8,7 @@ import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderRocket extends Render {
@@ -15,22 +16,26 @@ public class RenderRocket extends Render {
 	protected ModelBase model;
 
 	public RenderRocket() {
-		this.shadowSize = 2F;
+		this.shadowSize = 1F;
 		model = new ModelRocket();
 	}
 
-	public void renderRocket(EntityRocket par1EntityRocket, double par2, double par4, double par6, float par8, float par9) {
-		this.bindEntityTexture(par1EntityRocket);
-		model.render(par1EntityRocket, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.0625F);
+	public void renderRocket(EntityRocket entityRocket, double x, double y, double z, float yaw, float pitch) {
+		GL11.glPushMatrix();
+		this.bindEntityTexture(entityRocket);
+		//GL11.glRotatef(180F, 0F,0F,0F);
+		GL11.glTranslated(x, y+2.41D, z);
+		model.render(entityRocket, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.1F);
+		GL11.glPopMatrix();
 	}
 
 	@Override
-	public void doRender(Entity par1Entity, double par2, double par4, double par6, float par8, float par9) {
-		this.renderRocket((EntityRocket)par1Entity, par2, par4, par6, par8, par9);
+	public void doRender(Entity entity, double x, double y, double z, float yaw, float pitch) {
+		this.renderRocket((EntityRocket)entity, x, y, z, yaw, pitch);
 	}
 
 	@Override
-	protected ResourceLocation getEntityTexture(Entity p_110775_1_) {
+	protected ResourceLocation getEntityTexture(Entity entity) {
 		return new ResourceLocation(Reference.MOD_ID.toLowerCase()+":textures/models/rocketModel.png");
 	}
 }
