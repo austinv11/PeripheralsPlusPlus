@@ -1,10 +1,10 @@
 package com.austinv11.peripheralsplusplus.client.gui;
 
+import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.containers.ContainerRocket;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
@@ -12,19 +12,11 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiRocket extends GuiContainer {
 
-	private int x, y, z;
-	private EntityPlayer player;
-	private World world;
 	private int sizeX, sizeY;
 	private ResourceLocation backgroundimage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" + "textures/gui/guiRocket.png");
 
 	public GuiRocket(EntityPlayer player, World world, int x, int y, int z) {
-		super(new ContainerRocket(player, (IInventory)world.getTileEntity(x,y,z), 176, 166));
-		this.x = x;
-		this.y = y;
-		this.z = z;
-		this.player = player;
-		this.world = world;
+		super(new ContainerRocket(player, (EntityRocket)world.getEntityByID(x), 176, 166));
 		sizeX = 176;
 		sizeY = 166;
 	}

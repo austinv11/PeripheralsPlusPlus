@@ -65,7 +65,7 @@ public class EntityRocket extends EntityInventory {
 	@Override
 	public boolean interactFirst(EntityPlayer p_130002_1_) {
 		if (!worldObj.isRemote) {
-			p_130002_1_.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.ROCKET.ordinal(), worldObj, (int) Math.ceil(this.posX), (int) Math.ceil(this.posY), (int) Math.ceil(this.posZ));
+			p_130002_1_.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.ROCKET.ordinal(), worldObj, this.getEntityId()/*Im a 1337 uber haxor*/, (int) Math.ceil(this.posY), (int) Math.ceil(this.posZ));
 			return true;
 		}
 		return false;
