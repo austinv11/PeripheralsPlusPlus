@@ -10,7 +10,6 @@ import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
 import com.austinv11.peripheralsplusplus.items.SatelliteUpgradeBase;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
-import com.austinv11.peripheralsplusplus.proxy.RocketGUIPacket;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
 import com.austinv11.peripheralsplusplus.turtles.*;
@@ -23,9 +22,7 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
-import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.relauncher.Side;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraftforge.common.MinecraftForge;
@@ -44,8 +41,6 @@ public class PeripheralsPlusPlus {
 	 */
 	public final ArrayList<ISatelliteUpgrade> UPGRADE_REGISTRY = new ArrayList<ISatelliteUpgrade>();
 
-	public SimpleNetworkWrapper channel;
-
 	@Mod.Instance(Reference.MOD_ID)
 	public static PeripheralsPlusPlus instance;
 
@@ -60,8 +55,6 @@ public class PeripheralsPlusPlus {
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
 		ModItems.preInit();
 		ModBlocks.init();
-		channel = NetworkRegistry.INSTANCE.newSimpleChannel("ppp");
-		channel.registerMessage(RocketGUIPacket.RocketGUIPacketHandler.class, RocketGUIPacket.class, 0, Side.SERVER);
 	}
 
 	@Mod.EventHandler
