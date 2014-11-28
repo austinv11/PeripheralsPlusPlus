@@ -18,6 +18,8 @@ import net.minecraft.world.World;
 public class EntityRocket extends EntityInventory {
 
 	protected int damage = 0;
+	public int fuel = 0;
+	public int oxidizer = 0;
 
 	public EntityRocket(World p_i1582_1_) {
 		super(p_i1582_1_);
@@ -96,7 +98,7 @@ public class EntityRocket extends EntityInventory {
 		if (!this.worldObj.isRemote && !this.isDead) {
 			if (this.isEntityInvulnerable())
 				return false;
-			if (par1DamageSource.getEntity() instanceof EntityPlayer && ((EntityPlayer) par1DamageSource.getEntity()).capabilities.isCreativeMode)
+			if (par1DamageSource.getEntity() instanceof EntityPlayer)
 				this.damage = 100;
 			if (this.damage > 90) {
 				this.setDead();

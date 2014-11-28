@@ -10,8 +10,8 @@ public class ContainerRocket extends Container {
 
 	private EntityPlayer player;
 	private IInventory inv;
-	private final int slotX = 80;
-	private final int slotY = 34;
+	private final int[] slotX = {80, 152, 152};
+	private final int[] slotY = {34, 17, 51};
 
 	public ContainerRocket(EntityPlayer player, IInventory inv, int xSize, int ySize) {
 		this.player = player;
@@ -21,7 +21,9 @@ public class ContainerRocket extends Container {
 	}
 
 	protected void layout(int xSize, int ySize) {
-		addSlotToContainer(new Slot(inv,0,slotX,slotY));
+		addSlotToContainer(new Slot(inv,0,slotX[0],slotY[0]));
+		addSlotToContainer(new Slot(inv,1,slotX[1],slotY[1]));
+		addSlotToContainer(new Slot(inv,2,slotX[2],slotY[2]));
 		int leftCol = (xSize - 162) / 2 + 1;
 		for (int playerInvRow = 0; playerInvRow < 3; playerInvRow++) {
 			for (int playerInvCol = 0; playerInvCol < 9; playerInvCol++) {

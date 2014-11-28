@@ -34,5 +34,5 @@ peripheralsplusplus.turtleUpgrade.feeder=Feeding
 #GUIs
 peripheralsplusplus.inv.analyzer=Analyzer
 peripheralsplusplus.inv.rocket.0=Rocket
-peripheralsplusplus.inv.rocket.1=Fuel
-peripheralsplusplus.inv.rocket.2=Oxidizer
+peripheralsplusplus.inv.rocket.1=Fuel:
+peripheralsplusplus.inv.rocket.2=Oxidizer:

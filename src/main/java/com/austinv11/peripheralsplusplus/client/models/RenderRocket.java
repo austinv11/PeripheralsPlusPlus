@@ -16,7 +16,7 @@ public class RenderRocket extends Render {
 	protected ModelBase model;
 
 	public RenderRocket() {
-		this.shadowSize = 1F;
+		this.shadowSize = 0.75F;
 		model = new ModelRocket();
 	}
 

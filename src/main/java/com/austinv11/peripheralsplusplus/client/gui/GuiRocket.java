@@ -13,12 +13,14 @@ import org.lwjgl.opengl.GL11;
 public class GuiRocket extends GuiContainer {
 
 	private int sizeX, sizeY;
+	private EntityRocket rocket;
 	private ResourceLocation backgroundimage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" + "textures/gui/guiRocket.png");
 
 	public GuiRocket(EntityPlayer player, World world, int x, int y, int z) {
 		super(new ContainerRocket(player, (EntityRocket)world.getEntityByID(x), 176, 166));
 		sizeX = 176;
 		sizeY = 166;
+		rocket = (EntityRocket)world.getEntityByID(x);
 	}
 
 	@Override
@@ -28,9 +30,11 @@ public class GuiRocket extends GuiContainer {
 		int x = (width - sizeX) / 2;
 		int y = (height - sizeY) / 2;
 		drawTexturedModalRect(x, y, 0, 0, sizeX, sizeY);
-		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.rocket.0"), x+62, y+3, 0x313131);
-		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.rocket.1"), x+85, y+23, 0x313131);
-		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.rocket.2"), x+105, y+23, 0x313131);
+		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.rocket.0"), x+71, y+3, 0x313131);
+		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.rocket.1"), x+3, y+23, 0x313131);
+		fontRendererObj.drawString(rocket.fuel+"", x+3, y+33, 0x313131);
+		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.rocket.2"), x+3, y+49, 0x313131);
+		fontRendererObj.drawString(rocket.oxidizer+"", x+3, y+59, 0x313131);
 	}
 
 	@Override
