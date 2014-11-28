@@ -14,6 +14,8 @@ tile.peripheralsplusplus:environmentScanner.name=Environment Scanner
 item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade
 item.peripheralsplusplus:satellite.name=Satellite
 item.peripheralsplusplus:rocket.name=Rocket
+item.peripheralsplusplus:ingotIron.name=Turtle Ingot
+item.peripheralsplusplus:dustRedstone.name=Computer Dust
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++
