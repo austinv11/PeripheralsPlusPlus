@@ -1,12 +1,18 @@
 package com.austinv11.peripheralsplusplus.utils;
 
+import com.austinv11.peripheralsplusplus.reference.Reference;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 
 public class Util {
 
@@ -51,5 +57,20 @@ public class Util {
 					return true;
 			}
 		return false;
+	}
+
+	public static NBTTagCompound writeToBookNBT(String title, String author, List<String> pageText) {
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setString("author", author);
+		tag.setString("title", StatCollector.translateToLocal(title));
+		NBTTagList list = new NBTTagList();
+		for (String s : pageText)
+			list.appendTag(new NBTTagString(StatCollector.translateToLocal(s)));
+		tag.setTag("pages", list);
+		return tag;
+	}
+
+	public static NBTTagCompound writeToBookNBT(String title, List<String> pageText) {
+		return writeToBookNBT(title, Reference.MOD_NAME, pageText);
 	}
 }

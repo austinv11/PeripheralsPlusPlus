@@ -2,12 +2,10 @@ package com.austinv11.peripheralsplusplus.blocks;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityOreDictionary;
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
@@ -38,12 +36,12 @@ public class OreDictionaryBlock extends PPPBlock implements ITileEntityProvider,
 		if (Config.enableOreDictionary) {
 			if (!world.isRemote)
 				((TileEntityOreDictionary) world.getTileEntity(x, y, z)).blockActivated(player);
-			NBTTagCompound tag =player.getHeldItem().stackTagCompound;
-			try {
-				Logger.info(tag.toString());
-			} catch (Exception e) {
-				//e.printStackTrace();
-			}
+//			NBTTagCompound tag =player.getHeldItem().stackTagCompound;
+//			try {
+//				Logger.info(tag.toString());FIXME DEBUG
+//			} catch (Exception e) {
+//				//e.printStackTrace();
+//			}
 		}
 		return true;
 	}

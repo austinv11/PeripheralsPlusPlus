@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.villagers;
 
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.utils.NBTHelper;
+import com.austinv11.peripheralsplusplus.utils.Util;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
 import net.minecraft.entity.passive.EntityVillager;
@@ -13,6 +14,8 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.village.MerchantRecipe;
 import net.minecraft.village.MerchantRecipeList;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
@@ -24,10 +27,10 @@ public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
 		error.setStackDisplayName(Reference.Colors.RED+"THIS IS A BUG, REPORT TO THE P++ AUTHOR ASAP");
 		MerchantRecipe recipe = new MerchantRecipe(new ItemStack(Blocks.dirt), error);
 		do {
-			int trade = 0;MathHelper.getRandomIntegerInRange(random, 0, 7);
+			int trade = MathHelper.getRandomIntegerInRange(random, 0, 7);
 			//Logger.info(trade);
 			switch (trade) {
-				case 0://Empty floppy disk + 3 emeralds = dungeon disk FIXME
+				case 0://Empty floppy disk + 3 emeralds = dungeon disk FIXME, must use colored disks
 					int type = MathHelper.getRandomIntegerInRange(random, 0, 9);
 					//Logger.info(type);
 					ItemStack floppy = getFloppyFromInt(type);
@@ -60,15 +63,15 @@ public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
 					iPhone.setStackDisplayName(StatCollector.translateToLocal("item.peripheralsplusplus:iphone.name"));
 					recipe = new MerchantRecipe(emerald, iPhone);
 					break;
-				case 8://Paper + emerald = printout w/ lore
-					//TODO
+				case 8://Paper + emerald = book w/ lore TODO:More than 3 books
+					recipe = new MerchantRecipe(new ItemStack(Items.book), emerald, getBookFromInt(MathHelper.getRandomIntegerInRange(random, 0, 2)));
 					break;
 			}
 		} while (recipeList.contains(recipe));
 		recipeList.add(recipe);
 	}
 
-	public ItemStack getFloppyFromInt(int t) {
+	public static ItemStack getFloppyFromInt(int t) {
 		ItemStack stack = new ItemStack(GameRegistry.findItem("ComputerCraft", "treasureDisk"));
 		switch (t) {
 			case 0:
@@ -121,5 +124,50 @@ public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
 		}
 		stack.setItemDamage(0);
 		return stack;
+	}
+
+	public static ItemStack getBookFromInt(int type) {
+		ItemStack stack = new ItemStack(Items.written_book);
+		switch (type) {
+			case 0:
+				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.1.title", Reference.Colors.MAGIC+"1337UberHaxor", getTextFromInt(type));
+				break;
+			case 1:
+				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.2.title", Reference.Colors.MAGIC+"1337UberHaxor", getTextFromInt(type));
+				break;
+			case 2:
+				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.3.title", Reference.Colors.MAGIC+"1337UberHaxor", getTextFromInt(type));
+				break;
+		}
+		return stack;
+	}
+
+	private static List<String> getTextFromInt(int type) {
+		List<String> list = new ArrayList<String>();
+		switch (type) {
+			case 0:
+				list.add("peripheralsplusplus.lore.1.header");
+				list.add("peripheralsplusplus.lore.1.pg1");
+				list.add("peripheralsplusplus.lore.1.pg2");
+				list.add("peripheralsplusplus.lore.1.pg3");
+				list.add("peripheralsplusplus.lore.1.pg4");
+				break;
+			case 1:
+				list.add("peripheralsplusplus.lore.2.header");
+				list.add("peripheralsplusplus.lore.2.pg1");
+				list.add("peripheralsplusplus.lore.2.pg2");
+				list.add("peripheralsplusplus.lore.2.pg3");
+				list.add("peripheralsplusplus.lore.2.pg4");
+				list.add("peripheralsplusplus.lore.2.pg5");
+				list.add("peripheralsplusplus.lore.2.pg6");
+				break;
+			case 2:
+				list.add("peripheralsplusplus.lore.3.header");
+				list.add("peripheralsplusplus.lore.3.pg1");
+				list.add("peripheralsplusplus.lore.3.pg2");
+				list.add("peripheralsplusplus.lore.3.pg3");
+				break;
+		}
+		return list;
 	}
 }
