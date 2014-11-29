@@ -27,11 +27,11 @@ public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
 		error.setStackDisplayName(Reference.Colors.RED+"THIS IS A BUG, REPORT TO THE P++ AUTHOR ASAP");
 		MerchantRecipe recipe = new MerchantRecipe(new ItemStack(Blocks.dirt), error);
 		do {
-			int trade = MathHelper.getRandomIntegerInRange(random, 0, 7);
+			int trade = MathHelper.getRandomIntegerInRange(random, 0, 8);
 			//Logger.info(trade);
 			switch (trade) {
 				case 0://Empty floppy disk + 3 emeralds = dungeon disk FIXME, must use colored disks
-					int type = MathHelper.getRandomIntegerInRange(random, 0, 9);
+					int type = MathHelper.getRandomIntegerInRange(random, 0, 10);
 					//Logger.info(type);
 					ItemStack floppy = getFloppyFromInt(type);
 					emerald.stackSize = 3;
@@ -64,7 +64,7 @@ public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
 					recipe = new MerchantRecipe(emerald, iPhone);
 					break;
 				case 8://Paper + emerald = book w/ lore TODO:More than 3 books
-					recipe = new MerchantRecipe(new ItemStack(Items.book), emerald, getBookFromInt(MathHelper.getRandomIntegerInRange(random, 0, 2)));
+					recipe = new MerchantRecipe(new ItemStack(Items.book), emerald, getBookFromInt(MathHelper.getRandomIntegerInRange(random, 0, 3)));
 					break;
 			}
 		} while (recipeList.contains(recipe));
@@ -130,13 +130,13 @@ public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
 		ItemStack stack = new ItemStack(Items.written_book);
 		switch (type) {
 			case 0:
-				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.1.title", Reference.Colors.MAGIC+"1337UberHaxor", getTextFromInt(type));
+				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.1.title", Reference.Colors.MAGIC+"dan200", getTextFromInt(type));
 				break;
 			case 1:
-				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.2.title", Reference.Colors.MAGIC+"1337UberHaxor", getTextFromInt(type));
+				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.2.title", Reference.Colors.MAGIC+"dan200", getTextFromInt(type));
 				break;
 			case 2:
-				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.3.title", Reference.Colors.MAGIC+"1337UberHaxor", getTextFromInt(type));
+				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.3.title", Reference.Colors.MAGIC+"dan200", getTextFromInt(type));
 				break;
 		}
 		return stack;
