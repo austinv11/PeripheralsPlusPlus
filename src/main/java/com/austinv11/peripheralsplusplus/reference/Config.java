@@ -28,6 +28,7 @@ public class Config {
 	public static boolean enableFeederTurtle = true;
 	public static boolean enableSatellites = true;
 	public static List<Integer> dimWhitelist = new ArrayList<Integer>();
+	public static boolean enableVillagers = true;
 
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)

@@ -16,6 +16,7 @@ item.peripheralsplusplus:satellite.name=Satellite
 item.peripheralsplusplus:rocket.name=Rocket
 item.peripheralsplusplus:ingotIron.name=Turtle Ingot
 item.peripheralsplusplus:dustRedstone.name=Computer Dust
+item.peripheralsplusplus:iphone.name=Pineapple UPhone
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++
