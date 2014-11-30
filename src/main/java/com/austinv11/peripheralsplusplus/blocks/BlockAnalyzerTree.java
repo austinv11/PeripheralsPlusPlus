@@ -2,28 +2,28 @@ package com.austinv11.peripheralsplusplus.blocks;
 
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzer;
-import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzerButterfly;
+import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzerTree;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class AnalyzerButterfly extends Analyzer {
+public class BlockAnalyzerTree extends BlockAnalyzer {
 
 	TileEntityAnalyzer instance;
 
-	public AnalyzerButterfly() {
+	public BlockAnalyzerTree() {
 		super();
-		this.setBlockName("butterflyAnalyzer");
+		this.setBlockName("treeAnalyzer");
 	}
 
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
-		instance = new TileEntityAnalyzerButterfly();
+		instance = new TileEntityAnalyzerTree();
 		return instance;
 	}
 
 	public Block getBlock(){
-		return ModBlocks.butterflyAnalyzer;
+		return ModBlocks.treeAnalyzer;
 	}
 
 	@Override

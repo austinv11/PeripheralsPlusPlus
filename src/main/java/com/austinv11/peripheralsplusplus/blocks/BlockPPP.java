@@ -1,6 +1,6 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
-import com.austinv11.peripheralsplusplus.creativetab.PPPCreativeTab;
+import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -8,15 +8,15 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 
-public class PPPBlock extends Block{
+public class BlockPPP extends Block{
 
-	public PPPBlock(Material material){
+	public BlockPPP(Material material){
 		super(material);
-		this.setCreativeTab(PPPCreativeTab.PPP_TAB);
+		this.setCreativeTab(CreativeTabPPP.PPP_TAB);
 		this.setHardness(4f);
 	}
 
-	public PPPBlock(){
+	public BlockPPP(){
 		this(Material.rock);//Sets the material to rock (mostly used for map color)
 	}
 

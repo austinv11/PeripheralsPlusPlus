@@ -1,19 +1,19 @@
 package com.austinv11.peripheralsplusplus.init;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
-import com.austinv11.peripheralsplusplus.items.FeederUpgrade;
+import com.austinv11.peripheralsplusplus.items.ItemFeederUpgrade;
 import com.austinv11.peripheralsplusplus.items.ItemRocket;
 import com.austinv11.peripheralsplusplus.items.ItemSatellite;
-import com.austinv11.peripheralsplusplus.items.PPPItem;
+import com.austinv11.peripheralsplusplus.items.ItemPPP;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @GameRegistry.ObjectHolder(Reference.MOD_ID)
 public class ModItems {
 
-	public static final PPPItem feederUpgrade = new FeederUpgrade();
-	public static final PPPItem satellite = new ItemSatellite();
-	public static final PPPItem rocket = new ItemRocket();
+	public static final ItemPPP feederUpgrade = new ItemFeederUpgrade();
+	public static final ItemPPP satellite = new ItemSatellite();
+	public static final ItemPPP rocket = new ItemRocket();
 
 	public static void preInit(){
 		GameRegistry.registerItem(feederUpgrade, "feederUpgrade");

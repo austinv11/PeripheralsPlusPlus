@@ -7,7 +7,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.Facing;
 import net.minecraft.world.World;
 
-public class ItemRocket extends PPPItem {
+public class ItemRocket extends ItemPPP {
 
 	public ItemRocket() {
 		super();

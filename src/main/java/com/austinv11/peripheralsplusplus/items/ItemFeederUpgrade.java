@@ -1,8 +1,8 @@
 package com.austinv11.peripheralsplusplus.items;
 
-public class FeederUpgrade extends PPPItem{
+public class ItemFeederUpgrade extends ItemPPP {
 
-	public FeederUpgrade() {
+	public ItemFeederUpgrade() {
 		super();
 		this.setUnlocalizedName("feederUpgrade");
 	}

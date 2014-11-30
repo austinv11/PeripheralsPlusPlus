@@ -3,7 +3,7 @@ package com.austinv11.peripheralsplusplus;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
-import com.austinv11.peripheralsplusplus.creativetab.PPPCreativeTab;
+import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
@@ -69,17 +69,17 @@ public class PeripheralsPlusPlus {
 		ModItems.init();//Inits satellite upgrades
 		Recipes.init();
 		proxy.registerTileEntities();
-		ComputerCraftAPI.registerPeripheralProvider(new ChatBox());
-		ComputerCraftAPI.registerPeripheralProvider(new PlayerSensor());
-		ComputerCraftAPI.registerPeripheralProvider(new OreDictionaryBlock());
+		ComputerCraftAPI.registerPeripheralProvider(new BlockChatBox());
+		ComputerCraftAPI.registerPeripheralProvider(new BlockPlayerSensor());
+		ComputerCraftAPI.registerPeripheralProvider(new BlockOreDictionary());
 		if (Loader.isModLoaded("Forestry")) {
-			ComputerCraftAPI.registerPeripheralProvider(new AnalyzerBee());
-			ComputerCraftAPI.registerPeripheralProvider(new AnalyzerTree());
-			ComputerCraftAPI.registerPeripheralProvider(new AnalyzerButterfly());
+			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerBee());
+			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerTree());
+			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerButterfly());
 		}
-		ComputerCraftAPI.registerPeripheralProvider(new Teleporter());
-		ComputerCraftAPI.registerPeripheralProvider(new TeleporterT2());
-		ComputerCraftAPI.registerPeripheralProvider(new EnvironmnetScanner());
+		ComputerCraftAPI.registerPeripheralProvider(new BlockTeleporter());
+		ComputerCraftAPI.registerPeripheralProvider(new BlockTeleporterT2());
+		ComputerCraftAPI.registerPeripheralProvider(new BlockEnvironmentScanner());
 		registerUpgrade(new TurtleChatBox());
 		registerUpgrade(new TurtlePlayerSensor());
 		registerUpgrade(new TurtleCompass());
@@ -105,7 +105,7 @@ public class PeripheralsPlusPlus {
 	
 	public static void registerUpgrade(ITurtleUpgrade u) {
 		ComputerCraftAPI.registerTurtleUpgrade(u);
-		PPPCreativeTab.upgrades.add(u);
+		CreativeTabPPP.upgrades.add(u);
 	}
 
 	private void setupVillagers() {

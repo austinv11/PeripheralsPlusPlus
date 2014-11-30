@@ -5,9 +5,9 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class RFCharger extends PPPBlock implements ITileEntityProvider {
+public class BlockRFCharger extends BlockPPP implements ITileEntityProvider {
 
-	public RFCharger() {
+	public BlockRFCharger() {
 		super();
 		this.setBlockName("rfCharger");
 	}

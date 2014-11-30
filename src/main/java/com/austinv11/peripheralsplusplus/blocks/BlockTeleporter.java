@@ -1,9 +1,7 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
-import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityTeleporter;
-import com.austinv11.peripheralsplusplus.utils.IconManager;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -20,11 +18,11 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class Teleporter extends PPPBlock implements ITileEntityProvider, IPeripheralProvider {
+public class BlockTeleporter extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
 
 	public IIcon frontIcon;
 
-	public Teleporter() {
+	public BlockTeleporter() {
 		super();
 		this.setBlockName("teleporter");
 	}

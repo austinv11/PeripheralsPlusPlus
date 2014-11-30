@@ -1,6 +1,6 @@
 package com.austinv11.peripheralsplusplus.items;
 
-public class ItemSatellite extends PPPItem {
+public class ItemSatellite extends ItemPPP {
 
 	public ItemSatellite() {
 		super();

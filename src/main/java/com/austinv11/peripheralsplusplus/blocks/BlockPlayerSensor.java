@@ -9,9 +9,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class PlayerSensor extends PPPBlock implements ITileEntityProvider, IPeripheralProvider {
+public class BlockPlayerSensor extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
 
-	public PlayerSensor() {
+	public BlockPlayerSensor() {
 		super();
 		this.setBlockName("playerSensor");
 	}

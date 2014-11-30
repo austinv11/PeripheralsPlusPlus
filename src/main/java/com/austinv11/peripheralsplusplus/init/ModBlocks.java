@@ -8,31 +8,31 @@ import net.minecraft.block.BlockContainer;
 
 @GameRegistry.ObjectHolder(Reference.MOD_ID)
 public class ModBlocks {
-	public static final PPPBlock chatBox = new ChatBox();
-	public static final PPPBlock playerSensor = new PlayerSensor();
-	public static PPPBlock rfCharger;
-	public static final PPPBlock oreDictionary = new OreDictionaryBlock();
+	public static final BlockPPP chatBox = new BlockChatBox();
+	public static final BlockPPP playerSensor = new BlockPlayerSensor();
+	public static BlockPPP rfCharger;
+	public static final BlockPPP oreDictionary = new BlockOreDictionary();
 	public static BlockContainer beeAnalyzer;
 	public static BlockContainer treeAnalyzer;
 	public static BlockContainer butterflyAnalyzer;
-	public static final PPPBlock teleporter = new Teleporter();
-	public static final PPPBlock teleporterT2 = new TeleporterT2();
-	public static final PPPBlock environmentScanner = new EnvironmnetScanner();
+	public static final BlockPPP teleporter = new BlockTeleporter();
+	public static final BlockPPP teleporterT2 = new BlockTeleporterT2();
+	public static final BlockPPP environmentScanner = new BlockEnvironmentScanner();
 
 	public static void init(){
 		GameRegistry.registerBlock(chatBox, "chatBox");
 		GameRegistry.registerBlock(playerSensor, "playerSensor");
 		if (Loader.isModLoaded("ThermalExpansion")) {
-			rfCharger = new RFCharger();
+			rfCharger = new BlockRFCharger();
 			GameRegistry.registerBlock(rfCharger, "rfCharger");
 		}
 		GameRegistry.registerBlock(oreDictionary, "oreDictionary");
 		if (Loader.isModLoaded("Forestry")) {
-			beeAnalyzer = new AnalyzerBee();
+			beeAnalyzer = new BlockAnalyzerBee();
 			GameRegistry.registerBlock(beeAnalyzer, "beeAnalyzer");
-			treeAnalyzer = new AnalyzerTree();
+			treeAnalyzer = new BlockAnalyzerTree();
 			GameRegistry.registerBlock(treeAnalyzer, "treeAnalyzer");
-			butterflyAnalyzer = new AnalyzerButterfly();
+			butterflyAnalyzer = new BlockAnalyzerButterfly();
 			GameRegistry.registerBlock(butterflyAnalyzer, "butterflyAnalyzer");
 		}
 		GameRegistry.registerBlock(teleporter, "teleporter");

@@ -12,7 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PPPCreativeTab {
+public class CreativeTabPPP {
 
 	public static final List<ITurtleUpgrade> upgrades = new LinkedList<ITurtleUpgrade>();
 

@@ -9,9 +9,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class OreDictionaryBlock extends PPPBlock implements ITileEntityProvider, IPeripheralProvider {
+public class BlockOreDictionary extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
 
-	public OreDictionaryBlock() {
+	public BlockOreDictionary() {
 		super();
 		this.setBlockName("oreDictionary");
 	}

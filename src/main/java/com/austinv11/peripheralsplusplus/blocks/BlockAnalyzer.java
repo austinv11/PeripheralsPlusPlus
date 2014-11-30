@@ -1,13 +1,9 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
-import com.austinv11.peripheralsplusplus.creativetab.PPPCreativeTab;
-import com.austinv11.peripheralsplusplus.init.ModBlocks;
+import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzer;
-import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzerBee;
-import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzerButterfly;
-import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzerTree;
 import com.google.common.collect.Lists;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -24,11 +20,11 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-public abstract class Analyzer extends BlockContainer implements IPeripheralProvider{
+public abstract class BlockAnalyzer extends BlockContainer implements IPeripheralProvider{
 
-	public Analyzer() {
+	public BlockAnalyzer() {
 		super(Material.rock);
-		this.setCreativeTab(PPPCreativeTab.PPP_TAB);
+		this.setCreativeTab(CreativeTabPPP.PPP_TAB);
 		this.setHardness(4f);
 	}
 
@@ -83,49 +79,5 @@ public abstract class Analyzer extends BlockContainer implements IPeripheralProv
 	@Override
 	public IPeripheral getPeripheral(World world, int x, int y, int z, int side ) {
 		return (IPeripheral) world.getTileEntity(x,y,z);
-	}
-
-	public class AnalyzerTree extends Analyzer{
-
-		public AnalyzerTree() {
-			super();
-			this.setBlockName("treeAnalyzer");
-		}
-
-		@Override
-		public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
-			return new TileEntityAnalyzerTree();
-		}
-
-		public Block getBlock(){
-			return null;
-		}
-
-		@Override
-		public TileEntityAnalyzer getInstance() {
-			return null;
-		}
-	}
-
-	public class AnalyzerButterfly extends Analyzer{
-
-		public AnalyzerButterfly() {
-			super();
-			this.setBlockName("butterflyAnalyzer");
-		}
-
-		@Override
-		public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
-			return new TileEntityAnalyzerButterfly();
-		}
-
-		public Block getBlock(){
-			return null;
-		}
-
-		@Override
-		public TileEntityAnalyzer getInstance() {
-			return null;
-		}
 	}
 }

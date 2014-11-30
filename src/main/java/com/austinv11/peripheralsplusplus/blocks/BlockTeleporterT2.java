@@ -8,9 +8,9 @@ import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class TeleporterT2 extends Teleporter{
+public class BlockTeleporterT2 extends BlockTeleporter {
 
-	public TeleporterT2() {
+	public BlockTeleporterT2() {
 		super();
 		this.setBlockName("teleporterT2");
 	}
