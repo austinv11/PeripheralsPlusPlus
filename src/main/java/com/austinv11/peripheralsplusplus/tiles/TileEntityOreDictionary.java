@@ -152,7 +152,7 @@ public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
 				double arg2 = (Double) arguments[1];
 				arg1--;
 				arg2--;
-				return new Object[]{Util.compare(turtle.getInventory().getStackInSlot((int) arg1), turtle.getInventory().getStackInSlot((int) arg1))};
+				return new Object[]{Util.compare(turtle.getInventory().getStackInSlot((int) arg1), turtle.getInventory().getStackInSlot((int) arg2))};
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
