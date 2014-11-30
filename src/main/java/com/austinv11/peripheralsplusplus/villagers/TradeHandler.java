@@ -31,7 +31,7 @@ public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
 			//Logger.info(trade);
 			switch (trade) {
 				case 0://Empty floppy disk + 3 emeralds = dungeon disk FIXME, must use colored disks
-					int type = MathHelper.getRandomIntegerInRange(random, 0, 10);
+					int type = MathHelper.getRandomIntegerInRange(random, 0, 9);
 					//Logger.info(type);
 					ItemStack floppy = getFloppyFromInt(type);
 					emerald.stackSize = 3;
@@ -64,7 +64,7 @@ public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
 					recipe = new MerchantRecipe(emerald, iPhone);
 					break;
 				case 8://Paper + emerald = book w/ lore TODO:More than 3 books
-					recipe = new MerchantRecipe(new ItemStack(Items.book), emerald, getBookFromInt(MathHelper.getRandomIntegerInRange(random, 0, 3)));
+					recipe = new MerchantRecipe(new ItemStack(Items.book), emerald, getBookFromInt(MathHelper.getRandomIntegerInRange(random, 0, 2)));
 					break;
 			}
 		} while (recipeList.contains(recipe));
