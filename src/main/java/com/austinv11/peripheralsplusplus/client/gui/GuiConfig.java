@@ -7,8 +7,8 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.common.config.ConfigElement;
 import net.minecraftforge.common.config.Configuration;
 
-public class GuiConfig extends cpw.mods.fml.client.config.GuiConfig {
-	public GuiConfig(GuiScreen guiScreen){
+public class GUIConfig extends cpw.mods.fml.client.config.GuiConfig {
+	public GUIConfig(GuiScreen guiScreen){
 		super(guiScreen, new ConfigElement(ConfigurationHandler.config.getCategory(Configuration.CATEGORY_GENERAL)).getChildElements(), Reference.MOD_ID, false/*requireWorldRestart*/, false/*requireMCRestart*/, cpw.mods.fml.client.config.GuiConfig.getAbridgedConfigPath(ConfigurationHandler.config.toString())/*title*/);
 	}
 }
