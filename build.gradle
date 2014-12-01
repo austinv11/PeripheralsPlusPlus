@@ -15,6 +15,13 @@ buildscript {
     }
 }
 
+repositories{
+    maven {
+        name = "chickenbones"
+        url = "http://chickenbones.net/maven"
+    }
+}
+
 apply plugin: 'forge'
 
 version = "1.2.0"
@@ -40,7 +47,9 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+    compile "codechicken:NotEnoughItems:1.7.10-1.0.2.15:dev"
+    compile "codechicken:CodeChickenLib:1.7.10-1.1.1.93:dev"
+    compile "codechicken:CodeChickenCore:1.7.10-1.0.2.9:dev"
 }
 
 processResources
