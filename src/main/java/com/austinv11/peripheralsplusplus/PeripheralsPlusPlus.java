@@ -93,7 +93,7 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleFeeder());
 		proxy.registerRenderers();
 		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
-		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, this.instance, 64, 20, true);
+		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, instance, 64, 20, true);
 		if (Config.enableVillagers)
 			setupVillagers();
 	}
@@ -109,9 +109,8 @@ public class PeripheralsPlusPlus {
 	}
 
 	private void setupVillagers() {
-		while (VillagerRegistry.getRegisteredVillagers().contains(VILLAGER_ID)) { //Dynamic villager ids ftw?
+		while (VillagerRegistry.getRegisteredVillagers().contains(VILLAGER_ID)) //Dynamic villager ids ftw?
 			VILLAGER_ID++;
-		}
 		VillagerRegistry.instance().registerVillagerId(VILLAGER_ID);
 		VillagerRegistry.instance().registerVillagerSkin(VILLAGER_ID, new ResourceLocation(Reference.MOD_ID.toLowerCase()+":textures/models/CCVillager.png"));
 		VillagerRegistry.instance().registerVillageTradeHandler(VILLAGER_ID, new TradeHandler());

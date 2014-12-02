@@ -32,6 +32,7 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 	public static String publicName = "teleporter";
 	private String name = "tileEntityTeleporter";
 	public Stack<LinkData> links = new Stack<LinkData>();
+	public String tag = null;
 
 	public TileEntityTeleporter() {
 		super();
@@ -48,6 +49,8 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 	@Override
 	public void readFromNBT(NBTTagCompound nbttagcompound) {
 		super.readFromNBT(nbttagcompound);
+		if (nbttagcompound.hasKey("tTag"))
+			tag = nbttagcompound.getString("tTag");
 		NBTTagList links = nbttagcompound.getTagList("links", Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < links.tagCount(); i++) {
 			NBTTagCompound link = links.getCompoundTagAt(i);
@@ -60,6 +63,8 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 	@Override
 	public void writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
+		if (tag != null)
+			nbttagcompound.setString("tTag", tag);
 		NBTTagList list = new NBTTagList();
 		for (int i = 0; i < links.size(); i++) {
 			LinkData link = links.get(i);
@@ -82,7 +87,7 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[] {"teleport","getLinks"};
+		return new String[] {"teleport","getLinks", "setName"};
 	}
 
 	@Override
@@ -142,14 +147,20 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 		}else if (method == 1) {
 			HashMap<Integer, Object> map1 = new HashMap<Integer,Object>();
 			for (int i = 0; i < links.size(); i++) {
-				HashMap<String,Integer> map2 = new HashMap<String,Integer>();
+				HashMap<String,Object> map2 = new HashMap<String,Object>();
 				map2.put("dim", links.get(i).linkDim);
 				map2.put("x", links.get(i).link.posX);
 				map2.put("y", links.get(i).link.posY);
 				map2.put("z", links.get(i).link.posZ);
+				map2.put("name", name);
 				map1.put(i, map2.clone());
 			}
 			return new Object[]{map1};
+		}else if (method == 2) {
+			if (!(arguments.length >= 1) || !(arguments[0] instanceof String))
+				throw new LuaException("Bad arguement #1 (expected string)");
+			this.name = (String) arguments[0];
+			return new Object[]{name};
 		}
 		return new Object[0];
 	}
