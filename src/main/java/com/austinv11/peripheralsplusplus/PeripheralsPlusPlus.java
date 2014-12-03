@@ -90,6 +90,8 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleEnvironmentScanner());
 		registerUpgrade(new TurtleFeeder());
 		registerUpgrade(new TurtleShear());
+		if (Loader.isModLoaded("ProjRed|Exploration"))
+			registerProjRedUpgrades();
 		proxy.registerRenderers();
 		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, instance, 64, 20, true);
@@ -113,5 +115,23 @@ public class PeripheralsPlusPlus {
 		VillagerRegistry.instance().registerVillagerId(VILLAGER_ID);
 		VillagerRegistry.instance().registerVillagerSkin(VILLAGER_ID, new ResourceLocation(Reference.MOD_ID.toLowerCase()+":textures/models/CCVillager.png"));
 		VillagerRegistry.instance().registerVillageTradeHandler(VILLAGER_ID, new TradeHandler());
+	}
+
+	private void registerProjRedUpgrades() {
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolType.AXE, 0));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolType.HOE, 1));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolType.PICKAXE, 2));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolType.SHOVEL, 3));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolType.SWORD, 4));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolType.AXE, 5));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolType.HOE, 6));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolType.PICKAXE, 7));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolType.SHOVEL, 8));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolType.SWORD, 9));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.SAPPHIRE, TurtleProjRed.ToolType.AXE, 10));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.SAPPHIRE, TurtleProjRed.ToolType.HOE, 11));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.SAPPHIRE, TurtleProjRed.ToolType.PICKAXE, 12));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.SAPPHIRE, TurtleProjRed.ToolType.SHOVEL, 13));
+		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.SAPPHIRE, TurtleProjRed.ToolType.SWORD, 14));
 	}
 }
