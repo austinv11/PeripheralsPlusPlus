@@ -2,7 +2,7 @@ package com.austinv11.peripheralsplusplus.turtles;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.utils.FakePlayer;
+import com.austinv11.peripheralsplusplus.utils.FakeTurtlePlayer;
 import com.mojang.authlib.GameProfile;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -78,7 +78,7 @@ public class TurtleWrench implements ITurtleUpgrade {
 			return TurtleCommandResult.failure("Wrench turtles have been disabled");
 		switch (verb) {
 			case Attack:
-				FakePlayer player = new FakePlayer(turtle.getWorld(), new GameProfile(null, "ComputerCraft"));
+				FakeTurtlePlayer player = new FakeTurtlePlayer(turtle.getWorld(), new GameProfile(null, "ComputerCraft"));
 				player.alignToTurtle(turtle);
 				MovingObjectPosition mop = player.rayTrace(1.5D, 1F);
 				if (mop == null || mop.typeOfHit != MovingObjectPosition.MovingObjectType.ENTITY)
@@ -91,7 +91,7 @@ public class TurtleWrench implements ITurtleUpgrade {
 
 				return TurtleCommandResult.failure();
 			case Dig:
-				FakePlayer fPlayer = new FakePlayer(turtle.getWorld(), new GameProfile(null, "ComputerCraft"));
+				FakeTurtlePlayer fPlayer = new FakeTurtlePlayer(turtle.getWorld(), new GameProfile(null, "ComputerCraft"));
 				fPlayer.alignToTurtle(turtle);
 				MovingObjectPosition MOP = new MovingObjectPosition(turtle.getPosition().posX, turtle.getPosition().posY, turtle.getPosition().posZ, OPPOSITE[direction], Vec3.createVectorHelper(turtle.getPosition().posX, turtle.getPosition().posY, turtle.getPosition().posZ));
 				Block block = turtle.getWorld().getBlock(MOP.blockX, MOP.blockY, MOP.blockZ);
