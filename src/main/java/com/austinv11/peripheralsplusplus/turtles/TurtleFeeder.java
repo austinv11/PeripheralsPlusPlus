@@ -42,8 +42,7 @@ public class TurtleFeeder implements ITurtleUpgrade {
 
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
-		//return getCraftingItem().getIconIndex();
-		return ModItems.feederUpgrade.getSimpleIcon();
+		return ModItems.feederUpgrade.getIconIndex(new ItemStack(ModItems.feederUpgrade));
 	}
 
 	@Override

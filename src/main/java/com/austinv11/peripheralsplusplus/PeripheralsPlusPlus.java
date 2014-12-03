@@ -87,10 +87,9 @@ public class PeripheralsPlusPlus {
 		if (Loader.isModLoaded("factorization") || Loader.isModLoaded("JABBA"))
 			registerUpgrade(new TurtleBarrel());
 		registerUpgrade(new TurtleOreDictionary());
-		//if (TurtleWrench.isUsable())
-		//	registerUpgrade(new TurtleWrench());
 		registerUpgrade(new TurtleEnvironmentScanner());
 		registerUpgrade(new TurtleFeeder());
+		registerUpgrade(new TurtleShear());
 		proxy.registerRenderers();
 		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, instance, 64, 20, true);

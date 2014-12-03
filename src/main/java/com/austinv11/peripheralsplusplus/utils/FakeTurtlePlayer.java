@@ -28,13 +28,14 @@ public class FakeTurtlePlayer extends FakePlayer {
 	}
 
 	public void addToInv(ITurtleAccess turtle, ItemStack stack) {
-		boolean drop = false;
+		boolean drop = true;
 		IInventory inv = turtle.getInventory();
 		ChunkCoordinates coords = turtle.getPosition();
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack currentStack = inv.getStackInSlot(i);
 			if (currentStack == null) {
-				inv.setInventorySlotContents(i, stack.copy());
+				inv.setInventorySlotContents(i, stack);
+				drop = false;
 				break;
 			}
 			if (currentStack.isStackable() && currentStack.isItemEqual(stack)) {
@@ -46,12 +47,14 @@ public class FakeTurtlePlayer extends FakePlayer {
 				} else {
 					currentStack.stackSize += stack.stackSize;
 					stack.stackSize = 0;
+					drop = false;
+					break;
 				}
 			}
 		}
 		if (drop) {
 			int dir = turtle.getDirection();
-			turtle.getWorld().spawnEntityInWorld(new EntityItem(turtle.getWorld(), coords.posX+Facing.offsetsXForSide[dir], coords.posY+Facing.offsetsYForSide[dir], coords.posZ+Facing.offsetsZForSide[dir], stack));
+			turtle.getWorld().spawnEntityInWorld(new EntityItem(turtle.getWorld(), coords.posX+Facing.offsetsXForSide[dir], coords.posY+Facing.offsetsYForSide[dir]+1, coords.posZ+Facing.offsetsZForSide[dir], stack.copy()));
 		}
 	}
 

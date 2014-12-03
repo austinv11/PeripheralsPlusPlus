@@ -20,7 +20,7 @@ public class Config {
 	public static boolean enableBarrelTurtle = true;
 	public static boolean enableOreDictionary = true;
 	public static boolean oreDictionaryMessage = false;
-	public static boolean enableWrenchTurtle = true;
+	public static boolean enableShearTurtle = true;
 	public static boolean enableAnalyzers = true;
 	public static boolean enableTurtleTeleporter = true;
 	public static double teleporterPenalty = 2.0;

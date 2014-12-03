@@ -45,7 +45,7 @@ public class ConfigurationHandler {
 			boolean enableBarrelTurtle = config.get("Barrel Turtle", "enableBarrelTurtle", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
 			boolean enableOreDictionary = config.get("OreDictionary Block", "enableOreDictionary", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
 			boolean oreDictionaryMessage = config.get("OreDictionary Block", "oreDictionaryMessage", false, "If enabled, the Ore Dictionary peripheral will display a chat message with the Ore Dictionary entries - useful for debugging").getBoolean(false);
-			//boolean enableWrenchTurtle = config.get("Wrench Turtle", "enableWrenchTurtle", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
+			boolean enableShearTurtle = config.get("Shearing Turtle", "enableShearTurtle", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
 			boolean enableAnalyzers = config.get("Forestry Analyzers", "enableAnalyzers", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
 			boolean enableTurtleTeleporter = config.get("Turtle Teleporters", "enableTurtleTeleporter", true, "If disabled, the recipe will be disabled").getBoolean(true);
 			double teleporterPenalty = config.get("Turtle Teleporters", "teleporterPenalty", 2.0, "Fuel penalty for using a Turtle Teleporter. For example, 1.0 is a 0% penalty, or 2.0 (default) is a 100% penalty").getDouble(2.0);
@@ -56,7 +56,7 @@ public class ConfigurationHandler {
 			boolean enableVillagers = config.get("Villagers", "enableVillagers", true, "Whether to enable villagers from this mod").getBoolean(true);
 			reSyncConfig(enableChatBox, logCoords, readRange, sayRange, sayRate, allowUnlimitedVertical,
 					enablePlayerSensor, additionalMethods, sensorRange, enableRFCharger, fuelRF, enableNavigationTurtle,
-					enableXPTurtle, enableBarrelTurtle, enableOreDictionary, oreDictionaryMessage, /*enableWrenchTurtle*/false,
+					enableXPTurtle, enableBarrelTurtle, enableOreDictionary, oreDictionaryMessage, enableShearTurtle,
 					enableAnalyzers, enableTurtleTeleporter, teleporterPenalty, enableEnvironmentScanner, enableFeederTurtle,
 					enableSatellites, dims, enableVillagers);
 		}catch (Exception e){//Log exception
@@ -88,7 +88,7 @@ public class ConfigurationHandler {
 		Config.enableBarrelTurtle = v13;
 		Config.enableOreDictionary = v14;
 		Config.oreDictionaryMessage = v15;
-		Config.enableWrenchTurtle = v16;
+		Config.enableShearTurtle = v16;
 		Config.enableAnalyzers = v17;
 		Config.enableTurtleTeleporter = v18;
 		Config.teleporterPenalty = v19;
