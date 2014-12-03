@@ -15,6 +15,7 @@ import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
 import com.austinv11.peripheralsplusplus.turtles.*;
 import com.austinv11.peripheralsplusplus.utils.ConfigurationHandler;
+import com.austinv11.peripheralsplusplus.utils.Logger;
 import com.austinv11.peripheralsplusplus.villagers.TradeHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -68,30 +69,44 @@ public class PeripheralsPlusPlus {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 		ModItems.init();//Inits satellite upgrades
 		Recipes.init();
+		Logger.info("Registering peripherals...");
 		proxy.registerTileEntities();
 		ComputerCraftAPI.registerPeripheralProvider(new BlockChatBox());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockPlayerSensor());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockOreDictionary());
 		if (Loader.isModLoaded("Forestry")) {
+			Logger.info("Forestry is loaded! Registering analyzer peripherals...");
 			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerBee());
 			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerTree());
 			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerButterfly());
+		} else {
+			Logger.info("Forestry not found, skipping analyzer peripherals");
 		}
 		ComputerCraftAPI.registerPeripheralProvider(new BlockTeleporter());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockTeleporterT2());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockEnvironmentScanner());
+		Logger.info("Registering turtle upgrades...");
 		registerUpgrade(new TurtleChatBox());
 		registerUpgrade(new TurtlePlayerSensor());
 		registerUpgrade(new TurtleCompass());
 		registerUpgrade(new TurtleXP());
-		if (Loader.isModLoaded("factorization") || Loader.isModLoaded("JABBA"))
+		if (Loader.isModLoaded("factorization") || Loader.isModLoaded("JABBA")) {
+			Logger.info("A mod that adds barrels is loaded! Registering the barrel turtle upgrade...");
 			registerUpgrade(new TurtleBarrel());
+		} else {
+			Logger.info("No barrel-adding mods found, skipping the barrel turtle upgrade");
+		}
 		registerUpgrade(new TurtleOreDictionary());
 		registerUpgrade(new TurtleEnvironmentScanner());
 		registerUpgrade(new TurtleFeeder());
 		registerUpgrade(new TurtleShear());
-		if (Loader.isModLoaded("ProjRed|Exploration"))
+		if (Loader.isModLoaded("ProjRed|Exploration")) {
+			Logger.info("Project Red Exploration is loaded! Registering Project Red tools turtle upgrades...");
 			registerProjRedUpgrades();
+		} else {
+			Logger.info("Project Red Exploration not found, skipping Project Red tools turtle upgrades");
+		}
+		Logger.info("All peripherals and turtle upgrades registered!");
 		proxy.registerRenderers();
 		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, instance, 64, 20, true);
