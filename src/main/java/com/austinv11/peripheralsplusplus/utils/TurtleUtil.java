@@ -3,12 +3,16 @@ package com.austinv11.peripheralsplusplus.utils;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.util.Facing;
 import net.minecraft.util.Vec3;
 import net.minecraftforge.common.IShearable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TurtleUtil {
@@ -50,9 +54,48 @@ public class TurtleUtil {
 		return returnVal;
 	}
 
-	public static void addItemListToInv(List<ItemStack> items, ITurtleAccess turtle, FakeTurtlePlayer player) {
+	public static void addItemListToInv(List<ItemStack> items, ITurtleAccess turtle) {
 		for (ItemStack item : items) {
-			player.addToInv(turtle, item);
+			addToInv(turtle, item);
+		}
+	}
+
+	public static ArrayList<ItemStack> entityItemsToItemStack(ArrayList<EntityItem> entities) {
+		ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
+		for (EntityItem e : entities) {
+			stacks.add(e.getEntityItem());
+		}
+		return stacks;
+	}
+
+	public static void addToInv(ITurtleAccess turtle, ItemStack stack) {
+		boolean drop = true;
+		IInventory inv = turtle.getInventory();
+		ChunkCoordinates coords = turtle.getPosition();
+		for (int i = 0; i < inv.getSizeInventory(); i++) {
+			ItemStack currentStack = inv.getStackInSlot(i);
+			if (currentStack == null) {
+				inv.setInventorySlotContents(i, stack);
+				drop = false;
+				break;
+			}
+			if (currentStack.isStackable() && currentStack.isItemEqual(stack)) {
+				int space = currentStack.getMaxStackSize() - currentStack.stackSize;
+				if (stack.stackSize > space) {
+					currentStack.stackSize = currentStack.getMaxStackSize();
+					stack.stackSize -= space;
+					drop = true;
+				} else {
+					currentStack.stackSize += stack.stackSize;
+					stack.stackSize = 0;
+					drop = false;
+					break;
+				}
+			}
+		}
+		if (drop) {
+			int dir = turtle.getDirection();
+			turtle.getWorld().spawnEntityInWorld(new EntityItem(turtle.getWorld(), coords.posX+Facing.offsetsXForSide[dir], coords.posY+Facing.offsetsYForSide[dir]+1, coords.posZ+Facing.offsetsZForSide[dir], stack.copy()));
 		}
 	}
 }

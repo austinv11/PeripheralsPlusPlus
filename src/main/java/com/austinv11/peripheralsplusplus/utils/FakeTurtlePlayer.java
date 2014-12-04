@@ -3,12 +3,8 @@ package com.austinv11.peripheralsplusplus.utils;
 import com.mojang.authlib.GameProfile;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.Facing;
 import net.minecraft.world.WorldServer;
 import net.minecraftforge.common.util.FakePlayer;
 
@@ -25,37 +21,6 @@ public class FakeTurtlePlayer extends FakePlayer {
 		this((WorldServer) turtle.getWorld());
 		ChunkCoordinates position = turtle.getPosition();
 		setPosition(position.posX + 0.5D, position.posY + 0.5D, position.posZ + 0.5D);
-	}
-
-	public void addToInv(ITurtleAccess turtle, ItemStack stack) {
-		boolean drop = true;
-		IInventory inv = turtle.getInventory();
-		ChunkCoordinates coords = turtle.getPosition();
-		for (int i = 0; i < inv.getSizeInventory(); i++) {
-			ItemStack currentStack = inv.getStackInSlot(i);
-			if (currentStack == null) {
-				inv.setInventorySlotContents(i, stack);
-				drop = false;
-				break;
-			}
-			if (currentStack.isStackable() && currentStack.isItemEqual(stack)) {
-				int space = currentStack.getMaxStackSize() - currentStack.stackSize;
-				if (stack.stackSize > space) {
-					currentStack.stackSize = currentStack.getMaxStackSize();
-					stack.stackSize -= space;
-					drop = true;
-				} else {
-					currentStack.stackSize += stack.stackSize;
-					stack.stackSize = 0;
-					drop = false;
-					break;
-				}
-			}
-		}
-		if (drop) {
-			int dir = turtle.getDirection();
-			turtle.getWorld().spawnEntityInWorld(new EntityItem(turtle.getWorld(), coords.posX+Facing.offsetsXForSide[dir], coords.posY+Facing.offsetsYForSide[dir]+1, coords.posZ+Facing.offsetsZForSide[dir], stack.copy()));
-		}
 	}
 
 	@Override

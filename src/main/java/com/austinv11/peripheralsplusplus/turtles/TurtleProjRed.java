@@ -2,14 +2,26 @@ package com.austinv11.peripheralsplusplus.turtles;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
+import com.austinv11.peripheralsplusplus.utils.FakeTurtlePlayer;
+import com.austinv11.peripheralsplusplus.utils.TurtleUtil;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.IIcon;
-import net.minecraft.world.World;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
+
+import java.util.HashMap;
+import java.util.List;
 
 public abstract class TurtleProjRed implements ITurtleUpgrade{
+
+	public static HashMap<Entity, ITurtleAccess> map = new HashMap<Entity, ITurtleAccess>();
 
 	public abstract int getID();
 
@@ -57,10 +69,21 @@ public abstract class TurtleProjRed implements ITurtleUpgrade{
 	public TurtleCommandResult useTool(ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, int direction) {
 		if (!Config.enableProjectRedTurtles)
 			return TurtleCommandResult.failure("Project Red turtles have been disabled");
-		World world = turtle.getWorld();
+		FakeTurtlePlayer player = new FakeTurtlePlayer(turtle);
 		switch (verb) {
 			case Attack:
-
+				List<Entity> entities = TurtleUtil.getEntitiesNearTurtle(turtle, player, direction);
+				Entity ent = TurtleUtil.getClosestEntity(entities, player);
+				if (ent != null)
+					if (ent.canAttackWithItem() && !ent.hitByEntity(player)) {
+						map.put(ent, null);
+						double damage = player.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
+						damage *= ((AttributeModifier)getItem().getItem().getAttributeModifiers(getItem()).get(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName())).getAmount();
+						if(damage > 0.0F && ent.attackEntityFrom(DamageSource.causePlayerDamage(player), (float)damage)) {
+							return TurtleCommandResult.success();
+						}
+					}
+				return TurtleCommandResult.failure();
 			case Dig:
 
 				break;
@@ -101,6 +124,17 @@ public abstract class TurtleProjRed implements ITurtleUpgrade{
 		}
 		private ToolMaterial(String s) {
 			name = s;
+		}
+	}
+
+	public static class Listener {
+
+		@SubscribeEvent
+		public void onDrops(LivingDropsEvent event) {
+			if (map.containsKey(event.entity)) {
+				TurtleUtil.addItemListToInv(TurtleUtil.entityItemsToItemStack(event.drops), map.get(event.entity));
+				map.remove(event.entity);
+			}
 		}
 	}
 }

@@ -54,14 +54,14 @@ public class TurtleShear implements ITurtleUpgrade {
 				Entity ent = TurtleUtil.getClosestEntity(entities, player);
 				if (ent != null)
 					if (((IShearable) ent).isShearable(new ItemStack(Items.shears), ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ)) {
-						TurtleUtil.addItemListToInv(((IShearable) ent).onSheared(new ItemStack(Items.shears), ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ, 0), turtle, player);
+						TurtleUtil.addItemListToInv(((IShearable) ent).onSheared(new ItemStack(Items.shears), ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ, 0), turtle);
 						return TurtleCommandResult.success();
 					}
 				return TurtleCommandResult.failure();
 			case Dig:
 				List<ItemStack> items = TurtleUtil.harvestBlock(turtle, player, direction, new ItemStack(Items.shears));
 				if (items != null) {
-					TurtleUtil.addItemListToInv(items, turtle, player);
+					TurtleUtil.addItemListToInv(items, turtle);
 					return TurtleCommandResult.success();
 				}
 				return TurtleCommandResult.failure();
