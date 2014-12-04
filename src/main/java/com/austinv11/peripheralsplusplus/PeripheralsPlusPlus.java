@@ -132,21 +132,246 @@ public class PeripheralsPlusPlus {
 		VillagerRegistry.instance().registerVillageTradeHandler(VILLAGER_ID, new TradeHandler());
 	}
 
-	private void registerProjRedUpgrades() {
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolType.AXE, 0));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolType.HOE, 1));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolType.PICKAXE, 2));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolType.SHOVEL, 3));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolType.SWORD, 4));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolType.AXE, 5));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolType.HOE, 6));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolType.PICKAXE, 7));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolType.SHOVEL, 8));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolType.SWORD, 9));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.SAPPHIRE, TurtleProjRed.ToolType.AXE, 10));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.SAPPHIRE, TurtleProjRed.ToolType.HOE, 11));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.SAPPHIRE, TurtleProjRed.ToolType.PICKAXE, 12));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.SAPPHIRE, TurtleProjRed.ToolType.SHOVEL, 13));
-		registerUpgrade(new TurtleProjRed(TurtleProjRed.ToolMaterial.SAPPHIRE, TurtleProjRed.ToolType.SWORD, 14));
+	private void registerProjRedUpgrades() { //I'm so sorry
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 0;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.AXE;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.PERIDOT;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 1;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.HOE;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.PERIDOT;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 2;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.PICKAXE;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.PERIDOT;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 3;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.SHOVEL;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.PERIDOT;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 4;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.SWORD;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.PERIDOT;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 5;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.AXE;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.RUBY;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 6;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.HOE;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.RUBY;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 7;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.PICKAXE;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.RUBY;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 8;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.SHOVEL;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.RUBY;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 9;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.SWORD;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.RUBY;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 10;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.AXE;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.SAPPHIRE;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 11;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.HOE;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.SAPPHIRE;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 12;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.PICKAXE;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.SAPPHIRE;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 13;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.SHOVEL;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.SAPPHIRE;
+			}
+		});
+		registerUpgrade(new TurtleProjRed() {
+			@Override
+			public int getID() {
+				return 14;
+			}
+
+			@Override
+			public ToolType getToolType() {
+				return ToolType.SWORD;
+			}
+
+			@Override
+			public ToolMaterial getToolMaterial() {
+				return ToolMaterial.SAPPHIRE;
+			}
+		});
 	}
 }

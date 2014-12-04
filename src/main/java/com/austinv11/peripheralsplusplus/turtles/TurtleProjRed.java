@@ -2,44 +2,23 @@ package com.austinv11.peripheralsplusplus.turtles;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.utils.IconManager;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
-public class TurtleProjRed implements ITurtleUpgrade, IconManager.IIconNeeded{
+public abstract class TurtleProjRed implements ITurtleUpgrade{
 
-	private int id = 0;
-	private ToolType type = ToolType.UNKNOWN;
-	private ToolMaterial material = ToolMaterial.UNKNOWN;
-	private ItemStack item = null;
-	private IIcon icon;
+	public abstract int getID();
 
-	public TurtleProjRed(ToolMaterial material, ToolType type, int id) {
-		setID(id);
-		setType(type);
-		setMaterial(material);
-		setItem(getProjRedTool(type, material));
-	}
+	public abstract ToolType getToolType();
 
-	public void setID(int id) {
-		this.id = id;
-	}
+	public abstract ToolMaterial getToolMaterial();
 
-	public void setType(ToolType type){
-		this.type = type;
-	}
-
-	public void setItem(ItemStack stack) {
-		this.item = stack;
-	}
-
-	public void setMaterial(ToolMaterial material) {
-		this.material = material;
+	public ItemStack getItem() {
+		return getProjRedTool(getToolType(), getToolMaterial());
 	}
 
 	public static ItemStack getProjRedTool(ToolType toolType, ToolMaterial toolMaterial) {
@@ -49,12 +28,12 @@ public class TurtleProjRed implements ITurtleUpgrade, IconManager.IIconNeeded{
 
 	@Override
 	public int getUpgradeID() {
-		return Reference.BASE_PROJ_RED_UPGRADE + id;
+		return Reference.BASE_PROJ_RED_UPGRADE + getID();
 	}
 
 	@Override
 	public String getUnlocalisedAdjective() {
-		return type.getAdj();
+		return getToolType().getAdj();
 	}
 
 	@Override
@@ -65,7 +44,7 @@ public class TurtleProjRed implements ITurtleUpgrade, IconManager.IIconNeeded{
 	@Override
 	public ItemStack getCraftingItem() {
 		if (Config.enableProjectRedTurtles)
-			return item;
+			return getItem();
 		return null;
 	}
 
@@ -91,20 +70,12 @@ public class TurtleProjRed implements ITurtleUpgrade, IconManager.IIconNeeded{
 
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
-		return icon;
+		return getItem().getItem().getIconIndex(getItem());
 	}
 
 	@Override
 	public void update(ITurtleAccess turtle, TurtleSide side) {}
 
-	@Override
-	public void registerIcon(IIconRegister register) {
-		icon = register.registerIcon("ProjRed|Exploration:"+getUnwrappedUnlocalizedName(item.getUnlocalizedName()));
-	}
-
-	protected String getUnwrappedUnlocalizedName(String unlocalizedName){//Removes the "item." from the item name
-		return unlocalizedName.substring(unlocalizedName.indexOf(".")+1);
-	}
 
 	public static enum ToolType {
 		SWORD("upgrade.minecraft:diamond_sword.adjective", "sword"),AXE("upgrade.minecraft:diamond_axe.adjective", "axe"),SHOVEL("upgrade.minecraft:diamond_shovel.adjective", "shovel"),PICKAXE("upgrade.minecraft:diamond_pickaxe.adjective", "pickaxe"),HOE("upgrade.minecraft:diamond_hoe.adjective", "hoe"),UNKNOWN("ERROR", "ERROR");
