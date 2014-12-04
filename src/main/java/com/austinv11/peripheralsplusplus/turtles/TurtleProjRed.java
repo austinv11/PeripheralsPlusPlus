@@ -4,15 +4,16 @@ import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.utils.FakeTurtlePlayer;
 import com.austinv11.peripheralsplusplus.utils.TurtleUtil;
+import com.austinv11.peripheralsplusplus.utils.Util;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.Facing;
 import net.minecraft.util.IIcon;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 
@@ -76,17 +77,34 @@ public abstract class TurtleProjRed implements ITurtleUpgrade{
 				Entity ent = TurtleUtil.getClosestEntity(entities, player);
 				if (ent != null)
 					if (ent.canAttackWithItem() && !ent.hitByEntity(player)) {
-						map.put(ent, null);
+						map.put(ent, turtle);
 						double damage = player.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
-						damage *= ((AttributeModifier)getItem().getItem().getAttributeModifiers(getItem()).get(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName())).getAmount();
+						damage *= Util.getDamageAttribute(getItem());
 						if(damage > 0.0F && ent.attackEntityFrom(DamageSource.causePlayerDamage(player), (float)damage)) {
 							return TurtleCommandResult.success();
 						}
 					}
 				return TurtleCommandResult.failure();
 			case Dig:
-
-				break;
+				if (getToolType() == ToolType.HOE) {
+					int x = turtle.getPosition().posX+Facing.offsetsXForSide[direction];
+					int y = turtle.getPosition().posY+Facing.offsetsYForSide[direction];
+					int z = turtle.getPosition().posZ+Facing.offsetsZForSide[direction];
+					float hitX = 0.5F + (float)Facing.offsetsXForSide[direction] * 0.5F;
+					float hitY = 0.5F + (float)Facing.offsetsYForSide[direction] * 0.5F;
+					float hitZ = 0.5F + (float)Facing.offsetsZForSide[direction] * 0.5F;
+					if(Math.abs(hitY - 0.5F) < 0.01F)
+						hitY = 0.45F;
+					if (getItem().getItem().onItemUse(getItem(), player, turtle.getWorld(), x, y, z, Facing.oppositeSide[direction], hitX, hitY, hitZ))
+						return TurtleCommandResult.success();
+				}else {
+					List<ItemStack> items = TurtleUtil.harvestBlock(turtle, player, direction, getItem());
+					if (items != null) {
+						TurtleUtil.addItemListToInv(items, turtle);
+						return TurtleCommandResult.success();
+					}
+				}
+				return TurtleCommandResult.failure();
 		}
 		return TurtleCommandResult.failure("An unknown error has occurred, please tell the mod author");
 	}
@@ -133,6 +151,7 @@ public abstract class TurtleProjRed implements ITurtleUpgrade{
 		public void onDrops(LivingDropsEvent event) {
 			if (map.containsKey(event.entity)) {
 				TurtleUtil.addItemListToInv(TurtleUtil.entityItemsToItemStack(event.drops), map.get(event.entity));
+				event.setCanceled(true);
 				map.remove(event.entity);
 			}
 		}

@@ -1,6 +1,9 @@
 package com.austinv11.peripheralsplusplus.utils;
 
 import com.austinv11.peripheralsplusplus.reference.Reference;
+import com.google.common.collect.Multimap;
+import net.minecraft.entity.SharedMonsterAttributes;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -72,5 +75,17 @@ public class Util {
 
 	public static NBTTagCompound writeToBookNBT(String title, List<String> pageText) {
 		return writeToBookNBT(title, Reference.MOD_NAME, pageText);
+	}
+
+	public static double getDamageAttribute(ItemStack item) {
+		double val = 0;
+		Multimap multimap = item.getItem().getAttributeModifiers(item);
+		if (multimap.containsKey(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName()))
+			for (Object o : multimap.get(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName()))
+				if (o instanceof AttributeModifier) {
+					val = ((AttributeModifier) o).getAmount();
+					break;
+				}
+		return val;
 	}
 }

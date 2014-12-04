@@ -60,6 +60,7 @@ public class PeripheralsPlusPlus {
 		proxy.iconManagerInit();
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
+		MinecraftForge.EVENT_BUS.register(new TurtleProjRed.Listener());
 		ModItems.preInit();
 		ModBlocks.init();
 	}
