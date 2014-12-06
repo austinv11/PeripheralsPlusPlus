@@ -87,14 +87,14 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[] {"teleport","getLinks", "setName"};
+		return new String[] {"teleport", "tp", "getLinks", "setName"};
 	}
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 		if (!Config.enableTurtleTeleporter)
 			throw new LuaException("Turtle teleporters have been disabled");
-		if (method == 0) {
+		if (method == 0 || method == 1) {
 			if (arguments.length > 0 && !(arguments[0] instanceof Double))
 				throw new LuaException("Bad argument #1 (expected number)");
 			int index = arguments.length > 0 ? (int)Math.floor((Double)arguments[0]) - 1 : 0;
@@ -144,7 +144,7 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 				//teleporter.onTeleport((byte)flag);
 			}
 			return new Object[]{result};
-		}else if (method == 1) {
+		}else if (method == 2) {
 			HashMap<Integer, Object> map1 = new HashMap<Integer,Object>();
 			for (int i = 0; i < links.size(); i++) {
 				HashMap<String,Object> map2 = new HashMap<String,Object>();
@@ -156,7 +156,7 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 				map1.put(i, map2.clone());
 			}
 			return new Object[]{map1};
-		}else if (method == 2) {
+		}else if (method == 3) {
 			if (!(arguments.length >= 1) || !(arguments[0] instanceof String))
 				throw new LuaException("Bad arguement #1 (expected string)");
 			this.name = (String) arguments[0];
