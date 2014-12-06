@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus.entities;
 
-import com.austinv11.peripheralsplusplus.init.ModItems;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -55,7 +54,7 @@ public abstract class EntityInventory extends Entity implements IInventory {
 
 	@Override
 	public ItemStack getStackInSlot(int p_70301_1_) {
-		return items != null ? null : items[p_70301_1_];
+		return items != null ? items[p_70301_1_] : null;
 	}
 
 	@Override
@@ -137,6 +136,5 @@ public abstract class EntityInventory extends Entity implements IInventory {
 	public void onKillEntity(EntityLivingBase p_70074_1_) {
 		for (ItemStack i : items)
 			this.entityDropItem(i, 0.0F);
-		this.entityDropItem(new ItemStack(ModItems.rocket), 0.0F);
 	}
 }

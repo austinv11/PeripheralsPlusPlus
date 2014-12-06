@@ -8,6 +8,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -128,5 +129,11 @@ public class EntityRocket extends EntityInventory {
 	@SideOnly(Side.CLIENT)
 	public void setPositionAndRotation2(double par1, double par3, double par5, float par7, float par8, int par9) {
 		this.setRotation(par7, par8);
+	}
+
+	@Override
+	public void onKillEntity(EntityLivingBase p_70074_1_) {
+		super.onKillEntity(p_70074_1_);
+		this.entityDropItem(new ItemStack(ModItems.rocket), 0.0F);
 	}
 }
