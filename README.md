@@ -1,4 +1,4 @@
-PeripheralsPlusPlus [![Build Status](http://167.114.66.98:8080/job/Peripherals++/5/badge/icon)](http://167.114.66.98:8080/job/Peripherals++/5/)
+PeripheralsPlusPlus [![Build Status](http://167.114.66.98:8080/job/Peripherals++/badge/icon)](http://167.114.66.98:8080/job/Peripherals++/)
 ===================
 
 A pseudo-port of miscperipherals, with other stuff as well!
