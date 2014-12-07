@@ -37,6 +37,10 @@ peripheralsplusplus.inv.analyzer=Analyzer
 peripheralsplusplus.inv.rocket.0=Rocket
 peripheralsplusplus.inv.rocket.1=Fuel:
 peripheralsplusplus.inv.rocket.2=Oxidizer:
+peripheralsplusplus.button.rocket=Launch!
+
+#Chat Messages
+peripheralsplusplus.chat.launchFailure=You cannot launch the rocket!
 
 #Lore Books
 peripheralsplusplus.lore.1.title=The Journey of the First Programmer; Volume 1

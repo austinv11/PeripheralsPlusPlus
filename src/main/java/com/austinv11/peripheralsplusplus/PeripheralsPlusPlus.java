@@ -55,6 +55,7 @@ public class PeripheralsPlusPlus {
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
 		proxy.iconManagerInit();
+		proxy.prepareGuis();
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
 		MinecraftForge.EVENT_BUS.register(new TurtleProjRed.Listener());

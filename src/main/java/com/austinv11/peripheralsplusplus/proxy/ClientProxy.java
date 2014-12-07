@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.proxy;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
+import com.austinv11.peripheralsplusplus.client.gui.GuiRocket;
 import com.austinv11.peripheralsplusplus.client.models.RenderRocket;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.reference.Reference;
@@ -28,5 +29,10 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void registerRenderers() {
 		RenderingRegistry.registerEntityRenderingHandler(EntityRocket.class, new RenderRocket());
+	}
+
+	@Override
+	public void prepareGuis() {
+		MinecraftForge.EVENT_BUS.register(new GuiRocket.EventHandler());
 	}
 }

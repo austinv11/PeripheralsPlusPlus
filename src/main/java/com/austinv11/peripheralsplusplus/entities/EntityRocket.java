@@ -139,10 +139,7 @@ public class EntityRocket extends EntityInventory implements IEntityAdditionalSp
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
-		if (oxidizer != 0 && fuel != 0 && isSkyClear() && items[0] != null && isItemValidForSlot(0, items[0]) && items[1] != null && isItemValidForSlot(1, items[1]) && items[2] != null && isItemValidForSlot(2, items[2]))
-			isUsable = true;
-		else
-			isUsable = false;
+		isUsable = oxidizer != 0 && fuel != 0 && isSkyClear() && items[0] != null && isItemValidForSlot(0, items[0]);
 		if (items[1] != null && isItemValidForSlot(1, items[1])) {
 			fuel += TileEntityFurnace.getItemBurnTime(new ItemStack(items[1].getItem()))/200;
 			if (items[1].stackSize == 1)
@@ -165,11 +162,15 @@ public class EntityRocket extends EntityInventory implements IEntityAdditionalSp
 		this.setRotation(par7, par8);
 	}
 
-	private boolean isSkyClear() {
+	public boolean isSkyClear() {
 		boolean skyClear = true;
 		for (int i = (int)Math.floor(this.posY)-1; i < 255; i++)
 			skyClear = this.worldObj.isAirBlock((int)Math.floor(this.posX), i, (int)Math.floor(this.posZ));
 		return skyClear;
+	}
+
+	public void setActive() {
+
 	}
 
 	@Override
