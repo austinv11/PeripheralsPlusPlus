@@ -3,19 +3,22 @@ package com.austinv11.peripheralsplusplus.entities;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.network.ByteBufUtils;
+import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-public class EntityRocket extends EntityInventory {
+public class EntityRocket extends EntityInventory implements IEntityAdditionalSpawnData{
 
 	protected int damage = 0;
 	public int fuel = 0;
@@ -57,7 +60,7 @@ public class EntityRocket extends EntityInventory {
 			case 0:
 				return p_94041_2_.isItemEqual(new ItemStack(ModItems.satellite)) && items[p_94041_1_] != null && p_94041_2_.stackSize == 1;
 			case 1:
-				return GameRegistry.getFuelValue(p_94041_2_) > 0;
+				return TileEntityFurnace.isItemFuel(p_94041_2_);
 			case 2:
 				return p_94041_2_.isItemEqual(new ItemStack(Items.gunpowder));
 			default:
@@ -141,7 +144,7 @@ public class EntityRocket extends EntityInventory {
 		else
 			isUsable = false;
 		if (items[1] != null && isItemValidForSlot(1, items[1])) {
-			fuel += GameRegistry.getFuelValue(new ItemStack(items[1].getItem()));
+			fuel += TileEntityFurnace.getItemBurnTime(new ItemStack(items[1].getItem()))/200;
 			if (items[1].stackSize == 1)
 				items[1] = null;
 			else
@@ -164,8 +167,23 @@ public class EntityRocket extends EntityInventory {
 
 	private boolean isSkyClear() {
 		boolean skyClear = true;
-		for (int i = (int)Math.floor(this.posY--); i < 255; i++)
+		for (int i = (int)Math.floor(this.posY)-1; i < 255; i++)
 			skyClear = this.worldObj.isAirBlock((int)Math.floor(this.posX), i, (int)Math.floor(this.posZ));
 		return skyClear;
+	}
+
+	@Override
+	public void writeSpawnData(ByteBuf buffer) {
+		NBTTagCompound tag = new NBTTagCompound();
+		tag.setInteger("fuel", fuel);
+		tag.setInteger("oxidizer", oxidizer);
+		ByteBufUtils.writeTag(buffer, tag);
+	}
+
+	@Override
+	public void readSpawnData(ByteBuf additionalData) {
+		NBTTagCompound tag = ByteBufUtils.readTag(additionalData);
+		fuel = tag.getInteger("fuel");
+		oxidizer = tag.getInteger("oxidizer");
 	}
 }
