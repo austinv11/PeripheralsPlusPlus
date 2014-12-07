@@ -1,7 +1,6 @@
 package com.austinv11.peripheralsplusplus.entities;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -131,10 +130,4 @@ public abstract class EntityInventory extends Entity implements IInventory {
 
 	@Override
 	public abstract boolean interactFirst(EntityPlayer p_130002_1_);
-
-	@Override
-	public void onKillEntity(EntityLivingBase p_70074_1_) {
-		for (ItemStack i : items)
-			this.entityDropItem(i, 0.0F);
-	}
 }
