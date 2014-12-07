@@ -1,10 +1,20 @@
 package com.austinv11.peripheralsplusplus.proxy;
 
+import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.tiles.*;
+import com.austinv11.peripheralsplusplus.villagers.TradeHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.common.registry.VillagerRegistry;
 
 public class CommonProxy {
+
+	public void setupVillagers() {
+		while (VillagerRegistry.getRegisteredVillagers().contains(PeripheralsPlusPlus.VILLAGER_ID)) //Dynamic villager ids ftw?
+			PeripheralsPlusPlus.VILLAGER_ID++;
+		VillagerRegistry.instance().registerVillagerId(PeripheralsPlusPlus.VILLAGER_ID);
+		VillagerRegistry.instance().registerVillageTradeHandler(PeripheralsPlusPlus.VILLAGER_ID, new TradeHandler());
+	}
 
 	public void registerTileEntities() {
 		GameRegistry.registerTileEntity(TileEntityChatBox.class, TileEntityChatBox.publicName);

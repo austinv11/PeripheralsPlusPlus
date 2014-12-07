@@ -16,7 +16,6 @@ import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
 import com.austinv11.peripheralsplusplus.turtles.*;
 import com.austinv11.peripheralsplusplus.utils.ConfigurationHandler;
 import com.austinv11.peripheralsplusplus.utils.Logger;
-import com.austinv11.peripheralsplusplus.villagers.TradeHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -26,10 +25,8 @@ import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.EntityRegistry;
-import cpw.mods.fml.common.registry.VillagerRegistry;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
@@ -112,7 +109,7 @@ public class PeripheralsPlusPlus {
 		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, instance, 64, 20, true);
 		if (Config.enableVillagers)
-			setupVillagers();
+			proxy.setupVillagers();
 	}
 
 	@Mod.EventHandler
@@ -123,14 +120,6 @@ public class PeripheralsPlusPlus {
 	public static void registerUpgrade(ITurtleUpgrade u) {
 		ComputerCraftAPI.registerTurtleUpgrade(u);
 		CreativeTabPPP.upgrades.add(u);
-	}
-
-	private void setupVillagers() {
-		while (VillagerRegistry.getRegisteredVillagers().contains(VILLAGER_ID)) //Dynamic villager ids ftw?
-			VILLAGER_ID++;
-		VillagerRegistry.instance().registerVillagerId(VILLAGER_ID);
-		VillagerRegistry.instance().registerVillagerSkin(VILLAGER_ID, new ResourceLocation(Reference.MOD_ID.toLowerCase()+":textures/models/CCVillager.png"));
-		VillagerRegistry.instance().registerVillageTradeHandler(VILLAGER_ID, new TradeHandler());
 	}
 
 	private void registerProjRedUpgrades() { //I'm so sorry
