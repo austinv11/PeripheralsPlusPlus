@@ -20,6 +20,7 @@ public class GuiRocket extends GuiContainer {
 	public EntityRocket rocket;
 	private ResourceLocation backgroundimage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" + "textures/gui/guiRocket.png");
 	public EntityPlayer player;
+	private boolean isReady;
 
 	public GuiRocket(EntityPlayer player, World world, int x, int y, int z) {
 		super(new ContainerRocket(player, (EntityRocket)world.getEntityByID(x), 176, 166));
@@ -27,6 +28,7 @@ public class GuiRocket extends GuiContainer {
 		sizeY = 166;
 		rocket = (EntityRocket)world.getEntityByID(x);
 		this.player = player;
+		isReady = rocket.isUsable;
 	}
 
 	@Override
@@ -57,6 +59,19 @@ public class GuiRocket extends GuiContainer {
 	@Override
 	public boolean doesGuiPauseGame() {
 		return false;
+	}
+
+	@Override
+	public void updateScreen() {
+		if (isReady != rocket.isUsable) {
+			int x = (width-sizeX)/2;
+			int y = (height-sizeY)/2;
+			String color = Reference.Colors.GREEN;
+			if (!rocket.isUsable)
+				color = Reference.Colors.RED;
+			buttonList.set(0, new GuiButton(0/*id*/, x+63/*xpos*/, y+60/*ypos*/, 50 /*width*/, 20/*height*/, color+StatCollector.translateToLocal("peripheralsplusplus.button.rocket")));
+			isReady = rocket.isUsable;
+		}
 	}
 
 	public static class EventHandler {
