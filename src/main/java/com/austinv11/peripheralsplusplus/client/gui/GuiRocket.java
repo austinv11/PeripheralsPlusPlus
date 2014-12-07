@@ -28,7 +28,7 @@ public class GuiRocket extends GuiContainer {
 		sizeY = 166;
 		rocket = (EntityRocket)world.getEntityByID(x);
 		this.player = player;
-		isReady = rocket.isUsable;
+		isReady = rocket.getIsUsable();
 	}
 
 	@Override
@@ -40,9 +40,9 @@ public class GuiRocket extends GuiContainer {
 		drawTexturedModalRect(x, y, 0, 0, sizeX, sizeY);
 		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.rocket.0"), x+72, y+3, 0x313131);
 		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.rocket.1"), x+3, y+23, 0x313131);
-		fontRendererObj.drawString(rocket.fuel+"", x+3, y+33, 0x313131);
+		fontRendererObj.drawString(rocket.getFuel()+"", x+3, y+33, 0x313131);
 		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.rocket.2"), x+3, y+49, 0x313131);
-		fontRendererObj.drawString(rocket.oxidizer+"", x+3, y+59, 0x313131);
+		fontRendererObj.drawString(rocket.getOxidizer()+"", x+3, y+59, 0x313131);
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class GuiRocket extends GuiContainer {
 		int x = (width - sizeX) / 2;
 		int y = (height - sizeY) / 2;
 		String color = Reference.Colors.GREEN;
-		if (!rocket.isUsable)
+		if (!rocket.getIsUsable())
 			color = Reference.Colors.RED;
 		buttonList.add(new GuiButton(0/*id*/, x+63/*xpos*/, y+60/*ypos*/, 50 /*width*/, 20/*height*/, color+StatCollector.translateToLocal("peripheralsplusplus.button.rocket")));
 	}
@@ -63,14 +63,14 @@ public class GuiRocket extends GuiContainer {
 
 	@Override
 	public void updateScreen() {
-		if (isReady != rocket.isUsable) {
+		if (isReady != rocket.getIsUsable()) {
 			int x = (width-sizeX)/2;
 			int y = (height-sizeY)/2;
 			String color = Reference.Colors.GREEN;
-			if (!rocket.isUsable)
+			if (!rocket.getIsUsable())
 				color = Reference.Colors.RED;
 			buttonList.set(0, new GuiButton(0/*id*/, x+63/*xpos*/, y+60/*ypos*/, 50 /*width*/, 20/*height*/, color+StatCollector.translateToLocal("peripheralsplusplus.button.rocket")));
-			isReady = rocket.isUsable;
+			isReady = rocket.getIsUsable();
 		}
 	}
 
@@ -81,7 +81,7 @@ public class GuiRocket extends GuiContainer {
 			if (event.gui instanceof GuiRocket) {
 				GuiRocket rocket = (GuiRocket) event.gui;
 				if (event.button.id == 0) {
-					if (rocket.rocket.isUsable) {
+					if (rocket.rocket.getIsUsable()) {
 						rocket.player.closeScreen();
 						rocket.rocket.setActive();
 					}else {

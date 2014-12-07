@@ -3,11 +3,9 @@ package com.austinv11.peripheralsplusplus.entities;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import io.netty.buffer.ByteBuf;
+import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
@@ -18,18 +16,22 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-public class EntityRocket extends EntityInventory implements IEntityAdditionalSpawnData{
+public class EntityRocket extends EntityInventory{
 
 	protected int damage = 0;
-	public int fuel = 0;
-	public int oxidizer = 0;
-	public boolean isUsable = false;
+	public static int FUEL_ID = 2;
+	public static int OXIDIZER_ID = 3;
+	public static int IS_USABLE_ID = 4;
 
 	public EntityRocket(World p_i1582_1_) {
 		super(p_i1582_1_);
 		this.preventEntitySpawning = true;
 		this.ignoreFrustumCheck = true;
 		this.renderDistanceWeight = 5.0D;
+		DataWatcher data = this.getDataWatcher();
+		data.addObject(FUEL_ID, 0);
+		data.addObject(OXIDIZER_ID, 0);
+		data.addObject(IS_USABLE_ID, 0);
 	}
 
 	public EntityRocket(World p_i1582_1_, int x, int y, int z) {
@@ -37,6 +39,18 @@ public class EntityRocket extends EntityInventory implements IEntityAdditionalSp
 		this.posX = x;
 		this.posY = y;
 		this.posZ = z;
+	}
+
+	public int getFuel() {
+		return getDataWatcher().getWatchableObjectInt(FUEL_ID);
+	}
+
+	public int getOxidizer() {
+		return getDataWatcher().getWatchableObjectInt(OXIDIZER_ID);
+	}
+
+	public boolean getIsUsable() {
+		return getDataWatcher().getWatchableObjectInt(IS_USABLE_ID) == 1;
 	}
 
 	@Override
@@ -80,15 +94,16 @@ public class EntityRocket extends EntityInventory implements IEntityAdditionalSp
 	@Override
 	public void readEntityFromNBT(NBTTagCompound p_70037_1_) {
 		super.readEntityFromNBT(p_70037_1_);
-		fuel = p_70037_1_.getInteger("fuel");
-		oxidizer = p_70037_1_.getInteger("oxidizer");
+		DataWatcher data = getDataWatcher();
+		data.updateObject(FUEL_ID, p_70037_1_.getInteger("fuel"));
+		data.updateObject(OXIDIZER_ID, p_70037_1_.getInteger("oxidizer"));
 	}
 
 	@Override
 	public void writeEntityToNBT(NBTTagCompound p_70014_1_) {
 		super.writeEntityToNBT(p_70014_1_);
-		p_70014_1_.setInteger("fuel", fuel);
-		p_70014_1_.setInteger("oxidizer", oxidizer);
+		p_70014_1_.setInteger("fuel", getFuel());
+		p_70014_1_.setInteger("oxidizer", getOxidizer());
 	}
 
 	@Override
@@ -139,16 +154,16 @@ public class EntityRocket extends EntityInventory implements IEntityAdditionalSp
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
-		isUsable = oxidizer != 0 && fuel != 0 && isSkyClear() && items[0] != null && isItemValidForSlot(0, items[0]);
+		getDataWatcher().updateObject(IS_USABLE_ID, getOxidizer() != 0 && getFuel() != 0 && isSkyClear() && items[0] != null && isItemValidForSlot(0, items[0]) ? 1 : 0);
 		if (items[1] != null && isItemValidForSlot(1, items[1])) {
-			fuel += TileEntityFurnace.getItemBurnTime(new ItemStack(items[1].getItem()))/200;
+			getDataWatcher().updateObject(FUEL_ID, getFuel() + (TileEntityFurnace.getItemBurnTime(new ItemStack(items[1].getItem()))/200));
 			if (items[1].stackSize == 1)
 				items[1] = null;
 			else
 				items[1].stackSize--;
 		}
 		if (items[2] != null && isItemValidForSlot(2, items[2])) {
-			oxidizer++;
+			getDataWatcher().updateObject(OXIDIZER_ID, getOxidizer()+1);
 			if (items[2].stackSize == 1)
 				items[2] = null;
 			else
@@ -171,20 +186,5 @@ public class EntityRocket extends EntityInventory implements IEntityAdditionalSp
 
 	public void setActive() {
 
-	}
-
-	@Override
-	public void writeSpawnData(ByteBuf buffer) {
-		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("fuel", fuel);
-		tag.setInteger("oxidizer", oxidizer);
-		ByteBufUtils.writeTag(buffer, tag);
-	}
-
-	@Override
-	public void readSpawnData(ByteBuf additionalData) {
-		NBTTagCompound tag = ByteBufUtils.readTag(additionalData);
-		fuel = tag.getInteger("fuel");
-		oxidizer = tag.getInteger("oxidizer");
 	}
 }
