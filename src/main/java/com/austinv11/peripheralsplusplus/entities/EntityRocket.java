@@ -3,6 +3,7 @@ package com.austinv11.peripheralsplusplus.entities;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.reference.Reference;
+import com.austinv11.peripheralsplusplus.utils.ChatUtil;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.DataWatcher;
@@ -13,7 +14,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
 public class EntityRocket extends EntityInventory{
@@ -22,6 +25,9 @@ public class EntityRocket extends EntityInventory{
 	public static int FUEL_ID = 2;
 	public static int OXIDIZER_ID = 3;
 	public static int IS_USABLE_ID = 4;
+	private boolean isActive = false;
+	private int countDownTicker = 0;
+	private int countDown = 10;
 
 	public EntityRocket(World p_i1582_1_) {
 		super(p_i1582_1_);
@@ -84,8 +90,8 @@ public class EntityRocket extends EntityInventory{
 
 	@Override
 	public boolean interactFirst(EntityPlayer p_130002_1_) {
-		if (!worldObj.isRemote) {
-			p_130002_1_.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.ROCKET.ordinal(), worldObj, this.getEntityId()/*Im a 1337 uber haxor*/, (int) Math.ceil(this.posY), (int) Math.ceil(this.posZ));
+		if (!worldObj.isRemote && !isActive) {
+			p_130002_1_.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.ROCKET.ordinal(), worldObj, this.getEntityId()/*Im a 1337 uber haxor*/, (int) Math.floor(this.posY), (int) Math.floor(this.posZ));
 			return true;
 		}
 		return false;
@@ -97,6 +103,7 @@ public class EntityRocket extends EntityInventory{
 		DataWatcher data = getDataWatcher();
 		data.updateObject(FUEL_ID, p_70037_1_.getInteger("fuel"));
 		data.updateObject(OXIDIZER_ID, p_70037_1_.getInteger("oxidizer"));
+		isActive = p_70037_1_.getBoolean("isActive");
 	}
 
 	@Override
@@ -104,6 +111,7 @@ public class EntityRocket extends EntityInventory{
 		super.writeEntityToNBT(p_70014_1_);
 		p_70014_1_.setInteger("fuel", getFuel());
 		p_70014_1_.setInteger("oxidizer", getOxidizer());
+		p_70014_1_.setBoolean("isActive", isActive);
 	}
 
 	@Override
@@ -154,7 +162,8 @@ public class EntityRocket extends EntityInventory{
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
-		getDataWatcher().updateObject(IS_USABLE_ID, getOxidizer() != 0 && getFuel() != 0 && isSkyClear() && items[0] != null && isItemValidForSlot(0, items[0]) ? 1 : 0);
+		if (!isActive)
+			getDataWatcher().updateObject(IS_USABLE_ID, getOxidizer() != 0 && getFuel() != 0 && isSkyClear() && items[0] != null && isItemValidForSlot(0, items[0]) ? 1 : 0);
 		if (items[1] != null && isItemValidForSlot(1, items[1])) {
 			getDataWatcher().updateObject(FUEL_ID, getFuel() + (TileEntityFurnace.getItemBurnTime(new ItemStack(items[1].getItem()))/200));
 			if (items[1].stackSize == 1)
@@ -168,6 +177,23 @@ public class EntityRocket extends EntityInventory{
 				items[2] = null;
 			else
 				items[2].stackSize--;
+		}
+		if (isActive) {
+			if (countDown >= 0) {
+				if (countDown == 10) {
+					sendMessageToAllNearby(StatCollector.translateToLocal("peripheralsplusplus.chat.launchStart"));
+					sendMessageToAllNearby(countDown+"");
+					countDown--;
+				} else if (countDownTicker == 20 && countDown > 0) {
+					sendMessageToAllNearby(countDown+"");
+					countDownTicker = 0;
+					countDown--;
+				} else if (countDown == 0) {
+					sendMessageToAllNearby(StatCollector.translateToLocal("peripheralsplusplus.chat.launch"));
+					countDown--;
+				}
+				countDownTicker++;
+			}
 		}
 	}
 
@@ -185,6 +211,10 @@ public class EntityRocket extends EntityInventory{
 	}
 
 	public void setActive() {
+		isActive = true;
+	}
 
+	public void sendMessageToAllNearby(String message) {
+		ChatUtil.sendMessage(this, new ChatComponentText(ChatUtil.getCoordsPrefix(this) + message), 30, true);
 	}
 }
