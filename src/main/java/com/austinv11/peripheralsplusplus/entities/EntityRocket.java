@@ -165,18 +165,12 @@ public class EntityRocket extends EntityInventory{
 		if (!isActive)
 			getDataWatcher().updateObject(IS_USABLE_ID, getOxidizer() != 0 && getFuel() != 0 && isSkyClear() && items[0] != null && isItemValidForSlot(0, items[0]) ? 1 : 0);
 		if (items[1] != null && isItemValidForSlot(1, items[1])) {
-			getDataWatcher().updateObject(FUEL_ID, getFuel() + (TileEntityFurnace.getItemBurnTime(new ItemStack(items[1].getItem()))/200));
-			if (items[1].stackSize == 1)
-				items[1] = null;
-			else
-				items[1].stackSize--;
+			getDataWatcher().updateObject(FUEL_ID, getFuel() + (TileEntityFurnace.getItemBurnTime(items[1])/200));
+			items[1] = null;
 		}
 		if (items[2] != null && isItemValidForSlot(2, items[2])) {
-			getDataWatcher().updateObject(OXIDIZER_ID, getOxidizer()+1);
-			if (items[2].stackSize == 1)
-				items[2] = null;
-			else
-				items[2].stackSize--;
+			getDataWatcher().updateObject(OXIDIZER_ID, getOxidizer()+items[2].stackSize);
+			items[2] = null;
 		}
 		if (isActive) {
 			if (countDown >= 0) {
