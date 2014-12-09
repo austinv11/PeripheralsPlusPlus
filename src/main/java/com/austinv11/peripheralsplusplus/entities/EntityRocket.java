@@ -28,6 +28,9 @@ public class EntityRocket extends EntityInventory{
 	private boolean isActive = false;
 	private int countDownTicker = 0;
 	private int countDown = 10;
+	public static double ACCELERATION_MODIFIER = .20;
+	public static double BASE_FUEL_USAGE = 1;
+	public static double MAX_HEIGHT = 350;
 
 	public EntityRocket(World p_i1582_1_) {
 		super(p_i1582_1_);
@@ -162,10 +165,14 @@ public class EntityRocket extends EntityInventory{
 	@Override
 	public void onUpdate() {
 		super.onUpdate();
+		if (posY > MAX_HEIGHT) {
+			initSatellite();
+			return;
+		}
 		if (!isActive)
 			getDataWatcher().updateObject(IS_USABLE_ID, getOxidizer() != 0 && getFuel() != 0 && isSkyClear() && items[0] != null && isItemValidForSlot(0, items[0]) ? 1 : 0);
 		if (items[1] != null && isItemValidForSlot(1, items[1])) {
-			getDataWatcher().updateObject(FUEL_ID, getFuel() + (TileEntityFurnace.getItemBurnTime(items[1])/200));
+			getDataWatcher().updateObject(FUEL_ID, getFuel() + ((TileEntityFurnace.getItemBurnTime(items[1])*items[1].stackSize)/200));
 			items[1] = null;
 		}
 		if (items[2] != null && isItemValidForSlot(2, items[2])) {
@@ -187,7 +194,8 @@ public class EntityRocket extends EntityInventory{
 					countDown--;
 				}
 				countDownTicker++;
-			}
+			} else
+				calcMotion();
 		}
 	}
 
@@ -210,5 +218,18 @@ public class EntityRocket extends EntityInventory{
 
 	public void sendMessageToAllNearby(String message) {
 		ChatUtil.sendMessage(this, new ChatComponentText(ChatUtil.getCoordsPrefix(this) + message), 30, true);
+	}
+
+	private void initSatellite() {
+		setDead();
+		//TODO
+	}
+
+	private void calcMotion() {
+		if (getOxidizer() > 0) {
+			this.motionY++;
+			getDataWatcher().updateObject(OXIDIZER_ID, getOxidizer()-1);
+		}
+		getDataWatcher().updateObject(FUEL_ID, (int)Math.floor(getFuel() - (BASE_FUEL_USAGE + (this.motionY * ACCELERATION_MODIFIER))));
 	}
 }
