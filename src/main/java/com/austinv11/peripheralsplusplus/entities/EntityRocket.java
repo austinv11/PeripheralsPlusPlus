@@ -28,9 +28,12 @@ public class EntityRocket extends EntityInventory{
 	private boolean isActive = false;
 	private int countDownTicker = 0;
 	private int countDown = 10;
+	private double lastMotion = 0;
 	public static double ACCELERATION_MODIFIER = .20;
 	public static double BASE_FUEL_USAGE = 1;
 	public static double MAX_HEIGHT = 350;
+	public static double INITIAL_ACCELERATION_CONSTANT = .000001;
+	public static double ACCELERATION_CONSTANT = .03;
 
 	public EntityRocket(World p_i1582_1_) {
 		super(p_i1582_1_);
@@ -197,6 +200,8 @@ public class EntityRocket extends EntityInventory{
 			} else
 				calcMotion();
 		}
+		if (motionY != 0)
+			this.moveEntity(0, motionY, 0);
 	}
 
 	@Override
@@ -217,7 +222,7 @@ public class EntityRocket extends EntityInventory{
 	}
 
 	public void sendMessageToAllNearby(String message) {
-		ChatUtil.sendMessage(this, new ChatComponentText(ChatUtil.getCoordsPrefix(this) + message), 30, true);
+		ChatUtil.sendMessage(this, new ChatComponentText("["  + Reference.MOD_NAME + "] " + message), 30, true);
 	}
 
 	private void initSatellite() {
@@ -226,10 +231,16 @@ public class EntityRocket extends EntityInventory{
 	}
 
 	private void calcMotion() {
-		if (getOxidizer() > 0) {
-			this.motionY++;
-			getDataWatcher().updateObject(OXIDIZER_ID, getOxidizer()-1);
+		double newMotion = lastMotion;
+		if (getOxidizer() > 0)
+			newMotion += lastMotion == ACCELERATION_CONSTANT ? INITIAL_ACCELERATION_CONSTANT : ACCELERATION_CONSTANT;
+		else
+			newMotion -= ACCELERATION_CONSTANT;
+		int fuelRemainder = (int)Math.floor(getFuel() - (BASE_FUEL_USAGE + (newMotion * ACCELERATION_MODIFIER)));
+		if (fuelRemainder <= getFuel()) {
+			getDataWatcher().updateObject(OXIDIZER_ID, getOxidizer() < 0 ? 0 : getOxidizer()-1);
+			getDataWatcher().updateObject(FUEL_ID, fuelRemainder < 0 ? 0 : fuelRemainder);
+			lastMotion = motionY = newMotion;
 		}
-		getDataWatcher().updateObject(FUEL_ID, (int)Math.floor(getFuel() - (BASE_FUEL_USAGE + (this.motionY * ACCELERATION_MODIFIER))));
 	}
 }

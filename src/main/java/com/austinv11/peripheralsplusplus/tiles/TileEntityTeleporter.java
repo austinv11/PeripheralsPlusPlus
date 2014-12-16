@@ -158,7 +158,7 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 			return new Object[]{map1};
 		}else if (method == 3) {
 			if (!(arguments.length >= 1) || !(arguments[0] instanceof String))
-				throw new LuaException("Bad arguement #1 (expected string)");
+				throw new LuaException("Bad argument #1 (expected string)");
 			this.name = (String) arguments[0];
 			return new Object[]{name};
 		}
