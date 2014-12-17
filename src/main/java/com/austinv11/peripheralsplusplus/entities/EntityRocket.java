@@ -29,6 +29,7 @@ public class EntityRocket extends EntityInventory{
 	private int countDownTicker = 0;
 	private int countDown = 10;
 	private double lastMotion = 0;
+	private int flameTicker = 0;
 	public boolean isFlipped = false;
 	public static final double ACCELERATION_MODIFIER = .3;
 	public static final double BASE_FUEL_USAGE = 1;
@@ -200,11 +201,23 @@ public class EntityRocket extends EntityInventory{
 				countDownTicker++;
 			} else
 				calcMotion();
+			if (worldObj.isRemote) {
+				for (int i = 0; i < 3; i++)
+					worldObj.spawnParticle("explode", posX, posY, posZ, rand.nextGaussian()/5, motionY == 0 ? .01 : Math.signum(motionY)*motionY-.4, rand.nextGaussian()/5);
+				if (flameTicker >= 5) {
+					worldObj.spawnParticle("flame", posX, posY, posZ, rand.nextGaussian()/12, motionY == 0 ? .005 : Math.signum(motionY)*motionY-.04, rand.nextGaussian()/12);
+					flameTicker = 0;
+				}else
+					flameTicker++;
+				//Minecraft.getMinecraft().getSoundHandler().playSound();TODO: I need a sound
+			}
 		}
-		if (motionY == 0 && isFloorClear())
-			motionY -= ACCELERATION_CONSTANT+(2*ACCELERATION_CONSTANT);
+		if (motionY == 0 && isFloorClear() && !isActive)
+			motionY -= ACCELERATION_CONSTANT+(3*ACCELERATION_CONSTANT);
 		if (motionY != 0)
 			this.moveEntity(0, motionY, 0);
+		if (isActive && motionY == 0)
+			isActive = false;
 		isFlipped = motionY < 0;
 	}
 
