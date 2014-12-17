@@ -18,7 +18,7 @@ public class ItemRocket extends ItemPPP {
 	@Override
 	public boolean onItemUseFirst(ItemStack stack, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ) {
 		if (!world.isRemote) {
-			world.spawnEntityInWorld(new EntityRocket(world, (int)Math.floor(x+Facing.offsetsXForSide[side]), (int)Math.floor(y+Facing.offsetsYForSide[side]), (int)Math.floor(z+Facing.offsetsZForSide[side])));
+			world.spawnEntityInWorld(new EntityRocket(world, x+Facing.offsetsXForSide[side], y+Facing.offsetsYForSide[side], z+Facing.offsetsZForSide[side]));
 			stack.stackSize -= 1;
 		}
 		return false;
@@ -32,6 +32,6 @@ public class ItemRocket extends ItemPPP {
 
 	@Override
 	public Entity createEntity(World world, Entity location, ItemStack itemstack) {
-		return new EntityRocket(world, (int)Math.floor(location.posX), (int)Math.floor(location.posY), (int)Math.floor(location.posZ));
+		return new EntityRocket(world, location.posX, location.posY, location.posZ);
 	}
 }

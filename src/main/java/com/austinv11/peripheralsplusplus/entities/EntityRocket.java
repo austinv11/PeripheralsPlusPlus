@@ -22,18 +22,19 @@ import net.minecraft.world.World;
 public class EntityRocket extends EntityInventory{
 
 	protected int damage = 0;
-	public static int FUEL_ID = 2;
-	public static int OXIDIZER_ID = 3;
-	public static int IS_USABLE_ID = 4;
+	public static final int FUEL_ID = 2;
+	public static final int OXIDIZER_ID = 3;
+	public static final int IS_USABLE_ID = 4;
 	private boolean isActive = false;
 	private int countDownTicker = 0;
 	private int countDown = 10;
 	private double lastMotion = 0;
-	public static double ACCELERATION_MODIFIER = .20;
-	public static double BASE_FUEL_USAGE = 1;
-	public static double MAX_HEIGHT = 350;
-	public static double INITIAL_ACCELERATION_CONSTANT = .000001;
-	public static double ACCELERATION_CONSTANT = .03;
+	public boolean isFlipped = false;
+	public static final double ACCELERATION_MODIFIER = .3;
+	public static final double BASE_FUEL_USAGE = 1;
+	public static final double MAX_HEIGHT = 350;
+	public static final double INITIAL_ACCELERATION_CONSTANT = .002;
+	public static final double ACCELERATION_CONSTANT = .03;
 
 	public EntityRocket(World p_i1582_1_) {
 		super(p_i1582_1_);
@@ -46,7 +47,7 @@ public class EntityRocket extends EntityInventory{
 		data.addObject(IS_USABLE_ID, 0);
 	}
 
-	public EntityRocket(World p_i1582_1_, int x, int y, int z) {
+	public EntityRocket(World p_i1582_1_, double x, double y, double z) {
 		this(p_i1582_1_);
 		this.posX = x;
 		this.posY = y;
@@ -97,7 +98,7 @@ public class EntityRocket extends EntityInventory{
 	@Override
 	public boolean interactFirst(EntityPlayer p_130002_1_) {
 		if (!worldObj.isRemote && !isActive) {
-			p_130002_1_.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.ROCKET.ordinal(), worldObj, this.getEntityId()/*Im a 1337 uber haxor*/, (int) Math.floor(this.posY), (int) Math.floor(this.posZ));
+			p_130002_1_.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.ROCKET.ordinal(), worldObj, this.getEntityId()/*Im a 1337 uber haxor*/, (int)this.posY, (int)this.posZ);
 			return true;
 		}
 		return false;
@@ -132,7 +133,7 @@ public class EntityRocket extends EntityInventory{
 
 	@Override
 	public AxisAlignedBB getBoundingBox() {
-		return null;
+		return AxisAlignedBB.getBoundingBox(0,0,0,3,3,3);
 	}
 
 	@Override
@@ -200,8 +201,11 @@ public class EntityRocket extends EntityInventory{
 			} else
 				calcMotion();
 		}
+		if (motionY == 0 && isFloorClear())
+			motionY -= ACCELERATION_CONSTANT+(2*ACCELERATION_CONSTANT);
 		if (motionY != 0)
 			this.moveEntity(0, motionY, 0);
+		isFlipped = motionY < 0;
 	}
 
 	@Override
@@ -212,8 +216,8 @@ public class EntityRocket extends EntityInventory{
 
 	public boolean isSkyClear() {
 		boolean skyClear = true;
-		for (int i = (int)Math.floor(this.posY)-1; i < 255; i++)
-			skyClear = this.worldObj.isAirBlock((int)Math.floor(this.posX), i, (int)Math.floor(this.posZ));
+		for (double i = this.posY-1; i < 255; i+=1)
+			skyClear = this.worldObj.isAirBlock((int)this.posX, (int)i, (int)this.posZ);
 		return skyClear;
 	}
 
@@ -233,14 +237,18 @@ public class EntityRocket extends EntityInventory{
 	private void calcMotion() {
 		double newMotion = lastMotion;
 		if (getOxidizer() > 0)
-			newMotion += lastMotion == ACCELERATION_CONSTANT ? INITIAL_ACCELERATION_CONSTANT : ACCELERATION_CONSTANT;
+			newMotion += lastMotion >= ACCELERATION_CONSTANT ? ACCELERATION_CONSTANT : INITIAL_ACCELERATION_CONSTANT;
 		else
 			newMotion -= ACCELERATION_CONSTANT;
-		int fuelRemainder = (int)Math.floor(getFuel() - (BASE_FUEL_USAGE + (newMotion * ACCELERATION_MODIFIER)));
+		int fuelRemainder = (int) Math.floor(getFuel()-(BASE_FUEL_USAGE+(newMotion*ACCELERATION_MODIFIER)));
 		if (fuelRemainder <= getFuel()) {
-			getDataWatcher().updateObject(OXIDIZER_ID, getOxidizer() < 0 ? 0 : getOxidizer()-1);
+			getDataWatcher().updateObject(OXIDIZER_ID, getOxidizer() <= 0 ? 0 : getOxidizer()-1);
 			getDataWatcher().updateObject(FUEL_ID, fuelRemainder < 0 ? 0 : fuelRemainder);
 			lastMotion = motionY = newMotion;
 		}
+	}
+
+	private boolean isFloorClear() {
+		return worldObj.isAirBlock((int)posX, (int)posY-1, (int)posZ);
 	}
 }
