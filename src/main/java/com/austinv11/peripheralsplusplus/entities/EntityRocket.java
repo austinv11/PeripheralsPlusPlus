@@ -1,11 +1,13 @@
 package com.austinv11.peripheralsplusplus.entities;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
+import com.austinv11.peripheralsplusplus.client.sounds.RocketSound;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.utils.ChatUtil;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.DataWatcher;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -25,15 +27,16 @@ public class EntityRocket extends EntityInventory{
 	public static final int FUEL_ID = 2;
 	public static final int OXIDIZER_ID = 3;
 	public static final int IS_USABLE_ID = 4;
-	private boolean isActive = false;
+	public boolean isActive = false;
 	private int countDownTicker = 0;
-	private int countDown = 10;
+	public int countDown = 10;
 	private double lastMotion = 0;
 	private int flameTicker = 0;
+	private RocketSound sound;
 	public boolean isFlipped = false;
 	public static final double ACCELERATION_MODIFIER = .3;
 	public static final double BASE_FUEL_USAGE = 1;
-	public static final double MAX_HEIGHT = 350;
+	public static final double MAX_HEIGHT = 450;
 	public static final double INITIAL_ACCELERATION_CONSTANT = .002;
 	public static final double ACCELERATION_CONSTANT = .03;
 
@@ -190,6 +193,10 @@ public class EntityRocket extends EntityInventory{
 					sendMessageToAllNearby(StatCollector.translateToLocal("peripheralsplusplus.chat.launchStart"));
 					sendMessageToAllNearby(countDown+"");
 					countDown--;
+					if (worldObj.isRemote) {
+						sound = new RocketSound(this);
+						Minecraft.getMinecraft().getSoundHandler().playSound(sound);
+					}
 				} else if (countDownTicker == 20 && countDown > 0) {
 					sendMessageToAllNearby(countDown+"");
 					countDownTicker = 0;
@@ -202,23 +209,28 @@ public class EntityRocket extends EntityInventory{
 			} else
 				calcMotion();
 			if (worldObj.isRemote) {
-				for (int i = 0; i < 3; i++)
-					worldObj.spawnParticle("explode", posX, posY, posZ, rand.nextGaussian()/5, motionY == 0 ? .01 : Math.signum(motionY)*motionY-.4, rand.nextGaussian()/5);
-				if (flameTicker >= 5) {
-					worldObj.spawnParticle("flame", posX, posY, posZ, rand.nextGaussian()/12, motionY == 0 ? .005 : Math.signum(motionY)*motionY-.04, rand.nextGaussian()/12);
-					flameTicker = 0;
-				}else
-					flameTicker++;
-				//Minecraft.getMinecraft().getSoundHandler().playSound();TODO: I need a sound
+				for (int i = 0; i < 3; i++) {
+					double divisionFactor = countDown < 7 ? 5.0D : 14.0D;
+					worldObj.spawnParticle("explode", posX, posY, posZ, rand.nextGaussian()/divisionFactor, motionY == 0 ? .01 : Math.signum(motionY)*motionY-.4, rand.nextGaussian()/divisionFactor);
+				}
+				if (countDown < 7) {
+					if (flameTicker >= 5) {
+						worldObj.spawnParticle("flame", posX, posY, posZ, rand.nextGaussian()/12, motionY == 0 ? .005 : Math.signum(motionY)*motionY-.04, rand.nextGaussian()/12);
+						flameTicker = 0;
+					} else
+						flameTicker++;
+				}
+				if (sound != null)
+					sound.update();
 			}
 		}
-		if (motionY == 0 && isFloorClear() && !isActive)
-			motionY -= ACCELERATION_CONSTANT+(3*ACCELERATION_CONSTANT);
+		if (motionY <= 0 && isFloorClear() && !isActive)
+			motionY -= 2*ACCELERATION_CONSTANT;
 		if (motionY != 0)
 			this.moveEntity(0, motionY, 0);
-		if (isActive && motionY == 0)
+		if (isActive && motionY < -1 && countDown < 0)
 			isActive = false;
-		isFlipped = motionY < 0;
+		isFlipped = motionY < -.5;
 	}
 
 	@Override
