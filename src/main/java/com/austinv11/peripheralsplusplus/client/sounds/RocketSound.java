@@ -31,7 +31,7 @@ public class RocketSound extends MovingSound {
 	@Override
 	public void update() {
 		if (!theRocket.isDead) {
-			if (theRocket.isActive) {
+			if (theRocket.getIsActive()) {
 				if (theRocket.countDown >= 0) {
 					if (field_147663_c < 1.0F)
 						field_147663_c += 0.005F;

@@ -5,6 +5,7 @@ import com.austinv11.peripheralsplusplus.client.sounds.RocketSound;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.utils.ChatUtil;
+import com.austinv11.peripheralsplusplus.utils.Logger;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -27,13 +28,13 @@ public class EntityRocket extends EntityInventory{
 	public static final int FUEL_ID = 2;
 	public static final int OXIDIZER_ID = 3;
 	public static final int IS_USABLE_ID = 4;
-	public boolean isActive = false;
+	public static final int IS_ACTIVE_ID = 5;
 	private int countDownTicker = 0;
 	public int countDown = 10;
 	private double lastMotion = 0;
+	public boolean isFlipped = false;
 	private int flameTicker = 0;
 	private RocketSound sound;
-	public boolean isFlipped = false;
 	public static final double ACCELERATION_MODIFIER = .3;
 	public static final double BASE_FUEL_USAGE = 1;
 	public static final double MAX_HEIGHT = 450;
@@ -49,6 +50,7 @@ public class EntityRocket extends EntityInventory{
 		data.addObject(FUEL_ID, 0);
 		data.addObject(OXIDIZER_ID, 0);
 		data.addObject(IS_USABLE_ID, 0);
+		data.addObject(IS_ACTIVE_ID, 0);
 	}
 
 	public EntityRocket(World p_i1582_1_, double x, double y, double z) {
@@ -68,6 +70,10 @@ public class EntityRocket extends EntityInventory{
 
 	public boolean getIsUsable() {
 		return getDataWatcher().getWatchableObjectInt(IS_USABLE_ID) == 1;
+	}
+
+	public boolean getIsActive() {
+		return getDataWatcher().getWatchableObjectInt(IS_ACTIVE_ID) == 1;
 	}
 
 	@Override
@@ -101,7 +107,7 @@ public class EntityRocket extends EntityInventory{
 
 	@Override
 	public boolean interactFirst(EntityPlayer p_130002_1_) {
-		if (!worldObj.isRemote && !isActive) {
+		if (!worldObj.isRemote && !getIsActive()) {
 			p_130002_1_.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.ROCKET.ordinal(), worldObj, this.getEntityId()/*Im a 1337 uber haxor*/, (int)this.posY, (int)this.posZ);
 			return true;
 		}
@@ -114,7 +120,7 @@ public class EntityRocket extends EntityInventory{
 		DataWatcher data = getDataWatcher();
 		data.updateObject(FUEL_ID, p_70037_1_.getInteger("fuel"));
 		data.updateObject(OXIDIZER_ID, p_70037_1_.getInteger("oxidizer"));
-		isActive = p_70037_1_.getBoolean("isActive");
+		data.updateObject(IS_ACTIVE_ID, p_70037_1_.getInteger("isActive"));
 	}
 
 	@Override
@@ -122,7 +128,7 @@ public class EntityRocket extends EntityInventory{
 		super.writeEntityToNBT(p_70014_1_);
 		p_70014_1_.setInteger("fuel", getFuel());
 		p_70014_1_.setInteger("oxidizer", getOxidizer());
-		p_70014_1_.setBoolean("isActive", isActive);
+		p_70014_1_.setInteger("isActive", getDataWatcher().getWatchableObjectInt(IS_ACTIVE_ID));
 	}
 
 	@Override
@@ -137,7 +143,7 @@ public class EntityRocket extends EntityInventory{
 
 	@Override
 	public AxisAlignedBB getBoundingBox() {
-		return AxisAlignedBB.getBoundingBox(0,0,0,3,3,3);
+		return AxisAlignedBB.getBoundingBox(posX-.25,posY-.25,posZ-.25,posX+.25,posY+3.5,posZ+.25);
 	}
 
 	@Override
@@ -177,7 +183,7 @@ public class EntityRocket extends EntityInventory{
 			initSatellite();
 			return;
 		}
-		if (!isActive)
+		if (!getIsActive())
 			getDataWatcher().updateObject(IS_USABLE_ID, getOxidizer() != 0 && getFuel() != 0 && isSkyClear() && items[0] != null && isItemValidForSlot(0, items[0]) ? 1 : 0);
 		if (items[1] != null && isItemValidForSlot(1, items[1])) {
 			getDataWatcher().updateObject(FUEL_ID, getFuel() + ((TileEntityFurnace.getItemBurnTime(items[1])*items[1].stackSize)/200));
@@ -187,7 +193,8 @@ public class EntityRocket extends EntityInventory{
 			getDataWatcher().updateObject(OXIDIZER_ID, getOxidizer()+items[2].stackSize);
 			items[2] = null;
 		}
-		if (isActive) {
+		Logger.info(worldObj.isRemote+","+countDown);
+		if (getIsActive()) {
 			if (countDown >= 0) {
 				if (countDown == 10) {
 					sendMessageToAllNearby(StatCollector.translateToLocal("peripheralsplusplus.chat.launchStart"));
@@ -224,13 +231,19 @@ public class EntityRocket extends EntityInventory{
 					sound.update();
 			}
 		}
-		if (motionY <= 0 && isFloorClear() && !isActive)
+		if (motionY <= 0 && isFloorClear() && !getIsActive())
 			motionY -= 2*ACCELERATION_CONSTANT;
 		if (motionY != 0)
 			this.moveEntity(0, motionY, 0);
-		if (isActive && motionY < -1 && countDown < 0)
-			isActive = false;
-		isFlipped = motionY < -.5;
+		if (isFlipped || motionY < -.5)
+			isFlipped = true;
+		if (isFlipped && !isFloorClear()) {
+			if (!worldObj.isRemote)
+				worldObj.createExplosion(this, posX, posY, posZ, 7.0F, true);
+			setDead();
+		}
+		if (getIsActive() && isFlipped)
+			getDataWatcher().updateObject(IS_ACTIVE_ID, 0);
 	}
 
 	@Override
@@ -247,11 +260,11 @@ public class EntityRocket extends EntityInventory{
 	}
 
 	public void setActive() {
-		isActive = true;
+		getDataWatcher().updateObject(IS_ACTIVE_ID, 1);
 	}
 
 	public void sendMessageToAllNearby(String message) {
-		ChatUtil.sendMessage(this, new ChatComponentText("["  + Reference.MOD_NAME + "] " + message), 30, true);
+		ChatUtil.sendMessage(this, new ChatComponentText("[" + Reference.MOD_NAME + "] " + message), 30, true);
 	}
 
 	private void initSatellite() {
