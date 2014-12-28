@@ -4,6 +4,8 @@ import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.client.sounds.RocketSound;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.reference.Reference;
+import com.austinv11.peripheralsplusplus.satellites.Satellite;
+import com.austinv11.peripheralsplusplus.satellites.SatelliteData;
 import com.austinv11.peripheralsplusplus.utils.ChatUtil;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -173,7 +175,7 @@ public class EntityRocket extends EntityInventory{
 			if (par1DamageSource.getEntity() instanceof EntityPlayer)
 				this.damage = 100;
 			if (this.damage > 90) {
-				this.dropItem(ModItems.rocket, 0);
+				this.entityDropItem(new ItemStack(ModItems.rocket), 0.5F);
 				for (int i = 0; i < this.getSizeInventory(); i++)
 					if (this.getStackInSlot(i) != null)
 						this.entityDropItem(this.getStackInSlot(i), 0.5F);
@@ -273,12 +275,20 @@ public class EntityRocket extends EntityInventory{
 	}
 
 	public void sendMessageToAllNearby(String message) {
-		ChatUtil.sendMessage(this, new ChatComponentText("[" + Reference.MOD_NAME + "] " + message), 30, true);
+		ChatUtil.sendMessage(this, new ChatComponentText("["+Reference.MOD_NAME+"] " + message), 30, true);
 	}
 
 	private void initSatellite() {
 		setDead();
-		//TODO
+		if (!worldObj.isRemote)
+			if (SatelliteData.isWorldWhitelisted(worldObj)) {
+				SatelliteData data = SatelliteData.forWorld(worldObj);
+				if (data.getSatelliteForCoords((int)posX, (int)posZ) == null) {
+					Satellite sat = new Satellite((int) posX, calcAdditionalY(), (int) posZ, worldObj);
+					data.addSatellite(sat);
+					data.markDirty();
+				}
+			}
 	}
 
 	private void calcMotion() {
@@ -297,5 +307,15 @@ public class EntityRocket extends EntityInventory{
 
 	private boolean isFloorClear() {
 		return worldObj.isAirBlock((int)posX, (int)posY-1, (int)posZ);
+	}
+
+	private int calcAdditionalY() {
+		double newMotion, motion;
+		do {
+			motion = motionY;
+			calcMotion();
+			newMotion = motionY;
+		} while (motion != newMotion);
+		return (int)(posY + motionY);
 	}
 }

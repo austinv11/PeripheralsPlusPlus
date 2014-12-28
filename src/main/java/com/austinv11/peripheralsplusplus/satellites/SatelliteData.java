@@ -15,7 +15,7 @@ import java.util.List;
 public class SatelliteData extends WorldSavedData {
 
 	private static final String key = "com.austinv11.ppp.satellites";
-	public List<ISatellite> satellites = new ArrayList<ISatellite>();
+	private List<ISatellite> satellites = new ArrayList<ISatellite>();
 
 	public SatelliteData(String mapName) {
 		super(mapName);
@@ -53,7 +53,7 @@ public class SatelliteData extends WorldSavedData {
 		NBTTagList list = p_76184_1_.getTagList("satellites", Constants.NBT.TAG_COMPOUND);
 		for (int i = 0; i < list.tagCount(); i++) {
 			Satellite sat = Satellite.fromNBT(list.getCompoundTagAt(i));
-			satellites.add(sat.getID(), sat);
+			satellites.set(sat.getID(), sat);
 		}
 	}
 
@@ -64,5 +64,37 @@ public class SatelliteData extends WorldSavedData {
 			list.appendTag(((Satellite)s).toNBT());
 		}
 		p_76187_1_.setTag("satellites", list);
+	}
+
+	public ISatellite getSatelliteForCoords(int x, int z) {
+		ISatellite returnVal = null;
+		for (ISatellite sat : satellites)
+			if (sat.getPosition().posX == x && sat.getPosition().posZ == z) {
+				returnVal = sat;
+				break;
+			}
+		return returnVal;
+	}
+
+	public ISatellite getSatelliteForID(int id) {
+		return satellites.get(id);
+	}
+
+	public void addSatellite(Satellite sat) {
+		if (sat.getID() == -1)
+			sat.setID(assignNextId());
+		setSatellite(sat, sat.getID());
+	}
+
+	public void removeSatellite(int id) {
+		satellites.remove(id);
+	}
+
+	public void setSatellite(Satellite sat, int id) {
+		satellites.set(id, sat);
+	}
+
+	public List<ISatellite> getSatellites() {
+		return satellites;
 	}
 }

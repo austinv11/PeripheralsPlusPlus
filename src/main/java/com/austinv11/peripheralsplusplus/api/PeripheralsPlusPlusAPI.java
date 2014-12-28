@@ -41,7 +41,21 @@ public class PeripheralsPlusPlusAPI {
 		PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.add(upgrade.getUpgradeID());
 	}
 
+	/**
+	 * Returns the item representing a satellite upgrade
+	 * @param upgrade The satellite upgrade
+	 * @return The item representing the satellite upgrade
+	 */
 	public static Item getItemFromUpgrade(ISatelliteUpgrade upgrade) {
 		return GameRegistry.findItem(Reference.MOD_ID, upgrade.getName());
+	}
+
+	/**
+	 * Returns the satellite upgrade that an item represents
+	 * @param item The satellite upgrade item
+	 * @return The satellite upgrade (or null if no upgrade is found)
+	 */
+	public static ISatelliteUpgrade getUpgradeFromItem(Item item) {
+		return item instanceof SatelliteUpgradeBase ? ((SatelliteUpgradeBase)item).getUpgrade() : null;
 	}
 }

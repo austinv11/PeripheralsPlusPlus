@@ -24,7 +24,7 @@ public class Satellite implements ISatellite{
 	public final static HashMap<Satellite, Integer> SATELLITE_REGISTRY = new HashMap<Satellite, Integer>();
 
 	private ChunkCoordinates coords;
-	private int id;
+	private int id = -1;
 	private World world;
 	private ISatelliteUpgrade mainUpgrade;
 	private List<ISatelliteUpgrade> addons = new ArrayList<ISatelliteUpgrade>();
@@ -122,7 +122,7 @@ public class Satellite implements ISatellite{
 		for (ItemStack i : drops)
 			world.spawnEntityInWorld(new EntityItem(world, x, y+10, z, i));
 		SatelliteData data = SatelliteData.forWorld(world);
-		data.satellites.remove(this.id);
+		data.removeSatellite(this.id);
 		data.markDirty();
 		return dropCoords;
 	}
