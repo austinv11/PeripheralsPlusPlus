@@ -83,7 +83,7 @@ public class GuiRocket extends GuiContainer {
 				if (event.button.id == 0) {
 					if (rocket.rocket.getIsUsable()) {
 						rocket.player.closeScreen();
-						rocket.rocket.setActive();
+						rocket.rocket.setIsActive(true);
 					}else {
 						rocket.player.addChatComponentMessage(new ChatComponentText(Reference.Colors.RED+StatCollector.translateToLocal("peripheralsplusplus.chat.launchFailure")));
 					}

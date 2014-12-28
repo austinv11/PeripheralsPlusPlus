@@ -5,7 +5,6 @@ import com.austinv11.peripheralsplusplus.client.sounds.RocketSound;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.utils.ChatUtil;
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -76,6 +75,22 @@ public class EntityRocket extends EntityInventory{
 		return getDataWatcher().getWatchableObjectInt(IS_ACTIVE_ID) == 1;
 	}
 
+	public void setFuel(int fuel) {
+		getDataWatcher().updateObject(FUEL_ID, fuel);
+	}
+
+	public void setOxidizer(int oxidizer) {
+		getDataWatcher().updateObject(OXIDIZER_ID, oxidizer);
+	}
+
+	public void setIsUsable(boolean isUsable) {
+		getDataWatcher().updateObject(IS_USABLE_ID, isUsable ? 1 : 0);
+	}
+
+	public void setIsActive(boolean isActive) {
+		getDataWatcher().updateObject(IS_ACTIVE_ID, isActive ? 1 : 0);
+	}
+
 	@Override
 	public int getSizeInventory() {
 		return 3;
@@ -117,10 +132,9 @@ public class EntityRocket extends EntityInventory{
 	@Override
 	public void readEntityFromNBT(NBTTagCompound p_70037_1_) {
 		super.readEntityFromNBT(p_70037_1_);
-		DataWatcher data = getDataWatcher();
-		data.updateObject(FUEL_ID, p_70037_1_.getInteger("fuel"));
-		data.updateObject(OXIDIZER_ID, p_70037_1_.getInteger("oxidizer"));
-		data.updateObject(IS_ACTIVE_ID, p_70037_1_.getInteger("isActive"));
+		setFuel(p_70037_1_.getInteger("fuel"));
+		setOxidizer(p_70037_1_.getInteger("oxidizer"));
+		setIsActive(p_70037_1_.getBoolean("isActive"));
 	}
 
 	@Override
@@ -128,7 +142,7 @@ public class EntityRocket extends EntityInventory{
 		super.writeEntityToNBT(p_70014_1_);
 		p_70014_1_.setInteger("fuel", getFuel());
 		p_70014_1_.setInteger("oxidizer", getOxidizer());
-		p_70014_1_.setInteger("isActive", getDataWatcher().getWatchableObjectInt(IS_ACTIVE_ID));
+		p_70014_1_.setBoolean("isActive", getIsActive());
 	}
 
 	@Override
@@ -184,16 +198,15 @@ public class EntityRocket extends EntityInventory{
 			return;
 		}
 		if (!getIsActive())
-			getDataWatcher().updateObject(IS_USABLE_ID, getOxidizer() != 0 && getFuel() != 0 && isSkyClear() && items[0] != null && isItemValidForSlot(0, items[0]) ? 1 : 0);
+			setIsUsable(getOxidizer() != 0 && getFuel() != 0 && isSkyClear() && items[0] != null && isItemValidForSlot(0, items[0]));
 		if (items[1] != null && isItemValidForSlot(1, items[1])) {
-			getDataWatcher().updateObject(FUEL_ID, getFuel() + ((TileEntityFurnace.getItemBurnTime(items[1])*items[1].stackSize)/200));
+			setFuel(getFuel() + ((TileEntityFurnace.getItemBurnTime(items[1])*items[1].stackSize)/200));
 			items[1] = null;
 		}
 		if (items[2] != null && isItemValidForSlot(2, items[2])) {
-			getDataWatcher().updateObject(OXIDIZER_ID, getOxidizer()+items[2].stackSize);
+			setOxidizer(getOxidizer()+items[2].stackSize);
 			items[2] = null;
 		}
-		Logger.info(worldObj.isRemote+","+countDown);
 		if (getIsActive()) {
 			if (countDown >= 0) {
 				if (countDown == 10) {
@@ -243,7 +256,7 @@ public class EntityRocket extends EntityInventory{
 			setDead();
 		}
 		if (getIsActive() && isFlipped)
-			getDataWatcher().updateObject(IS_ACTIVE_ID, 0);
+			setIsActive(false);
 	}
 
 	@Override
@@ -257,10 +270,6 @@ public class EntityRocket extends EntityInventory{
 		for (double i = this.posY-1; i < 255; i+=1)
 			skyClear = this.worldObj.isAirBlock((int)this.posX, (int)i, (int)this.posZ);
 		return skyClear;
-	}
-
-	public void setActive() {
-		getDataWatcher().updateObject(IS_ACTIVE_ID, 1);
 	}
 
 	public void sendMessageToAllNearby(String message) {
@@ -280,8 +289,8 @@ public class EntityRocket extends EntityInventory{
 			newMotion -= ACCELERATION_CONSTANT;
 		int fuelRemainder = (int) Math.floor(getFuel()-(BASE_FUEL_USAGE+(newMotion*ACCELERATION_MODIFIER)));
 		if (fuelRemainder <= getFuel()) {
-			getDataWatcher().updateObject(OXIDIZER_ID, getOxidizer() <= 0 ? 0 : getOxidizer()-1);
-			getDataWatcher().updateObject(FUEL_ID, fuelRemainder < 0 ? 0 : fuelRemainder);
+			setOxidizer(getOxidizer() <= 0 ? 0 : getOxidizer()-1);
+			setFuel(fuelRemainder < 0 ? 0 : fuelRemainder);
 			lastMotion = motionY = newMotion;
 		}
 	}
