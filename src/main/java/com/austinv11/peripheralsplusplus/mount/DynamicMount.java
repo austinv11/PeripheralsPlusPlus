@@ -1,10 +1,12 @@
 package com.austinv11.peripheralsplusplus.mount;
 
+import com.austinv11.peripheralsplusplus.utils.Logger;
 import com.austinv11.peripheralsplusplus.utils.Util;
 import com.austinv11.peripheralsplusplus.utils.WebUtil;
 import com.google.gson.Gson;
 import cpw.mods.fml.common.FMLCommonHandler;
 import dan200.computercraft.api.filesystem.IMount;
+import dan200.computercraft.api.peripheral.IPeripheral;
 
 import java.io.*;
 import java.util.List;
@@ -14,9 +16,10 @@ public class DynamicMount implements IMount {
 	public static final String MOUNT_DIRECTORY = FMLCommonHandler.instance().getSavesDirectory().getParent()+"/mods/ppp_mount";
 	public static final String DIRECTORY = "/ppp";
 	public static final String JSON_VER = "1.0";
+	private IPeripheral peripheral;
 
-	public DynamicMount() {
-
+	public DynamicMount(IPeripheral peripheral) {
+		this.peripheral = peripheral;
 	}
 
 	public static void prepareMount() throws Exception{
@@ -25,6 +28,7 @@ public class DynamicMount implements IMount {
 		if (!index.ver.equals(JSON_VER))
 			throw new Exception("JSON version mismatch!");
 		String[] dirs = index.dirs;
+		Logger.info(dirs.length+" directories found! Attempting to update (if necessary)...");
 		for (int i = 0; i < dirs.length; i++) {
 			String d = dirs[i];
 			JSONFileList files = gson.fromJson(Util.listToString(WebUtil.readGithub("lua/"+d+"/index.json")), JSONFileList.class);
@@ -56,9 +60,10 @@ public class DynamicMount implements IMount {
 
 	@Override
 	public void list(String path, List<String> contents) throws IOException {
-		File file = new File(MOUNT_DIRECTORY);
+		File file = new File(MOUNT_DIRECTORY+"/"+path);
 		for (File f : file.listFiles())
-			contents.add(f.getName());
+			if (f.getName().equals(peripheral.getType()) || f.getParent().equals(peripheral.getType()))
+				contents.add(f.getName());
 	}
 
 	@Override
