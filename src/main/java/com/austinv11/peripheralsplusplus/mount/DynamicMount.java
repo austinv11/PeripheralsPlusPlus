@@ -36,7 +36,7 @@ public class DynamicMount implements IMount {
 				String[] files1 = files.files;
 				for (int i1 = 0; i1 < files1.length; i1++) {
 					String f = files1[i1];
-					File file = new File(MOUNT_DIRECTORY+"/"+d+"/"+f);
+					File file = new File((MOUNT_DIRECTORY+"/"+d+"/"+f).replace(".lua",""));
 					file.mkdirs();
 					file.delete();//FIXME:Too inefficient
 					file.createNewFile();
@@ -50,30 +50,31 @@ public class DynamicMount implements IMount {
 
 	@Override
 	public boolean exists(String path) throws IOException {
-		return new File(MOUNT_DIRECTORY+path).exists();
+		return new File(MOUNT_DIRECTORY+"/"+path).exists();
 	}
 
 	@Override
 	public boolean isDirectory(String path) throws IOException {
-		return new File(MOUNT_DIRECTORY+path).isDirectory();
+		return new File(MOUNT_DIRECTORY+"/"+path).isDirectory();
 	}
 
 	@Override
 	public void list(String path, List<String> contents) throws IOException {
 		File file = new File(MOUNT_DIRECTORY+"/"+path);
 		for (File f : file.listFiles())
-			if (f.getName().equals(peripheral.getType()) || f.getParent().equals(peripheral.getType()))
-				contents.add(f.getName());
+			if (f.getName().equals(peripheral.getType()) || file.getAbsolutePath().contains(peripheral.getType()))
+				if (!path.contains("json"))
+					contents.add(f.getName());
 	}
 
 	@Override
 	public long getSize(String path) throws IOException {
-		return new File(MOUNT_DIRECTORY+path).getTotalSpace();
+		return new File(MOUNT_DIRECTORY+"/"+path).getTotalSpace();
 	}
 
 	@Override
 	public InputStream openForRead(String path) throws IOException {
-		return new FileInputStream(new File(MOUNT_DIRECTORY+path));
+		return new FileInputStream(new File(MOUNT_DIRECTORY+"/"+path));
 	}
 
 	private static boolean checkFileVersion(String dir, JSONFileList json) throws IOException{
