@@ -1,4 +1,4 @@
 {
   "ver" : "1.0",
-  "files" : ["test.lua"]
+  "files" : ["index.json","test.lua"]
 }

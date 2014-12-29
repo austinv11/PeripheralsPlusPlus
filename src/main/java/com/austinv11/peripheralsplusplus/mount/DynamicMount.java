@@ -3,6 +3,7 @@ package com.austinv11.peripheralsplusplus.mount;
 import com.austinv11.peripheralsplusplus.utils.Util;
 import com.austinv11.peripheralsplusplus.utils.WebUtil;
 import com.google.gson.Gson;
+import cpw.mods.fml.common.FMLCommonHandler;
 import dan200.computercraft.api.filesystem.IMount;
 
 import java.io.*;
@@ -10,7 +11,7 @@ import java.util.List;
 
 public class DynamicMount implements IMount {
 
-	public static final String MOUNT_DIRECTORY = "./mods/ppp_mount";
+	public static final String MOUNT_DIRECTORY = FMLCommonHandler.instance().getSavesDirectory().getAbsolutePath()+"/ppp_mount";
 	public static final String DIRECTORY = "/ppp";
 	public static final String JSON_VER = "1.0";
 
@@ -32,6 +33,9 @@ public class DynamicMount implements IMount {
 				for (int i1 = 0; i1 < files1.length; i1++) {
 					String f = files1[i1];
 					File file = new File(MOUNT_DIRECTORY+"/"+d+"/"+f);
+					file.mkdirs();
+					file.delete();//FIXME:Too inefficient
+					file.createNewFile();
 					FileWriter writer = new FileWriter(file);
 					writer.write(Util.listToString(WebUtil.readGithub("lua/"+d+"/"+f)));
 					writer.close();
