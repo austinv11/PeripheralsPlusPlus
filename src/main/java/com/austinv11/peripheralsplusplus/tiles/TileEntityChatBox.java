@@ -51,7 +51,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 	}
 
 	public String getName() {
-		return publicName;
+		return name;
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 
 	@Override
 	public String getType() {
-		return name;
+		return publicName;
 	}
 
 	@Override
@@ -221,7 +221,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 		computers.remove(computer);
 		if (computers.size() == 0)
 			ChatListener.chatBoxMap.remove(this);
-		computer.unmount(DynamicMount.DIRECTORY+getName());
+		computer.unmount(DynamicMount.DIRECTORY+"/"+getName());
 	}
 
 	@Override

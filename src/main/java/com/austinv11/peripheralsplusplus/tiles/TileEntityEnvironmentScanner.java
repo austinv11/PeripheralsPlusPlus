@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -85,10 +86,14 @@ public class TileEntityEnvironmentScanner extends TileEntity implements IPeriphe
 	}
 
 	@Override
-	public void attach(IComputerAccess computer) {}
+	public void attach(IComputerAccess computer) {
+		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
+	}
 
 	@Override
-	public void detach(IComputerAccess computer) {}
+	public void detach(IComputerAccess computer) {
+		computer.unmount(DynamicMount.DIRECTORY+"/"+getName());
+	}
 
 	@Override
 	public boolean equals(IPeripheral other) {
