@@ -92,7 +92,7 @@ public class TileEntityEnvironmentScanner extends TileEntity implements IPeriphe
 
 	@Override
 	public void detach(IComputerAccess computer) {
-		computer.unmount(DynamicMount.DIRECTORY+"/"+getName());
+		computer.unmount(DynamicMount.DIRECTORY+"/"+getType());
 	}
 
 	@Override

@@ -1,7 +1,7 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import com.austinv11.peripheralsplusplus.utils.Util;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import forestry.api.apiculture.IBeeGenome;
 import forestry.api.apiculture.IBeeRoot;
 import forestry.api.genetics.IGenome;
@@ -57,5 +57,10 @@ public class TileEntityAnalyzerBee extends TileEntityAnalyzer {
 		ret.put("toleranceTemperature", genome.getToleranceTemp().toString());
 		ret.put("humidity", genome.getPrimary().getHumidity().toString());
 		ret.put("toleranceHumidity", genome.getToleranceHumid().toString());
+	}
+
+	@Override
+	protected IPeripheral getInstance() {
+		return this;
 	}
 }

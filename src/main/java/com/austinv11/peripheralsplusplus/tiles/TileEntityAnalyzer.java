@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -76,10 +77,14 @@ public abstract class TileEntityAnalyzer extends TileEntityInv implements IPerip
 	}
 
 	@Override
-	public void attach(IComputerAccess computer) {}
+	public void attach(IComputerAccess computer) {
+		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(getInstance()));
+	}
 
 	@Override
-	public void detach(IComputerAccess computer) {}
+	public void detach(IComputerAccess computer) {
+		computer.unmount(DynamicMount.DIRECTORY+"/"+getType());
+	}
 
 	@Override
 	public boolean equals(IPeripheral other) {
@@ -93,4 +98,6 @@ public abstract class TileEntityAnalyzer extends TileEntityInv implements IPerip
 	protected abstract String getRootType();
 
 	protected abstract void addGenome(ItemStack stack, IGenome origGenome, HashMap<String, Object> ret);
+
+	protected abstract IPeripheral getInstance();
 }

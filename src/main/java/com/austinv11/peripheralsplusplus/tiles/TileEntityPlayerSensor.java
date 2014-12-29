@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.Location;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -107,11 +108,13 @@ public class TileEntityPlayerSensor extends TileEntity implements IPeripheral {
 	@Override
 	public void attach(IComputerAccess computer) {
 		computers.put(computer, true);
+		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
 	}
 
 	@Override
 	public void detach(IComputerAccess computer) {
 		computers.remove(computer);
+		computer.unmount(DynamicMount.DIRECTORY+"/"+getType());
 	}
 
 	@Override

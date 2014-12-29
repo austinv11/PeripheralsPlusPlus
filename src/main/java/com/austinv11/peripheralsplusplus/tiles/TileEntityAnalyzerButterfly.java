@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import dan200.computercraft.api.peripheral.IPeripheral;
 import forestry.api.genetics.IGenome;
 import forestry.api.lepidopterology.IButterflyGenome;
 import net.minecraft.item.ItemStack;
@@ -52,5 +53,10 @@ public class TileEntityAnalyzerButterfly extends TileEntityAnalyzer {
 		ret.put("toleranceTemperature", genome.getToleranceTemp().toString());
 		ret.put("humidity", genome.getPrimary().getHumidity().toString());
 		ret.put("toleranceHumidity", genome.getToleranceHumid().toString());
+	}
+
+	@Override
+	protected IPeripheral getInstance() {
+		return this;
 	}
 }

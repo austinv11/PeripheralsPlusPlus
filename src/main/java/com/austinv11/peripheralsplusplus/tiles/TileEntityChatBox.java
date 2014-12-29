@@ -221,7 +221,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 		computers.remove(computer);
 		if (computers.size() == 0)
 			ChatListener.chatBoxMap.remove(this);
-		computer.unmount(DynamicMount.DIRECTORY+"/"+getName());
+		computer.unmount(DynamicMount.DIRECTORY+"/"+getType());
 	}
 
 	@Override

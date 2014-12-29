@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.utils.Util;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import forestry.api.arboriculture.ITreeGenome;
 import forestry.api.genetics.IGenome;
 import net.minecraft.item.ItemStack;
@@ -50,5 +51,10 @@ public class TileEntityAnalyzerTree extends TileEntityAnalyzer {
 		ret.put("girth", genome.getGirth());
 		ret.put("plant", Util.iterableToMap(genome.getPlantTypes()));
 		ret.put("effect", genome.getEffect().getUID());
+	}
+
+	@Override
+	protected IPeripheral getInstance() {
+		return this;
 	}
 }

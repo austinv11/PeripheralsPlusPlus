@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.Logger;
 import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
@@ -179,10 +180,14 @@ public class TileEntityTeleporter extends TileEntity implements IPeripheral {
 	}
 
 	@Override
-	public void attach(IComputerAccess computer) {}
+	public void attach(IComputerAccess computer) {
+		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
+	}
 
 	@Override
-	public void detach(IComputerAccess computer) {}
+	public void detach(IComputerAccess computer) {
+		computer.unmount(DynamicMount.DIRECTORY+"/"+getType());
+	}
 
 	@Override
 	public boolean equals(IPeripheral other) {//FIXME idk what I'm doing

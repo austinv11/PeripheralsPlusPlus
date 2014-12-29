@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ChatUtil;
 import com.austinv11.peripheralsplusplus.utils.Util;
@@ -165,12 +166,14 @@ public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
 		//Logger.info(":D");
 		if (!isTurtle())
 			computers.put(computer, true);
+		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
 	}
 
 	@Override
 	public void detach(IComputerAccess computer) {
 		if (!isTurtle())
 			computers.remove(computer);
+		computer.unmount(DynamicMount.DIRECTORY+"/"+getType());
 	}
 
 	@Override
