@@ -12,6 +12,9 @@ import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.oredict.OreDictionary;
 
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -87,5 +90,28 @@ public class Util {
 					break;
 				}
 		return val;
+	}
+
+	public static String listToString(List<String> list) {
+		String returnVal = "";
+		for (Object o : list)
+			returnVal = returnVal+String.valueOf(o);
+		return returnVal;
+	}
+
+	public static String readFile(File file) throws IOException {
+		FileReader reader = new FileReader(file);
+		String result = "";
+		int nextChar;
+		while ((nextChar = reader.read()) != -1) {
+			char newChar = (char)nextChar;
+			result = result+newChar;
+		}
+		reader.close();
+		return result;
+	}
+
+	public static String readFile(String filePath) throws IOException {
+		return readFile(new File(filePath));
 	}
 }
