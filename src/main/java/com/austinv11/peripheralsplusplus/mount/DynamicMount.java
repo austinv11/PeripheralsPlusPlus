@@ -11,7 +11,7 @@ import java.util.List;
 
 public class DynamicMount implements IMount {
 
-	public static final String MOUNT_DIRECTORY = FMLCommonHandler.instance().getSavesDirectory().getAbsolutePath()+"/ppp_mount";
+	public static final String MOUNT_DIRECTORY = FMLCommonHandler.instance().getSavesDirectory().getParent()+"/mods/ppp_mount";
 	public static final String DIRECTORY = "/ppp";
 	public static final String JSON_VER = "1.0";
 

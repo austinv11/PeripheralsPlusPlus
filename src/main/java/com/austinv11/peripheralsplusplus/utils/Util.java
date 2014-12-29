@@ -94,8 +94,8 @@ public class Util {
 
 	public static String listToString(List<String> list) {
 		String returnVal = "";
-		for (Object o : list)
-			returnVal = returnVal+String.valueOf(o);
+		for (String s : list)
+			returnVal = returnVal+s+"\n";
 		return returnVal;
 	}
 
