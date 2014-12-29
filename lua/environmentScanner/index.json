@@ -1,4 +1,4 @@
 {
   "ver" : "1.0",
-  "files" : ["index.json","test.lua"]
+  "files" : ["index.json","biome.lua","temperature.lua","weather.lua"]
 }
