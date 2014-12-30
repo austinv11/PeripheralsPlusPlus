@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.mount;
 
+import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzer;
 import com.austinv11.peripheralsplusplus.utils.Logger;
 import com.austinv11.peripheralsplusplus.utils.Util;
 import com.austinv11.peripheralsplusplus.utils.WebUtil;
@@ -61,10 +62,12 @@ public class DynamicMount implements IMount {
 	@Override
 	public void list(String path, List<String> contents) throws IOException {
 		File file = new File(MOUNT_DIRECTORY+"/"+path);
-		for (File f : file.listFiles())
-			if (f.getName().equals(peripheral.getType()) || file.getAbsolutePath().contains(peripheral.getType()))
+		for (File f : file.listFiles()) {
+			String type = getSafeType();
+			if (f.getName().equals(type) || file.getAbsolutePath().contains(type))
 				if (!path.contains("json"))
 					contents.add(f.getName());
+		}
 	}
 
 	@Override
@@ -85,5 +88,9 @@ public class DynamicMount implements IMount {
 		String localJson = Util.readFile(file);
 		JSONFileList localFile = gson.fromJson(localJson, JSONFileList.class);
 		return !localFile.ver.equals(json.ver);
+	}
+
+	private String getSafeType() {
+		return peripheral instanceof TileEntityAnalyzer ? "analyzers" : peripheral.getType(); //FIXME: Hardcoding is no bueno
 	}
 }

@@ -1,4 +1,4 @@
 {
   "ver" : "1.0",
-  "dirs" : ["chatBox", "environmentScanner"]
+  "dirs" : ["chatBox", "environmentScanner", "analyzers", "oreDictionary"]
 }

@@ -173,7 +173,7 @@ public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
 	public void detach(IComputerAccess computer) {
 		if (!isTurtle())
 			computers.remove(computer);
-		computer.unmount(DynamicMount.DIRECTORY+"/"+getType());
+		computer.unmount(DynamicMount.DIRECTORY);
 	}
 
 	@Override

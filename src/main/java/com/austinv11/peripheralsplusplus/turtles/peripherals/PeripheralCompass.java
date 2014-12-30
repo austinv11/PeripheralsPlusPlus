@@ -44,7 +44,7 @@ public class PeripheralCompass implements IPeripheral {
 
 	@Override
 	public void detach(IComputerAccess computer) {
-		computer.unmount(DynamicMount.DIRECTORY+"/"+getType());
+		computer.unmount(DynamicMount.DIRECTORY);
 	}
 
 	@Override

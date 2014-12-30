@@ -83,7 +83,7 @@ public abstract class TileEntityAnalyzer extends TileEntityInv implements IPerip
 
 	@Override
 	public void detach(IComputerAccess computer) {
-		computer.unmount(DynamicMount.DIRECTORY+"/"+getType());
+		computer.unmount(DynamicMount.DIRECTORY);
 	}
 
 	@Override

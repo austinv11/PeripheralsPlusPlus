@@ -114,7 +114,7 @@ public class TileEntityPlayerSensor extends TileEntity implements IPeripheral {
 	@Override
 	public void detach(IComputerAccess computer) {
 		computers.remove(computer);
-		computer.unmount(DynamicMount.DIRECTORY+"/"+getType());
+		computer.unmount(DynamicMount.DIRECTORY);
 	}
 
 	@Override

@@ -208,7 +208,7 @@ public class PeripheralXP implements IPeripheral {//Beware, a lot of the math wa
 
 	@Override
 	public void detach(IComputerAccess computer) {
-		computer.unmount(DynamicMount.DIRECTORY+"/"+getType());
+		computer.unmount(DynamicMount.DIRECTORY);
 	}
 
 	@Override
