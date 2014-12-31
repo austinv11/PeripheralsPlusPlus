@@ -11,7 +11,6 @@ import dan200.computercraft.api.turtle.TurtleSide;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.HashMap;
@@ -131,10 +130,10 @@ public class PeripheralBarrel implements IPeripheral {
 			return new Object[]{amount};
 		} else if (method == 2) {
 			if (ITEM_TYPE_STORED != null)
-				return new Object[]{getUnwrappedUnlocalizedName(ITEM_TYPE_STORED.getUnlocalizedName(new ItemStack(ITEM_TYPE_STORED)))};
+				return new Object[]{Item.itemRegistry.getNameForObject(ITEM_TYPE_STORED)};
 		} else if (method == 3) {
 			if (ITEM_TYPE_STORED != null)
-				return new Object[]{StatCollector.translateToLocal(ITEM_TYPE_STORED.getUnlocalizedNameInefficiently(new ItemStack(ITEM_TYPE_STORED))+".name")};
+				return new Object[]{new ItemStack(ITEM_TYPE_STORED).getDisplayName()};
 		} else if (method == 4) {
 			if (ITEM_TYPE_STORED != null)
 				return new Object[]{Item.getIdFromItem(ITEM_TYPE_STORED)};
