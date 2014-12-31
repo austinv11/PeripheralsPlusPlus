@@ -111,7 +111,7 @@ public class PeripheralBarrel implements IPeripheral {
 			if (ITEM_TYPE_STORED != null) {
 				ItemStack temp = new ItemStack(ITEM_TYPE_STORED);
 				if (!temp.isItemEqual(items))
-					throw new LuaException("Item mismatch");
+					return new Object[]{0};
 			} else {
 				Item type = items.getItem();
 				ITEM_TYPE_STORED = type;
