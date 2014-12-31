@@ -103,6 +103,8 @@ public class PeripheralBarrel implements IPeripheral {
 				double temp = (Double) arguments[0];
 				amount = (int) temp;
 			}
+			if (turtle.getInventory().getStackInSlot(turtle.getSelectedSlot()) == null)
+				return new Object[]{0};
 			ItemStack items = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot()).copy();
 			if (amount > items.stackSize)
 				amount = items.stackSize;
