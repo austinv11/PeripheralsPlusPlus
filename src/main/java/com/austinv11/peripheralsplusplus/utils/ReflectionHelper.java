@@ -3,7 +3,10 @@ package com.austinv11.peripheralsplusplus.utils;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.tileentity.TileEntity;
 
+import java.io.File;
 import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 public class ReflectionHelper {
 
@@ -20,4 +23,10 @@ public class ReflectionHelper {
 		return null;
 	}
 
+	public static void loadExternalLib(File lib) throws Exception {
+		URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+		Method addURL = URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{URL.class});
+		addURL.setAccessible(true);
+		addURL.invoke(classLoader, lib.toURI().toURL());
+	}
 }

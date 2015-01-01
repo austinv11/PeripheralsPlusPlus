@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.utils;
 
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.google.common.collect.Multimap;
+import com.google.gson.Gson;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.item.ItemStack;
@@ -113,5 +114,15 @@ public class Util {
 
 	public static String readFile(String filePath) throws IOException {
 		return readFile(new File(filePath));
+	}
+
+	public static boolean checkFileVersion(String dir, JSONFileList json) throws IOException{
+		File file = new File(dir+"/index.json");
+		if (!file.exists())
+			return true;
+		Gson gson = new Gson();
+		String localJson = readFile(file);
+		JSONFileList localFile = gson.fromJson(localJson, JSONFileList.class);
+		return !localFile.ver.equals(json.ver);
 	}
 }

@@ -1,0 +1,37 @@
+ByteValuedFeatureProcessors
+100 | name 0 (gasp) (laughter) (sigh) alright definitely ma mh_yeah mhmh mhmh_right mhmh_yeah mna_(snort) nae oh_right oh_yeah right well yeah
+15 | voicequality 0 whispery lax creaky tense modal breathy
+5 | intonation 0 rising falling low mid high
+ShortValuedFeatureProcessors
+ContinuousFeatureProcessors
+15 linear | anger
+15 linear | sadness
+15 linear | amusement
+15 linear | happiness
+15 linear | contempt
+15 linear | solidarity
+15 linear | antagonism
+15 linear | certain
+15 linear | agreeing
+15 linear | interested
+15 linear | anticipation
+FeatureSimilarity
+name 0 (gasp) (laughter) (sigh) alright definitely ma mh_yeah mhmh mhmh_right mhmh_yeah mna_(snort) nae oh_right oh_yeah right well yeah
+0
+(gasp) 1
+(laughter) 1 1
+(sigh) 1 0.7 1
+alright 1 1 1 1
+definitely 1 1 1 1 0.9
+ma 1 1 1 1 1 1
+mh_yeah 1 1 1 1 0.8 0.9 0.9
+mhmh 1 1 1 1 0.8 0.9 0.7 0.7
+mhmh_right 1 1 1 1 0.7 0.9 0.9 0.4 0.6
+mhmh_yeah 1 1 1 1 0.8 0.9 0.9 0.2 0.6 0.3
+mna_(snort) 1 1 1 1 0.9 1 0.5 0.8 0.7 0.8 0.7
+nae 1 1 1 1 1 1 1 1 1 1 1 0.6
+oh_right 1 1 1 1 0.6 0.9 1 0.9 0.9 0.5 0.8 1 1
+oh_yeah 1 1 1 1 0.8 0.9 0.9 0.3 0.9 0.6 0.3 1 1 0.4
+right 1 1 1 1 0.7 0.8 0.9 0.7 0.9 0.4 0.6 1 1 0.3 0.6
+well 1 1 1 1 1 1 1 1 1 1 1 0.9 1 1 1 1
+yeah 1 1 1 1 0.8 0.8 0.9 0.3 0.9 0.8 0.4 1 1 0.8 0.4 0.4 1

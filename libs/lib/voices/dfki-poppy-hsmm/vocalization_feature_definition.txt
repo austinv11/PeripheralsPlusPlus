@@ -1,0 +1,58 @@
+ByteValuedFeatureProcessors
+100 | name 0 (gasp) (laughter) (sigh) OK OK_(laughter) OK_right ah ah_OK_(laughter) alright definitely exactly_(laughter) go_(laughter) god_yes gosh gosh_OK mh mhmh mhmh_(laughter) no no_(laughter) oh oh_(laughter) oh_god_no_(laughter) oh_gosh_(laughter) oh_no oh_no_(laughter) oh_well oh_yeah really really_(laughter) right_OK ve_oh_(laughter) well_(laughter) wow yeah yeah_(laughter) yeah_definitely yes
+15 | voicequality 0 whispery lax creaky tense modal breathy
+5 | intonation 0 rising falling low mid high
+ShortValuedFeatureProcessors
+ContinuousFeatureProcessors
+15 linear | anger
+15 linear | sadness
+15 linear | amusement
+15 linear | happiness
+15 linear | contempt
+15 linear | solidarity
+15 linear | antagonism
+15 linear | certain
+15 linear | agreeing
+15 linear | interested
+15 linear | anticipation
+FeatureSimilarity
+name 0 (gasp) (laughter) (sigh) OK OK_(laughter) OK_right ah ah_OK_(laughter) alright definitely exactly_(laughter) go_(laughter) god_yes gosh gosh_OK mh mhmh mhmh_(laughter) no no_(laughter) oh oh_(laughter) oh_god_no_(laughter) oh_gosh_(laughter) oh_no oh_no_(laughter) oh_well oh_yeah really really_(laughter) right_OK ve_oh_(laughter) well_(laughter) wow yeah yeah_(laughter) yeah_definitely yes
+0
+(gasp) 1
+(laughter) 1 1
+(sigh) 1 0.5 1
+OK 1 1 1 1
+OK_(laughter) 1 1 0.8 1 0.5
+OK_right 1 1 1 1 0.2 0.4
+ah 1 1 1 1 0.6 0.8 0.6
+ah_OK_(laughter) 1 1 0.8 1 0.5 0.3 0.5 0.6
+alright 1 1 1 1 0.4 0.5 0.4 0.6 0.7
+definitely 1 1 1 1 1 1 1 1 1 1
+exactly_(laughter) 1 1 0.8 1 1 1 1 1 1 1 0.3
+go_(laughter) 1 1 0.8 1 1 1 1 1 1 1 1 1
+god_yes 1 0.9 1 1 1 1 1 1 1 1 0.7 0.8 0.9
+gosh 1 0.6 1 0.9 1 1 1 1 1 1 1 1 1 0.8
+gosh_OK 1 0.9 1 1 0.8 0.7 0.8 1 0.7 1 1 1 1 0.8 0.5
+mh 1 1 1 1 0.8 0.9 0.9 0.9 1 1 0.9 0.9 1 0.9 1 1
+mhmh 1 1 1 1 0.8 0.9 0.9 0.9 1 1 0.9 0.9 1 0.9 1 1 0.2
+mhmh_(laughter) 1 1 0.8 1 0.9 0.6 0.9 1 0.8 1 0.9 0.8 0.9 0.9 1 1 0.4 0.3
+no 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1
+no_(laughter) 1 1 0.8 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0.4
+oh 1 1 1 0.9 1 1 1 0.9 1 1 1 1 1 1 1 1 1 1 1 1 1
+oh_(laughter) 1 1 0.8 1 1 0.9 1 1 1 1 1 1 0.7 1 1 1 1 1 1 1 1 0.3
+oh_god_no_(laughter) 1 1 0.8 1 1 1 1 1 1 1 1 1 0.7 1 1 1 1 1 1 0.8 0.6 0.8 0.6
+oh_gosh_(laughter) 1 1 0.8 1 1 0.9 1 1 1 1 1 1 0.9 1 0.6 0.6 1 1 1 1 1 0.8 0.6 1
+oh_no 1 0.9 1 0.9 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0.7 0.7 0.8 0.7 0.4 1
+oh_no_(laughter) 1 1 0.8 1 1 1 1 1 1 1 1 1 0.7 1 1 1 1 1 1 0.7 0.4 0.7 0.7 0.2 1 0.3
+oh_well 1 1 1 0.9 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0.8 0.5 1 1 1 1
+oh_yeah 1 1 1 1 0.9 1 0.9 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0.8 0.8 1 1 1 1 1
+really 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0.9 1 1 1 1
+really_(laughter) 1 1 0.8 1 1 0.9 1 1 1 1 1 1 0.9 1 1 1 1 1 1 1 1 1 1 1 0.7 1 1 1 1 0.5
+right_OK 1 1 1 1 0.2 0.4 0.1 0.8 0.6 0.8 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 0.9 0.9 1 1
+ve_oh_(laughter) 1 1 0.8 1 1 0.9 1 1 0.9 1 1 1 0.9 1 1 1 1 1 1 1 1 0.8 0.7 0.9 0.9 1 1 0.9 1 1 0.8 1
+well_(laughter) 1 1 0.8 1 1 0.7 1 1 0.9 1 1 1 1 1 1 1 1 1 1 1 1 1 0.8 1 1 1 1 0.7 1 1 0.9 1 0.9
+wow 1 0.9 1 1 1 1 1 1 1 1 1 1 1 1 0.6 0.6 1 1 1 1 1 1 1 1 0.6 1 1 1 1 1 1 1 1 1
+yeah 1 1 1 1 0.8 0.9 0.7 1 1 1 0.9 0.9 1 0.9 1 1 0.6 0.6 0.9 1 1 1 1 1 1 1 1 1 0.6 1 1 1 1 1 1
+yeah_(laughter) 1 1 0.8 1 0.8 0.7 0.8 1 1 1 0.9 0.7 0.9 0.9 1 1 0.8 0.8 0.6 1 1 1 0.9 1 1 1 1 1 0.7 1 1 1 1 1 1 0.3
+yeah_definitely 1 1 1 1 1 1 1 1 1 1 0.2 0.2 1 0.8 1 1 0.9 0.9 0.8 1 1 1 1 1 1 1 1 1 0.9 1 1 1 1 1 1 0.3 0.6
+yes 1 1 1 1 0.9 1 0.8 1 1 1 0.7 0.8 1 0.6 1 1 0.7 0.7 0.7 1 1 1 1 1 1 1 1 1 0.7 1 1 1 1 1 1 0.3 0.8 0.3

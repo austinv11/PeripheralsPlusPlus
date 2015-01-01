@@ -9,6 +9,7 @@ tile.peripheralsplusplus:butterflyAnalyzer.name=Butterfly Analyzer
 tile.peripheralsplusplus:teleporter.name=Turtle Teleporter
 tile.peripheralsplusplus:teleporterT2.name=Advanced Turtle Teleporter
 tile.peripheralsplusplus:environmentScanner.name=Environment Scanner
+tile.peripheralsplusplus:speaker.name=Speaker
 
 #Items
 item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade

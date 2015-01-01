@@ -1,9 +1,7 @@
 package com.austinv11.peripheralsplusplus.mount;
 
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzer;
-import com.austinv11.peripheralsplusplus.utils.Logger;
-import com.austinv11.peripheralsplusplus.utils.Util;
-import com.austinv11.peripheralsplusplus.utils.WebUtil;
+import com.austinv11.peripheralsplusplus.utils.*;
 import com.google.gson.Gson;
 import cpw.mods.fml.common.FMLCommonHandler;
 import dan200.computercraft.api.filesystem.IMount;
@@ -30,14 +28,12 @@ public class DynamicMount implements IMount {
 			throw new Exception("JSON version mismatch!");
 		String[] dirs = index.dirs;
 		Logger.info(dirs.length+" directories found! Attempting to update (if necessary)...");
-		for (int i = 0; i < dirs.length; i++) {
-			String d = dirs[i];
+		for (String d : dirs) {
 			JSONFileList files = gson.fromJson(Util.listToString(WebUtil.readGithub("lua/"+d+"/index.json")), JSONFileList.class);
-			if (checkFileVersion(d, files)) {
+			if (Util.checkFileVersion(MOUNT_DIRECTORY+"/"+d, files)) {
 				String[] files1 = files.files;
-				for (int i1 = 0; i1 < files1.length; i1++) {
-					String f = files1[i1];
-					File file = new File((MOUNT_DIRECTORY+"/"+d+"/"+f).replace(".lua",""));
+				for (String f : files1) {
+					File file = new File((MOUNT_DIRECTORY+"/"+d+"/"+f).replace(".lua", ""));
 					file.mkdirs();
 					file.delete();//FIXME:Too inefficient
 					file.createNewFile();
@@ -78,16 +74,6 @@ public class DynamicMount implements IMount {
 	@Override
 	public InputStream openForRead(String path) throws IOException {
 		return new FileInputStream(new File(MOUNT_DIRECTORY+"/"+path));
-	}
-
-	private static boolean checkFileVersion(String dir, JSONFileList json) throws IOException{
-		File file = new File(MOUNT_DIRECTORY+"/"+dir+"/index.json");
-		if (!file.exists())
-			return true;
-		Gson gson = new Gson();
-		String localJson = Util.readFile(file);
-		JSONFileList localFile = gson.fromJson(localJson, JSONFileList.class);
-		return !localFile.ver.equals(json.ver);
 	}
 
 	private String getSafeType() {

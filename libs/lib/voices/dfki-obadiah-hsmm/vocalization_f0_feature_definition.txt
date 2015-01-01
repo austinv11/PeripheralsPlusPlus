@@ -1,0 +1,15 @@
+ByteValuedFeatureProcessors
+10 | intonation 0 rising falling low mid high
+ShortValuedFeatureProcessors
+ContinuousFeatureProcessors
+25 linear | anger
+25 linear | sadness
+25 linear | amusement
+25 linear | happiness
+25 linear | contempt
+25 linear | solidarity
+25 linear | antagonism
+25 linear | certain
+25 linear | agreeing
+25 linear | interested
+25 linear | anticipation

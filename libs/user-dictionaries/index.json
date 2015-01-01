@@ -1,0 +1,4 @@
+{
+  "ver" : "1.0",
+  "files" : ["index.json","userdict-de.txt", "userdict-en_GB.txt","userdict-US.txt","userdict-fr.txt","userdict-ru.txt","userdict-sv.txt","userdict-te.txt"]
+}
