@@ -1,23 +1,22 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
-import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
+import com.austinv11.peripheralsplusplus.tiles.TileEntitySpeaker;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockChatBox extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
-
-	public BlockChatBox() {
+public class BlockSpeaker extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
+	
+	public BlockSpeaker() {
 		super();
-		this.setBlockName("chatBox");
+		this.setBlockName("speaker");
 	}
 
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
-		//Logger.info("test");
-		return new TileEntityChatBox();
+		return new TileEntitySpeaker();
 	}
 
 	@Override
