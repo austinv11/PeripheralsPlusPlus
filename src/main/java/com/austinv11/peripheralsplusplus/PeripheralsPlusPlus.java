@@ -145,6 +145,7 @@ public class PeripheralsPlusPlus {
 			if (!index.ver.equals(JSON_VER))
 				throw new RuntimeException("JSON Version Mismatch!");
 			for (String dir : index.dirs) {
+				Logger.info(dir);
 				JSONFileList fileList = gson.fromJson(Util.listToString(WebUtil.readGithub("libs/"+dir+"/index.json")), JSONFileList.class);
 				if (Util.checkFileVersion(LIB_DIRECTORY+"/"+dir, fileList)) {
 					String[] files = fileList.files;
@@ -153,7 +154,7 @@ public class PeripheralsPlusPlus {
 						f.mkdirs();
 						f.delete();//FIXME:Too inefficient
 						f.createNewFile();
-						boolean success = WebUtil.downloadFile("http://raw.github.com/austinv11/PeripheralsPlusPlus/master/libs/"+dir+"/"+file,"/"+dir,file);
+						boolean success = WebUtil.downloadFile("http://raw.github.com/austinv11/PeripheralsPlusPlus/master/libs/"+dir+"/"+file,dir,file);
 						if (!success)
 							throw new RuntimeException("Download failed!");
 						else

@@ -59,8 +59,11 @@ public class WebUtil {
 			Logger.info(String.format("\rDownloaded file %s         \n", name));
 			is.close();
 			downloadBuffer.limit(fullLength);
-			if(!file.exists())
+			if(!file.exists()) {
+				file.mkdirs();
+				file.delete();//FIXME:Too inefficient
 				file.createNewFile();
+			}
 			downloadBuffer.position(0);
 			FileOutputStream fos = new FileOutputStream(file);
 			fos.getChannel().write(downloadBuffer);
