@@ -1,6 +1,0 @@
-{
-  "ver" : "1.0",
-  "files" : ["index.json","mix_excitation_filters.txt","vocalization_f0_feature_definition.txt",
-    "vocalization_feature_definition.txt", "vocalization_features.mry", "vocalization_intonation.mry",
-    "vocalization_mlsa_features.mry", "vocalization_units.mry"]
-}

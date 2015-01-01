@@ -16,8 +16,8 @@ import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteTickHandler;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
 import com.austinv11.peripheralsplusplus.turtles.*;
-import com.austinv11.peripheralsplusplus.utils.*;
-import com.google.gson.Gson;
+import com.austinv11.peripheralsplusplus.utils.ConfigurationHandler;
+import com.austinv11.peripheralsplusplus.utils.Logger;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -31,7 +31,6 @@ import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraftforge.common.MinecraftForge;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,9 +46,6 @@ public class PeripheralsPlusPlus {
 	 * Object containing all registered upgrades, the iterator is the upgrade id
 	 */
 	public final ArrayList<ISatelliteUpgrade> UPGRADE_REGISTRY = new ArrayList<ISatelliteUpgrade>();
-
-	public static final String JSON_VER = "1.0";
-	public static final String LIB_DIRECTORY = FMLCommonHandler.instance().getSavesDirectory().getParent()+"/mods/Libs";
 
 	@Mod.Instance(Reference.MOD_ID)
 	public static PeripheralsPlusPlus instance;
@@ -76,7 +72,6 @@ public class PeripheralsPlusPlus {
 			Logger.error("An exception was thrown attempting to prepare mount programs; if your internet connection is fine, please report the following to the mod author:");
 			e.printStackTrace();
 		}
-		installLibs();
 	}
 
 	@Mod.EventHandler
@@ -135,39 +130,6 @@ public class PeripheralsPlusPlus {
 	public static void registerUpgrade(ITurtleUpgrade u) {
 		ComputerCraftAPI.registerTurtleUpgrade(u);
 		CreativeTabPPP.upgrades.add(u);
-	}
-
-	private void installLibs() {
-		Logger.info("Attempting to install required libraries...");
-		Gson gson = new Gson();
-		try {
-			JSONIndex index = gson.fromJson(Util.listToString(WebUtil.readGithub("libs/index.json")), JSONIndex.class);
-			if (!index.ver.equals(JSON_VER))
-				throw new RuntimeException("JSON Version Mismatch!");
-			for (String dir : index.dirs) {
-				Logger.info(dir);
-				JSONFileList fileList = gson.fromJson(Util.listToString(WebUtil.readGithub("libs/"+dir+"/index.json")), JSONFileList.class);
-				if (Util.checkFileVersion(LIB_DIRECTORY+"/"+dir, fileList)) {
-					String[] files = fileList.files;
-					for (String file : files) {
-						File f = new File((LIB_DIRECTORY+"/"+dir+"/"+file));
-						f.mkdirs();
-						f.delete();//FIXME:Too inefficient
-						f.createNewFile();
-						boolean success = WebUtil.downloadFile("http://raw.github.com/austinv11/PeripheralsPlusPlus/master/libs/"+dir+"/"+file,dir,file);
-						if (!success)
-							throw new RuntimeException("Download failed!");
-						else
-							if (file.endsWith(".jar"))
-								ReflectionHelper.loadExternalLib(f);
-					}
-				}
-			}
-		}catch (Exception e) {
-			Logger.error("An error has occurred attempting to download required libs for the Speaker peripheral, disabling it...\nPlease report the following to the mod author:");
-			Config.enableSpeaker = false;
-			e.printStackTrace();
-		}
 	}
 
 	private void registerProjRedUpgrades() { //I'm so sorry
