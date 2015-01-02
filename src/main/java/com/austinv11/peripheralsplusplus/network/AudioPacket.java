@@ -98,12 +98,14 @@ public class AudioPacket implements IMessage {
 				String[] splitString = message.text.split(" ");
 				ArrayList<String> words = new ArrayList<String>();
 				String combinedString = "";
-				for (String word : splitString) {
-					String tempString = combinedString+"%20"+word;
+				for (int i = 0; i < splitString.length; i++) {
+					String tempString = combinedString+"%20"+splitString[i];
 					if (tempString.length() >= 100) {
 						words.add(combinedString);
-						combinedString = word;
-					}else
+						combinedString = splitString[i];
+					}else if(i == splitString.length-1)
+						words.add(tempString);
+					else
 						combinedString = tempString;
 				}
 				for (String query : words)
