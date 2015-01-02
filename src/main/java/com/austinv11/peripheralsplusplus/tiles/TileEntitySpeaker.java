@@ -117,6 +117,7 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 				range = (Double) arguments[1];
 			PeripheralsPlusPlus.NETWORK.sendToAllAround(new AudioPacket(lang, (String) arguments[0], xCoord, yCoord, zCoord, id, side), new NetworkRegistry.TargetPoint(id, xCoord, yCoord, zCoord, range));
 			lastMessage = (String)arguments[0];
+			return new Object[]{lastMessage, lang};
 //			}catch (Exception e) {
 //				e.printStackTrace();
 //			}
