@@ -27,8 +27,6 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 	private TurtleSide side = null;
 	private int id;
 	private static final int TICKER_INTERVAL = 20;
-	private int ticker = 0;
-	private int subticker = 0;
 	private int eventTicker = 0;
 	private int eventSubticker = 0;
 	private HashMap<IComputerAccess, Boolean> computers = new HashMap<IComputerAccess,Boolean>();
@@ -67,10 +65,6 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 		}
 		if (worldObj != null)
 			id = worldObj.provider.dimensionId;
-		if (subticker > 0)
-			subticker--;
-		if (subticker == 0 && ticker != 0)
-			ticker = 0;
 		if (eventSubticker > 0)
 			eventSubticker--;
 		if (eventSubticker == 0 && eventTicker != 0)
@@ -114,8 +108,6 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 				}
 			else
 				lang = Language.ENGLISH;//TranslateUtils.detectLangPrefix((String) arguments[0]);
-			if (ticker == Config.speakerSayRate)
-				throw new LuaException("Please try again later, you are sending messages too often");
 			double range;
 			if (Config.sayRange < 0)
 				range = Double.MAX_VALUE;
@@ -124,8 +116,6 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 			if (arguments.length > 1)
 				range = (Double) arguments[1];
 			PeripheralsPlusPlus.NETWORK.sendToAllAround(new AudioPacket(lang, (String) arguments[0], xCoord, yCoord, zCoord, id, side), new NetworkRegistry.TargetPoint(id, xCoord, yCoord, zCoord, range));
-			subticker = TICKER_INTERVAL;
-			ticker++;
 			lastMessage = (String)arguments[0];
 //			}catch (Exception e) {
 //				e.printStackTrace();
@@ -153,7 +143,7 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 
 	public void onSpeechCompletion(String text, String lang) {
 		for (IComputerAccess computer : computers.keySet())
-			if (eventTicker == 0 || lastMessage != text) {
+			if (eventTicker == 0 || !lastMessage.equals(text)) {
 				computer.queueEvent("speechComplete", new Object[]{text, lang});
 				eventSubticker = TICKER_INTERVAL;
 				eventTicker++;
