@@ -52,6 +52,7 @@ public class PeripheralsPlusPlus {
 	public final ArrayList<ISatelliteUpgrade> UPGRADE_REGISTRY = new ArrayList<ISatelliteUpgrade>();
 
 	public static SimpleNetworkWrapper NETWORK;
+	public static final String LIB_DIRECTORY = FMLCommonHandler.instance().getSavesDirectory().getParent()+"/mods";
 
 	@Mod.Instance(Reference.MOD_ID)
 	public static PeripheralsPlusPlus instance;
@@ -81,7 +82,6 @@ public class PeripheralsPlusPlus {
 			Logger.error("An exception was thrown attempting to prepare mount programs; if your internet connection is fine, please report the following to the mod author:");
 			e.printStackTrace();
 		}
-
 	}
 
 	@Mod.EventHandler
