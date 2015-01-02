@@ -7,6 +7,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IIcon;
+import net.minecraftforge.common.util.ForgeDirection;
 
 public class TurtleSpeaker implements ITurtleUpgrade{
 	@Override
@@ -41,7 +42,7 @@ public class TurtleSpeaker implements ITurtleUpgrade{
 
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
-		return ModBlocks.speaker.getIcon(1, 0);
+		return ModBlocks.speaker.getIcon(ForgeDirection.EAST.ordinal(), 0);
 	}
 
 	@Override
