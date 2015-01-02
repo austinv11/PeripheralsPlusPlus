@@ -7,11 +7,14 @@ import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import dan200.computercraft.api.turtle.TurtleSide;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
 
 public class AudioPacket implements IMessage {
 
@@ -19,16 +22,18 @@ public class AudioPacket implements IMessage {
 	public String text;
 	public int x,y,z;
 	public World world;
+	public TurtleSide side;
 
 	public AudioPacket() {}
 
-	public AudioPacket(String lang, String text, int x, int y, int z, int world) {
+	public AudioPacket(String lang, String text, int x, int y, int z, int world, TurtleSide side) {
 		this.lang = lang;
 		this.text = text;
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.world = MinecraftServer.getServer().worldServerForDimension(world);
+		this.side = side;
 	}
 
 	@Override
@@ -40,6 +45,7 @@ public class AudioPacket implements IMessage {
 		y = tag.getInteger("y");
 		z = tag.getInteger("z");
 		world  = Minecraft.getMinecraft().theWorld;
+		side = tag.getString("side").equals("null") ? null : TurtleSide.valueOf(tag.getString("side"));
 	}
 
 	@Override
@@ -50,6 +56,7 @@ public class AudioPacket implements IMessage {
 		tag.setInteger("x", x);
 		tag.setInteger("y", y);
 		tag.setInteger("z", z);
+		tag.setString("side", side == null ? "null" : side.name());
 		ByteBufUtils.writeTag(buf, tag);
 	}
 
@@ -76,9 +83,32 @@ public class AudioPacket implements IMessage {
 			public void run(){
 				if (work)
 					try {
-						TranslateUtils.playAudio(message.text, message.lang);
+						if (message.text.replace(" ", "%20").length() < 100)
+							TranslateUtils.playAudio(message.text, message.lang);
+						else
+							playSplitAudio();
 						work = false;
-						PeripheralsPlusPlus.NETWORK.sendToServer(new AudioResponsePacket(message.text, message.lang, message.x, message.y, message.z, message.world));
+						PeripheralsPlusPlus.NETWORK.sendToServer(new AudioResponsePacket(message.text, message.lang, message.x, message.y, message.z, message.world, message.side));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+			}
+
+			private void playSplitAudio() {
+				String[] splitString = message.text.split(" ");
+				ArrayList<String> words = new ArrayList<String>();
+				String combinedString = "";
+				for (String word : splitString) {
+					String tempString = combinedString+"%20"+word;
+					if (tempString.length() >= 100) {
+						words.add(combinedString);
+						combinedString = word;
+					}else
+						combinedString = tempString;
+				}
+				for (String query : words)
+					try {
+						TranslateUtils.playAudio(query, message.lang);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

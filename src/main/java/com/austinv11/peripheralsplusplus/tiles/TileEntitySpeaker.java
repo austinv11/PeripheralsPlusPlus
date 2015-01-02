@@ -13,6 +13,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
+import dan200.computercraft.api.turtle.TurtleSide;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
@@ -23,6 +24,7 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 	public static String publicName = "speaker";
 	private String name = "tileEntitySpeaker";
 	private ITurtleAccess turtle;
+	private TurtleSide side = null;
 	private int id;
 	private static final int TICKER_INTERVAL = 20;
 	private int ticker = 0;
@@ -30,13 +32,15 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 	private int eventTicker = 0;
 	private int eventSubticker = 0;
 	private HashMap<IComputerAccess, Boolean> computers = new HashMap<IComputerAccess,Boolean>();
+	private String lastMessage;
 
 	public TileEntitySpeaker() {
 		super();
 	}
 
-	public TileEntitySpeaker(ITurtleAccess turtle) {
+	public TileEntitySpeaker(ITurtleAccess turtle, TurtleSide side) {
 		this.turtle = turtle;
+		this.side = side;
 	}
 
 	public String getName() {
@@ -119,9 +123,10 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 				range = Config.sayRange;
 			if (arguments.length > 1)
 				range = (Double) arguments[1];
-			PeripheralsPlusPlus.NETWORK.sendToAllAround(new AudioPacket(lang, (String) arguments[0], xCoord, yCoord, zCoord, id), new NetworkRegistry.TargetPoint(id, xCoord, yCoord, zCoord, range));
+			PeripheralsPlusPlus.NETWORK.sendToAllAround(new AudioPacket(lang, (String) arguments[0], xCoord, yCoord, zCoord, id, side), new NetworkRegistry.TargetPoint(id, xCoord, yCoord, zCoord, range));
 			subticker = TICKER_INTERVAL;
 			ticker++;
+			lastMessage = (String)arguments[0];
 //			}catch (Exception e) {
 //				e.printStackTrace();
 //			}
@@ -148,7 +153,7 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 
 	public void onSpeechCompletion(String text, String lang) {
 		for (IComputerAccess computer : computers.keySet())
-			if (eventTicker == 0) {
+			if (eventTicker == 0 || lastMessage != text) {
 				computer.queueEvent("speechComplete", new Object[]{text, lang});
 				eventSubticker = TICKER_INTERVAL;
 				eventTicker++;

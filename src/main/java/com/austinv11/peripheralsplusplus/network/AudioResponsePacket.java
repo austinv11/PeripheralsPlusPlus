@@ -41,7 +41,7 @@ public class AudioResponsePacket implements IMessage {
 		y = tag.getInteger("y");
 		z = tag.getInteger("z");
 		world = MinecraftServer.getServer().worldServerForDimension(tag.getInteger("dim"));
-		side = TurtleSide.valueOf(tag.getString("side"));
+		side = tag.getString("side").equals("null") ? null : TurtleSide.valueOf(tag.getString("side"));
 	}
 
 	@Override
@@ -53,7 +53,7 @@ public class AudioResponsePacket implements IMessage {
 		tag.setInteger("y", y);
 		tag.setInteger("z", z);
 		tag.setInteger("dim", world.provider.dimensionId);
-		tag.setString("side", side.name());
+		tag.setString("side", side == null ? "null" : side.name());
 		ByteBufUtils.writeTag(buf, tag);
 	}
 
@@ -61,7 +61,7 @@ public class AudioResponsePacket implements IMessage {
 
 		@Override
 		public IMessage onMessage(AudioResponsePacket message, MessageContext ctx) {
-			if (message.side != null)
+			if (message.side == null)
 				((TileEntitySpeaker)message.world.getTileEntity(message.x, message.y, message.z)).onSpeechCompletion(message.text, message.lang);
 			else
 				try {
