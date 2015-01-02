@@ -16,6 +16,8 @@ import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 
+import java.util.HashMap;
+
 public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 
 	public static String publicName = "speaker";
@@ -25,6 +27,9 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 	private static final int TICKER_INTERVAL = 20;
 	private int ticker = 0;
 	private int subticker = 0;
+	private int eventTicker = 0;
+	private int eventSubticker = 0;
+	private HashMap<IComputerAccess, Boolean> computers = new HashMap<IComputerAccess,Boolean>();
 
 	public TileEntitySpeaker() {
 		super();
@@ -62,6 +67,10 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 			subticker--;
 		if (subticker == 0 && ticker != 0)
 			ticker = 0;
+		if (eventSubticker > 0)
+			eventSubticker--;
+		if (eventSubticker == 0 && eventTicker != 0)
+			eventTicker = 0;
 	}
 
 	@Override
@@ -110,8 +119,9 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 				range = Config.sayRange;
 			if (arguments.length > 1)
 				range = (Double) arguments[1];
-			PeripheralsPlusPlus.NETWORK.sendToAllAround(new AudioPacket(lang, (String) arguments[0]), new NetworkRegistry.TargetPoint(id, xCoord, yCoord, zCoord, range));
+			PeripheralsPlusPlus.NETWORK.sendToAllAround(new AudioPacket(lang, (String) arguments[0], xCoord, yCoord, zCoord, id), new NetworkRegistry.TargetPoint(id, xCoord, yCoord, zCoord, range));
 			subticker = TICKER_INTERVAL;
+			ticker++;
 //			}catch (Exception e) {
 //				e.printStackTrace();
 //			}
@@ -121,16 +131,27 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 
 	@Override
 	public void attach(IComputerAccess computer) {
+		computers.put(computer, true);
 		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
 	}
 
 	@Override
 	public void detach(IComputerAccess computer) {
+		computers.remove(computer);
 		computer.unmount(DynamicMount.DIRECTORY);
 	}
 
 	@Override
 	public boolean equals(IPeripheral other) {
 		return (this == other);
+	}
+
+	public void onSpeechCompletion(String text, String lang) {
+		for (IComputerAccess computer : computers.keySet())
+			if (eventTicker == 0) {
+				computer.queueEvent("speechComplete", new Object[]{text, lang});
+				eventSubticker = TICKER_INTERVAL;
+				eventTicker++;
+			}
 	}
 }
