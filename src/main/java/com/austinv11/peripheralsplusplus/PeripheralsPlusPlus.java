@@ -10,6 +10,7 @@ import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
 import com.austinv11.peripheralsplusplus.items.SatelliteUpgradeBase;
 import com.austinv11.peripheralsplusplus.mount.DynamicMount;
+import com.austinv11.peripheralsplusplus.network.AudioPacket;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
@@ -26,7 +27,9 @@ import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
+import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.EntityRegistry;
+import cpw.mods.fml.relauncher.Side;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraftforge.common.MinecraftForge;
@@ -47,6 +50,8 @@ public class PeripheralsPlusPlus {
 	 */
 	public final ArrayList<ISatelliteUpgrade> UPGRADE_REGISTRY = new ArrayList<ISatelliteUpgrade>();
 
+	public static SimpleNetworkWrapper NETWORK;
+
 	@Mod.Instance(Reference.MOD_ID)
 	public static PeripheralsPlusPlus instance;
 
@@ -56,6 +61,8 @@ public class PeripheralsPlusPlus {
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
+		NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("ppp");
+		NETWORK.registerMessage(AudioPacket.AudioPacketHandler.class, AudioPacket.class, 0, Side.CLIENT);
 		proxy.iconManagerInit();
 		proxy.prepareGuis();
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());

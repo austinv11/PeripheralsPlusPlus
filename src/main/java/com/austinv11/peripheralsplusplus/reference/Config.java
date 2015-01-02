@@ -31,6 +31,8 @@ public class Config {
 	public static boolean enableVillagers = true;
 	public static boolean enableProjectRedTurtles = true;
 	public static boolean enableSpeaker = true;
+	public static double speechRange = 64;
+	public static int speakerSayRate = 1;
 
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)
