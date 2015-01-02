@@ -79,43 +79,42 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 		if (!Config.enableSpeaker)
 			throw new LuaException("Speakers have been disabled");
 		if (method == 0) {
-			try {
-				if (!(arguments.length > 0) || !(arguments[0] instanceof String))
-					throw new LuaException("Bad argument #1 (expected string)");
-				if (arguments.length > 1 && !(arguments[1] instanceof Double))
-					throw new LuaException("Bad argument #2 (expected string)");
-				if (arguments.length > 2 && !(arguments[2] instanceof String))
-					throw new LuaException("Bad argument #3 (expected boolean)");
-				String lang = null;
-				if (arguments.length > 2)
-					if (TranslateUtils.isPrefix((String) arguments[2]))
-						lang = (String) arguments[2];
-					else {
-						try {
-							lang = ReflectionHelper.getLangFromWord((String) arguments[2]);
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-						if (lang == null || lang.length() < 2)
-							throw new LuaException("Language "+(String)arguments[2]+" is unknown");
+//			try {
+			if (!(arguments.length > 0) || !(arguments[0] instanceof String))
+				throw new LuaException("Bad argument #1 (expected string)");
+			if (arguments.length > 1 && !(arguments[1] instanceof Double))
+				throw new LuaException("Bad argument #2 (expected string)");
+			if (arguments.length > 2 && !(arguments[2] instanceof String))
+				throw new LuaException("Bad argument #3 (expected boolean)");
+			String lang = null;
+			if (arguments.length > 2)
+				if (TranslateUtils.isPrefix((String) arguments[2]))
+					lang = (String) arguments[2];
+				else {
+					try {
+						lang = ReflectionHelper.getLangFromWord((String) arguments[2]);
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-				else
-					lang = Language.ENGLISH;//TranslateUtils.detectLangPrefix((String) arguments[0]);
-				if (ticker == Config.speakerSayRate)
-					throw new LuaException("Please try again later, you are sending messages too often");
-				double range;
-				if (Config.sayRange < 0) {
-					range = Double.MAX_VALUE;
-				} else {
-					range = Config.sayRange;
+					if (lang == null || lang.length() < 2)
+						throw new LuaException("Language "+(String)arguments[2]+" is unknown");
 				}
-				if (arguments.length > 1)
-					range = (Double) arguments[1];
-				PeripheralsPlusPlus.NETWORK.sendToAllAround(new AudioPacket(lang, (String) arguments[0]), new NetworkRegistry.TargetPoint(id, xCoord, yCoord, zCoord, range));
-				subticker = TICKER_INTERVAL;
-			}catch (Exception e) {
-				e.printStackTrace();
-			}
+			else
+				lang = Language.ENGLISH;//TranslateUtils.detectLangPrefix((String) arguments[0]);
+			if (ticker == Config.speakerSayRate)
+				throw new LuaException("Please try again later, you are sending messages too often");
+			double range;
+			if (Config.sayRange < 0)
+				range = Double.MAX_VALUE;
+			else
+				range = Config.sayRange;
+			if (arguments.length > 1)
+				range = (Double) arguments[1];
+			PeripheralsPlusPlus.NETWORK.sendToAllAround(new AudioPacket(lang, (String) arguments[0]), new NetworkRegistry.TargetPoint(id, xCoord, yCoord, zCoord, range));
+			subticker = TICKER_INTERVAL;
+//			}catch (Exception e) {
+//				e.printStackTrace();
+//			}
 		}
 		return new Object[0];
 	}
