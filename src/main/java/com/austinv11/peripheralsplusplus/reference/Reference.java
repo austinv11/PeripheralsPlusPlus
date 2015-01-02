@@ -16,7 +16,8 @@ public class Reference {
 	public static final int SHEAR_UPGRADE = 107;
 	public static final int ENVIRONMENT_UPGRADE = 108;
 	public static final int FEEDER_UPGRADE = 109;
-	public static final int BASE_PROJ_RED_UPGRADE = 110;//TODO Remember to update the id list on the wiki
+	public static final int BASE_PROJ_RED_UPGRADE = 110;
+	public static final int SPEAKER_UPGRADE = 125;//TODO Remember to update the id list on the wiki
 
 	public static enum GUIs {
 		ANALYZER,ROCKET;
