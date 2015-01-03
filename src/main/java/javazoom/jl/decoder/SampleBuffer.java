@@ -1,69 +1,132 @@
+/* 
+ * 11/19/04	 1.0 moved to LGPL.
+ * 
+ * 12/12/99  Initial Version based on FileObuffer.	mdm@techie.com.
+ * 
+ * FileObuffer:
+ * 15/02/99  Java Conversion by E.B ,javalayer@javazoom.net
+ *
+ *-----------------------------------------------------------------------
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU Library General Public License as published
+ *   by the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Library General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Library General Public
+ *   License along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *----------------------------------------------------------------------
+ */
+
 package javazoom.jl.decoder;
 
-import javazoom.jl.decoder.Obuffer;
+/**
+ * The <code>SampleBuffer</code> class implements an output buffer
+ * that provides storage for a fixed size block of samples. 
+ */
+public class SampleBuffer extends Obuffer
+{
+  private short[] 		buffer;
+  private int[] 		bufferp;
+  private int 			channels;
+  private int			frequency;
+  
+  /**
+   * Constructor
+   */
+  public SampleBuffer(int sample_frequency, int number_of_channels)
+  {
+  	buffer = new short[OBUFFERSIZE];
+	bufferp = new int[MAXCHANNELS];
+	channels = number_of_channels;
+	frequency = sample_frequency;
+	
+	for (int i = 0; i < number_of_channels; ++i) 
+		bufferp[i] = (short)i;
+	
+  }
 
-public class SampleBuffer extends Obuffer {
+  public int getChannelCount()
+  {
+	return this.channels;  
+  }
+  
+  public int getSampleFrequency()
+  {
+	  return this.frequency;
+  }
+  
+  public short[] getBuffer()
+  {
+	return this.buffer;  
+  }
+  
+  public int getBufferLength()
+  {
+	  return bufferp[0];
+  }
+  
+  /**
+   * Takes a 16 Bit PCM sample.
+   */
+  public void append(int channel, short value)
+  {
+	buffer[bufferp[channel]] = value;
+	bufferp[channel] += channels;	  	
+  }
+  
+	public void appendSamples(int channel, float[] f)
+	{
+	    int pos = bufferp[channel];
+		
+		short s;
+		float fs;
+	    for (int i=0; i<32;)
+	    {
+		  	fs = f[i++];
+			fs = (fs>32767.0f ? 32767.0f 
+						   : (fs < -32767.0f ? -32767.0f : fs));
+			
+			s = (short)fs;
+			buffer[pos] = s;
+			pos += channels;
+	    }
+		
+		bufferp[channel] = pos;
+	}
+  
+  
+  /**
+   * Write the samples to the file (Random Acces).
+   */
+  public void write_buffer(int val)
+  {
+				  
+	//for (int i = 0; i < channels; ++i) 
+	//	bufferp[i] = (short)i;
 
-   private short[] buffer = new short[2304];
-   private int[] bufferp = new int[2];
-   private int channels;
-   private int frequency;
+  }
 
+  public void close()
+  {}
+  
+  /**
+   *
+   */
+  public void clear_buffer()
+  {
+	for (int i = 0; i < channels; ++i) 
+		bufferp[i] = (short)i;
+  }
 
-   public SampleBuffer(int var1, int var2) {
-      this.channels = var2;
-      this.frequency = var1;
-
-      for(int var3 = 0; var3 < var2; ++var3) {
-         this.bufferp[var3] = (short)var3;
-      }
-
-   }
-
-   public int getChannelCount() {
-      return this.channels;
-   }
-
-   public int getSampleFrequency() {
-      return this.frequency;
-   }
-
-   public short[] getBuffer() {
-      return this.buffer;
-   }
-
-   public int getBufferLength() {
-      return this.bufferp[0];
-   }
-
-   public void append(int var1, short var2) {
-      this.buffer[this.bufferp[var1]] = var2;
-      this.bufferp[var1] += this.channels;
-   }
-
-   public void appendSamples(int var1, float[] var2) {
-      int var3 = this.bufferp[var1];
-
-      for(int var6 = 0; var6 < 32; var3 += this.channels) {
-         float var5 = var2[var6++];
-         var5 = var5 > 32767.0F?32767.0F:(var5 < -32767.0F?-32767.0F:var5);
-         short var4 = (short)((int)var5);
-         this.buffer[var3] = var4;
-      }
-
-      this.bufferp[var1] = var3;
-   }
-
-   public void write_buffer(int var1) {}
-
-   public void close() {}
-
-   public void clear_buffer() {
-      for(int var1 = 0; var1 < this.channels; ++var1) {
-         this.bufferp[var1] = (short)var1;
-      }
-
-   }
-
-   public void set_stop_flag() {}
+  /**
+   *
+   */
+  public void set_stop_flag()
+  {}
 }

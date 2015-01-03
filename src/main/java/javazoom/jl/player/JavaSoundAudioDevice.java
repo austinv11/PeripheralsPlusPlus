@@ -1,149 +1,215 @@
+/*
+ * 11/26/04		Buffer size modified to support JRE 1.5 optimizations.
+ *              (CPU usage < 1% under P4/2Ghz, RAM < 12MB).
+ *              jlayer@javazoom.net
+ * 11/19/04		1.0 moved to LGPL.
+ * 06/04/01		Too fast playback fixed. mdm@techie.com
+ * 29/01/00		Initial version. mdm@techie.com
+ *-----------------------------------------------------------------------
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU Library General Public License as published
+ *   by the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Library General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Library General Public
+ *   License along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *----------------------------------------------------------------------
+ */
+
 package javazoom.jl.player;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine;
 import javax.sound.sampled.Line;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
-import javax.sound.sampled.DataLine.Info;
+
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.AudioDeviceBase;
 
-public class JavaSoundAudioDevice extends AudioDeviceBase {
+/**
+ * The <code>JavaSoundAudioDevice</code> implements an audio
+ * device by using the JavaSound API.
+ *
+ * @since 0.0.8
+ * @author Mat McGowan
+ */
+public class JavaSoundAudioDevice extends AudioDeviceBase
+{
+	private SourceDataLine	source = null;
 
-   private SourceDataLine source = null;
-   private AudioFormat fmt = null;
-   private byte[] byteBuf = new byte[4096];
-   static Class class$javax$sound$sampled$SourceDataLine;
+	private AudioFormat		fmt = null;
+
+	private byte[]			byteBuf = new byte[4096];
+
+	protected void setAudioFormat(AudioFormat fmt0)
+	{
+		fmt = fmt0;
+	}
+
+	protected AudioFormat getAudioFormat()
+	{
+		if (fmt==null)
+		{
+			Decoder decoder = getDecoder();
+			fmt = new AudioFormat(decoder.getOutputFrequency(),
+								  16,
+								  decoder.getOutputChannels(),
+								  true,
+								  false);
+		}
+		return fmt;
+	}
+
+	protected DataLine.Info getSourceLineInfo()
+	{
+		AudioFormat fmt = getAudioFormat();
+		//DataLine.Info info = new DataLine.Info(SourceDataLine.class, fmt, 4000);
+		DataLine.Info info = new DataLine.Info(SourceDataLine.class, fmt);
+		return info;
+	}
+
+	public void open(AudioFormat fmt) throws JavaLayerException
+	{
+		if (!isOpen())
+		{
+			setAudioFormat(fmt);
+			openImpl();
+			setOpen(true);
+		}
+	}
+
+	protected void openImpl()
+		throws JavaLayerException
+	{
+	}
 
 
-   protected void setAudioFormat(AudioFormat var1) {
-      this.fmt = var1;
-   }
+	// createSource fix.
+	protected void createSource() throws JavaLayerException
+    {
+        Throwable t = null;
+        try
+        {
+			Line line = AudioSystem.getLine(getSourceLineInfo());
+            if (line instanceof SourceDataLine)
+            {
+         		source = (SourceDataLine)line;
+                //source.open(fmt, millisecondsToBytes(fmt, 2000));
+				source.open(fmt);
+                /*
+                if (source.isControlSupported(FloatControl.Type.MASTER_GAIN))
+                {
+					FloatControl c = (FloatControl)source.getControl(FloatControl.Type.MASTER_GAIN);
+                    c.setValue(c.getMaximum());
+                }*/
+                source.start();
 
-   protected AudioFormat getAudioFormat() {
-      if(this.fmt == null) {
-         Decoder var1 = this.getDecoder();
-         this.fmt = new AudioFormat((float)var1.getOutputFrequency(), 16, var1.getOutputChannels(), true, false);
-      }
+            }
+        } catch (RuntimeException ex)
+          {
+			  t = ex;
+          }
+          catch (LinkageError ex)
+          {
+              t = ex;
+          }
+          catch (LineUnavailableException ex)
+          {
+              t = ex;
+          }
+		if (source==null) throw new JavaLayerException("cannot obtain source audio line", t);
+    }
 
-      return this.fmt;
-   }
+	public int millisecondsToBytes(AudioFormat fmt, int time)
+	{
+		return (int)(time*(fmt.getSampleRate()*fmt.getChannels()*fmt.getSampleSizeInBits())/8000.0);
+	}
 
-   protected Info getSourceLineInfo() {
-      AudioFormat var1 = this.getAudioFormat();
-      Info var2 = new Info(class$javax$sound$sampled$SourceDataLine == null?(class$javax$sound$sampled$SourceDataLine = class$("javax.sound.sampled.SourceDataLine")):class$javax$sound$sampled$SourceDataLine, var1);
-      return var2;
-   }
+	protected void closeImpl()
+	{
+		if (source!=null)
+		{
+			source.close();
+		}
+	}
 
-   public void open(AudioFormat var1) throws JavaLayerException {
-      if(!this.isOpen()) {
-         this.setAudioFormat(var1);
-         this.openImpl();
-         this.setOpen(true);
-      }
+	protected void writeImpl(short[] samples, int offs, int len)
+		throws JavaLayerException
+	{
+		if (source==null)
+			createSource();
 
-   }
+		byte[] b = toByteArray(samples, offs, len);
+		source.write(b, 0, len*2);
+	}
 
-   protected void openImpl() throws JavaLayerException {}
+	protected byte[] getByteArray(int length)
+	{
+		if (byteBuf.length < length)
+		{
+			byteBuf = new byte[length+1024];
+		}
+		return byteBuf;
+	}
 
-   protected void createSource() throws JavaLayerException {
-      Object var1 = null;
+	protected byte[] toByteArray(short[] samples, int offs, int len)
+	{
+		byte[] b = getByteArray(len*2);
+		int idx = 0;
+		short s;
+		while (len-- > 0)
+		{
+			s = samples[offs++];
+			b[idx++] = (byte)s;
+			b[idx++] = (byte)(s>>>8);
+		}
+		return b;
+	}
 
-      try {
-         Line var2 = AudioSystem.getLine(this.getSourceLineInfo());
-         if(var2 instanceof SourceDataLine) {
-            this.source = (SourceDataLine)var2;
-            this.source.open(this.fmt);
-            this.source.start();
-         }
-      } catch (RuntimeException var3) {
-         var1 = var3;
-      } catch (LinkageError var4) {
-         var1 = var4;
-      } catch (LineUnavailableException var5) {
-         var1 = var5;
-      }
+	protected void flushImpl()
+	{
+		if (source!=null)
+		{
+			source.drain();
+		}
+	}
 
-      if(this.source == null) {
-         throw new JavaLayerException("cannot obtain source audio line", (Throwable)var1);
-      }
-   }
+	public int getPosition()
+	{
+		int pos = 0;
+		if (source!=null)
+		{
+			pos = (int)(source.getMicrosecondPosition()/1000);
+		}
+		return pos;
+	}
 
-   public int millisecondsToBytes(AudioFormat var1, int var2) {
-      return (int)((double)((float)var2 * var1.getSampleRate() * (float)var1.getChannels() * (float)var1.getSampleSizeInBits()) / 8000.0D);
-   }
+	/**
+	 * Runs a short test by playing a short silent sound.
+	 */
+	public void test()
+		throws JavaLayerException
+	{
+		try
+		{
+			open(new AudioFormat(22050, 16, 1, true, false));
+			short[] data = new short[22050/10];
+			write(data, 0, data.length);
+			flush();
+			close();
+		}
+		catch (RuntimeException ex)
+		{
+			throw new JavaLayerException("Device test failed: "+ex);
+		}
 
-   protected void closeImpl() {
-      if(this.source != null) {
-         this.source.close();
-      }
-
-   }
-
-   protected void writeImpl(short[] var1, int var2, int var3) throws JavaLayerException {
-      if(this.source == null) {
-         this.createSource();
-      }
-
-      byte[] var4 = this.toByteArray(var1, var2, var3);
-      this.source.write(var4, 0, var3 * 2);
-   }
-
-   protected byte[] getByteArray(int var1) {
-      if(this.byteBuf.length < var1) {
-         this.byteBuf = new byte[var1 + 1024];
-      }
-
-      return this.byteBuf;
-   }
-
-   protected byte[] toByteArray(short[] var1, int var2, int var3) {
-      byte[] var4 = this.getByteArray(var3 * 2);
-
-      short var6;
-      for(int var5 = 0; var3-- > 0; var4[var5++] = (byte)(var6 >>> 8)) {
-         var6 = var1[var2++];
-         var4[var5++] = (byte)var6;
-      }
-
-      return var4;
-   }
-
-   protected void flushImpl() {
-      if(this.source != null) {
-         this.source.drain();
-      }
-
-   }
-
-   public int getPosition() {
-      int var1 = 0;
-      if(this.source != null) {
-         var1 = (int)(this.source.getMicrosecondPosition() / 1000L);
-      }
-
-      return var1;
-   }
-
-   public void test() throws JavaLayerException {
-      try {
-         this.open(new AudioFormat(22050.0F, 16, 1, true, false));
-         short[] var1 = new short[2205];
-         this.write(var1, 0, var1.length);
-         this.flush();
-         this.close();
-      } catch (RuntimeException var2) {
-         throw new JavaLayerException("Device test failed: " + var2);
-      }
-   }
-
-   static Class class$(String var0) {
-      try {
-         return Class.forName(var0);
-      } catch (ClassNotFoundException var2) {
-         throw new NoClassDefFoundError(var2.getMessage());
-      }
-   }
+	}
 }

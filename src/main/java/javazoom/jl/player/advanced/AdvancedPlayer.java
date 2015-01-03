@@ -1,6 +1,26 @@
+/*
+ * 11/19/04		1.0 moved to LGPL. 
+ *-----------------------------------------------------------------------
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU Library General Public License as published
+ *   by the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Library General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Library General Public
+ *   License along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *----------------------------------------------------------------------
+ */
+
 package javazoom.jl.player.advanced;
 
 import java.io.InputStream;
+
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.BitstreamException;
 import javazoom.jl.decoder.Decoder;
@@ -9,150 +29,214 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.decoder.SampleBuffer;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
-import javazoom.jl.player.advanced.PlaybackEvent;
-import javazoom.jl.player.advanced.PlaybackListener;
 
-public class AdvancedPlayer {
+/**
+ * a hybrid of javazoom.jl.player.Player tweeked to include <code>play(startFrame, endFrame)</code>
+ * hopefully this will be included in the api
+ */
+public class AdvancedPlayer
+{
+	/** The MPEG audio bitstream.*/
+	private Bitstream bitstream;
+	/** The MPEG audio decoder. */
+	private Decoder decoder;
+	/** The AudioDevice the audio samples are written to. */
+	private AudioDevice audio;
+	/** Has the player been closed? */
+	private boolean closed = false;
+	/** Has the player played back all frames from the stream? */
+	private boolean complete = false;
+	private int lastPosition = 0;
+	/** Listener for the playback process */
+	private PlaybackListener listener;
 
-   private Bitstream bitstream;
-   private Decoder decoder;
-   private AudioDevice audio;
-   private boolean closed;
-   private boolean complete;
-   private int lastPosition;
-   private PlaybackListener listener;
+	/**
+	 * Creates a new <code>Player</code> instance.
+	 */
+	public AdvancedPlayer(InputStream stream) throws JavaLayerException
+	{
+		this(stream, null);
+	}
 
+	public AdvancedPlayer(InputStream stream, AudioDevice device) throws JavaLayerException
+	{
+		bitstream = new Bitstream(stream);
 
-   public AdvancedPlayer(InputStream var1) throws JavaLayerException {
-      this(var1, (AudioDevice)null);
-   }
+		if (device!=null) audio = device;
+		else audio = FactoryRegistry.systemRegistry().createAudioDevice();
+		audio.open(decoder = new Decoder());
+	}
 
-   public AdvancedPlayer(InputStream var1, AudioDevice var2) throws JavaLayerException {
-      this.closed = false;
-      this.complete = false;
-      this.lastPosition = 0;
-      this.bitstream = new Bitstream(var1);
-      if(var2 != null) {
-         this.audio = var2;
-      } else {
-         this.audio = FactoryRegistry.systemRegistry().createAudioDevice();
-      }
+	public void play() throws JavaLayerException
+	{
+		play(Integer.MAX_VALUE);
+	}
 
-      this.audio.open(this.decoder = new Decoder());
-   }
+	/**
+	 * Plays a number of MPEG audio frames.
+	 *
+	 * @param frames	The number of frames to play.
+	 * @return	true if the last frame was played, or false if there are
+	 *			more frames.
+	 */
+	public boolean play(int frames) throws JavaLayerException
+	{
+		boolean ret = true;
 
-   public void play() throws JavaLayerException {
-      this.play(Integer.MAX_VALUE);
-   }
+		// report to listener
+		if(listener != null) listener.playbackStarted(createEvent(PlaybackEvent.STARTED));
 
-   public boolean play(int var1) throws JavaLayerException {
-      boolean var2 = true;
-      if(this.listener != null) {
-         this.listener.playbackStarted(this.createEvent(PlaybackEvent.STARTED));
-      }
+		while (frames-- > 0 && ret)
+		{
+			ret = decodeFrame();
+		}
 
-      while(var1-- > 0 && var2) {
-         var2 = this.decodeFrame();
-      }
+//		if (!ret)
+		{
+			// last frame, ensure all data flushed to the audio device.
+			AudioDevice out = audio;
+			if (out != null)
+			{
+//				System.out.println(audio.getPosition());
+				out.flush();
+//				System.out.println(audio.getPosition());
+				synchronized (this)
+				{
+					complete = (!closed);
+					close();
+				}
 
-      AudioDevice var3 = this.audio;
-      if(var3 != null) {
-         var3.flush();
-         synchronized(this) {
-            this.complete = !this.closed;
-            this.close();
-         }
+				// report to listener
+				if(listener != null) listener.playbackFinished(createEvent(out, PlaybackEvent.STOPPED));
+			}
+		}
+		return ret;
+	}
 
-         if(this.listener != null) {
-            this.listener.playbackFinished(this.createEvent(var3, PlaybackEvent.STOPPED));
-         }
-      }
+	/**
+	 * Cloases this player. Any audio currently playing is stopped
+	 * immediately.
+	 */
+	public synchronized void close()
+	{
+		AudioDevice out = audio;
+		if (out != null)
+		{
+			closed = true;
+			audio = null;
+			// this may fail, so ensure object state is set up before
+			// calling this method.
+			out.close();
+			lastPosition = out.getPosition();
+			try
+			{
+				bitstream.close();
+			}
+			catch (BitstreamException ex)
+			{}
+		}
+	}
 
-      return var2;
-   }
+	/**
+	 * Decodes a single frame.
+	 *
+	 * @return true if there are no more frames to decode, false otherwise.
+	 */
+	protected boolean decodeFrame() throws JavaLayerException
+	{
+		try
+		{
+			AudioDevice out = audio;
+			if (out == null) return false;
 
-   public synchronized void close() {
-      AudioDevice var1 = this.audio;
-      if(var1 != null) {
-         this.closed = true;
-         this.audio = null;
-         var1.close();
-         this.lastPosition = var1.getPosition();
+			Header h = bitstream.readFrame();
+			if (h == null) return false;
 
-         try {
-            this.bitstream.close();
-         } catch (BitstreamException var3) {
-            ;
-         }
-      }
+			// sample buffer set when decoder constructed
+			SampleBuffer output = (SampleBuffer) decoder.decodeFrame(h, bitstream);
 
-   }
+			synchronized (this)
+			{
+				out = audio;
+				if(out != null)
+				{
+					out.write(output.getBuffer(), 0, output.getBufferLength());
+				}
+			}
 
-   protected boolean decodeFrame() throws JavaLayerException {
-      try {
-         AudioDevice var1 = this.audio;
-         if(var1 == null) {
-            return false;
-         } else {
-            Header var2 = this.bitstream.readFrame();
-            if(var2 == null) {
-               return false;
-            } else {
-               SampleBuffer var3 = (SampleBuffer)this.decoder.decodeFrame(var2, this.bitstream);
-               synchronized(this) {
-                  var1 = this.audio;
-                  if(var1 != null) {
-                     var1.write(var3.getBuffer(), 0, var3.getBufferLength());
-                  }
-               }
+			bitstream.closeFrame();
+		}
+		catch (RuntimeException ex)
+		{
+			throw new JavaLayerException("Exception decoding audio frame", ex);
+		}
+		return true;
+	}
 
-               this.bitstream.closeFrame();
-               return true;
-            }
-         }
-      } catch (RuntimeException var7) {
-         throw new JavaLayerException("Exception decoding audio frame", var7);
-      }
-   }
+	/**
+	 * skips over a single frame
+	 * @return false	if there are no more frames to decode, true otherwise.
+	 */
+	protected boolean skipFrame() throws JavaLayerException
+	{
+		Header h = bitstream.readFrame();
+		if (h == null) return false;
+		bitstream.closeFrame();
+		return true;
+	}
 
-   protected boolean skipFrame() throws JavaLayerException {
-      Header var1 = this.bitstream.readFrame();
-      if(var1 == null) {
-         return false;
-      } else {
-         this.bitstream.closeFrame();
-         return true;
-      }
-   }
+	/**
+	 * Plays a range of MPEG audio frames
+	 * @param start	The first frame to play
+	 * @param end		The last frame to play
+	 * @return true if the last frame was played, or false if there are more frames.
+	 */
+	public boolean play(final int start, final int end) throws JavaLayerException
+	{
+		boolean ret = true;
+		int offset = start;
+		while (offset-- > 0 && ret) ret = skipFrame();
+		return play(end - start);
+	}
 
-   public boolean play(int var1, int var2) throws JavaLayerException {
-      boolean var3 = true;
+	/**
+	 * Constructs a <code>PlaybackEvent</code>
+	 */
+	private PlaybackEvent createEvent(int id)
+	{
+		return createEvent(audio, id);
+	}
 
-      for(int var4 = var1; var4-- > 0 && var3; var3 = this.skipFrame()) {
-         ;
-      }
+	/**
+	 * Constructs a <code>PlaybackEvent</code>
+	 */
+	private PlaybackEvent createEvent(AudioDevice dev, int id)
+	{
+		return new PlaybackEvent(this, id, dev.getPosition());
+	}
 
-      return this.play(var2 - var1);
-   }
+	/**
+	 * sets the <code>PlaybackListener</code>
+	 */
+	public void setPlayBackListener(PlaybackListener listener)
+	{
+		this.listener = listener;
+	}
 
-   private PlaybackEvent createEvent(int var1) {
-      return this.createEvent(this.audio, var1);
-   }
+	/**
+	 * gets the <code>PlaybackListener</code>
+	 */
+	public PlaybackListener getPlayBackListener()
+	{
+		return listener;
+	}
 
-   private PlaybackEvent createEvent(AudioDevice var1, int var2) {
-      return new PlaybackEvent(this, var2, var1.getPosition());
-   }
-
-   public void setPlayBackListener(PlaybackListener var1) {
-      this.listener = var1;
-   }
-
-   public PlaybackListener getPlayBackListener() {
-      return this.listener;
-   }
-
-   public void stop() {
-      this.listener.playbackFinished(this.createEvent(PlaybackEvent.STOPPED));
-      this.close();
-   }
+	/**
+	 * closes the player and notifies <code>PlaybackListener</code>
+	 */
+	public void stop()
+	{
+		listener.playbackFinished(createEvent(PlaybackEvent.STOPPED));
+		close();
+	}
 }

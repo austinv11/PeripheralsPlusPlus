@@ -1,353 +1,495 @@
+/*
+ * 11/19/04 1.0 moved to LGPL.
+ * 02/23/99 JavaConversion by E.B
+ * Don Cross, April 1993.
+ * RIFF file format classes.
+ * See Chapter 8 of "Multimedia Programmer's Reference" in
+ * the Microsoft Windows SDK.
+ *  
+ *-----------------------------------------------------------------------
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU Library General Public License as published
+ *   by the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Library General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Library General Public
+ *   License along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *----------------------------------------------------------------------
+ */
+
 package javazoom.jl.converter;
 
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-public class RiffFile {
 
-   public static final int DDC_SUCCESS = 0;
-   public static final int DDC_FAILURE = 1;
-   public static final int DDC_OUT_OF_MEMORY = 2;
-   public static final int DDC_FILE_ERROR = 3;
-   public static final int DDC_INVALID_CALL = 4;
-   public static final int DDC_USER_ABORT = 5;
-   public static final int DDC_INVALID_FILE = 6;
-   public static final int RFM_UNKNOWN = 0;
-   public static final int RFM_WRITE = 1;
-   public static final int RFM_READ = 2;
-   private RiffFile.RiffChunkHeader riff_header = new RiffFile.RiffChunkHeader();
-   protected int fmode = 0;
-   protected RandomAccessFile file = null;
-
-
-   public RiffFile() {
-      this.riff_header.ckID = FourCC("RIFF");
-      this.riff_header.ckSize = 0;
+/**
+ * Class to manage RIFF files
+ */
+public class RiffFile
+{
+   class RiffChunkHeader
+   {
+     	public int    ckID = 0;       // Four-character chunk ID
+    	public int    ckSize = 0;     // Length of data in chunk
+    	public RiffChunkHeader()
+    	{}
    }
+ 
+ 
+   // DDCRET
+   public static final int	DDC_SUCCESS = 0;           // The operation succeded
+   public static final int	DDC_FAILURE = 1;           // The operation failed for unspecified reasons
+   public static final int	DDC_OUT_OF_MEMORY = 2;     // Operation failed due to running out of memory
+   public static final int	DDC_FILE_ERROR = 3;        // Operation encountered file I/O error
+   public static final int	DDC_INVALID_CALL = 4;      // Operation was called with invalid parameters
+   public static final int	DDC_USER_ABORT = 5;        // Operation was aborted by the user
+   public static final int	DDC_INVALID_FILE = 6;      // File format does not match
+   
+   // RiffFileMode
+   public static final int	RFM_UNKNOWN = 0;      	   // undefined type (can use to mean "N/A" or "not open")
+   public static final int	RFM_WRITE = 1;        	   // open for write
+   public static final int	RFM_READ = 2;         	   // open for read
 
-   public int CurrentFileMode() {
-      return this.fmode;
+   private RiffChunkHeader   	riff_header;      // header for whole file
+   protected int      			fmode;            // current file I/O mode
+   protected RandomAccessFile 	file;             // I/O stream to use
+
+   /**
+    * Dummy Constructor
+	*/
+   public RiffFile()
+   {
+      file = null;
+      fmode = RFM_UNKNOWN;
+      riff_header = new RiffChunkHeader();
+   
+      riff_header.ckID = FourCC("RIFF");
+   	  riff_header.ckSize = 0;
    }
-
-   public int Open(String var1, int var2) {
-      int var3 = 0;
-      if(this.fmode != 0) {
-         var3 = this.Close();
+ 
+   /**
+    * Return File Mode.
+	*/
+   public int CurrentFileMode()
+   {return fmode;}
+   
+   /**
+    * Open a RIFF file.
+	*/
+   public int Open(String Filename, int NewMode)
+   {
+      int retcode = DDC_SUCCESS;
+   
+      if ( fmode != RFM_UNKNOWN )
+      {
+   	  	retcode = Close();
       }
-
-      if(var3 == 0) {
-         byte[] var4;
-         switch(var2) {
-         case 1:
-            try {
-               this.file = new RandomAccessFile(var1, "rw");
-
-               try {
-                  var4 = new byte[8];
-                  var4[0] = (byte)(this.riff_header.ckID >>> 24 & 255);
-                  var4[1] = (byte)(this.riff_header.ckID >>> 16 & 255);
-                  var4[2] = (byte)(this.riff_header.ckID >>> 8 & 255);
-                  var4[3] = (byte)(this.riff_header.ckID & 255);
-                  byte var5 = (byte)(this.riff_header.ckSize >>> 24 & 255);
-                  byte var6 = (byte)(this.riff_header.ckSize >>> 16 & 255);
-                  byte var7 = (byte)(this.riff_header.ckSize >>> 8 & 255);
-                  byte var8 = (byte)(this.riff_header.ckSize & 255);
-                  var4[4] = var8;
-                  var4[5] = var7;
-                  var4[6] = var6;
-                  var4[7] = var5;
-                  this.file.write(var4, 0, 8);
-                  this.fmode = 1;
-               } catch (IOException var11) {
-                  this.file.close();
-                  this.fmode = 0;
-               }
-            } catch (IOException var12) {
-               this.fmode = 0;
-               var3 = 3;
-            }
-            break;
-         case 2:
-            try {
-               this.file = new RandomAccessFile(var1, "r");
-
-               try {
-                  var4 = new byte[8];
-                  this.file.read(var4, 0, 8);
-                  this.fmode = 2;
-                  this.riff_header.ckID = var4[0] << 24 & -16777216 | var4[1] << 16 & 16711680 | var4[2] << 8 & '\uff00' | var4[3] & 255;
-                  this.riff_header.ckSize = var4[4] << 24 & -16777216 | var4[5] << 16 & 16711680 | var4[6] << 8 & '\uff00' | var4[7] & 255;
-               } catch (IOException var9) {
-                  this.file.close();
-                  this.fmode = 0;
-               }
-            } catch (IOException var10) {
-               this.fmode = 0;
-               var3 = 3;
-            }
-            break;
-         default:
-            var3 = 4;
-         }
+   
+      if ( retcode == DDC_SUCCESS )
+      {
+   	  	switch ( NewMode )
+   	  	{
+   		 case RFM_WRITE:
+			try
+			{	
+				file = new RandomAccessFile(Filename,"rw");
+				
+			    try
+				{
+   				   // Write the RIFF header...
+   				   // We will have to come back later and patch it!
+				   byte[] br = new byte[8];
+				   br[0] = (byte) ((riff_header.ckID >>> 24) & 0x000000FF);
+				   br[1] = (byte) ((riff_header.ckID >>> 16) & 0x000000FF);
+				   br[2] = (byte) ((riff_header.ckID >>> 8) & 0x000000FF);
+				   br[3] = (byte) (riff_header.ckID & 0x000000FF);
+				  
+			       byte br4 = (byte) ((riff_header.ckSize >>> 24)& 0x000000FF);
+				   byte br5 = (byte) ((riff_header.ckSize >>> 16)& 0x000000FF);
+				   byte br6 = (byte) ((riff_header.ckSize >>> 8)& 0x000000FF);
+				   byte br7 = (byte) (riff_header.ckSize & 0x000000FF);
+				   
+				   br[4] = br7;
+				   br[5] = br6;
+				   br[6] = br5;
+				   br[7] = br4;
+				   
+					file.write(br,0,8);
+				   fmode = RFM_WRITE;
+				} catch (IOException ioe)
+				  {
+				    file.close();
+				  	fmode = RFM_UNKNOWN;
+		 		  }
+			} catch (IOException ioe)
+			  {
+			     fmode = RFM_UNKNOWN;
+   				 retcode = DDC_FILE_ERROR;
+			  }
+   			  break;
+   
+   		 case RFM_READ:
+			try
+			{	
+				file = new RandomAccessFile(Filename,"r");
+			    try
+				{
+   				   // Try to read the RIFF header...   				   
+				   byte[] br = new byte[8];
+				   file.read(br,0,8);
+				   fmode = RFM_READ;
+				   riff_header.ckID = ((br[0]<<24)& 0xFF000000) | ((br[1]<<16)&0x00FF0000) | ((br[2]<<8)&0x0000FF00) | (br[3]&0x000000FF);
+				   riff_header.ckSize = ((br[4]<<24)& 0xFF000000) | ((br[5]<<16)&0x00FF0000) | ((br[6]<<8)&0x0000FF00) | (br[7]&0x000000FF);
+				} catch (IOException ioe)
+				  {
+				    file.close();
+				  	fmode = RFM_UNKNOWN;
+		 		  }
+			} catch (IOException ioe)
+			  {
+			 	 fmode = RFM_UNKNOWN;
+   				 retcode = DDC_FILE_ERROR;
+			  }
+   			  break;
+   		 default:
+   			  retcode = DDC_INVALID_CALL;
+   	  	}
       }
-
-      return var3;
+   	 return retcode;
    }
-
-   public int Write(byte[] var1, int var2) {
-      if(this.fmode != 1) {
-         return 4;
-      } else {
-         try {
-            this.file.write(var1, 0, var2);
-            this.fmode = 1;
-         } catch (IOException var4) {
-            return 3;
-         }
-
-         this.riff_header.ckSize += var2;
-         return 0;
+   
+   /**
+    * Write NumBytes data.
+	*/
+   public int Write(byte[] Data, int NumBytes )
+   {
+      if ( fmode != RFM_WRITE )
+      {
+   	  	return DDC_INVALID_CALL;
       }
+	  try
+  	  {   	
+		file.write(Data,0,NumBytes);
+	    fmode = RFM_WRITE;
+ 	  } 
+	  catch (IOException ioe)
+	  {
+			return DDC_FILE_ERROR;
+	  }
+      riff_header.ckSize += NumBytes;
+   	  return DDC_SUCCESS;
    }
+   
 
-   public int Write(short[] var1, int var2) {
-      byte[] var3 = new byte[var2];
-      int var4 = 0;
 
-      for(int var5 = 0; var5 < var2; var5 += 2) {
-         var3[var5] = (byte)(var1[var4] & 255);
-         var3[var5 + 1] = (byte)(var1[var4++] >>> 8 & 255);
+   /**
+    * Write NumBytes data.
+	*/     
+   public int Write(short[] Data, int NumBytes )
+   {
+      byte[] theData = new byte[NumBytes];
+      int yc = 0;
+      for (int y = 0;y<NumBytes;y=y+2)
+      {
+        theData[y] = (byte) (Data[yc] & 0x00FF);
+        theData[y+1] =(byte) ((Data[yc++] >>> 8) & 0x00FF);
       }
-
-      if(this.fmode != 1) {
-         return 4;
-      } else {
-         try {
-            this.file.write(var3, 0, var2);
-            this.fmode = 1;
-         } catch (IOException var6) {
-            return 3;
-         }
-
-         this.riff_header.ckSize += var2;
-         return 0;
+      if ( fmode != RFM_WRITE )
+      {
+   	  	return DDC_INVALID_CALL;
       }
+	  try
+  	  {   	
+		file.write(theData,0,NumBytes);
+	    fmode = RFM_WRITE;
+ 	  } 
+	  catch (IOException ioe)
+	   {
+	  	return DDC_FILE_ERROR;
+	   }
+	  riff_header.ckSize += NumBytes;
+   	  return DDC_SUCCESS;
    }
 
-   public int Write(RiffFile.RiffChunkHeader var1, int var2) {
-      byte[] var3 = new byte[8];
-      var3[0] = (byte)(var1.ckID >>> 24 & 255);
-      var3[1] = (byte)(var1.ckID >>> 16 & 255);
-      var3[2] = (byte)(var1.ckID >>> 8 & 255);
-      var3[3] = (byte)(var1.ckID & 255);
-      byte var4 = (byte)(var1.ckSize >>> 24 & 255);
-      byte var5 = (byte)(var1.ckSize >>> 16 & 255);
-      byte var6 = (byte)(var1.ckSize >>> 8 & 255);
-      byte var7 = (byte)(var1.ckSize & 255);
-      var3[4] = var7;
-      var3[5] = var6;
-      var3[6] = var5;
-      var3[7] = var4;
-      if(this.fmode != 1) {
-         return 4;
-      } else {
-         try {
-            this.file.write(var3, 0, var2);
-            this.fmode = 1;
-         } catch (IOException var9) {
-            return 3;
-         }
+   /**
+    * Write NumBytes data.
+	*/
+   public int Write(RiffChunkHeader Triff_header, int NumBytes )
+   {
+	  byte[] br = new byte[8];
+	  br[0] = (byte) ((Triff_header.ckID >>> 24) & 0x000000FF);
+	  br[1] = (byte) ((Triff_header.ckID >>> 16) & 0x000000FF);
+	  br[2] = (byte) ((Triff_header.ckID >>> 8) & 0x000000FF);
+	  br[3] = (byte) (Triff_header.ckID & 0x000000FF);
 
-         this.riff_header.ckSize += var2;
-         return 0;
+	  byte br4 = (byte) ((Triff_header.ckSize >>> 24)& 0x000000FF);
+	  byte br5 = (byte) ((Triff_header.ckSize >>> 16)& 0x000000FF);
+	  byte br6 = (byte) ((Triff_header.ckSize >>> 8)& 0x000000FF);
+	  byte br7 = (byte) (Triff_header.ckSize & 0x000000FF);
+	  
+	  br[4] = br7;
+	  br[5] = br6;
+	  br[6] = br5;
+	  br[7] = br4;	  
+	  
+      if ( fmode != RFM_WRITE )
+      {
+   	  	return DDC_INVALID_CALL;
       }
+	  try
+  	  {   	
+		file.write(br,0,NumBytes);
+	    fmode = RFM_WRITE;
+ 	  } catch (IOException ioe)
+		 {
+			return DDC_FILE_ERROR;
+		 }
+      riff_header.ckSize += NumBytes;
+   	  return DDC_SUCCESS;
    }
 
-   public int Write(short var1, int var2) {
-      short var3 = (short)(var1 >>> 8 & 255 | var1 << 8 & '\uff00');
-      if(this.fmode != 1) {
-         return 4;
-      } else {
-         try {
-            this.file.writeShort(var3);
-            this.fmode = 1;
-         } catch (IOException var5) {
-            return 3;
-         }
-
-         this.riff_header.ckSize += var2;
-         return 0;
+   /**
+    * Write NumBytes data.
+	*/
+   public int Write(short Data, int NumBytes )
+   {
+      short theData = (short) ( ((Data>>>8)&0x00FF) | ((Data<<8)&0xFF00) );
+      if ( fmode != RFM_WRITE )
+      {
+   	  	return DDC_INVALID_CALL;
       }
+	  try
+  	  {   	
+		file.writeShort(theData);
+	    fmode = RFM_WRITE;
+ 	  } catch (IOException ioe)
+		 {
+			return DDC_FILE_ERROR;
+		 }
+      riff_header.ckSize += NumBytes;
+   	  return DDC_SUCCESS;
    }
-
-   public int Write(int var1, int var2) {
-      short var3 = (short)(var1 >>> 16 & '\uffff');
-      short var4 = (short)(var1 & '\uffff');
-      short var5 = (short)(var3 >>> 8 & 255 | var3 << 8 & '\uff00');
-      short var6 = (short)(var4 >>> 8 & 255 | var4 << 8 & '\uff00');
-      int var7 = var6 << 16 & -65536 | var5 & '\uffff';
-      if(this.fmode != 1) {
-         return 4;
-      } else {
-         try {
-            this.file.writeInt(var7);
-            this.fmode = 1;
-         } catch (IOException var9) {
-            return 3;
-         }
-
-         this.riff_header.ckSize += var2;
-         return 0;
+   /**
+    * Write NumBytes data.
+	*/
+   public int Write(int Data, int NumBytes )
+   {
+    short theDataL = (short) ((Data>>>16)&0x0000FFFF);
+    short theDataR = (short) (Data&0x0000FFFF);
+    short theDataLI = (short) ( ((theDataL>>>8)&0x00FF) | ((theDataL<<8)&0xFF00) );
+    short theDataRI = (short) ( ((theDataR>>>8)&0x00FF) | ((theDataR<<8)&0xFF00) );
+    int theData = ((theDataRI<<16)&0xFFFF0000) | (theDataLI&0x0000FFFF);
+      if ( fmode != RFM_WRITE )
+      {
+   	  	return DDC_INVALID_CALL;
       }
+	  try
+  	  {   	
+		file.writeInt(theData);
+	    fmode = RFM_WRITE;
+ 	  } catch (IOException ioe)
+		 {
+			return DDC_FILE_ERROR;
+		 }
+      riff_header.ckSize += NumBytes;
+   	  return DDC_SUCCESS;
    }
 
-   public int Read(byte[] var1, int var2) {
-      byte var3 = 0;
 
-      try {
-         this.file.read(var1, 0, var2);
-      } catch (IOException var5) {
-         var3 = 3;
+
+   /**
+    * Read NumBytes data.
+	*/   
+   public int Read (byte[] Data, int NumBytes)
+   {
+      int retcode = DDC_SUCCESS;
+  	  try
+	  {
+   		  file.read(Data,0,NumBytes);
+      } catch (IOException ioe)
+		    {
+			   retcode = DDC_FILE_ERROR;
+			}   
+      return retcode;
+   }
+   
+   /**
+    * Expect NumBytes data.
+	*/
+   public int Expect(String Data, int NumBytes )
+   {
+      byte	target = 0;
+	  int	cnt = 0;
+   	  try
+ 	  {
+	  	   while ((NumBytes--) != 0)
+      	   {
+    	 		target = file.readByte();
+				if (target != Data.charAt(cnt++)) return DDC_FILE_ERROR;
+		   }			
+      } catch (IOException ioe)
+ 		 {
+ 		   return DDC_FILE_ERROR;
+		 }   
+   		return DDC_SUCCESS;
+   }
+   
+   /**
+    * Close Riff File.
+	* Length is written too.
+	*/
+   public int Close()
+   {
+     int retcode = DDC_SUCCESS;
+   
+      switch ( fmode )
+      {
+   	  	case RFM_WRITE:
+	  	  try
+		  {
+			file.seek(0);
+	  	    try
+			{
+				byte[] br = new byte[8];
+				br[0] = (byte) ((riff_header.ckID >>> 24) & 0x000000FF);
+				br[1] = (byte) ((riff_header.ckID >>> 16) & 0x000000FF);
+				br[2] = (byte) ((riff_header.ckID >>> 8) & 0x000000FF);
+				br[3] = (byte) (riff_header.ckID & 0x000000FF);
+			    
+				br[7] = (byte) ((riff_header.ckSize >>> 24)& 0x000000FF);
+				br[6] = (byte) ((riff_header.ckSize >>> 16)& 0x000000FF);
+				br[5] = (byte) ((riff_header.ckSize >>> 8)& 0x000000FF);
+				br[4] = (byte) (riff_header.ckSize & 0x000000FF);
+				file.write(br,0,8);	
+				file.close();
+			} catch (IOException ioe)
+			    {
+				   retcode = DDC_FILE_ERROR;
+				}
+		  } catch (IOException ioe)
+		    {
+			   retcode = DDC_FILE_ERROR;
+			}
+   		   break;
+   
+   	  	case RFM_READ:
+   	  	   try
+		   {
+   		        file.close();
+   		   } catch (IOException ioe)
+		    {
+			   retcode = DDC_FILE_ERROR;
+			}
+   		   break;
       }
-
-      return var3;
+      file = null;   
+      fmode = RFM_UNKNOWN;
+   	  return retcode;
    }
 
-   public int Expect(String var1, int var2) {
-      boolean var3 = false;
-      int var4 = 0;
+   /**
+    * Return File Position.
+	*/
+   public long CurrentFilePosition()
+   {
+   	  long	position;
+ 	  try
+	  {
+   	      position = file.getFilePointer();
+   	  } catch (IOException ioe)
+	    {
+	      position = -1;
+	    }
+      return position;
+   }
 
-      try {
-         byte var7;
-         do {
-            if(var2-- == 0) {
-               return 0;
-            }
-
-            var7 = this.file.readByte();
-         } while(var7 == var1.charAt(var4++));
-
-         return 3;
-      } catch (IOException var6) {
-         return 3;
+   /**
+    * Write Data to specified offset.
+	*/
+   public int Backpatch (long FileOffset, RiffChunkHeader Data, int NumBytes )
+   {
+      if (file == null)
+      {
+   	  	return DDC_INVALID_CALL;
       }
+ 	  try
+	  {
+   	      file.seek(FileOffset);
+   	  } catch (IOException ioe)
+	    {
+	      return DDC_FILE_ERROR;
+	    }   
+   	  return Write ( Data, NumBytes );
    }
 
-   public int Close() {
-      byte var1 = 0;
-      switch(this.fmode) {
-      case 1:
-         try {
-            this.file.seek(0L);
-
-            try {
-               byte[] var2 = new byte[]{(byte)(this.riff_header.ckID >>> 24 & 255), (byte)(this.riff_header.ckID >>> 16 & 255), (byte)(this.riff_header.ckID >>> 8 & 255), (byte)(this.riff_header.ckID & 255), (byte)(this.riff_header.ckSize & 255), (byte)(this.riff_header.ckSize >>> 8 & 255), (byte)(this.riff_header.ckSize >>> 16 & 255), (byte)(this.riff_header.ckSize >>> 24 & 255)};
-               this.file.write(var2, 0, 8);
-               this.file.close();
-            } catch (IOException var4) {
-               var1 = 3;
-            }
-         } catch (IOException var5) {
-            var1 = 3;
-         }
-         break;
-      case 2:
-         try {
-            this.file.close();
-         } catch (IOException var3) {
-            var1 = 3;
-         }
+   public int Backpatch (long FileOffset, byte[] Data, int NumBytes )
+   {
+      if (file == null)
+      {
+   	  	return DDC_INVALID_CALL;
       }
-
-      this.file = null;
-      this.fmode = 0;
-      return var1;
+ 	  try
+	  {
+   	      file.seek(FileOffset);
+   	  } catch (IOException ioe)
+	    {
+	      return DDC_FILE_ERROR;
+	    }   
+   	  return Write ( Data, NumBytes );
    }
 
-   public long CurrentFilePosition() {
-      long var1;
-      try {
-         var1 = this.file.getFilePointer();
-      } catch (IOException var4) {
-         var1 = -1L;
-      }
 
-      return var1;
+   /**
+    * Seek in the File.
+	*/
+   protected int Seek(long offset)
+   {
+      int rc;
+ 	  try
+	  {
+   	      file.seek(offset);
+		  rc = DDC_SUCCESS;
+   	  } catch (IOException ioe)
+	    {
+	      rc = DDC_FILE_ERROR;
+	    }
+   	  return rc;
    }
 
-   public int Backpatch(long var1, RiffFile.RiffChunkHeader var3, int var4) {
-      if(this.file == null) {
-         return 4;
-      } else {
-         try {
-            this.file.seek(var1);
-         } catch (IOException var6) {
-            return 3;
-         }
-
-         return this.Write(var3, var4);
-      }
+   /**
+    * Error Messages.
+	*/
+   private String DDCRET_String(int retcode)
+   {
+   	 switch ( retcode )
+   	 {
+	  case DDC_SUCCESS:          return "DDC_SUCCESS";
+	  case DDC_FAILURE:          return "DDC_FAILURE";
+	  case DDC_OUT_OF_MEMORY:    return "DDC_OUT_OF_MEMORY";
+	  case DDC_FILE_ERROR:       return "DDC_FILE_ERROR";
+	  case DDC_INVALID_CALL:     return "DDC_INVALID_CALL";
+	  case DDC_USER_ABORT:       return "DDC_USER_ABORT";
+	  case DDC_INVALID_FILE:     return "DDC_INVALID_FILE";
+     }
+     return "Unknown Error";   
    }
 
-   public int Backpatch(long var1, byte[] var3, int var4) {
-      if(this.file == null) {
-         return 4;
-      } else {
-         try {
-            this.file.seek(var1);
-         } catch (IOException var6) {
-            return 3;
-         }
-
-         return this.Write(var3, var4);
-      }
+   /**
+    * Fill the header.
+	*/
+   public static int FourCC(String ChunkName)
+   {
+      byte[] p = {0x20,0x20,0x20,0x20};
+	  ChunkName.getBytes(0,4,p,0);
+	  int ret = (((p[0] << 24)& 0xFF000000) | ((p[1] << 16)&0x00FF0000) | ((p[2] << 8)&0x0000FF00) | (p[3]&0x000000FF));
+      return ret;
    }
 
-   protected int Seek(long var1) {
-      byte var3;
-      try {
-         this.file.seek(var1);
-         var3 = 0;
-      } catch (IOException var5) {
-         var3 = 3;
-      }
-
-      return var3;
-   }
-
-   private String DDCRET_String(int var1) {
-      switch(var1) {
-      case 0:
-         return "DDC_SUCCESS";
-      case 1:
-         return "DDC_FAILURE";
-      case 2:
-         return "DDC_OUT_OF_MEMORY";
-      case 3:
-         return "DDC_FILE_ERROR";
-      case 4:
-         return "DDC_INVALID_CALL";
-      case 5:
-         return "DDC_USER_ABORT";
-      case 6:
-         return "DDC_INVALID_FILE";
-      default:
-         return "Unknown Error";
-      }
-   }
-
-   public static int FourCC(String var0) {
-      byte[] var1 = new byte[]{(byte)32, (byte)32, (byte)32, (byte)32};
-      var0.getBytes(0, 4, var1, 0);
-      int var2 = var1[0] << 24 & -16777216 | var1[1] << 16 & 16711680 | var1[2] << 8 & '\uff00' | var1[3] & 255;
-      return var2;
-   }
-
-   class RiffChunkHeader {
-
-      public int ckID = 0;
-      public int ckSize = 0;
-
-
-   }
 }

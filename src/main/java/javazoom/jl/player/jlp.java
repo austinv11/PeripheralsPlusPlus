@@ -1,3 +1,26 @@
+/*
+ * 11/19/04		1.0 moved to LGPL.
+ * 
+ * 06/04/01		Streaming support added. javalayer@javazoom.net
+ * 
+ * 29/01/00		Initial version. mdm@techie.com
+ *-----------------------------------------------------------------------
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU Library General Public License as published
+ *   by the Free Software Foundation; either version 2 of the License, or
+ *   (at your option) any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU Library General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Library General Public
+ *   License along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ *----------------------------------------------------------------------
+ */
+
 package javazoom.jl.player;
 
 import java.io.BufferedInputStream;
@@ -5,116 +28,149 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
 import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.AudioDevice;
-import javazoom.jl.player.FactoryRegistry;
-import javazoom.jl.player.Player;
 
-public class jlp {
+/**
+ * The <code>jlp</code> class implements a simple command-line
+ * player for MPEG audio files.
+ *
+ * @author Mat McGowan (mdm@techie.com)
+ */
+public class jlp
+{
+	private String fFilename = null;
+	private boolean remote = false;
 
-   private String fFilename = null;
-   private boolean remote = false;
+	public static void main(String[] args)
+	{
+		int retval = 0;
+		try
+		{
+			jlp player = createInstance(args);
+			if (player!=null)
+				player.play();
+		}
+		catch (Exception ex)
+		{
+			System.err.println(ex);
+			ex.printStackTrace(System.err);
+			retval = 1;
+		}
+		System.exit(retval);
+	}
 
+	static public jlp createInstance(String[] args)
+	{
+		jlp player = new jlp();
+		if (!player.parseArgs(args))
+			player = null;
+		return player;
+	}
 
-   public static void main(String[] var0) {
-      byte var1 = 0;
+	private jlp()
+	{
+	}
 
-      try {
-         jlp var2 = createInstance(var0);
-         if(var2 != null) {
-            var2.play();
-         }
-      } catch (Exception var3) {
-         System.err.println(var3);
-         var3.printStackTrace(System.err);
-         var1 = 1;
-      }
+	public jlp(String filename)
+	{
+		init(filename);
+	}
 
-      System.exit(var1);
-   }
+	protected void init(String filename)
+	{
+		fFilename = filename;
+	}
 
-   public static jlp createInstance(String[] var0) {
-      jlp var1 = new jlp();
-      if(!var1.parseArgs(var0)) {
-         var1 = null;
-      }
+	protected boolean parseArgs(String[] args)
+	{
+		boolean parsed = false;
+		if (args.length == 1)
+		{
+			init(args[0]);
+			parsed = true;
+			remote = false;
+		}
+		else if (args.length == 2)
+		{
+			if (!(args[0].equals("-url")))
+			{
+				showUsage();
+			}
+			else
+			{
+				init(args[1]);
+				parsed = true;
+				remote = true;
+			}
+		}
+		else
+		{
+			showUsage();
+		}
+		return parsed;
+	}
 
-      return var1;
-   }
+	public void showUsage()
+	{
+		System.out.println("Usage: jlp [-url] <filename>");
+		System.out.println("");
+		System.out.println(" e.g. : java javazoom.jl.player.jlp localfile.mp3");
+		System.out.println("        java javazoom.jl.player.jlp -url http://www.server.com/remotefile.mp3");
+		System.out.println("        java javazoom.jl.player.jlp -url http://www.shoutcastserver.com:8000");
+	}
 
-   private jlp() {}
+	public void play()
+		throws JavaLayerException
+	{
+		try
+		{
+			System.out.println("playing "+fFilename+"...");
+			InputStream in = null;
+			if (remote == true) in = getURLInputStream();
+			else in = getInputStream();
+			AudioDevice dev = getAudioDevice();
+			Player player = new Player(in, dev);
+			player.play();
+		}
+		catch (IOException ex)
+		{
+			throw new JavaLayerException("Problem playing file "+fFilename, ex);
+		}
+		catch (Exception ex)
+		{
+			throw new JavaLayerException("Problem playing file "+fFilename, ex);
+		}
+	}
 
-   public jlp(String var1) {
-      this.init(var1);
-   }
+	/**
+	 * Playing file from URL (Streaming).
+	 */
+	protected InputStream getURLInputStream()
+		throws Exception
+	{
 
-   protected void init(String var1) {
-      this.fFilename = var1;
-   }
+		URL url = new URL(fFilename);
+		InputStream fin = url.openStream();
+		BufferedInputStream bin = new BufferedInputStream(fin);
+		return bin;
+	}
 
-   protected boolean parseArgs(String[] var1) {
-      boolean var2 = false;
-      if(var1.length == 1) {
-         this.init(var1[0]);
-         var2 = true;
-         this.remote = false;
-      } else if(var1.length == 2) {
-         if(!var1[0].equals("-url")) {
-            this.showUsage();
-         } else {
-            this.init(var1[1]);
-            var2 = true;
-            this.remote = true;
-         }
-      } else {
-         this.showUsage();
-      }
+	/**
+	 * Playing file from FileInputStream.
+	 */
+	protected InputStream getInputStream()
+		throws IOException
+	{
+		FileInputStream fin = new FileInputStream(fFilename);
+		BufferedInputStream bin = new BufferedInputStream(fin);
+		return bin;
+	}
 
-      return var2;
-   }
+	protected AudioDevice getAudioDevice()
+		throws JavaLayerException
+	{
+		return FactoryRegistry.systemRegistry().createAudioDevice();
+	}
 
-   public void showUsage() {
-      System.out.println("Usage: jlp [-url] <filename>");
-      System.out.println("");
-      System.out.println(" e.g. : java javazoom.jl.player.jlp localfile.mp3");
-      System.out.println("        java javazoom.jl.player.jlp -url http://www.server.com/remotefile.mp3");
-      System.out.println("        java javazoom.jl.player.jlp -url http://www.shoutcastserver.com:8000");
-   }
-
-   public void play() throws JavaLayerException {
-      try {
-         System.out.println("playing " + this.fFilename + "...");
-         InputStream var1 = null;
-         if(this.remote) {
-            var1 = this.getURLInputStream();
-         } else {
-            var1 = this.getInputStream();
-         }
-
-         AudioDevice var2 = this.getAudioDevice();
-         Player var3 = new Player(var1, var2);
-         var3.play();
-      } catch (IOException var4) {
-         throw new JavaLayerException("Problem playing file " + this.fFilename, var4);
-      } catch (Exception var5) {
-         throw new JavaLayerException("Problem playing file " + this.fFilename, var5);
-      }
-   }
-
-   protected InputStream getURLInputStream() throws Exception {
-      URL var1 = new URL(this.fFilename);
-      InputStream var2 = var1.openStream();
-      BufferedInputStream var3 = new BufferedInputStream(var2);
-      return var3;
-   }
-
-   protected InputStream getInputStream() throws IOException {
-      FileInputStream var1 = new FileInputStream(this.fFilename);
-      BufferedInputStream var2 = new BufferedInputStream(var1);
-      return var2;
-   }
-
-   protected AudioDevice getAudioDevice() throws JavaLayerException {
-      return FactoryRegistry.systemRegistry().createAudioDevice();
-   }
 }
