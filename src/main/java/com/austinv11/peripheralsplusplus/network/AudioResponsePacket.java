@@ -62,7 +62,7 @@ public class AudioResponsePacket implements IMessage {
 		@Override
 		public IMessage onMessage(AudioResponsePacket message, MessageContext ctx) {
 			if (message.side == null)
-				((TileEntitySpeaker)message.world.getTileEntity(message.x, message.y, message.z)).onSpeechCompletion(message.text, message.lang);
+				((TileEntitySpeaker) message.world.getTileEntity(message.x, message.y, message.z)).onSpeechCompletion(message.text, message.lang);
 			else
 				try {
 					ITurtleAccess turtle = ReflectionHelper.getTurtle(message.world.getTileEntity(message.x, message.y, message.z));

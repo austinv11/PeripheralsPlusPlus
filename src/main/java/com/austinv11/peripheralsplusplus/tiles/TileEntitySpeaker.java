@@ -31,12 +31,15 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 	private int eventSubticker = 0;
 	private HashMap<IComputerAccess, Boolean> computers = new HashMap<IComputerAccess,Boolean>();
 	private String lastMessage;
+	private Object[] packetInfo = new Object[4];
 
 	public TileEntitySpeaker() {
 		super();
+		packetInfo[0] = null;
 	}
 
 	public TileEntitySpeaker(ITurtleAccess turtle, TurtleSide side) {
+		this();
 		this.turtle = turtle;
 		this.side = side;
 	}
@@ -69,6 +72,10 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 			eventSubticker--;
 		if (eventSubticker == 0 && eventTicker != 0)
 			eventTicker = 0;
+		if (packetInfo[0] != null) {
+			PeripheralsPlusPlus.NETWORK.sendToAllAround(new AudioPacket((String)packetInfo[1], (String)packetInfo[2], xCoord, yCoord, zCoord, id, side), new NetworkRegistry.TargetPoint(id, xCoord, yCoord, zCoord, (Double)packetInfo[3]));
+			packetInfo[0] = null;
+		}
 	}
 
 	@Override
@@ -115,7 +122,10 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 				range = Config.sayRange;
 			if (arguments.length > 1)
 				range = (Double) arguments[1];
-			PeripheralsPlusPlus.NETWORK.sendToAllAround(new AudioPacket(lang, (String) arguments[0], xCoord, yCoord, zCoord, id, side), new NetworkRegistry.TargetPoint(id, xCoord, yCoord, zCoord, range));
+			packetInfo[0] = "something";
+			packetInfo[1] = lang;
+			packetInfo[2] = arguments[0];
+			packetInfo[3] = range;
 			lastMessage = (String)arguments[0];
 			return new Object[]{lastMessage, lang};
 //			}catch (Exception e) {
