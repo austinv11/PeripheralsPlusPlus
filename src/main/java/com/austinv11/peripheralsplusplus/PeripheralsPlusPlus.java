@@ -55,7 +55,6 @@ public class PeripheralsPlusPlus {
 	public final ArrayList<ISatelliteUpgrade> UPGRADE_REGISTRY = new ArrayList<ISatelliteUpgrade>();
 
 	public static SimpleNetworkWrapper NETWORK;
-	public static final String LIB_DIRECTORY = FMLCommonHandler.instance().getSavesDirectory().getParent()+"/mods";
 
 	@Mod.Instance(Reference.MOD_ID)
 	public static PeripheralsPlusPlus instance;
@@ -146,7 +145,7 @@ public class PeripheralsPlusPlus {
 		CreativeTabPPP.upgrades.add(u);
 	}
 
-	private void registerProjRedUpgrades() { //I'm so sorry
+	private void registerProjRedUpgrades() {
 		
 //		Better solution but don't keeps old ids
 		
