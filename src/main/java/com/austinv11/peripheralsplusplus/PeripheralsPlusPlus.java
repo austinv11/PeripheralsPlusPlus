@@ -18,8 +18,11 @@ import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteTickHandler;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
 import com.austinv11.peripheralsplusplus.turtles.*;
+import com.austinv11.peripheralsplusplus.turtles.TurtleProjRed.ToolMaterial;
+import com.austinv11.peripheralsplusplus.turtles.TurtleProjRed.ToolType;
 import com.austinv11.peripheralsplusplus.utils.ConfigurationHandler;
 import com.austinv11.peripheralsplusplus.utils.Logger;
+
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -144,245 +147,62 @@ public class PeripheralsPlusPlus {
 	}
 
 	private void registerProjRedUpgrades() { //I'm so sorry
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 0;
+		
+//		Better solution but don't keeps old ids
+		
+//		int i = 0;
+//		for (final ToolType type : ToolType.values()) {
+//			if (type == ToolType.UNKNOWN) continue;
+//			
+//			for (final ToolMaterial material : ToolMaterial.values()) {
+//				if (material == ToolMaterial.UNKNOWN) continue;
+//				
+//				final int id = i++;
+//				registerUpgrade(new TurtleProjRed() {
+//					
+//					@Override
+//					public ToolType getToolType() {
+//						return type;
+//					}
+//					
+//					@Override
+//					public ToolMaterial getToolMaterial() {
+//						return material;
+//					}
+//					
+//					@Override
+//					public int getID() {
+//						return id;
+//					}
+//				});
+//			}
+//		}
+		
+//		Not as good as the first but better than yours and it keeps the same ids as before
+		
+		int i = 0;
+		for (final ToolMaterial material : new ToolMaterial[] { ToolMaterial.PERIDOT, ToolMaterial.RUBY, ToolMaterial.SAPPHIRE }) {
+			for (final ToolType type : new ToolType[] { ToolType.AXE, ToolType.HOE, ToolType.PICKAXE, ToolType.SHOVEL, ToolType.SWORD }) {
+				
+				final int id = i++;
+				registerUpgrade(new TurtleProjRed() {
+					
+					@Override
+					public ToolType getToolType() {
+						return type;
+					}
+					
+					@Override
+					public ToolMaterial getToolMaterial() {
+						return material;
+					}
+					
+					@Override
+					public int getID() {
+						return id;
+					}
+				});
 			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.AXE;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.PERIDOT;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 1;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.HOE;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.PERIDOT;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 2;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.PICKAXE;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.PERIDOT;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 3;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.SHOVEL;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.PERIDOT;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 4;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.SWORD;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.PERIDOT;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 5;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.AXE;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.RUBY;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 6;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.HOE;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.RUBY;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 7;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.PICKAXE;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.RUBY;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 8;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.SHOVEL;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.RUBY;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 9;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.SWORD;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.RUBY;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 10;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.AXE;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.SAPPHIRE;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 11;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.HOE;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.SAPPHIRE;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 12;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.PICKAXE;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.SAPPHIRE;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 13;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.SHOVEL;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.SAPPHIRE;
-			}
-		});
-		registerUpgrade(new TurtleProjRed() {
-			@Override
-			public int getID() {
-				return 14;
-			}
-
-			@Override
-			public ToolType getToolType() {
-				return ToolType.SWORD;
-			}
-
-			@Override
-			public ToolMaterial getToolMaterial() {
-				return ToolMaterial.SAPPHIRE;
-			}
-		});
+		}
 	}
 }
