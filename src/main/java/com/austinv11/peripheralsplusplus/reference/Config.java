@@ -32,8 +32,6 @@ public class Config {
 	public static boolean enableProjectRedTurtles = true;
 	public static boolean enableSpeaker = true;
 	public static double speechRange = 64;
-	public static boolean enableClickyTurtle = true;
-	public static boolean allowForToolUsage = false;
 
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)

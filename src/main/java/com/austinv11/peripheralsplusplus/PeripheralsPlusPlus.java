@@ -22,7 +22,6 @@ import com.austinv11.peripheralsplusplus.turtles.TurtleProjRed.ToolMaterial;
 import com.austinv11.peripheralsplusplus.turtles.TurtleProjRed.ToolType;
 import com.austinv11.peripheralsplusplus.utils.ConfigurationHandler;
 import com.austinv11.peripheralsplusplus.utils.Logger;
-
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
@@ -73,7 +72,6 @@ public class PeripheralsPlusPlus {
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
 		FMLCommonHandler.instance().bus().register(new SatelliteTickHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
-		MinecraftForge.EVENT_BUS.register(new TurtleProjRed.Listener());
 		ModItems.preInit();
 		ModBlocks.init();
 		Logger.info("Preparing the mount...");
@@ -127,7 +125,6 @@ public class PeripheralsPlusPlus {
 		} else
 			Logger.info("Project Red Exploration not found, skipping Project Red tools turtle upgrades");
 		registerUpgrade(new TurtleSpeaker());
-		registerUpgrade(new TurtlePlayer());
 		Logger.info("All peripherals and turtle upgrades registered!");
 		proxy.registerRenderers();
 		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
@@ -144,6 +141,8 @@ public class PeripheralsPlusPlus {
 	public static void registerUpgrade(ITurtleUpgrade u) {
 		ComputerCraftAPI.registerTurtleUpgrade(u);
 		CreativeTabPPP.upgrades.add(u);
+		if (u instanceof TurtleDropCollector)
+			MinecraftForge.EVENT_BUS.register(((TurtleDropCollector) u).newInstanceOfListener());
 	}
 
 	private void registerProjRedUpgrades() {
