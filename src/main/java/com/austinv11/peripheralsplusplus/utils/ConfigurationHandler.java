@@ -57,6 +57,8 @@ public class ConfigurationHandler {
 			Config.enableProjectRedTurtles = config.get("Project Red Turtles", "enableProjectRedTurtles", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
 			Config.enableSpeaker = config.get("Speaker", "enableSpeaker", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
 			Config.speechRange = config.get("Speaker", "speechRange", 64.0, "Range for the Speaker peripheral's say/tell function. Negative values indicate infinite").getDouble(64.0);
+			Config.enableClickyTurtle = config.get("Clicky Turtle", "enableClickyTurtle", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
+			Config.allowForToolUsage = config.get("Clicky Turtle", "allowForToolUsage", false, "If enabled, the peripheral will not respond via attack() or dig() anymore, instead you will need to look at the functions on the wiki").getBoolean(false);
 		}catch (Exception e){//Log exception
 			Logger.warn("Config exception!");
 			Logger.warn(e.getStackTrace());
