@@ -17,6 +17,7 @@ import com.austinv11.peripheralsplusplus.network.RocketLaunchPacket;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
+import com.austinv11.peripheralsplusplus.satellites.SatelliteEventHandler;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteTickHandler;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
 import com.austinv11.peripheralsplusplus.turtles.*;
@@ -53,7 +54,7 @@ public class PeripheralsPlusPlus {
 	/**
 	 * Object containing all registered upgrades, the iterator is the upgrade id
 	 */
-	public final ArrayList<ISatelliteUpgrade> UPGRADE_REGISTRY = new ArrayList<ISatelliteUpgrade>();
+	public static final ArrayList<ISatelliteUpgrade> UPGRADE_REGISTRY = new ArrayList<ISatelliteUpgrade>();
 
 	public static SimpleNetworkWrapper NETWORK;
 
@@ -76,6 +77,7 @@ public class PeripheralsPlusPlus {
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
 		FMLCommonHandler.instance().bus().register(new SatelliteTickHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
+		MinecraftForge.EVENT_BUS.register(new SatelliteEventHandler());
 		ModItems.preInit();
 		ModBlocks.init();
 		Logger.info("Preparing the mount...");

@@ -2,11 +2,10 @@ package com.austinv11.peripheralsplusplus.entities;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.client.sounds.RocketSound;
+import com.austinv11.peripheralsplusplus.event.SatelliteLaunchEvent;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.network.RocketCountdownPacket;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.satellites.Satellite;
-import com.austinv11.peripheralsplusplus.satellites.SatelliteData;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -18,11 +17,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 public class EntityRocket extends EntityInventory{
 
@@ -287,14 +284,7 @@ public class EntityRocket extends EntityInventory{
 	private void initSatellite() {
 		setDead();
 		if (!worldObj.isRemote)
-			if (SatelliteData.isWorldWhitelisted(worldObj)) {
-				SatelliteData data = SatelliteData.forWorld(worldObj);
-				if (data.getSatelliteForCoords((int)posX, (int)posZ) == null) {
-					Satellite sat = new Satellite((int) posX, calcAdditionalY(), (int) posZ, worldObj);
-					data.addSatellite(sat);
-					data.markDirty();
-				}
-			}
+			MinecraftForge.EVENT_BUS.post(new SatelliteLaunchEvent(calcAdditionalY(), this.worldObj, new ChunkCoordinates((int)this.posX, (int)this.posY, (int)this.posZ), this));
 	}
 
 	private void calcMotion() {
