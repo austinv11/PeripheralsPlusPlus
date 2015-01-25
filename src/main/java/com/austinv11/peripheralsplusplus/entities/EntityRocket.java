@@ -3,10 +3,11 @@ package com.austinv11.peripheralsplusplus.entities;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.client.sounds.RocketSound;
 import com.austinv11.peripheralsplusplus.init.ModItems;
+import com.austinv11.peripheralsplusplus.network.RocketCountdownPacket;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.satellites.Satellite;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteData;
-import com.austinv11.peripheralsplusplus.utils.ChatUtil;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -30,6 +31,7 @@ public class EntityRocket extends EntityInventory{
 	public static final int OXIDIZER_ID = 3;
 	public static final int IS_USABLE_ID = 4;
 	public static final int IS_ACTIVE_ID = 5;
+	public static final int MOTION_ID = 6;
 	private int countDownTicker = 0;
 	public int countDown = 10;
 	private double lastMotion = 0;
@@ -52,6 +54,7 @@ public class EntityRocket extends EntityInventory{
 		data.addObject(OXIDIZER_ID, 0);
 		data.addObject(IS_USABLE_ID, 0);
 		data.addObject(IS_ACTIVE_ID, 0);
+		data.addObject(MOTION_ID, 0.0F);
 	}
 
 	public EntityRocket(World p_i1582_1_, double x, double y, double z) {
@@ -77,6 +80,10 @@ public class EntityRocket extends EntityInventory{
 		return getDataWatcher().getWatchableObjectInt(IS_ACTIVE_ID) == 1;
 	}
 
+	public double getMotion() {
+		return (double)getDataWatcher().getWatchableObjectFloat(MOTION_ID);
+	}
+
 	public void setFuel(int fuel) {
 		getDataWatcher().updateObject(FUEL_ID, fuel);
 	}
@@ -91,6 +98,10 @@ public class EntityRocket extends EntityInventory{
 
 	public void setIsActive(boolean isActive) {
 		getDataWatcher().updateObject(IS_ACTIVE_ID, isActive ? 1 : 0);
+	}
+
+	public void setMotion(float motion) {
+		getDataWatcher().updateObject(MOTION_ID, motion);
 	}
 
 	@Override
@@ -210,27 +221,24 @@ public class EntityRocket extends EntityInventory{
 			items[2] = null;
 		}
 		if (getIsActive()) {
-			if (countDown >= 0) {
-				if (countDown == 10) {
-					sendMessageToAllNearby(StatCollector.translateToLocal("peripheralsplusplus.chat.launchStart"));
-					sendMessageToAllNearby(countDown+"");
-					countDown--;
-					if (worldObj.isRemote) {
-						sound = new RocketSound(this);
-						Minecraft.getMinecraft().getSoundHandler().playSound(sound);
+			if (!worldObj.isRemote) {
+				if (countDown >= 0) {
+					if (countDown == 10) {
+						PeripheralsPlusPlus.NETWORK.sendToAllAround(new RocketCountdownPacket(this, countDown), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, posX, posY, posZ, 30));
+						countDown--;
+					} else if (countDownTicker == 20 && countDown > 0) {
+						PeripheralsPlusPlus.NETWORK.sendToAllAround(new RocketCountdownPacket(this, countDown), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, posX, posY, posZ, 30));
+						countDownTicker = 0;
+						countDown--;
+					} else if (countDown == 0) {
+						PeripheralsPlusPlus.NETWORK.sendToAllAround(new RocketCountdownPacket(this, countDown), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, posX, posY, posZ, 30));
+						countDown--;
 					}
-				} else if (countDownTicker == 20 && countDown > 0) {
-					sendMessageToAllNearby(countDown+"");
-					countDownTicker = 0;
-					countDown--;
-				} else if (countDown == 0) {
-					sendMessageToAllNearby(StatCollector.translateToLocal("peripheralsplusplus.chat.launch"));
-					countDown--;
-				}
-				countDownTicker++;
-			} else
-				calcMotion();
-			if (worldObj.isRemote) {
+					countDownTicker++;
+				} else
+					calcMotion();
+			} else {
+				updateMotion();
 				for (int i = 0; i < 3; i++) {
 					double divisionFactor = countDown < 7 ? 5.0D : 14.0D;
 					worldObj.spawnParticle("explode", posX, posY, posZ, rand.nextGaussian()/divisionFactor, motionY == 0 ? .01 : Math.signum(motionY)*motionY-.4, rand.nextGaussian()/divisionFactor);
@@ -259,6 +267,8 @@ public class EntityRocket extends EntityInventory{
 		}
 		if (getIsActive() && isFlipped)
 			setIsActive(false);
+		if (!worldObj.isRemote)
+			setMotion((float)motionY);
 	}
 
 	@Override
@@ -272,10 +282,6 @@ public class EntityRocket extends EntityInventory{
 		for (double i = this.posY-1; i < 255; i+=1)
 			skyClear = this.worldObj.isAirBlock((int)this.posX, (int)i, (int)this.posZ);
 		return skyClear;
-	}
-
-	public void sendMessageToAllNearby(String message) {
-		ChatUtil.sendMessage(this, new ChatComponentText("["+Reference.MOD_NAME+"] " + message), 30, true);
 	}
 
 	private void initSatellite() {
@@ -305,6 +311,11 @@ public class EntityRocket extends EntityInventory{
 		}
 	}
 
+	private void updateMotion() {
+		lastMotion = motionY;
+		motionY = getMotion();
+	}
+
 	private boolean isFloorClear() {
 		return worldObj.isAirBlock((int)posX, (int)posY-1, (int)posZ);
 	}
@@ -317,5 +328,22 @@ public class EntityRocket extends EntityInventory{
 			newMotion = motionY;
 		} while (motion != newMotion);
 		return (int)(posY + motionY);
+	}
+
+	public void onCount(int countdownNum) {
+		switch (countdownNum) {
+			case 10:
+				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("peripheralsplusplus.chat.launchStart")));
+				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(countdownNum+""));
+				sound = new RocketSound(this);
+				Minecraft.getMinecraft().getSoundHandler().playSound(sound);
+				break;
+			case 0:
+				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("peripheralsplusplus.chat.launch")));
+				break;
+			default:
+				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(countdownNum+""));
+		}
+		countDown = countdownNum;
 	}
 }

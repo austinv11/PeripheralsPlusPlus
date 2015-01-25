@@ -12,6 +12,8 @@ import com.austinv11.peripheralsplusplus.items.SatelliteUpgradeBase;
 import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.network.AudioPacket;
 import com.austinv11.peripheralsplusplus.network.AudioResponsePacket;
+import com.austinv11.peripheralsplusplus.network.RocketCountdownPacket;
+import com.austinv11.peripheralsplusplus.network.RocketLaunchPacket;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
@@ -67,6 +69,8 @@ public class PeripheralsPlusPlus {
 		NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("ppp");
 		NETWORK.registerMessage(AudioPacket.AudioPacketHandler.class, AudioPacket.class, 0, Side.CLIENT);
 		NETWORK.registerMessage(AudioResponsePacket.AudioResponsePacketHandler.class, AudioResponsePacket.class, 1, Side.SERVER);
+		NETWORK.registerMessage(RocketCountdownPacket.RocketCountdownPacketHandler.class, RocketCountdownPacket.class, 2, Side.CLIENT);
+		NETWORK.registerMessage(RocketLaunchPacket.RocketLaunchPacketHandler.class, RocketLaunchPacket.class, 3, Side.SERVER);
 		proxy.iconManagerInit();
 		proxy.prepareGuis();
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());

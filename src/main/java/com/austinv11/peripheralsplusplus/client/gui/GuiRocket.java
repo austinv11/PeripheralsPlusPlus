@@ -1,6 +1,8 @@
 package com.austinv11.peripheralsplusplus.client.gui;
 
+import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
+import com.austinv11.peripheralsplusplus.network.RocketLaunchPacket;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.containers.ContainerRocket;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
@@ -83,7 +85,7 @@ public class GuiRocket extends GuiContainer {
 				if (event.button.id == 0) {
 					if (rocket.rocket.getIsUsable()) {
 						rocket.player.closeScreen();
-						rocket.rocket.setIsActive(true);
+						PeripheralsPlusPlus.NETWORK.sendToServer(new RocketLaunchPacket(rocket.rocket, rocket.rocket.worldObj));
 					}else {
 						rocket.player.addChatComponentMessage(new ChatComponentText(Reference.Colors.RED+StatCollector.translateToLocal("peripheralsplusplus.chat.launchFailure")));
 					}
