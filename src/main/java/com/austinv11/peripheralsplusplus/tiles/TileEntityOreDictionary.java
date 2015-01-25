@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
-import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ChatUtil;
 import com.austinv11.peripheralsplusplus.utils.Util;
@@ -12,13 +11,12 @@ import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.HashMap;
 
-public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
+public class TileEntityOreDictionary extends MountedTileEntity {
 
 	public static String publicName = "oreDictionary";
 	private String name = "tileEntityOreDictionary";
@@ -166,14 +164,14 @@ public class TileEntityOreDictionary extends TileEntity implements IPeripheral {
 		//Logger.info(":D");
 		if (!isTurtle())
 			computers.put(computer, true);
-		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
+		super.attach(computer);
 	}
 
 	@Override
 	public void detach(IComputerAccess computer) {
 		if (!isTurtle())
 			computers.remove(computer);
-		computer.unmount(DynamicMount.DIRECTORY);
+		super.detach(computer);
 	}
 
 	@Override

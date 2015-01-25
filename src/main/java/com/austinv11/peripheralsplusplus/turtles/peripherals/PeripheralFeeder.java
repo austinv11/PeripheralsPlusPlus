@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus.turtles.peripherals;
 
-import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -14,7 +13,7 @@ import net.minecraft.util.ChunkCoordinates;
 
 import java.util.List;
 
-public class PeripheralFeeder implements IPeripheral {
+public class PeripheralFeeder extends MountedPeripheral {
 
 	private ITurtleAccess turtle;
 
@@ -56,16 +55,6 @@ public class PeripheralFeeder implements IPeripheral {
 			return new Object[]{false};
 		}
 		return new Object[0];
-	}
-
-	@Override
-	public void attach(IComputerAccess computer) {
-		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
-	}
-
-	@Override
-	public void detach(IComputerAccess computer) {
-		computer.unmount(DynamicMount.DIRECTORY);
 	}
 
 	@Override

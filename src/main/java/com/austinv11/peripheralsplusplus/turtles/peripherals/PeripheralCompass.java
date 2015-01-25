@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus.turtles.peripherals;
 
-import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -9,7 +8,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class PeripheralCompass implements IPeripheral {
+public class PeripheralCompass extends MountedPeripheral {
 
 	ITurtleAccess turtle;
 
@@ -35,16 +34,6 @@ public class PeripheralCompass implements IPeripheral {
 			return new Object[]{ForgeDirection.getOrientation(turtle.getDirection()).name().toLowerCase()};
 		}
 		return new Object[0];
-	}
-
-	@Override
-	public void attach(IComputerAccess computer) {
-		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
-	}
-
-	@Override
-	public void detach(IComputerAccess computer) {
-		computer.unmount(DynamicMount.DIRECTORY);
 	}
 
 	@Override

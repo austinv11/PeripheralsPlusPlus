@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus.turtles.peripherals;
 
-import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -21,7 +20,7 @@ import net.minecraft.util.Vec3;
 import java.util.List;
 import java.util.Random;
 
-public class PeripheralXP implements IPeripheral {//Beware, a lot of the math was taken from the mind of RichardG (meaning, I don't really understand all of it)
+public class PeripheralXP extends MountedPeripheral {//Beware, a lot of the math was taken from the mind of RichardG (meaning, I don't really understand all of it)
 
 	private static final int MAX_LEVEL = 30;
 	private static final double COLLECT_RANGE = 2.0D;
@@ -199,16 +198,6 @@ public class PeripheralXP implements IPeripheral {//Beware, a lot of the math wa
 				return new Object[] {true};
 		}
 		return new Object[0];
-	}
-
-	@Override
-	public void attach(IComputerAccess computer) {
-		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
-	}
-
-	@Override
-	public void detach(IComputerAccess computer) {
-		computer.unmount(DynamicMount.DIRECTORY);
 	}
 
 	@Override

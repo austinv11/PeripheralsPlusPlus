@@ -10,6 +10,7 @@ tile.peripheralsplusplus:teleporter.name=Turtle Teleporter
 tile.peripheralsplusplus:teleporterT2.name=Advanced Turtle Teleporter
 tile.peripheralsplusplus:environmentScanner.name=Environment Scanner
 tile.peripheralsplusplus:speaker.name=Speaker
+tile.peripheralsplusplus:antenna.name=Antenna
 
 #Items
 item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade

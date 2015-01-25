@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
-import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -15,7 +14,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.HashMap;
 
-public abstract class TileEntityAnalyzer extends TileEntityInv implements IPeripheral{
+public abstract class TileEntityAnalyzer extends MountedTileEntityInventory {
 
 	private String name = "tileEntityAnalyzer";
 
@@ -74,16 +73,6 @@ public abstract class TileEntityAnalyzer extends TileEntityInv implements IPerip
 				return new Object[] {true};
 		}
 		return new Object[]{};
-	}
-
-	@Override
-	public void attach(IComputerAccess computer) {
-		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(getInstance()));
-	}
-
-	@Override
-	public void detach(IComputerAccess computer) {
-		computer.unmount(DynamicMount.DIRECTORY);
 	}
 
 	@Override
