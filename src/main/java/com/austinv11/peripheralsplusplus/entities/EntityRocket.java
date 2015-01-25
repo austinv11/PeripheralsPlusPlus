@@ -41,8 +41,8 @@ public class EntityRocket extends EntityInventory{
 	public static final double ACCELERATION_MODIFIER = .3;
 	public static final double BASE_FUEL_USAGE = 1;
 	public static final double MAX_HEIGHT = 450;
-	public static final double INITIAL_ACCELERATION_CONSTANT = .002;
-	public static final double ACCELERATION_CONSTANT = .03;
+	public static final double INITIAL_ACCELERATION_CONSTANT = .005;
+	public static final double ACCELERATION_CONSTANT = .05;
 
 	public EntityRocket(World p_i1582_1_) {
 		super(p_i1582_1_);
@@ -256,6 +256,8 @@ public class EntityRocket extends EntityInventory{
 		}
 		if (motionY <= 0 && isFloorClear() && !getIsActive())
 			motionY -= 2*ACCELERATION_CONSTANT;
+		if (!worldObj.isRemote)
+			setMotion((float)motionY);
 		if (motionY != 0)
 			this.moveEntity(0, motionY, 0);
 		if (isFlipped || motionY < -.5)
@@ -267,8 +269,6 @@ public class EntityRocket extends EntityInventory{
 		}
 		if (getIsActive() && isFlipped)
 			setIsActive(false);
-		if (!worldObj.isRemote)
-			setMotion((float)motionY);
 	}
 
 	@Override
@@ -333,16 +333,16 @@ public class EntityRocket extends EntityInventory{
 	public void onCount(int countdownNum) {
 		switch (countdownNum) {
 			case 10:
-				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("peripheralsplusplus.chat.launchStart")));
-				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(countdownNum+""));
+				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("["+Reference.MOD_NAME+"] "+StatCollector.translateToLocal("peripheralsplusplus.chat.launchStart")));
+				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("["+Reference.MOD_NAME+"] "+countdownNum+""));
 				sound = new RocketSound(this);
 				Minecraft.getMinecraft().getSoundHandler().playSound(sound);
 				break;
 			case 0:
-				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(StatCollector.translateToLocal("peripheralsplusplus.chat.launch")));
+				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("["+Reference.MOD_NAME+"] "+StatCollector.translateToLocal("peripheralsplusplus.chat.launch")));
 				break;
 			default:
-				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText(countdownNum+""));
+				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("["+Reference.MOD_NAME+"] "+countdownNum+""));
 		}
 		countDown = countdownNum;
 	}
