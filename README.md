@@ -1,4 +1,4 @@
-PeripheralsPlusPlus [![Build Status](https://drone.io/github.com/austinv11/PeripheralsPlusPlus/status.png)](https://drone.io/github.com/austinv11/PeripheralsPlusPlus/latest)
+PeripheralsPlusPlus [![Build Status](https://drone.io/github.com/austinv11/PeripheralsPlusPlus/status.png)](https://drone.io/github.com/austinv11/PeripheralsPlusPlus/files)
 ===================
 
 ![Logo](http://puu.sh/dI76j/495a0cb3b2.png)
