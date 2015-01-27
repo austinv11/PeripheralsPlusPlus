@@ -1,4 +1,4 @@
-PeripheralsPlusPlus [![Build Status](http://167.114.66.98:8080/job/Peripherals++/badge/icon)](http://167.114.66.98:8080/job/Peripherals++/)
+PeripheralsPlusPlus [![Build Status](https://drone.io/github.com/austinv11/PeripheralsPlusPlus/status.png)](https://drone.io/github.com/austinv11/PeripheralsPlusPlus/latest)
 ===================
 
 ![Logo](http://puu.sh/dI76j/495a0cb3b2.png)
