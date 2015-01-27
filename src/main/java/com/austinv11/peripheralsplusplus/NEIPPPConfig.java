@@ -28,6 +28,7 @@ public class NEIPPPConfig implements IConfigureNEI{
 		ItemStack base2 = GameRegistry.findItemStack("ComputerCraft", "CC-TurtleAdvanced", 1);
 		if (base2 == null)
 			return;
+		API.addItemListEntry(base2);
 		for (ITurtleUpgrade upgrade : list) {
 			ItemStack upg1 = base2.copy();
 			upg1.stackTagCompound = new NBTTagCompound();
