@@ -49,10 +49,7 @@ public class TileEntityAntenna extends MountedTileEntity {
 	@Override
 	public String[] getMethodNames() {
 		return new String[]{"listSatellites",/*Lists info about all satellites in the current world*/
-		"connectToSatelliteById",/*Gets an handle representing a satellite*/
-		"broadcastMessage",/*Broadcasts a message (essentially long range rednet)*/
-		"openSocket",/*Opens a server, returns I/O handle for it. Only works if it has a modem connected*/
-		"openConnection"/*Connects to server, returns a "secure" I/O handle for it*/};
+		"connectToSatelliteById"/*Gets an handle representing a satellite*/};
 	}
 
 	@Override
@@ -106,15 +103,6 @@ public class TileEntityAntenna extends MountedTileEntity {
 					connectedComputers.put(world, compsForWorld);
 				}
 				return new Object[]{new LuaObjectSatellite(satellite, computer)};
-			case 2://broadcastMessage TODO
-
-				return new Object[0];
-			case 3://openSocket TODO
-
-				return new Object[0];
-			case 4://openConnection TODO
-
-				return new Object[0];
 		}
 		return new Object[0];
 	}

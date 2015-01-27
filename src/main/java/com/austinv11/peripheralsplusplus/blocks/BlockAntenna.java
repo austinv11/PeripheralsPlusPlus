@@ -13,6 +13,7 @@ import net.minecraft.world.World;
 public class BlockAntenna extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
 
 	public BlockAntenna() {
+		super();
 		this.setBlockName("antenna");
 		this.setLightOpacity(0);
 	}

@@ -53,6 +53,7 @@ public class Recipes {
 			GameRegistry.addRecipe(new UpgradeRecipe());
 			GameRegistry.addShapelessRecipe(new ItemStack(ModItems.satellite), new ItemStack(ModItems.satellite));
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.antenna), "sms", " i ", "ppp", 's', "stone", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1), 'i', "ingotIron", 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate)));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.modem), "sss", "sms", "sss", 's', "stone", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1)));
 		}
 		if (Config.enableSpeaker)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.speaker), "gng", "nrn", "gng", 'g', "ingotGold", 'n', Blocks.noteblock, 'r', "blockRedstone"));
