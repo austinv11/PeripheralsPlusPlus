@@ -12,7 +12,6 @@ public class TileEntityEnderNetModem extends MountedNetworkedTileEntity {
 	public static String publicName = "enderNetModem";
 	private  String name = "tileEntityEnderNetModem";
 	private boolean isServer = false;
-	private int lastMeta = 0;
 
 	public TileEntityEnderNetModem() {
 		super();
@@ -53,22 +52,17 @@ public class TileEntityEnderNetModem extends MountedNetworkedTileEntity {
 	public void updateEntity() {
 		if (worldObj != null) {
 			checkMultiblockStatus();
-			if (isServer && lastMeta == 0) {
-				lastMeta = 1;
-				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, lastMeta, 2);
-			} else if (!isServer && lastMeta == 1) {
-				lastMeta = 0;
-				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, lastMeta, 2);
+			if (isServer && getBlockMetadata() == 0) {
+				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 1, 2);
+			} else if (!isServer && getBlockMetadata() != 0) {
+				worldObj.setBlockMetadataWithNotify(xCoord, yCoord, zCoord, 0, 2);
 			}
 		}
 	}
 
 	private void checkMultiblockStatus() {
 		if (!worldObj.isAirBlock(xCoord, yCoord+1, zCoord))
-			if (worldObj.getBlock(xCoord, yCoord+1, zCoord) instanceof BlockAntenna)
-				isServer = true;
-			else
-				isServer = false;
+			isServer = worldObj.getBlock(xCoord, yCoord+1, zCoord) instanceof BlockAntenna;
 	}
 
 	@Override
