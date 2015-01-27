@@ -81,7 +81,7 @@ public class PeripheralsPlusPlusAPI {
 	 * @return The item representing the satellite upgrade
 	 */
 	public static Item getItemFromUpgrade(ISatelliteUpgrade upgrade) {
-		return GameRegistry.findItem(Reference.MOD_ID, upgrade.getName());
+		return GameRegistry.findItem(Reference.MOD_ID, upgrade.getUnlocalisedName());
 	}
 
 	/**

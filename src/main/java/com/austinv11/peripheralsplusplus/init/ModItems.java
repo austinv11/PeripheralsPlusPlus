@@ -23,6 +23,6 @@ public class ModItems {
 
 	public static void init() {
 		for (int i = 0; i < PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.size(); i++)
-			GameRegistry.registerItem(PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(i), PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(i).getUpgrade().getName());
+			GameRegistry.registerItem(PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(i), PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(i).getUpgrade().getUnlocalisedName());
 	}
 }
