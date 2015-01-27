@@ -28,6 +28,7 @@ public class Satellite implements ISatellite{
 	private World world;
 	private ISatelliteUpgrade mainUpgrade;
 	private List<ISatelliteUpgrade> addons = new ArrayList<ISatelliteUpgrade>();
+	private boolean isInOrbit = true;
 
 	public Satellite(int x, int y, int z, World w) {
 		coords = new ChunkCoordinates(x,y,z);
@@ -124,6 +125,7 @@ public class Satellite implements ISatellite{
 		SatelliteData data = SatelliteData.forWorld(world);
 		data.removeSatellite(this.id);
 		data.markDirty();
+		isInOrbit = false;
 		return dropCoords;
 	}
 
@@ -148,5 +150,10 @@ public class Satellite implements ISatellite{
 				throw new Exception("Incompatible Satellite Addon Type");
 		}
 		this.addons = addons;
+	}
+
+	@Override
+	public boolean isInOrbit() {
+		return isInOrbit;
 	}
 }

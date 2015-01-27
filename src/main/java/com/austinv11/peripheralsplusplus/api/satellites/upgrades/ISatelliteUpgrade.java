@@ -34,12 +34,6 @@ public interface ISatelliteUpgrade {
 	public SatelliteUpgradeType getType();
 
 	/**
-	 * Used internally for naming the physical item, basically the same as IPeripheral.getType()
-	 * @return Name of the upgrade (MUST be unlocalised)
-	 */
-	public String getName();
-
-	/**
 	 * Called to get the String identifier of the upgrade
 	 * @return The identifier
 	 */
@@ -74,6 +68,7 @@ public interface ISatelliteUpgrade {
 	 * <br>
 	 * Be aware that this will be called from the ComputerCraft Lua thread, and must be thread-safe
 	 * when interacting with minecraft objects.
+	 * @param 	satellite	The interface to the satellite in which the specific instance of the upgrade resides
 	 * @param 	computer	The interface to the computercraft that is making the call. Remember that multiple
 	 *						computers can be attached to a peripheral at once.
 	 * @param	context		The context of the currently running lua thread. This can be used to wait for events
@@ -96,15 +91,15 @@ public interface ISatelliteUpgrade {
 	 *						arguments are supplied to your method.
 	 * @see 	#getMethodNames"
 	 */
-	public Object[] callMethod( IComputerAccess computer, ILuaContext context, int method, Object[] arguments ) throws LuaException, InterruptedException;
+	public Object[] callMethod(ISatellite satellite, IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException;
 
 	/**
 	 * Only called when a MAIN upgrade, called when a computer connects to the satellite
 	 */
-	public void onConnect(IComputerAccess computer);
+	public void onConnect(ISatellite satellite, IComputerAccess computer);
 
 	/**
 	 * Only called when a MAIN upgrade, called when a computer diconnects from the satellite
 	 */
-	public void onDisconnect(IComputerAccess computer);
+	public void onDisconnect(ISatellite satellite, IComputerAccess computer);
 }

@@ -49,7 +49,7 @@ public class TileEntityAnalyzerTree extends TileEntityAnalyzer {
 		ret.put("fruit", genome.getFruitProvider().getDescription());
 		ret.put("growth", genome.getGrowthProvider().getDescription());
 		ret.put("girth", genome.getGirth());
-		ret.put("plant", Util.iterableToMap(genome.getPlantTypes()));
+		ret.put("plant", Util.EnumSetToMap(genome.getPlantTypes()));
 		ret.put("effect", genome.getEffect().getUID());
 	}
 

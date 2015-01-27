@@ -4,6 +4,7 @@ import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldSavedData;
 import net.minecraft.world.storage.MapStorage;
@@ -35,8 +36,16 @@ public class SatelliteData extends WorldSavedData {
 		return result;
 	}
 
+	public static SatelliteData forWorld(int world) {
+		return forWorld(MinecraftServer.getServer().worldServerForDimension(world));
+	}
+
 	public static boolean isWorldWhitelisted(World world) {
 		return (Config.dimWhitelist.contains(world.provider.dimensionId));
+	}
+
+	public static boolean isWorldWhitelisted(int world) {
+		return (Config.dimWhitelist.contains(world));
 	}
 
 	public int assignNextId() {
