@@ -131,4 +131,11 @@ public class Util {
 		JSONFileList localFile = gson.fromJson(localJson, JSONFileList.class);
 		return !localFile.ver.equals(json.ver);
 	}
+
+	public static Object keyFromVal(HashMap map, Object val) {
+		for (Object key : map.keySet())
+			if (map.get(key).equals(val))
+				return key;
+		return null;
+	}
 }

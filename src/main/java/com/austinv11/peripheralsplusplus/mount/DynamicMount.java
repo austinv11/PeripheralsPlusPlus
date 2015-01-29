@@ -1,9 +1,9 @@
 package com.austinv11.peripheralsplusplus.mount;
 
+import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzer;
 import com.austinv11.peripheralsplusplus.utils.*;
 import com.google.gson.Gson;
-import cpw.mods.fml.common.FMLCommonHandler;
 import dan200.computercraft.api.filesystem.IMount;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class DynamicMount implements IMount {
 
-	public static final String MOUNT_DIRECTORY = (FMLCommonHandler.instance().getSavesDirectory().getParent()+"/mods/ppp_mount").replace("null", "");
+	public static final String MOUNT_DIRECTORY = PeripheralsPlusPlus.BASE_PPP_DIR+"ppp_mount";
 	public static final String DIRECTORY = "/ppp";
 	public static final String JSON_VER = "1.0";
 	private IPeripheral peripheral;
