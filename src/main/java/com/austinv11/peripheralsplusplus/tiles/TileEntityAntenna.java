@@ -122,7 +122,7 @@ public class TileEntityAntenna extends MountedTileEntity {
 
 	@Override
 	public void detach(IComputerAccess computer) {
-		SatelliteData data = SatelliteData.forWorld(world);
+		SatelliteData data = SatelliteData.forWorld(worldObj);
 		HashMap<Integer, List<IComputerAccess>> compsForWorld;
 		if (connectedComputers.containsKey(world))
 			compsForWorld = connectedComputers.get(world);
