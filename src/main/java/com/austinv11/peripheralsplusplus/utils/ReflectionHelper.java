@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.utils;
 
+import com.austinv11.peripheralsplusplus.reference.Config;
 import com.gtranslate.Language;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaObject;
@@ -91,6 +92,8 @@ public class ReflectionHelper {
 	}
 
 	public static void registerAPI(final int id, final ILuaAPIProxy api) throws ClassNotFoundException, NoSuchMethodException, NoSuchFieldException, IllegalAccessException, InvocationTargetException {
+		if (!Config.enableAPIs)
+			return;
 		if (usedIds.contains(id)) {
 //			usedIds.remove(usedIds.indexOf(id));
 			return;

@@ -1,6 +1,8 @@
 package com.austinv11.peripheralsplusplus.init;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
+import com.austinv11.peripheralsplusplus.recipe.ContainerRecipe;
+import com.austinv11.peripheralsplusplus.recipe.ContainerReturnRecipe;
 import com.austinv11.peripheralsplusplus.recipe.UpgradeRecipe;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import cpw.mods.fml.common.Loader;
@@ -56,5 +58,10 @@ public class Recipes {
 		}
 		if (Config.enableSpeaker)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.speaker), "gng", "nrn", "gng", 'g', "ingotGold", 'n', Blocks.noteblock, 'r', "blockRedstone"));
+		if (Config.enablePeripheralContainer) {
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.container), "iii", "ici", "iii", 'i', "ingotIron", 'c', Blocks.chest));
+			GameRegistry.addRecipe(new ContainerRecipe());
+			GameRegistry.addRecipe(new ContainerReturnRecipe());
+		}
 	}
 }

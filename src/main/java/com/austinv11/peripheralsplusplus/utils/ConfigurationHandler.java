@@ -57,6 +57,9 @@ public class ConfigurationHandler {
 			Config.enableProjectRedTurtles = config.get("Project Red Turtles", "enableProjectRedTurtles", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
 			Config.enableSpeaker = config.get("Speaker", "enableSpeaker", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
 			Config.speechRange = config.get("Speaker", "speechRange", 64.0, "Range for the Speaker peripheral's say/tell function. Negative values indicate infinite").getDouble(64.0);
+			Config.enableAPIs = config.get("APIs", "enableAPIs", true, "This enables additional apis added by this mod, just note that if this is enabled, the *initial* computer startup is lengthened somewhat").getBoolean(true);
+			Config.enablePeripheralContainer = config.get("Peripheral Container", "enablePeripheralContainer", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
+			Config.maxNumberOfPeripherals = config.get("Peripheral Container", "maxNumberOfPeripherals", 6, "The maximum number of peripherals the container is allows to contain").getInt(6);
 		}catch (Exception e){//Log exception
 			Logger.warn("Config exception!");
 			Logger.warn(e.getStackTrace());
