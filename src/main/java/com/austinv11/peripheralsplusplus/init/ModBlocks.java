@@ -20,7 +20,6 @@ public class ModBlocks {
 	public static final BlockPPP environmentScanner = new BlockEnvironmentScanner();
 	public static final BlockPPP speaker = new BlockSpeaker();
 	public static final BlockPPP antenna = new BlockAntenna();
-	public static final BlockPPP modem = new BlockEnderNetModem();
 
 	public static void init(){
 		GameRegistry.registerBlock(chatBox, "chatBox");
@@ -43,6 +42,5 @@ public class ModBlocks {
 		GameRegistry.registerBlock(environmentScanner, "environmentScanner");
 		GameRegistry.registerBlock(speaker, "speaker");
 		GameRegistry.registerBlock(antenna, "antenna");
-		GameRegistry.registerBlock(modem, "enderNetModem");
 	}
 }

@@ -80,6 +80,6 @@ public class ReflectionHelper {
 		get_.setAccessible(true);
 		Object run = get_.invoke(chunk, objectToLuaValue("run"));
 		Method call = run.getClass().getDeclaredMethod("call", Class.forName("org.luaj.vm2.LuaValue"), Class.forName("org.luaj.vm2.LuaValue"));
-		call.invoke(run, Class.forName("org.luaj.vm2.LuaTable").newInstance(), objectToLuaValue("test"));
+		call.invoke(run, Class.forName("org.luaj.vm2.LuaTable").newInstance(), objectToLuaValue(path));
 	}
 }

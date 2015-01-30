@@ -32,7 +32,6 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEntityEnvironmentScanner.class, TileEntityEnvironmentScanner.publicName);
 		GameRegistry.registerTileEntity(TileEntitySpeaker.class, TileEntitySpeaker.publicName);
 		GameRegistry.registerTileEntity(TileEntityAntenna.class, TileEntityAntenna.publicName);
-		GameRegistry.registerTileEntity(TileEntityEnderNetModem.class, TileEntityEnderNetModem.publicName);
 	}
 
 	public void iconManagerInit() {}

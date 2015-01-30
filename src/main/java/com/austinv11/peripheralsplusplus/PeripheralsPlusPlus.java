@@ -114,7 +114,6 @@ public class PeripheralsPlusPlus {
 		ComputerCraftAPI.registerPeripheralProvider(new BlockEnvironmentScanner());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockSpeaker());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockAntenna());
-		ComputerCraftAPI.registerPeripheralProvider(new BlockEnderNetModem());
 		Logger.info("Registering turtle upgrades...");
 		registerUpgrade(new TurtleChatBox());
 		registerUpgrade(new TurtlePlayerSensor());
