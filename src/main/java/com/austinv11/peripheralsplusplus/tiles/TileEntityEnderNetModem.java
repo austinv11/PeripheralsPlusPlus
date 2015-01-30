@@ -4,6 +4,7 @@ import com.austinv11.peripheralsplusplus.blocks.BlockAntenna;
 import com.austinv11.peripheralsplusplus.lua.LuaObjectClientControl;
 import com.austinv11.peripheralsplusplus.lua.LuaObjectServerControl;
 import com.austinv11.peripheralsplusplus.reference.Config;
+import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
 import com.austinv11.peripheralsplusplus.utils.Util;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -52,7 +53,8 @@ public class TileEntityEnderNetModem extends MountedNetworkedTileEntity {
 		return new String[]{"broadcastMessage",/*Broadcasts a message (essentially long range rednet)*/
 				"openSocket",/*Opens a server, returns I/O handle for it. Only works if it has a proper connected*/
 				"openConnection",/*Connects to server, returns a "limited" I/O handle for it*/
-				"whois"/*Performs a search of all ips (computer ids) and domains (based on what you search)*/};
+				"whois",/*Performs a search of all ips (computer ids) and domains (based on what you search)*/
+				"test"};
 	}
 
 	@Override
@@ -80,7 +82,6 @@ public class TileEntityEnderNetModem extends MountedNetworkedTileEntity {
 					return new Object[]{new LuaObjectServerControl((String) arguments[0], false, computer)};
 				}
 				else
-
 					throw new LuaException("The computer is not connected to a valid server host");
 			case 2:
 				if (arguments.length < 1)
@@ -97,6 +98,12 @@ public class TileEntityEnderNetModem extends MountedNetworkedTileEntity {
 					return new Object[]{domainsFromInt((int)(double)(Double)arguments[0])};
 				else
 					return new Object[]{domainsFromString((String)arguments[0])};
+			default:
+				try {
+					ReflectionHelper.runProgram("test", computer.getID());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 		}
 		return new Object[0];
 	}

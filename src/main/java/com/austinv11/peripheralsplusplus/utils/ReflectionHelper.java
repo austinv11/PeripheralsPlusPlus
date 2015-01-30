@@ -6,6 +6,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -41,5 +42,44 @@ public class ReflectionHelper {
 			if (hashLanguage.get(k).equalsIgnoreCase(lang))
 				return k;
 		return null;
+	}
+
+	public static Object getICompFromId(int id) throws ClassNotFoundException, NoSuchMethodException, NoSuchFieldException, IllegalAccessException, InvocationTargetException {
+		Class computerRegistry = Class.forName("dan200.computercraft.shared.computer.core.ComputerRegistry");
+		Method getCompFromId = computerRegistry.getMethod("lookup", int.class);
+		Object registry = Class.forName("dan200.computercraft.ComputerCraft").getField("serverComputerRegistry").get(null);
+		return getCompFromId.invoke(registry, id);
+	}
+
+	public static Object objectToLuaValue(Object o) throws ClassNotFoundException, IllegalAccessException, InstantiationException, NoSuchMethodException, InvocationTargetException {
+		Class luaMachine = Class.forName("dan200.computercraft.core.lua.LuaJLuaMachine");
+		Object machine = luaMachine.newInstance();
+		Method toVal = luaMachine.getDeclaredMethod("toValue", Object.class);
+		toVal.setAccessible(true);
+		return toVal.invoke(machine, o);
+	}
+
+	public static void runProgram(String path, int id) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException, ClassNotFoundException, NoSuchFieldException, InstantiationException {
+		Object iComp = getICompFromId(id);
+		Class iCompClass = iComp.getClass().asSubclass(Class.forName("dan200.computercraft.shared.computer.core.ServerComputer"));
+		Field compField = iCompClass.getDeclaredField("m_computer");
+		compField.setAccessible(true);
+		Object comp = compField.get(iComp);
+		Class compClass = comp.getClass();
+		Field machine = compClass.getDeclaredField("m_machine");
+		machine.setAccessible(true);
+		Object machineObject = machine.get(comp);
+		Class machineClass = machineObject.getClass();
+		Field globals = machineClass.getDeclaredField("m_globals");
+		globals.setAccessible(true);
+		Object globalsObj = globals.get(machineObject);
+		Method load = globalsObj.getClass().getDeclaredMethod("get", Class.forName("org.luaj.vm2.LuaValue"));
+		load.setAccessible(true);
+		Object chunk = load.invoke(globalsObj, objectToLuaValue("os"));
+		Method get_ = chunk.getClass().getDeclaredMethod("get", Class.forName("org.luaj.vm2.LuaValue"));
+		get_.setAccessible(true);
+		Object run = get_.invoke(chunk, objectToLuaValue("run"));
+		Method call = run.getClass().getDeclaredMethod("call", Class.forName("org.luaj.vm2.LuaValue"), Class.forName("org.luaj.vm2.LuaValue"));
+		call.invoke(run, Class.forName("org.luaj.vm2.LuaTable").newInstance(), objectToLuaValue("test"));
 	}
 }
