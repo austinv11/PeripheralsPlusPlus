@@ -1,13 +1,10 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
 import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyHandler;
+import cofh.api.energy.IEnergyReceiver;
 import com.austinv11.peripheralsplusplus.reference.Config;
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
-import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.turtle.ITurtleAccess;
-import net.minecraft.block.Block;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -15,7 +12,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityRFCharger extends TileEntity implements IEnergyHandler{
+public class TileEntityRFCharger extends NetworkedTileEntity implements IEnergyReceiver {
 	private EnergyStorage storage = new EnergyStorage(80000);//Leadstone Capacitor
 
 	public static String publicName = "rfCharger";
@@ -82,11 +79,6 @@ public class TileEntityRFCharger extends TileEntity implements IEnergyHandler{
 	@Override
 	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
 		return storage.receiveEnergy(maxReceive, simulate);
-	}
-
-	@Override
-	public int extractEnergy(ForgeDirection from, int maxExtract, boolean simulate) {
-		return 0;
 	}
 
 	@Override

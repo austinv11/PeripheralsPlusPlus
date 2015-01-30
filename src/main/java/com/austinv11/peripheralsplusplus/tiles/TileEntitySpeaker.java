@@ -1,7 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
-import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.network.AudioPacket;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
@@ -15,11 +14,10 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleSide;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 
 import java.util.HashMap;
 
-public class TileEntitySpeaker extends TileEntity implements IPeripheral {
+public class TileEntitySpeaker extends MountedTileEntity {
 
 	public static String publicName = "speaker";
 	private String name = "tileEntitySpeaker";
@@ -138,13 +136,13 @@ public class TileEntitySpeaker extends TileEntity implements IPeripheral {
 	@Override
 	public void attach(IComputerAccess computer) {
 		computers.put(computer, true);
-		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
+		super.attach(computer);
 	}
 
 	@Override
 	public void detach(IComputerAccess computer) {
 		computers.remove(computer);
-		computer.unmount(DynamicMount.DIRECTORY);
+		super.detach(computer);
 	}
 
 	@Override

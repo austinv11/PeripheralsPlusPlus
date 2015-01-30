@@ -17,7 +17,10 @@ public class WebUtil {
 		if (!url.contains("http://") && !url.contains("https://"))
 			url = "http://"+url;
 		URL input = new URL(url);
-		BufferedReader in = new BufferedReader(new InputStreamReader(input.openStream()));
+		URLConnection connection = input.openConnection();
+		connection.setConnectTimeout(5000);
+		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+		connection.connect();
 		String temp;
 		List<String> read = new ArrayList<String>();
 		while ((temp = in.readLine()) != null)

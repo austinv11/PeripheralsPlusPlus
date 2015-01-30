@@ -1,7 +1,6 @@
 package com.austinv11.peripheralsplusplus.satellites;
 
 import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
-import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent;
@@ -17,8 +16,6 @@ public class SatelliteTickHandler {
 			List<ISatellite> satellites = SatelliteData.forWorld(MinecraftServer.getServer().worldServerForDimension(i)).getSatellites();
 			for (ISatellite sat : satellites) {
 				sat.getMainUpgrade().update(sat);
-				for (ISatelliteUpgrade up : sat.getAddons())
-					up.update(sat);
 			}
 		}
 	}

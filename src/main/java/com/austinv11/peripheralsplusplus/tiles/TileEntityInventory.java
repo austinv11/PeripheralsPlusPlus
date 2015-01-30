@@ -9,7 +9,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.common.util.Constants;
 
-public abstract class TileEntityInv extends TileEntity implements IInventory{
+public abstract class TileEntityInventory extends TileEntity implements IInventory{
 
 	public int size = 1;
 	public ItemStack[] items = new ItemStack[size];

@@ -51,7 +51,7 @@ public class TurtleShear implements ITurtleUpgrade {
 		switch (verb) {
 			case Attack:
 				List<Entity> entities = TurtleUtil.getEntitiesNearTurtle(turtle, player, direction);
-				Entity ent = TurtleUtil.getClosestEntity(entities, player);
+				Entity ent = TurtleUtil.getClosestShearableEntity(entities, player);
 				if (ent != null)
 					if (((IShearable) ent).isShearable(new ItemStack(Items.shears), ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ)) {
 						TurtleUtil.addItemListToInv(((IShearable) ent).onSheared(new ItemStack(Items.shears), ent.worldObj, (int) ent.posX, (int) ent.posY, (int) ent.posZ, 0), turtle);

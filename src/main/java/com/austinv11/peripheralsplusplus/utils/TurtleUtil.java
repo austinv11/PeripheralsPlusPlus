@@ -41,7 +41,7 @@ public class TurtleUtil {
 		return turtle.getWorld().getEntitiesWithinAABBExcludingEntity(player, box);
 	}
 
-	public static Entity getClosestEntity(List<Entity> list, Entity ent) {
+	public static Entity getClosestShearableEntity(List<Entity> list, Entity ent) {
 		Vec3 from = Vec3.createVectorHelper(ent.posX, ent.posY, ent.posZ);
 		Entity returnVal = null;
 		double lastDistance = Double.MAX_VALUE;
@@ -51,6 +51,18 @@ public class TurtleUtil {
 				if (to.distanceTo(from) < lastDistance)
 					returnVal = entity;
 			}
+		return returnVal;
+	}
+
+	public static Entity getClosestEntity(List<Entity> list, Entity ent) {
+		Vec3 from = Vec3.createVectorHelper(ent.posX, ent.posY, ent.posZ);
+		Entity returnVal = null;
+		double lastDistance = Double.MAX_VALUE;
+		for (Entity entity : list) {
+			Vec3 to = Vec3.createVectorHelper(entity.posX, entity.posY, entity.posZ);
+			if (to.distanceTo(from) < lastDistance)
+				returnVal = entity;
+		}
 		return returnVal;
 	}
 

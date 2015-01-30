@@ -5,7 +5,6 @@ import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.utils.FakeTurtlePlayer;
 import com.austinv11.peripheralsplusplus.utils.TurtleUtil;
 import com.austinv11.peripheralsplusplus.utils.Util;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
@@ -15,14 +14,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.Facing;
 import net.minecraft.util.IIcon;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
 
-import java.util.HashMap;
 import java.util.List;
 
-public abstract class TurtleProjRed implements ITurtleUpgrade{
-
-	public static HashMap<Entity, ITurtleAccess> map = new HashMap<Entity, ITurtleAccess>();
+public abstract class TurtleProjRed extends TurtleDropCollector implements ITurtleUpgrade{
 
 	public abstract int getID();
 
@@ -77,7 +72,7 @@ public abstract class TurtleProjRed implements ITurtleUpgrade{
 				Entity ent = TurtleUtil.getClosestEntity(entities, player);
 				if (ent != null)
 					if (ent.canAttackWithItem() && !ent.hitByEntity(player)) {
-						map.put(ent, turtle);
+						addEntity(turtle, ent);
 						double damage = player.getEntityAttribute(SharedMonsterAttributes.attackDamage).getAttributeValue();
 						damage *= Util.getDamageAttribute(getItem());
 						if(damage > 0.0F && ent.attackEntityFrom(DamageSource.causePlayerDamage(player), (float)damage)) {
@@ -142,18 +137,6 @@ public abstract class TurtleProjRed implements ITurtleUpgrade{
 		}
 		private ToolMaterial(String s) {
 			name = s;
-		}
-	}
-
-	public static class Listener {
-
-		@SubscribeEvent
-		public void onDrops(LivingDropsEvent event) {
-			if (map.containsKey(event.entity)) {
-				TurtleUtil.addItemListToInv(TurtleUtil.entityItemsToItemStack(event.drops), map.get(event.entity));
-				event.setCanceled(true);
-				map.remove(event.entity);
-			}
 		}
 	}
 }

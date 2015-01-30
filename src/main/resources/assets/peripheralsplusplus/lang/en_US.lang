@@ -10,6 +10,8 @@ tile.peripheralsplusplus:teleporter.name=Turtle Teleporter
 tile.peripheralsplusplus:teleporterT2.name=Advanced Turtle Teleporter
 tile.peripheralsplusplus:environmentScanner.name=Environment Scanner
 tile.peripheralsplusplus:speaker.name=Speaker
+tile.peripheralsplusplus:antenna.name=Antenna
+tile.peripheralsplusplus:enderNetModem.name=EnderNet Modem
 
 #Items
 item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade
@@ -33,6 +35,7 @@ peripheralsplusplus.turtleUpgrade.shears=Shearing
 peripheralsplusplus.turtleUpgrade.environmentScanner=Environmentalist
 peripheralsplusplus.turtleUpgrade.feeder=Feeding
 peripheralsplusplus.turtleUpgrade.speaker=Talkative
+peripheralsplusplus.turtleUpgrade.clicky=Clicky
 
 #GUIs
 peripheralsplusplus.inv.analyzer=Analyzer

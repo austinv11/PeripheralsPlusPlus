@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
-import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.Location;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -9,11 +8,10 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
 
 import java.util.HashMap;
 
-public class TileEntityPlayerSensor extends TileEntity implements IPeripheral {
+public class TileEntityPlayerSensor extends MountedTileEntity {
 
 	public static String publicName = "playerSensor";
 	private String name = "tileEntityPlayerSensor";
@@ -108,13 +106,13 @@ public class TileEntityPlayerSensor extends TileEntity implements IPeripheral {
 	@Override
 	public void attach(IComputerAccess computer) {
 		computers.put(computer, true);
-		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
+		super.attach(computer);
 	}
 
 	@Override
 	public void detach(IComputerAccess computer) {
 		computers.remove(computer);
-		computer.unmount(DynamicMount.DIRECTORY);
+		super.detach(computer);
 	}
 
 	@Override

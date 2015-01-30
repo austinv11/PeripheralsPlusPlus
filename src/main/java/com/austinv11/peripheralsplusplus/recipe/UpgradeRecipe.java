@@ -8,8 +8,8 @@ import com.austinv11.peripheralsplusplus.utils.NBTHelper;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 
@@ -60,12 +60,12 @@ public class UpgradeRecipe implements IRecipe {
 		NBTTagList ids = new NBTTagList();
 		for (ISatelliteUpgrade s : map.keySet()) {
 			int lvl = map.get(s);
-			if (NBTHelper.hasTag(result, s.getName()))
-				lvl = lvl + NBTHelper.getInt(result, s.getName());
-			NBTHelper.setInteger(result, s.getName(), lvl);
+			if (NBTHelper.hasTag(result, StatCollector.translateToLocal(s.getUnlocalisedName())))
+				lvl = lvl + NBTHelper.getInt(result, StatCollector.translateToLocal(s.getUnlocalisedName()));
+			NBTHelper.setInteger(result, StatCollector.translateToLocal(s.getUnlocalisedName()), lvl);
 			map.put(s, lvl);
 			text.add(Reference.Colors.RESET+StatCollector.translateToLocal(s.getUnlocalisedName())+": "+lvl);
-			ids.appendTag(new NBTTagInt(s.getUpgradeID()));
+			ids.appendTag(new NBTTagString(String.valueOf(s.getUpgradeID())));
 		}
 		NBTHelper.addInfo(result, text);
 		NBTHelper.setList(result, "upgradeIds", ids);

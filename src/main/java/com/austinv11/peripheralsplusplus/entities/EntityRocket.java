@@ -2,11 +2,11 @@ package com.austinv11.peripheralsplusplus.entities;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.client.sounds.RocketSound;
+import com.austinv11.peripheralsplusplus.event.SatelliteLaunchEvent;
 import com.austinv11.peripheralsplusplus.init.ModItems;
+import com.austinv11.peripheralsplusplus.network.RocketCountdownPacket;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.satellites.Satellite;
-import com.austinv11.peripheralsplusplus.satellites.SatelliteData;
-import com.austinv11.peripheralsplusplus.utils.ChatUtil;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
@@ -17,11 +17,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.*;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 public class EntityRocket extends EntityInventory{
 
@@ -30,6 +28,7 @@ public class EntityRocket extends EntityInventory{
 	public static final int OXIDIZER_ID = 3;
 	public static final int IS_USABLE_ID = 4;
 	public static final int IS_ACTIVE_ID = 5;
+	public static final int MOTION_ID = 6;
 	private int countDownTicker = 0;
 	public int countDown = 10;
 	private double lastMotion = 0;
@@ -39,8 +38,8 @@ public class EntityRocket extends EntityInventory{
 	public static final double ACCELERATION_MODIFIER = .3;
 	public static final double BASE_FUEL_USAGE = 1;
 	public static final double MAX_HEIGHT = 450;
-	public static final double INITIAL_ACCELERATION_CONSTANT = .002;
-	public static final double ACCELERATION_CONSTANT = .03;
+	public static final double INITIAL_ACCELERATION_CONSTANT = .005;
+	public static final double ACCELERATION_CONSTANT = .05;
 
 	public EntityRocket(World p_i1582_1_) {
 		super(p_i1582_1_);
@@ -52,6 +51,7 @@ public class EntityRocket extends EntityInventory{
 		data.addObject(OXIDIZER_ID, 0);
 		data.addObject(IS_USABLE_ID, 0);
 		data.addObject(IS_ACTIVE_ID, 0);
+		data.addObject(MOTION_ID, 0.0F);
 	}
 
 	public EntityRocket(World p_i1582_1_, double x, double y, double z) {
@@ -77,6 +77,10 @@ public class EntityRocket extends EntityInventory{
 		return getDataWatcher().getWatchableObjectInt(IS_ACTIVE_ID) == 1;
 	}
 
+	public double getMotion() {
+		return (double)getDataWatcher().getWatchableObjectFloat(MOTION_ID);
+	}
+
 	public void setFuel(int fuel) {
 		getDataWatcher().updateObject(FUEL_ID, fuel);
 	}
@@ -91,6 +95,10 @@ public class EntityRocket extends EntityInventory{
 
 	public void setIsActive(boolean isActive) {
 		getDataWatcher().updateObject(IS_ACTIVE_ID, isActive ? 1 : 0);
+	}
+
+	public void setMotion(float motion) {
+		getDataWatcher().updateObject(MOTION_ID, motion);
 	}
 
 	@Override
@@ -210,27 +218,24 @@ public class EntityRocket extends EntityInventory{
 			items[2] = null;
 		}
 		if (getIsActive()) {
-			if (countDown >= 0) {
-				if (countDown == 10) {
-					sendMessageToAllNearby(StatCollector.translateToLocal("peripheralsplusplus.chat.launchStart"));
-					sendMessageToAllNearby(countDown+"");
-					countDown--;
-					if (worldObj.isRemote) {
-						sound = new RocketSound(this);
-						Minecraft.getMinecraft().getSoundHandler().playSound(sound);
+			if (!worldObj.isRemote) {
+				if (countDown >= 0) {
+					if (countDown == 10) {
+						PeripheralsPlusPlus.NETWORK.sendToAllAround(new RocketCountdownPacket(this, countDown), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, posX, posY, posZ, 30));
+						countDown--;
+					} else if (countDownTicker == 20 && countDown > 0) {
+						PeripheralsPlusPlus.NETWORK.sendToAllAround(new RocketCountdownPacket(this, countDown), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, posX, posY, posZ, 30));
+						countDownTicker = 0;
+						countDown--;
+					} else if (countDown == 0) {
+						PeripheralsPlusPlus.NETWORK.sendToAllAround(new RocketCountdownPacket(this, countDown), new NetworkRegistry.TargetPoint(this.worldObj.provider.dimensionId, posX, posY, posZ, 30));
+						countDown--;
 					}
-				} else if (countDownTicker == 20 && countDown > 0) {
-					sendMessageToAllNearby(countDown+"");
-					countDownTicker = 0;
-					countDown--;
-				} else if (countDown == 0) {
-					sendMessageToAllNearby(StatCollector.translateToLocal("peripheralsplusplus.chat.launch"));
-					countDown--;
-				}
-				countDownTicker++;
-			} else
-				calcMotion();
-			if (worldObj.isRemote) {
+					countDownTicker++;
+				} else
+					calcMotion();
+			} else {
+				updateMotion();
 				for (int i = 0; i < 3; i++) {
 					double divisionFactor = countDown < 7 ? 5.0D : 14.0D;
 					worldObj.spawnParticle("explode", posX, posY, posZ, rand.nextGaussian()/divisionFactor, motionY == 0 ? .01 : Math.signum(motionY)*motionY-.4, rand.nextGaussian()/divisionFactor);
@@ -248,6 +253,8 @@ public class EntityRocket extends EntityInventory{
 		}
 		if (motionY <= 0 && isFloorClear() && !getIsActive())
 			motionY -= 2*ACCELERATION_CONSTANT;
+		if (!worldObj.isRemote)
+			setMotion((float)motionY);
 		if (motionY != 0)
 			this.moveEntity(0, motionY, 0);
 		if (isFlipped || motionY < -.5)
@@ -274,21 +281,10 @@ public class EntityRocket extends EntityInventory{
 		return skyClear;
 	}
 
-	public void sendMessageToAllNearby(String message) {
-		ChatUtil.sendMessage(this, new ChatComponentText("["+Reference.MOD_NAME+"] " + message), 30, true);
-	}
-
 	private void initSatellite() {
 		setDead();
 		if (!worldObj.isRemote)
-			if (SatelliteData.isWorldWhitelisted(worldObj)) {
-				SatelliteData data = SatelliteData.forWorld(worldObj);
-				if (data.getSatelliteForCoords((int)posX, (int)posZ) == null) {
-					Satellite sat = new Satellite((int) posX, calcAdditionalY(), (int) posZ, worldObj);
-					data.addSatellite(sat);
-					data.markDirty();
-				}
-			}
+			MinecraftForge.EVENT_BUS.post(new SatelliteLaunchEvent(calcAdditionalY(), this.worldObj, new ChunkCoordinates((int)this.posX, (int)this.posY, (int)this.posZ), this));
 	}
 
 	private void calcMotion() {
@@ -305,6 +301,11 @@ public class EntityRocket extends EntityInventory{
 		}
 	}
 
+	private void updateMotion() {
+		lastMotion = motionY;
+		motionY = getMotion();
+	}
+
 	private boolean isFloorClear() {
 		return worldObj.isAirBlock((int)posX, (int)posY-1, (int)posZ);
 	}
@@ -317,5 +318,22 @@ public class EntityRocket extends EntityInventory{
 			newMotion = motionY;
 		} while (motion != newMotion);
 		return (int)(posY + motionY);
+	}
+
+	public void onCount(int countdownNum) {
+		switch (countdownNum) {
+			case 10:
+				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("["+Reference.MOD_NAME+"] "+StatCollector.translateToLocal("peripheralsplusplus.chat.launchStart")));
+				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("["+Reference.MOD_NAME+"] "+countdownNum+""));
+				sound = new RocketSound(this);
+				Minecraft.getMinecraft().getSoundHandler().playSound(sound);
+				break;
+			case 0:
+				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("["+Reference.MOD_NAME+"] "+StatCollector.translateToLocal("peripheralsplusplus.chat.launch")));
+				break;
+			default:
+				Minecraft.getMinecraft().thePlayer.addChatComponentMessage(new ChatComponentText("["+Reference.MOD_NAME+"] "+countdownNum+""));
+		}
+		countDown = countdownNum;
 	}
 }

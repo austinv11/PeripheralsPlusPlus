@@ -16,18 +16,24 @@ import net.minecraftforge.oredict.OreDictionary;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class Util {
 
-	public static HashMap<Integer, Object> iterableToMap(EnumSet<EnumPlantType> iterable) {
+	public static HashMap<Integer, Object> EnumSetToMap(EnumSet<EnumPlantType> iterable) {
 		HashMap<Integer,Object> map = new HashMap<Integer,Object>();
 		Iterator<EnumPlantType> types = iterable.iterator();
 		for (int i = 0; i < iterable.size(); i++) {
-			map.put(i, types.next());
+			map.put(i+1, types.next());
+		}
+		return map;
+	}
+
+	public static HashMap<Integer, Object> collectionToMap(Collection iterable) {
+		HashMap<Integer,Object> map = new HashMap<Integer,Object>();
+		Iterator<Object> types = iterable.iterator();
+		for (int i = 0; i < iterable.size(); i++) {
+			map.put(i+1, types.next());
 		}
 		return map;
 	}
@@ -124,5 +130,12 @@ public class Util {
 		String localJson = readFile(file);
 		JSONFileList localFile = gson.fromJson(localJson, JSONFileList.class);
 		return !localFile.ver.equals(json.ver);
+	}
+
+	public static Object keyFromVal(HashMap map, Object val) {
+		for (Object key : map.keySet())
+			if (map.get(key).equals(val))
+				return key;
+		return null;
 	}
 }

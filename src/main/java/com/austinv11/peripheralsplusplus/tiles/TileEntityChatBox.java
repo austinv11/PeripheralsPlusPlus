@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
-import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ChatUtil;
 import com.austinv11.peripheralsplusplus.utils.Location;
@@ -14,7 +13,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
@@ -25,7 +23,7 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import java.util.HashMap;
 import java.util.List;
 
-public class TileEntityChatBox extends TileEntity implements IPeripheral{
+public class TileEntityChatBox extends MountedTileEntity {
 
 	public static String publicName = "chatBox";
 	private  String name = "tileEntityChatBox";
@@ -213,7 +211,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 		if (computers.size() == 0)
 			ChatListener.chatBoxMap.put(this,true);
 		computers.put(computer, true);
-		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
+		super.attach(computer);
 	}
 
 	@Override
@@ -221,7 +219,7 @@ public class TileEntityChatBox extends TileEntity implements IPeripheral{
 		computers.remove(computer);
 		if (computers.size() == 0)
 			ChatListener.chatBoxMap.remove(this);
-		computer.unmount(DynamicMount.DIRECTORY);
+		super.detach(computer);
 	}
 
 	@Override

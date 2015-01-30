@@ -13,7 +13,7 @@ import java.util.List;
 public interface ISatellite {
 
 	/**
-	 * Gets the position of the sattelite over Earth (note: ignore the y-value)
+	 * Gets the position of the sattelite over Earth
 	 * @return Position of the satellite
 	 */
 	public ChunkCoordinates getPosition();
@@ -72,4 +72,10 @@ public interface ISatellite {
 	 * @throws Exception Thrown when the list contains an upgrade that is not a MODIFIER upgrade
 	 */
 	public void setAddons(List<ISatelliteUpgrade> addons) throws Exception;
+
+	/**
+	 * Gets the status of the satellite (essentially whether it's dead or not)
+	 * @return Whether the satellite is in orbit
+	 */
+	public boolean isInOrbit();
 }
