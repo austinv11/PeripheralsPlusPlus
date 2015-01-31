@@ -62,7 +62,7 @@ public class PeripheralsPlusPlus {
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	public static CommonProxy proxy;
 
-	public static String BASE_PPP_DIR = (FMLCommonHandler.instance().getSavesDirectory().getParent()+"/mods/PPP/").replace("null", "");
+	public static String BASE_PPP_DIR = "./mods/PPP/";
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
