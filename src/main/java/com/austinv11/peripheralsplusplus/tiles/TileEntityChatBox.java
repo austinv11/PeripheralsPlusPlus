@@ -13,7 +13,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.Vec3;
@@ -127,13 +126,13 @@ public class TileEntityChatBox extends MountedTileEntity {
 				if (ticker == Config.sayRate) {
 					throw new LuaException("Please try again later, you are sending messages too often");
 				}
-				ChatComponentText message;
+				String message;
 				if (Config.logCoords) {
-					message = new ChatComponentText(ChatUtil.getCoordsPrefix(this) + (String) arguments[0]);
+					message = ChatUtil.getCoordsPrefix(this) + (String) arguments[0];
 				}else if (!Config.logCoords && arguments.length > 3) {
-					message = new ChatComponentText("[" + (String) arguments[3] + "] " + (String) arguments[0]);
+					message = "[" + (String) arguments[3] + "] " + (String) arguments[0];
 				}else {
-					message = new ChatComponentText("[@] " + (String) arguments[0]);
+					message ="[@] " + (String) arguments[0];
 				}
 				double range;
 				if (Config.sayRange < 0) {
@@ -143,9 +142,11 @@ public class TileEntityChatBox extends MountedTileEntity {
 				}
 				if (arguments.length > 1)
 					range = (Double) arguments[1];
-				ChatUtil.sendMessage(this, message, range, (arguments.length > 2 && (Boolean) arguments[2] && Config.allowUnlimitedVertical));
-				subticker = TICKER_INTERVAL;
-				ticker++;
+				synchronized (this) {
+					ChatUtil.sendMessage(this, message, range, (arguments.length > 2 && (Boolean) arguments[2] && Config.allowUnlimitedVertical));
+					subticker = TICKER_INTERVAL;
+					ticker++;
+				}
 				return new Object[]{true};
 			} else if (method == 1) {
 				if (arguments.length < 2)
@@ -167,13 +168,13 @@ public class TileEntityChatBox extends MountedTileEntity {
 				if (ticker == Config.sayRate) {
 					throw new LuaException("Please try again later, you are sending messages too often");
 				}
-				ChatComponentText message;
+				String message;
 				if (Config.logCoords) {
-					message = new ChatComponentText(ChatUtil.getCoordsPrefix(this) + (String) arguments[1]);
+					message = ChatUtil.getCoordsPrefix(this) + (String) arguments[1];
 				}else if (!Config.logCoords && arguments.length > 3) {
-					message = new ChatComponentText("[" + (String) arguments[3] + "] " + (String) arguments[1]);
+					message = "[" + (String) arguments[3] + "] " + (String) arguments[1];
 				}else {
-					message = new ChatComponentText("[@] " + (String) arguments[1]);
+					message = "[@] " + (String) arguments[1];
 				}
 				double range;
 				if (Config.sayRange < 0) {
