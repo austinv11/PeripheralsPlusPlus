@@ -5,6 +5,7 @@ import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
+import com.austinv11.peripheralsplusplus.event.PeripheralContainerHandler;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
@@ -80,6 +81,7 @@ public class PeripheralsPlusPlus {
 		FMLCommonHandler.instance().bus().register(new SatelliteTickHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
 		MinecraftForge.EVENT_BUS.register(new SatelliteEventHandler());
+		MinecraftForge.EVENT_BUS.register(new PeripheralContainerHandler());
 		ModItems.preInit();
 		ModBlocks.init();
 		Logger.info("Preparing the mount...");

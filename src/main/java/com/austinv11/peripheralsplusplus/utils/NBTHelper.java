@@ -204,4 +204,14 @@ public class NBTHelper {
 		initNBTTagCompound(itemStack);
 		return itemStack.stackTagCompound.getTag(keyName);
 	}
+
+	public static void setIntArray(ItemStack itemStack, String keyName, int[] array) {
+		initNBTTagCompound(itemStack);
+		itemStack.stackTagCompound.setIntArray(keyName, array);
+	}
+
+	public static int[] getIntArray(ItemStack itemStack, String keyName) {
+		initNBTTagCompound(itemStack);
+		return itemStack.stackTagCompound.getIntArray(keyName);
+	}
 }

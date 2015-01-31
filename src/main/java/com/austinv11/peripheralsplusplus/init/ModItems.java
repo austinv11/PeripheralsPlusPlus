@@ -2,9 +2,9 @@ package com.austinv11.peripheralsplusplus.init;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.items.ItemFeederUpgrade;
+import com.austinv11.peripheralsplusplus.items.ItemPPP;
 import com.austinv11.peripheralsplusplus.items.ItemRocket;
 import com.austinv11.peripheralsplusplus.items.ItemSatellite;
-import com.austinv11.peripheralsplusplus.items.ItemPPP;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;
 
