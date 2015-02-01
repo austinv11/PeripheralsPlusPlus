@@ -60,6 +60,7 @@ public class ConfigurationHandler {
 			Config.enableAPIs = config.get("APIs", "enableAPIs", true, "This enables additional apis added by this mod, just note that if this is enabled, the *initial* computer startup is lengthened somewhat").getBoolean(true);
 			Config.enablePeripheralContainer = config.get("Peripheral Container", "enablePeripheralContainer", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
 			Config.maxNumberOfPeripherals = config.get("Peripheral Container", "maxNumberOfPeripherals", 6, "The maximum number of peripherals the container is allows to contain").getInt(6);
+			Config.enableMEBridge = config.get("ME Bridge", "enableMEBridge", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
 		}catch (Exception e){//Log exception
 			Logger.warn("Config exception!");
 			Logger.warn(e.getStackTrace());

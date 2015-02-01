@@ -35,6 +35,7 @@ public class Config {
 	public static boolean enableAPIs = true;
 	public static boolean enablePeripheralContainer = true;
 	public static int maxNumberOfPeripherals = 6;
+	public static boolean enableMEBridge = true;
 
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)

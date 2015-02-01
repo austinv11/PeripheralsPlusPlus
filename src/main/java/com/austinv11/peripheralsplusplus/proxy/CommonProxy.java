@@ -33,6 +33,8 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEntitySpeaker.class, TileEntitySpeaker.publicName);
 		GameRegistry.registerTileEntity(TileEntityAntenna.class, TileEntityAntenna.publicName);
 		GameRegistry.registerTileEntity(TileEntityPeripheralContainer.class, TileEntityPeripheralContainer.publicName);
+		if (Loader.isModLoaded("appliedenergistics2"))
+			GameRegistry.registerTileEntity(TileEntityMEBridge.class, TileEntityMEBridge.publicName);
 	}
 
 	public void iconManagerInit() {}

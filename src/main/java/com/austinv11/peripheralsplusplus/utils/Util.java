@@ -20,6 +20,16 @@ import java.util.*;
 
 public class Util {
 
+	public static HashMap<Integer, Object> iteratorToMap(Iterator iterator) {
+		HashMap<Integer,Object> map = new HashMap<Integer,Object>();
+		int i = 1;
+		while (iterator.hasNext()) {
+			map.put(i, iterator.next());
+			i++;
+		}
+		return map;
+	}
+
 	public static HashMap<Integer, Object> EnumSetToMap(EnumSet<EnumPlantType> iterable) {
 		HashMap<Integer,Object> map = new HashMap<Integer,Object>();
 		Iterator<EnumPlantType> types = iterable.iterator();

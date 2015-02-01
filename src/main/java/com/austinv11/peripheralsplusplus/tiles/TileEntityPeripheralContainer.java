@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.lua.LuaObjectPeripheralWrap;
+import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.utils.NBTHelper;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -72,6 +73,8 @@ public class TileEntityPeripheralContainer extends MountedNetworkedTileEntity {
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+		if (!Config.enablePeripheralContainer)
+			throw new LuaException("Peripheral Containers have been disabled");
 		if (method == 0) {
 			HashMap<Integer, String> returnVals = new HashMap<Integer,String>();
 			for (int i = 0; i < peripheralsContained.size(); i++)

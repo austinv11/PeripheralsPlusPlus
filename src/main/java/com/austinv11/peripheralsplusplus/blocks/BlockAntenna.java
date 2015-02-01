@@ -1,10 +1,14 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
+import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -47,5 +51,11 @@ public class BlockAntenna extends BlockPPP implements ITileEntityProvider, IPeri
 	@Override
 	public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
 		return (IPeripheral) world.getTileEntity(x,y,z);
+	}
+
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerBlockIcons(IIconRegister iconRegister){//Registers the block icon(s)
+		blockIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()+":peripheralContainer");
 	}
 }

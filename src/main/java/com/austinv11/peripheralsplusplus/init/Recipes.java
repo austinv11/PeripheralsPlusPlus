@@ -11,6 +11,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class Recipes {
 
@@ -61,5 +62,7 @@ public class Recipes {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.peripheralContainer), "iii", "ici", "imi", 'i', "ingotIron", 'c', Blocks.chest, 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Cable"), 1, 1)));
 			GameRegistry.addRecipe(new ContainerRecipe());
 		}
+		if (Config.enableMEBridge && Loader.isModLoaded("appliedenergistics2"))
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModBlocks.meBridge), new ItemStack(GameRegistry.findItem("appliedenergistics2", "tile.BlockInterface")), new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Cable"), 1, 1)));
 	}
 }

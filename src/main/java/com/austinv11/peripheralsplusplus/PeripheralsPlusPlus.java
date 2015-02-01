@@ -115,6 +115,11 @@ public class PeripheralsPlusPlus {
 		ComputerCraftAPI.registerPeripheralProvider(new BlockSpeaker());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockAntenna());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockPeripheralContainer());
+		if (Loader.isModLoaded("appliedenergistics2")) {
+			Logger.info("Applied Energistics is loaded! Registering the ME Bridge...");
+			ComputerCraftAPI.registerPeripheralProvider(new BlockMEBridge());
+		}else
+			Logger.info("Applied Energistics not found, skipping the ME Bridge");
 		Logger.info("Registering turtle upgrades...");
 		registerUpgrade(new TurtleChatBox());
 		registerUpgrade(new TurtlePlayerSensor());
