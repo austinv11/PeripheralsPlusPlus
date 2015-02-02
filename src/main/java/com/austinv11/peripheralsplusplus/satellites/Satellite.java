@@ -4,6 +4,7 @@ import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.SatelliteUpgradeType;
+import com.austinv11.peripheralsplusplus.event.SateliiteCrashEvent;
 import com.austinv11.peripheralsplusplus.utils.Logger;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -11,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -126,6 +128,7 @@ public class Satellite implements ISatellite{
 		data.removeSatellite(this.id);
 		data.markDirty();
 		isInOrbit = false;
+		MinecraftForge.EVENT_BUS.post(new SateliiteCrashEvent(this, dropCoords));
 		return dropCoords;
 	}
 

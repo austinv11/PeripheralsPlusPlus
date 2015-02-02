@@ -15,6 +15,7 @@ import net.minecraft.util.StatCollector;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 public class TileEntityAntenna extends MountedTileEntity {
 
@@ -22,9 +23,12 @@ public class TileEntityAntenna extends MountedTileEntity {
 	private  String name = "tileEntityAntenna";
 	private int world = 0;
 	private static HashMap<Integer, HashMap<Integer, List<IComputerAccess>>> connectedComputers = new HashMap<Integer,HashMap<Integer,List<IComputerAccess>>>();
+	private HashMap<IComputerAccess, Boolean> computers = new HashMap<IComputerAccess,Boolean>();
+	public UUID identifier;
 
 	public TileEntityAntenna() {
 		super();
+		identifier = UUID.randomUUID();
 	}
 
 	public String getName() {
@@ -34,11 +38,14 @@ public class TileEntityAntenna extends MountedTileEntity {
 	@Override
 	public void readFromNBT(NBTTagCompound nbttagcompound) {
 		super.readFromNBT(nbttagcompound);
+		if (nbttagcompound.hasKey("identifier"))
+			identifier = UUID.fromString(nbttagcompound.getString("identifier"));
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
+		nbttagcompound.setString("identifier", identifier.toString());
 	}
 
 	@Override
@@ -54,8 +61,10 @@ public class TileEntityAntenna extends MountedTileEntity {
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		if (!Config.additionalMethods)
+		if (!Config.enableSatellites && method < 2)
 			throw new LuaException("Satellites and associated systems have been disabled");
+		else if (!Config.enableSmartHelmet)
+			throw new LuaException("Smart Helmets have been disabled");
 		switch (method) {
 			case 0://listSatellites
 				if (!SatelliteData.isWorldWhitelisted(world))
@@ -121,7 +130,14 @@ public class TileEntityAntenna extends MountedTileEntity {
 	}
 
 	@Override
+	public void attach(IComputerAccess computer) {
+		computers.put(computer, true);
+		super.attach(computer);
+	}
+
+	@Override
 	public void detach(IComputerAccess computer) {
+		computers.remove(computer);
 		SatelliteData data = SatelliteData.forWorld(worldObj);
 		HashMap<Integer, List<IComputerAccess>> compsForWorld;
 		if (connectedComputers.containsKey(world))

@@ -38,6 +38,7 @@ public class Config {
 	public static boolean enableMEBridge = true;
 	public static boolean enableTankTurtle = true;
 	public static int maxNumberOfMillibuckets = 10000;
+	public static boolean enableSmartHelmet = true;
 
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)

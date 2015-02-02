@@ -54,7 +54,6 @@ public class Recipes {
 				GameRegistry.addRecipe(PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.get(i)).getUpgrade().getRecipe());
 			GameRegistry.addRecipe(new UpgradeRecipe());
 			GameRegistry.addShapelessRecipe(new ItemStack(ModItems.satellite), new ItemStack(ModItems.satellite));
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.antenna), "sms", " i ", "ppp", 's', "stone", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1), 'i', "ingotIron", 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate)));
 		}
 		if (Config.enableSpeaker)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.speaker), "gng", "nrn", "gng", 'g', "ingotGold", 'n', Blocks.noteblock, 'r', "blockRedstone"));
@@ -65,6 +64,9 @@ public class Recipes {
 		if (Config.enableMEBridge && Loader.isModLoaded("appliedenergistics2"))
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModBlocks.meBridge), new ItemStack(GameRegistry.findItem("appliedenergistics2", "tile.BlockInterface")), new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Cable"), 1, 1)));
 		if (Config.enableTankTurtle)
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.tank), "ggg", "gmg", "ggg", 'g', "glass", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Cable"), 1, 1)));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.tank), "ggg", "gmg", "ggg", 'g', "blockGlass", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Cable"), 1, 1)));
+		if (Config.enableSmartHelmet)
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.smartHelmet), new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1), Items.iron_helmet));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.antenna), "sms", " i ", "ppp", 's', "stone", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1), 'i', "ingotIron", 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate)));
 	}
 }

@@ -63,6 +63,7 @@ public class ConfigurationHandler {
 			Config.enableMEBridge = config.get("ME Bridge", "enableMEBridge", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
 			Config.enableTankTurtle = config.get("Thirsty Turtle", "enableTankTurtle", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
 			Config.maxNumberOfMillibuckets = config.get("Thirsty Turtle", "maxNumberOfMillibuckets", 10000, "The maximimum mB that the Thirsty Turtle can store internally").getInt(10000);
+			Config.enableSmartHelmet = config.get("Smart Helmet", "enableSmartHelmet", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
 		}catch (Exception e){//Log exception
 			Logger.warn("Config exception!");
 			Logger.warn(e.getStackTrace());
