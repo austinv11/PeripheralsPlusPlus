@@ -17,6 +17,7 @@ import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteEventHandler;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteTickHandler;
+import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
 import com.austinv11.peripheralsplusplus.turtles.*;
 import com.austinv11.peripheralsplusplus.turtles.TurtleProjRed.ToolMaterial;
@@ -80,6 +81,7 @@ public class PeripheralsPlusPlus {
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
 		MinecraftForge.EVENT_BUS.register(new SatelliteEventHandler());
 		MinecraftForge.EVENT_BUS.register(new PeripheralContainerHandler());
+		MinecraftForge.EVENT_BUS.register(new TileEntityAntenna());
 		ModItems.preInit();
 		ModBlocks.init();
 		Logger.info("Preparing the mount...");

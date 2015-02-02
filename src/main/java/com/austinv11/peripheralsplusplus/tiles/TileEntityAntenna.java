@@ -2,9 +2,12 @@ package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
+import com.austinv11.peripheralsplusplus.event.SateliiteCrashEvent;
+import com.austinv11.peripheralsplusplus.event.SatelliteLaunchEvent;
 import com.austinv11.peripheralsplusplus.lua.LuaObjectSatellite;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteData;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -127,6 +130,18 @@ public class TileEntityAntenna extends MountedTileEntity {
 	public void updateEntity() {
 		if (worldObj != null)
 			world = worldObj.provider.dimensionId;
+	}
+
+	@SubscribeEvent
+	public void onSatelliteCrash(SateliiteCrashEvent event) {
+		for (IComputerAccess comp : computers.keySet())
+			comp.queueEvent("satelliteCrash", new Object[]{event.satellite.getID(), event.coords.posX, event.coords.posY, event.coords.posZ, event.satellite.getWorld().provider.dimensionId});
+	}
+
+	@SubscribeEvent
+	public void onSatelliteLaunch(SatelliteLaunchEvent event) {
+		for (IComputerAccess comp : computers.keySet())
+			comp.queueEvent("satelliteLaunch", new Object[]{event.coords.posX, event.y, event.coords.posZ, event.world.provider.dimensionId});
 	}
 
 	@Override

@@ -35,7 +35,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 
-@Optional.InterfaceList(value = {@Optional.Interface(modid="appliedendergistics2",iface="appeng.api.networking.IGridHost", striprefs=true), @Optional.Interface(modid="appliedendergistics2",iface="appeng.api.networking.IGridBlock", striprefs=true)})
+@Optional.InterfaceList(value = {@Optional.Interface(modid="appliedenergistics2",iface="appeng.api.networking.IGridHost", striprefs=true), @Optional.Interface(modid="appliedenergistics2",iface="appeng.api.networking.IGridBlock", striprefs=true)})
 public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, IGridBlock {
 
 	public static String publicName = "meBridge";
