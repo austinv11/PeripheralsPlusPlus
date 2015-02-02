@@ -17,6 +17,7 @@ import appeng.core.WorldSettings;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.Logger;
+import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -34,6 +35,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 
+@Optional.InterfaceList(value = {@Optional.Interface(modid="appliedendergistics2",iface="appeng.api.networking.IGridHost", striprefs=true), @Optional.Interface(modid="appliedendergistics2",iface="appeng.api.networking.IGridBlock", striprefs=true)})
 public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, IGridBlock {
 
 	public static String publicName = "meBridge";
