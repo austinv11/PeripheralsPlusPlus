@@ -64,5 +64,7 @@ public class Recipes {
 		}
 		if (Config.enableMEBridge && Loader.isModLoaded("appliedenergistics2"))
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModBlocks.meBridge), new ItemStack(GameRegistry.findItem("appliedenergistics2", "tile.BlockInterface")), new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Cable"), 1, 1)));
+		if (Config.enableTankTurtle)
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.tank), "ggg", "gmg", "ggg", 'g', "glass", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Cable"), 1, 1)));
 	}
 }

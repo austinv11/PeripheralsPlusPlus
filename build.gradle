@@ -72,6 +72,8 @@ processResources
     }
 }
 
-//jar {
-//    from "libs"
-//}
+jar {
+    manifest {
+        attributes 'FMLAT': 'ppp_at.cfg'
+    }
+}

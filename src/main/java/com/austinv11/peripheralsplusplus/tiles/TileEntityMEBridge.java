@@ -94,7 +94,7 @@ public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, 
 		if (!Config.enableMEBridge)
 			throw new LuaException("ME Bridges have been disabled");
 		IMEMonitor<IAEItemStack> monitor = ((IStorageGrid) node.getGrid().getCache(IStorageGrid.class)).getItemInventory();
-		try {
+//		try {
 		switch (method) {
 			case 0:
 				return new Object[]{iteratorToMap(monitor.getStorageList().iterator(), 0)};
@@ -194,9 +194,9 @@ public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, 
 				}
 				return new Object[]{};
 		}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+//		} catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		return new Object[0];
 	}
 

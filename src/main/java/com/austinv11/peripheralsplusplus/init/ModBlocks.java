@@ -23,6 +23,7 @@ public class ModBlocks {
 	public static final BlockPPP antenna = new BlockAntenna();
 	public static final BlockPPP peripheralContainer = new BlockPeripheralContainer();
 	public static final BlockPPP meBridge = new BlockMEBridge();
+	public static final BlockPPP dummyBlock = new BlockDummyBlock();
 
 	public static void init(){
 		GameRegistry.registerBlock(chatBox, "chatBox");
@@ -48,5 +49,6 @@ public class ModBlocks {
 		GameRegistry.registerBlock(peripheralContainer, ItemBlockPeripheralContainer.class, "peripheralContainer");
 		if (Loader.isModLoaded("appliedenergistics2"))
 			GameRegistry.registerBlock(meBridge, "meBridge");
+		GameRegistry.registerBlock(dummyBlock, "dummyBlock");
 	}
 }

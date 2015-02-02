@@ -21,6 +21,7 @@ item.peripheralsplusplus:rocket.name=Rocket
 item.peripheralsplusplus:ingotIron.name=Turtle Ingot
 item.peripheralsplusplus:dustRedstone.name=Computer Dust
 item.peripheralsplusplus:iphone.name=Pineapple UPhone
+item.peripheralsplusplus:tank.name=Fluid Tank
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++
@@ -36,7 +37,7 @@ peripheralsplusplus.turtleUpgrade.shears=Shearing
 peripheralsplusplus.turtleUpgrade.environmentScanner=Environmentalist
 peripheralsplusplus.turtleUpgrade.feeder=Feeding
 peripheralsplusplus.turtleUpgrade.speaker=Talkative
-peripheralsplusplus.turtleUpgrade.clicky=Clicky
+peripheralsplusplus.turtleUpgrade.tank=Thirsty
 
 #GUIs
 peripheralsplusplus.inv.analyzer=Analyzer

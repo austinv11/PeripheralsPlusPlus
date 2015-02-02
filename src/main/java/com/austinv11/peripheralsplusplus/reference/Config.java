@@ -36,6 +36,8 @@ public class Config {
 	public static boolean enablePeripheralContainer = true;
 	public static int maxNumberOfPeripherals = 6;
 	public static boolean enableMEBridge = true;
+	public static boolean enableTankTurtle = true;
+	public static int maxNumberOfMillibuckets = 10000;
 
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)
