@@ -4,15 +4,21 @@ import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.event.SateliiteCrashEvent;
 import com.austinv11.peripheralsplusplus.event.SatelliteLaunchEvent;
+import com.austinv11.peripheralsplusplus.items.ItemSmartHelmet;
+import com.austinv11.peripheralsplusplus.lua.LuaObjectHUD;
 import com.austinv11.peripheralsplusplus.lua.LuaObjectSatellite;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteData;
+import com.austinv11.peripheralsplusplus.utils.NBTHelper;
+import com.austinv11.peripheralsplusplus.utils.Util;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StatCollector;
 
 import java.util.ArrayList;
@@ -59,7 +65,10 @@ public class TileEntityAntenna extends MountedTileEntity {
 	@Override
 	public String[] getMethodNames() {
 		return new String[]{"listSatellites",/*Lists info about all satellites in the current world*/
-		"connectToSatelliteById"/*Gets an handle representing a satellite*/};
+				"connectToSatelliteById",/*Gets an handle representing a satellite*/
+				//===Satellite APIs end===
+				"getPlayers",/*Lists players wearing smart helmets linked to this antenna*/
+				"getHUD"/*Returns a hud handle for the given player*/};
 	}
 
 	@Override
@@ -115,6 +124,24 @@ public class TileEntityAntenna extends MountedTileEntity {
 					connectedComputers.put(world, compsForWorld);
 				}
 				return new Object[]{new LuaObjectSatellite(satellite, computer)};
+			case 2://getPlayers
+				synchronized (this) {
+					List<String> players = new ArrayList<String>();
+					for (Object player : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
+						if (player instanceof EntityPlayer)
+							if (((EntityPlayer) player).getCurrentArmor(0).getItem() instanceof ItemSmartHelmet && NBTHelper.hasTag(((EntityPlayer) player).getCurrentArmor(0), "identifier"))
+								if (identifier.equals(UUID.fromString(NBTHelper.getString(((EntityPlayer) player).getCurrentArmor(0), "identifier"))))
+									players.add(((EntityPlayer) player).getCommandSenderName());
+					return new Object[]{Util.listToString(players)};
+				}
+			case 3:
+				if (arguments.length < 1)
+					throw new LuaException("Not enough arguments");
+				if (!(arguments[0] instanceof String))
+					throw new LuaException("Bad argument #1 (expected string)");
+				if (Util.getPlayer((String)arguments[0]) == null)
+					return new Object[]{null};
+				return new Object[]{new LuaObjectHUD((String)arguments[0])};
 		}
 		return new Object[0];
 	}

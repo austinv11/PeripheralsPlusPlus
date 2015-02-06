@@ -6,6 +6,7 @@ import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.event.PeripheralContainerHandler;
+import com.austinv11.peripheralsplusplus.event.SmartHelmetHandler;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
@@ -74,6 +75,7 @@ public class PeripheralsPlusPlus {
 		NETWORK.registerMessage(RocketCountdownPacket.RocketCountdownPacketHandler.class, RocketCountdownPacket.class, 2, Side.CLIENT);
 		NETWORK.registerMessage(RocketLaunchPacket.RocketLaunchPacketHandler.class, RocketLaunchPacket.class, 3, Side.SERVER);
 		NETWORK.registerMessage(ChatPacket.ChatPacketHandler.class, ChatPacket.class, 4, Side.CLIENT);
+		NETWORK.registerMessage(JoinPacket.JoinPacketHandler.class, JoinPacket.class, 5, Side.SERVER);
 		proxy.iconManagerInit();
 		proxy.prepareGuis();
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
@@ -82,6 +84,7 @@ public class PeripheralsPlusPlus {
 		MinecraftForge.EVENT_BUS.register(new SatelliteEventHandler());
 		MinecraftForge.EVENT_BUS.register(new PeripheralContainerHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityAntenna());
+		MinecraftForge.EVENT_BUS.register(new SmartHelmetHandler());
 		ModItems.preInit();
 		ModBlocks.init();
 		Logger.info("Preparing the mount...");

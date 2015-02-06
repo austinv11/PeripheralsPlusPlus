@@ -275,10 +275,10 @@ public class EntityRocket extends EntityInventory{
 	}
 
 	public boolean isSkyClear() {
-		boolean skyClear = true;
 		for (double i = this.posY-1; i < 255; i+=1)
-			skyClear = this.worldObj.isAirBlock((int)this.posX, (int)i, (int)this.posZ);
-		return skyClear;
+			if (!this.worldObj.isAirBlock((int)this.posX, (int)i, (int)this.posZ))
+				return false;
+		return true;
 	}
 
 	private void initSatellite() {

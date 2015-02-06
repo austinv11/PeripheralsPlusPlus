@@ -22,6 +22,7 @@ item.peripheralsplusplus:ingotIron.name=Turtle Ingot
 item.peripheralsplusplus:dustRedstone.name=Computer Dust
 item.peripheralsplusplus:iphone.name=Pineapple UPhone
 item.peripheralsplusplus:tank.name=Fluid Tank
+item.peripheralsplusplus:smartHelmet.name=Smart Helmet
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++

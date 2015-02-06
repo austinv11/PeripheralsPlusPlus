@@ -12,7 +12,6 @@ import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraft.util.Vec3;
@@ -20,7 +19,6 @@ import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 
 import java.util.HashMap;
-import java.util.List;
 
 public class TileEntityChatBox extends MountedTileEntity {
 
@@ -195,15 +193,6 @@ public class TileEntityChatBox extends MountedTileEntity {
 		//	e.printStackTrace();
 		//}
 		return new Object[0];
-	}
-
-	private EntityPlayer getPlayer(String ign) {
-		List<EntityPlayer> players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
-		for (EntityPlayer p : players) {
-			if (p.getDisplayName().equalsIgnoreCase(ign))
-				return p;
-		}
-		return null;
 	}
 
 	@Override

@@ -1,7 +1,9 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
+import com.austinv11.peripheralsplusplus.items.ItemSmartHelmet;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
+import com.austinv11.peripheralsplusplus.utils.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -10,9 +12,14 @@ import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 public class BlockAntenna extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
 
@@ -57,5 +64,20 @@ public class BlockAntenna extends BlockPPP implements ITileEntityProvider, IPeri
 	@SideOnly(Side.CLIENT)
 	public void registerBlockIcons(IIconRegister iconRegister){//Registers the block icon(s)
 		blockIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()+":peripheralContainer");
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int meta, float hitX, float hitY, float hitZ) {
+		if (player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemSmartHelmet))
+			return false;
+		if (!world.isRemote) {
+			TileEntityAntenna antenna = (TileEntityAntenna) world.getTileEntity(x,y,z);
+			UUID id = antenna.identifier;
+			NBTHelper.setString(player.getCurrentEquippedItem(), "identifier", id.toString());
+			List<String> info = new ArrayList<String>();
+			info.add(Reference.Colors.RESET+Reference.Colors.GRAY+id.toString());
+			NBTHelper.setInfo(player.getCurrentEquippedItem(), info);
+		}
+		return true;
 	}
 }
