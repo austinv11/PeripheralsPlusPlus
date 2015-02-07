@@ -3,6 +3,8 @@ package com.austinv11.peripheralsplusplus.creativetab;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -18,11 +20,13 @@ public class CreativeTabPPP {
 
 	public static final CreativeTabs PPP_TAB = new CreativeTabs(Reference.MOD_ID.toLowerCase()) {
 
+		@SideOnly(Side.CLIENT)
 		@Override
 		public Item getTabIconItem() {
 			return Item.getItemFromBlock(ModBlocks.chatBox);
 		}
 
+		@SideOnly(Side.CLIENT)
 		@Override
 		public void displayAllReleventItems(List list) {
 			super.displayAllReleventItems(list);

@@ -4,6 +4,8 @@ import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.utils.FakeTurtlePlayer;
 import com.austinv11.peripheralsplusplus.utils.TurtleUtil;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import net.minecraft.entity.Entity;
@@ -69,6 +71,7 @@ public class TurtleShear implements ITurtleUpgrade {
 		return TurtleCommandResult.failure("An unknown error has occurred, please tell the mod author");
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
 		return Items.shears.getIconIndex(new ItemStack(Items.shears));

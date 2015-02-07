@@ -1,10 +1,11 @@
 package com.austinv11.peripheralsplusplus.turtles;
 
-import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.turtles.peripherals.PeripheralCompass;
 import com.austinv11.peripheralsplusplus.utils.IconManager;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -56,6 +57,7 @@ public class TurtleCompass implements ITurtleUpgrade, IconManager.IIconNeeded{
 	@Override
 	public void update(ITurtleAccess turtle, TurtleSide side) {}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerIcon(IIconRegister register) {
 		icon = register.registerIcon(Reference.MOD_ID+":upgradeCompass");

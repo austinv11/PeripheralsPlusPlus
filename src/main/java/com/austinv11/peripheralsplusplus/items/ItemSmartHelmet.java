@@ -4,6 +4,7 @@ import com.austinv11.peripheralsplusplus.client.models.ModelSmartHelmet;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBiped;
@@ -25,9 +26,10 @@ public class ItemSmartHelmet extends ItemArmor implements ISpecialArmor {
 	}
 
 	public ItemSmartHelmet() {
-		this(ArmorMaterial.IRON, RenderingRegistry.addNewArmourRendererPrefix("smartHelmet"), 0);
+		this(ArmorMaterial.IRON, FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT ? RenderingRegistry.addNewArmourRendererPrefix("smartHelmet") : 0, 0);
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public String getArmorTexture(ItemStack itemstack, Entity entity, int slot, String type) {
 		if (itemstack.getItem() instanceof ItemSmartHelmet){

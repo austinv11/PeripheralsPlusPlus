@@ -6,6 +6,8 @@ import com.austinv11.peripheralsplusplus.network.RocketLaunchPacket;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.containers.ContainerRocket;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
@@ -16,6 +18,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly(Side.CLIENT)
 public class GuiRocket extends GuiContainer {
 
 	private int sizeX, sizeY;
@@ -76,6 +79,7 @@ public class GuiRocket extends GuiContainer {
 		}
 	}
 
+	@SideOnly(Side.CLIENT)
 	public static class EventHandler {
 
 		@SubscribeEvent

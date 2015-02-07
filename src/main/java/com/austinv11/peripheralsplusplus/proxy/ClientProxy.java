@@ -14,6 +14,8 @@ import com.austinv11.peripheralsplusplus.utils.IconManager;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -21,18 +23,21 @@ import net.minecraftforge.common.MinecraftForge;
 
 public class ClientProxy extends CommonProxy {
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void setupVillagers() {
 		super.setupVillagers();
 		VillagerRegistry.instance().registerVillagerSkin(PeripheralsPlusPlus.VILLAGER_ID, new ResourceLocation(Reference.MOD_ID.toLowerCase()+":textures/models/CCVillager.png"));
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void iconManagerInit() {
 		IconManager.upgrades.add(new TurtleCompass());
 		MinecraftForge.EVENT_BUS.register(new IconManager());
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerRenderers() {
 		RenderingRegistry.registerEntityRenderingHandler(EntityRocket.class, new RenderRocket());
@@ -40,6 +45,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.antenna), new ItemRenderAntenna(new RenderAntenna(), new TileEntityAntenna()));
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void prepareGuis() {
 		MinecraftForge.EVENT_BUS.register(new GuiRocket.EventHandler());

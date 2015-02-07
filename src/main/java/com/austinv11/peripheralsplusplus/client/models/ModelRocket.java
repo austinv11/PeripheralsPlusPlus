@@ -1,5 +1,7 @@
 package com.austinv11.peripheralsplusplus.client.models;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
@@ -8,6 +10,7 @@ import net.minecraft.entity.Entity;
  * Rocket - austinv11
  * Created using Tabula 4.0.1
  */
+@SideOnly(Side.CLIENT)
 public class ModelRocket extends ModelBase {
     public ModelRenderer Wall1;
     public ModelRenderer Base;

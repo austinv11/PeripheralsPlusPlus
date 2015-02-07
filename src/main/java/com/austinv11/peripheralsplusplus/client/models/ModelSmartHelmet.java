@@ -1,9 +1,12 @@
 package com.austinv11.peripheralsplusplus.client.models;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly(Side.CLIENT)
 public class ModelSmartHelmet extends ModelBiped {
 
 	public ModelSmartHelmet() {

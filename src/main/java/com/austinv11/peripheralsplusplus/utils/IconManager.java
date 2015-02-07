@@ -1,6 +1,8 @@
 package com.austinv11.peripheralsplusplus.utils;
 
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -8,6 +10,7 @@ import net.minecraftforge.client.event.TextureStitchEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+@SideOnly(Side.CLIENT)
 public class IconManager {
 
 	public static List<IIconNeeded> upgrades = new ArrayList<IIconNeeded>();

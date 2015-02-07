@@ -5,6 +5,8 @@ import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.containers.ContainerAnalyzer;
 import com.austinv11.peripheralsplusplus.tiles.containers.ContainerRocket;
 import cpw.mods.fml.common.network.IGuiHandler;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.world.World;
@@ -21,6 +23,7 @@ public class GuiHandler implements IGuiHandler {
 		return null;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public Object getClientGuiElement(int id, EntityPlayer player, World world, int x, int y, int z) {
 		if (id == Reference.GUIs.ANALYZER.ordinal()) {

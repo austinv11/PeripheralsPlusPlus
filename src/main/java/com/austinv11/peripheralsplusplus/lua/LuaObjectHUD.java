@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.lua;
 
+import com.austinv11.peripheralsplusplus.network.JoinPacket;
 import com.austinv11.peripheralsplusplus.utils.Util;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaObject;
@@ -24,13 +25,14 @@ public class LuaObjectHUD implements ILuaObject{
 
 	@Override
 	public Object[] callMethod(ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+		try {
 		switch (method) {
 			case 0:
-
-				return new Object[0];
+				JoinPacket.ResolutionProperties properties = (JoinPacket.ResolutionProperties) player.getExtendedProperties("resolution");
+				return new Object[]{properties.width};
 			case 1:
-
-				return new Object[0];
+				JoinPacket.ResolutionProperties properties_ = (JoinPacket.ResolutionProperties) player.getExtendedProperties("resolution");
+				return new Object[]{properties_.height};
 			case 2:
 
 			case 3:
@@ -39,6 +41,9 @@ public class LuaObjectHUD implements ILuaObject{
 
 			case 5:
 
+		}
+		}catch (Exception e) {
+			e.printStackTrace();
 		}
 		return new Object[0];
 	}
