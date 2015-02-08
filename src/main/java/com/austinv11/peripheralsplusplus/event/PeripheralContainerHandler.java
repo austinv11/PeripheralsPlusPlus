@@ -18,7 +18,7 @@ public class PeripheralContainerHandler {
 	@SubscribeEvent
 	public void onInteract(PlayerInteractEvent event) {
 		if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)
-			if (event.entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemBlockPeripheralContainer) {
+			if (event.entityPlayer.getCurrentEquippedItem() != null && event.entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemBlockPeripheralContainer) {
 				InventoryPlayer inv = event.entityPlayer.inventory;
 				List<String> text = new ArrayList<String>();
 				ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
