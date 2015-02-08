@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.proxy;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.client.gui.GuiRocket;
+import com.austinv11.peripheralsplusplus.client.gui.GuiSmartHelmetOverlay;
 import com.austinv11.peripheralsplusplus.client.models.ItemRenderAntenna;
 import com.austinv11.peripheralsplusplus.client.models.RenderAntenna;
 import com.austinv11.peripheralsplusplus.client.models.RenderRocket;
@@ -49,5 +50,6 @@ public class ClientProxy extends CommonProxy {
 	@Override
 	public void prepareGuis() {
 		MinecraftForge.EVENT_BUS.register(new GuiRocket.EventHandler());
+		MinecraftForge.EVENT_BUS.register(new GuiSmartHelmetOverlay());
 	}
 }

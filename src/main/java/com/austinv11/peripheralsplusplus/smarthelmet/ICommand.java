@@ -1,10 +1,13 @@
 package com.austinv11.peripheralsplusplus.smarthelmet;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
 
 public abstract class ICommand {
 
+	@SideOnly(Side.CLIENT)
 	public abstract void call(Gui gui);
 
 	public abstract String getCommandName();

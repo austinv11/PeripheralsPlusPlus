@@ -3,7 +3,6 @@ package com.austinv11.peripheralsplusplus;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
-import com.austinv11.peripheralsplusplus.client.gui.GuiSmartHelmetOverlay;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.event.PeripheralContainerHandler;
@@ -86,7 +85,6 @@ public class PeripheralsPlusPlus {
 		MinecraftForge.EVENT_BUS.register(new SatelliteEventHandler());
 		MinecraftForge.EVENT_BUS.register(new PeripheralContainerHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityAntenna());
-		MinecraftForge.EVENT_BUS.register(new GuiSmartHelmetOverlay());
 		ModItems.preInit();
 		ModBlocks.init();
 		Logger.info("Preparing the mount...");
