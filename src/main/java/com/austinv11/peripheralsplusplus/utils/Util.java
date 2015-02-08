@@ -159,4 +159,11 @@ public class Util {
 		}
 		return null;
 	}
+
+	public static String[] stringToArray(String array) {
+		String[] array_ = array.replace("]", "").replace("[", "").split(",");
+		for (int i = 0; i < array_.length; i++)
+			array_[i] = array_[i].trim();
+		return array_;
+	}
 }

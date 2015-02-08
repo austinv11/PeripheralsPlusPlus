@@ -1,22 +1,36 @@
 package com.austinv11.peripheralsplusplus.client.gui;
 
+import com.austinv11.peripheralsplusplus.items.ItemSmartHelmet;
+import com.austinv11.peripheralsplusplus.smarthelmet.ICommand;
+import com.austinv11.peripheralsplusplus.utils.NBTHelper;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import java.util.HashMap;
 import java.util.PriorityQueue;
+import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
 public class GuiSmartHelmetOverlay extends Gui {
 
-	public static PriorityQueue<Object> renderStack = new PriorityQueue<Object>();
-	public static int scaledHeight, scaledWidth;
+	public static HashMap<UUID, PriorityQueue<ICommand>> renderStack = new HashMap<UUID,PriorityQueue<ICommand>>();
 
 	@SubscribeEvent
 	public void renderOverlay(RenderGameOverlayEvent.Post event) {
-		scaledHeight = event.resolution.getScaledHeight();
-		scaledWidth = event.resolution.getScaledWidth();
+		if (event.isCanceled() || event.type != RenderGameOverlayEvent.ElementType.CROSSHAIRS)
+			return;
+		if (Minecraft.getMinecraft().thePlayer.getCurrentArmor(3) != null && Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getItem() instanceof ItemSmartHelmet)
+			if (NBTHelper.hasTag(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3), "identifier")) {
+				UUID uuid = UUID.fromString(NBTHelper.getString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3), "identifier"));
+				if (renderStack.containsKey(uuid)) {
+					PriorityQueue<ICommand> commands = new PriorityQueue<ICommand>(renderStack.get(uuid));
+					while (!commands.isEmpty())
+						commands.poll().call(this);
+				}
+			}
 	}
 }

@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.event.SateliiteCrashEvent;
@@ -7,6 +8,7 @@ import com.austinv11.peripheralsplusplus.event.SatelliteLaunchEvent;
 import com.austinv11.peripheralsplusplus.items.ItemSmartHelmet;
 import com.austinv11.peripheralsplusplus.lua.LuaObjectHUD;
 import com.austinv11.peripheralsplusplus.lua.LuaObjectSatellite;
+import com.austinv11.peripheralsplusplus.network.ScaleRequestPacket;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteData;
 import com.austinv11.peripheralsplusplus.utils.NBTHelper;
@@ -17,6 +19,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StatCollector;
@@ -33,6 +36,7 @@ public class TileEntityAntenna extends MountedTileEntity {
 	private int world = 0;
 	private static HashMap<Integer, HashMap<Integer, List<IComputerAccess>>> connectedComputers = new HashMap<Integer,HashMap<Integer,List<IComputerAccess>>>();
 	private HashMap<IComputerAccess, Boolean> computers = new HashMap<IComputerAccess,Boolean>();
+	private HashMap<Integer, LuaObjectHUD> huds = new HashMap<Integer,LuaObjectHUD>();
 	public UUID identifier;
 
 	public TileEntityAntenna() {
@@ -135,7 +139,7 @@ public class TileEntityAntenna extends MountedTileEntity {
 					for (Object player : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
 						if (player instanceof EntityPlayer)
 							if (((EntityPlayer) player).getCurrentArmor(3) != null && ((EntityPlayer) player).getCurrentArmor(3).getItem() instanceof ItemSmartHelmet && NBTHelper.hasTag(((EntityPlayer) player).getCurrentArmor(3), "identifier"))
-								if (identifier.equals(UUID.fromString(NBTHelper.getString(((EntityPlayer) player).getCurrentArmor(0), "identifier"))))
+								if (identifier.equals(UUID.fromString(NBTHelper.getString(((EntityPlayer) player).getCurrentArmor(3), "identifier"))))
 									players.add(((EntityPlayer) player).getCommandSenderName());
 					return new Object[]{Util.listToString(players)};
 				}
@@ -147,7 +151,11 @@ public class TileEntityAntenna extends MountedTileEntity {
 						throw new LuaException("Bad argument #1 (expected string)");
 					if (Util.getPlayer((String) arguments[0]) == null)
 						return new Object[]{null};
-					return new Object[]{new LuaObjectHUD((String) arguments[0])};
+					LuaObjectHUD obj = new LuaObjectHUD((String) arguments[0], identifier);
+					huds.put(computer.getID(), obj);
+					PeripheralsPlusPlus.NETWORK.sendTo(new ScaleRequestPacket(this, computer.getID(), world), (EntityPlayerMP) Util.getPlayer((String)arguments[0]));
+					context.pullEvent("resolution");
+					return new Object[]{obj};
 				}
 		}
 //		}catch (Exception e) {
@@ -216,5 +224,15 @@ public class TileEntityAntenna extends MountedTileEntity {
 	@Override
 	public boolean equals(IPeripheral other) {
 		return (this == other);
+	}
+
+	public void onResponse(int id, int width, int height) {
+		if (huds.containsKey(id)) {
+			huds.get(id).height = height;
+			huds.get(id).width = width;
+			for (IComputerAccess comp : computers.keySet())
+				if (comp.getID() == id)
+					comp.queueEvent("resolution", new Object[]{height, width});
+		}
 	}
 }
