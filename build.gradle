@@ -77,3 +77,7 @@ jar {
         attributes 'FMLAT': 'ppp_at.cfg'
     }
 }
+
+sourceSets {
+    main { output.resourcesDir = output.classesDir }
+}
