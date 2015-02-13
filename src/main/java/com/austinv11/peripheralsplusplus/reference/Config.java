@@ -40,6 +40,7 @@ public class Config {
 	public static int maxNumberOfMillibuckets = 10000;
 	public static boolean enableSmartHelmet = true;
     public static double noteBlockRange = 16;
+    public static boolean noteBlockEnabled = true;
 
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)

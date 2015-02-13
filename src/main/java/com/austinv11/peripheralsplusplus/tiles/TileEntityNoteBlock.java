@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
+import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.network.ParticlePacket;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.Location;
@@ -44,6 +45,7 @@ public class TileEntityNoteBlock extends MountedTileEntity {
 
     @Override
     public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+        if(!Config.noteBlockEnabled) throw new LuaException("Iron Note Blocks have been disabled");
         switch(method) {
             case 0:
                 checkPlayNote(arguments);
