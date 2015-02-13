@@ -19,6 +19,7 @@ public class Reference {
 	public static final int BASE_PROJ_RED_UPGRADE = 110;
 	public static final int SPEAKER_UPGRADE = 125;
 	public static final int TANK_UPGRADE = 126; //TODO Remember to update the id list on the wiki
+    public static final int NOTE_BLOCK_UPGRADE = 127;
 
 	public static enum GUIs {
 		ANALYZER,ROCKET;

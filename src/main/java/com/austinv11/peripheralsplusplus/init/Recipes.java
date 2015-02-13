@@ -68,5 +68,7 @@ public class Recipes {
 		if (Config.enableSmartHelmet)
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.smartHelmet), new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1), Items.iron_helmet));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.antenna), "sms", " i ", "ppp", 's', "stone", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1), 'i', "ingotIron", 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate)));
+        if (Config.noteBlockEnabled)
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.noteBlock), "igi", "rnr", "igi", 'i', "ingotIron", 'g', "ingotGold", 'r', "dustRedstone", 'n', Blocks.noteblock));
 	}
 }

@@ -64,6 +64,8 @@ public class ConfigurationHandler {
 			Config.enableTankTurtle = config.get("Thirsty Turtle", "enableTankTurtle", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
 			Config.maxNumberOfMillibuckets = config.get("Thirsty Turtle", "maxNumberOfMillibuckets", 10000, "The maximimum mB that the Thirsty Turtle can store internally").getInt(10000);
 			Config.enableSmartHelmet = config.get("Smart Helmet", "enableSmartHelmet", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
+            Config.noteBlockRange = config.get("NoteBlock", "noteBlockRange", 16.0, "Audible range for the noteblock").getDouble(16.0);
+            Config.noteBlockEnabled = config.get("NoteBlock", "noteBlockEnabled", true, "If disabled, crafting recipes will be removed and existing items will stop functioning").getBoolean(true);
 		}catch (Exception e){//Log exception
 			Logger.warn("Config exception!");
 			Logger.warn(e.getStackTrace());
