@@ -2,9 +2,7 @@ package com.austinv11.peripheralsplusplus.lua;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.network.CommandPacket;
-import com.austinv11.peripheralsplusplus.smarthelmet.DrawStringCommand;
-import com.austinv11.peripheralsplusplus.smarthelmet.ICommand;
-import com.austinv11.peripheralsplusplus.smarthelmet.MessageCommand;
+import com.austinv11.peripheralsplusplus.smarthelmet.*;
 import com.austinv11.peripheralsplusplus.utils.Util;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaObject;
@@ -13,12 +11,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.awt.*;
-import java.util.PriorityQueue;
+import java.util.ArrayDeque;
 import java.util.UUID;
 
 public class LuaObjectHUD implements ILuaObject{
 
-	public PriorityQueue<ICommand> renderStack = new PriorityQueue<ICommand>();
+	public ArrayDeque<ICommand> renderStack = new ArrayDeque<ICommand>();
 	private EntityPlayer player;
 	public int width = -1;
 	public int height = -1;
@@ -31,7 +29,7 @@ public class LuaObjectHUD implements ILuaObject{
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[]{"getResolution", "sendMessage", "drawString", "drawTexture", "sync", "clear"};
+		return new String[]{"getResolution", "sendMessage", "drawString", "drawTexture", "drawRectangle", "sync", "clear", "getColorFromRGB"};
 	}
 
 	@Override
@@ -73,17 +71,87 @@ public class LuaObjectHUD implements ILuaObject{
 				drawString.color = color;
 				drawString.shadow = shadow;
 				renderStack.add(drawString);
+				break;
 			case 3:
-
+				if (arguments.length < 3)
+					throw new LuaException("Not enough arguments");
+				if (!(arguments[0] instanceof String))
+					throw new LuaException("Bad argument #1 (expected string)");
+				if (!(arguments[1] instanceof Double))
+					throw new LuaException("Bad argument #2 (expected number)");
+				if (!(arguments[2] instanceof Double))
+					throw new LuaException("Bad argument #3 (expected number)");
+				if (arguments.length > 3 && !(arguments[3] instanceof Double))
+					throw new LuaException("Bad argument #4 (expected number)");
+				if (arguments.length > 4 && !(arguments[4] instanceof Double))
+					throw new LuaException("Bad argument #5 (expected number)");
+				if (arguments.length > 5 && !(arguments[5] instanceof Double))
+					throw new LuaException("Bad argument #6 (expected number)");
+				if (arguments.length > 6 && !(arguments[6] instanceof Double))
+					throw new LuaException("Bad argument #7 (expected number)");
+				int u = -1;
+				int v = -1;
+				int width = 256;
+				int height = 256;
+				if (arguments.length > 3)
+					width = (int)(double)(Double)arguments[3];
+				if (arguments.length > 4)
+					height = (int)(double)(Double)arguments[4];
+				if (arguments.length > 5)
+					u = (int)(double)(Double)arguments[5];
+				if (arguments.length > 36)
+					v = (int)(double)(Double)arguments[6];
+				DrawTextureCommand command = new DrawTextureCommand();
+				command.resource = (String)arguments[0];
+				command.x = (int)(double)(Double)arguments[1];
+				command.y = (int)(double)(Double)arguments[2];
+				command.u = u;
+				command.v = v;
+				command.width = width;
+				command.height = height;
+				renderStack.add(command);
+				break;
 			case 4:
+				if (arguments.length < 5)
+					throw new LuaException("Not enough arguments");
+				if (!(arguments[0] instanceof Double))
+					throw new LuaException("Bad argument #1 (expected number)");
+				if (!(arguments[1] instanceof Double))
+					throw new LuaException("Bad argument #2 (expected number)");
+				if (!(arguments[2] instanceof Double))
+					throw new LuaException("Bad argument #3 (expected number)");
+				if (!(arguments[3] instanceof Double))
+					throw new LuaException("Bad argument #4 (expected number)");
+				if (!(arguments[4] instanceof Double))
+					throw new LuaException("Bad argument #5 (expected number)");
+				DrawRectangleCommand c = new DrawRectangleCommand();
+				c.x1 = (int)(double)(Double)arguments[0];
+				c.y1 = (int)(double)(Double)arguments[1];
+				c.x2 = (int)(double)(Double)arguments[2];
+				c.y2 = (int)(double)(Double)arguments[3];
+				c.color = new Color((int)(double)(Double)arguments[4]);
+				renderStack.add(c);
+				break;
+			case 5:
 				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(stackToArray(), uuid), (EntityPlayerMP) player);
 				renderStack.clear();
 				renderStack.add(new MessageCommand());
 				break;
-			case 5:
+			case 6:
 				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(new ICommand[0], uuid), (EntityPlayerMP) player);
 				renderStack.clear();
 				renderStack.add(new MessageCommand());
+				break;
+			case 7:
+				if (arguments.length < 3)
+					throw new LuaException("Not enough arguments");
+				if (!(arguments[0] instanceof Double))
+					throw new LuaException("Bad argument #1 (expected number)");
+				if (!(arguments[1] instanceof Double))
+					throw new LuaException("Bad argument #2 (expected number)");
+				if (!(arguments[2] instanceof Double))
+					throw new LuaException("Bad argument #3 (expected number)");
+				return new Object[]{new Color((int)(double)(Double)arguments[0], (int)(double)(Double)arguments[1], (int)(double)(Double)arguments[2]).getRGB()};
 		}
 		}catch (Exception e) {
 			e.printStackTrace();

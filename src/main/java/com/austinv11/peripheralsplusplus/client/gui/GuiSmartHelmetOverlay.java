@@ -10,14 +10,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import java.util.ArrayDeque;
 import java.util.HashMap;
-import java.util.PriorityQueue;
 import java.util.UUID;
 
 @SideOnly(Side.CLIENT)
 public class GuiSmartHelmetOverlay extends Gui {
 
-	public static HashMap<UUID, PriorityQueue<ICommand>> renderStack = new HashMap<UUID,PriorityQueue<ICommand>>();
+	public static HashMap<UUID,ArrayDeque<ICommand>> renderStack = new HashMap<UUID,ArrayDeque<ICommand>>();
 
 	@SubscribeEvent
 	public void renderOverlay(RenderGameOverlayEvent.Post event) {
@@ -27,7 +27,7 @@ public class GuiSmartHelmetOverlay extends Gui {
 			if (NBTHelper.hasTag(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3), "identifier")) {
 				UUID uuid = UUID.fromString(NBTHelper.getString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3), "identifier"));
 				if (renderStack.containsKey(uuid)) {
-					PriorityQueue<ICommand> commands = new PriorityQueue<ICommand>(renderStack.get(uuid));
+					ArrayDeque<ICommand> commands = new ArrayDeque<ICommand>(renderStack.get(uuid));
 					while (!commands.isEmpty())
 						commands.poll().call(this);
 				}

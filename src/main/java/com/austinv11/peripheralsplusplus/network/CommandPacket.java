@@ -9,7 +9,7 @@ import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
 
-import java.util.PriorityQueue;
+import java.util.ArrayDeque;
 import java.util.UUID;
 
 public class CommandPacket implements IMessage {
@@ -49,6 +49,8 @@ public class CommandPacket implements IMessage {
 		tagCompound.setString("uuid", uuid.toString());
 		tagCompound.setInteger("num", commands.length);
 		for (int i = 0; i < commands.length; i++) {
+			if (commands[i] == null)
+				continue;
 			NBTTagCompound tag = new NBTTagCompound();
 			tag.setString("type", commands[i].getCommandName());
 			NBTTagCompound command = new NBTTagCompound();
@@ -63,7 +65,7 @@ public class CommandPacket implements IMessage {
 
 		@Override
 		public IMessage onMessage(CommandPacket message, MessageContext ctx) {
-			PriorityQueue<ICommand> commands = new PriorityQueue<ICommand>();
+			ArrayDeque<ICommand> commands = new ArrayDeque<ICommand>();
 			for (ICommand command : message.commands)
 				if (command != null)
 					commands.offer(command);
