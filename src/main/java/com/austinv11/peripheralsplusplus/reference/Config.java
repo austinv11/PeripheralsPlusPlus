@@ -39,6 +39,7 @@ public class Config {
 	public static boolean enableTankTurtle = true;
 	public static int maxNumberOfMillibuckets = 10000;
 	public static boolean enableSmartHelmet = true;
+    public static double noteBlockRange = 16;
 
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)

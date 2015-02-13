@@ -13,6 +13,7 @@ tile.peripheralsplusplus:speaker.name=Speaker
 tile.peripheralsplusplus:antenna.name=Antenna
 tile.peripheralsplusplus:peripheralContainer.name=Peripheral Container
 tile.peripheralsplusplus:meBridge.name=ME Bridge
+tile.peripheralsplusplus:noteBlock.name=Iron Note Block
 
 #Items
 item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade
