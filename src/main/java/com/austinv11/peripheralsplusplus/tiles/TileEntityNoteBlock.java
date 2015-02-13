@@ -1,7 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
-import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.network.ParticlePacket;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.Location;
@@ -10,6 +9,7 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
@@ -18,6 +18,7 @@ public class TileEntityNoteBlock extends MountedTileEntity {
     private static final int MAX_NOTES = 24;
     private static final int MAX_NOTES_TICK = 5;
     public static final String publicName = "noteBlock";
+    private ITurtleAccess turtle;
     private Location location;
     private int tick = 0;
     private final String[] instruments = {
@@ -31,6 +32,15 @@ public class TileEntityNoteBlock extends MountedTileEntity {
     public TileEntityNoteBlock() {
         super();
         location = new Location(xCoord, yCoord, zCoord, getWorldObj());
+    }
+
+    public TileEntityNoteBlock(ITurtleAccess turtle) {
+        location = new Location(turtle.getPosition().posX, turtle.getPosition().posY, turtle.getPosition().posZ, turtle.getWorld());
+        this.xCoord = (int) location.getX();
+        this.yCoord = (int) location.getY();
+        this.zCoord = (int) location.getZ();
+        this.setWorldObj(location.getWorld());
+        this.turtle = turtle;
     }
 
     @Override
@@ -128,6 +138,15 @@ public class TileEntityNoteBlock extends MountedTileEntity {
     public void updateEntity() {
         super.updateEntity();
         tick = 0;
+    }
+
+    public void updateEntity(boolean turtle) {
+        if(turtle) {
+            this.xCoord = this.turtle.getPosition().posX;
+            this.yCoord = this.turtle.getPosition().posY;
+            this.zCoord = this.turtle.getPosition().posZ;
+        }
+        updateEntity();
     }
 
     @Override

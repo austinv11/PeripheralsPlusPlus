@@ -147,6 +147,7 @@ public class PeripheralsPlusPlus {
 			Logger.info("Project Red Exploration not found, skipping Project Red tools turtle upgrades");
 		registerUpgrade(new TurtleSpeaker());
 		registerUpgrade(new TurtleTank());
+        registerUpgrade(new TurtleNoteBlock());
 		Logger.info("All peripherals and turtle upgrades registered!");
 		proxy.registerRenderers();
 		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
