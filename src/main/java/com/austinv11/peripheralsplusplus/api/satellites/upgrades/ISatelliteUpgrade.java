@@ -4,7 +4,7 @@ import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 public interface ISatelliteUpgrade {
@@ -16,10 +16,10 @@ public interface ISatelliteUpgrade {
 	public ResourceLocation getIcon();
 
 	/**
-	 * Returns the recipe to get the Satellite Upgrade item
-	 * @return The recipe
+	 * Returns the itemstack used to get the Satellite Upgrade
+	 * @return The itemstack
 	 */
-	public IRecipe getRecipe();
+	public ItemStack getRecipe();
 
 	/**
 	 * Called to update the satellite (only when it's a MAIN upgrade)

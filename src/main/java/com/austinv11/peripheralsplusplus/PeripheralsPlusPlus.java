@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus;
 
+import com.austinv11.peripheralsplusplus.api.PeripheralsPlusPlusAPI;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
@@ -17,6 +18,7 @@ import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteEventHandler;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteTickHandler;
+import com.austinv11.peripheralsplusplus.satellites.upgrades.BlackBoxUpgrade;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
 import com.austinv11.peripheralsplusplus.turtles.*;
@@ -40,6 +42,7 @@ import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Mod(modid= Reference.MOD_ID,name = Reference.MOD_NAME,version = Reference.VERSION/*, guiFactory = Reference.GUI_FACTORY_CLASS*/)
@@ -51,9 +54,9 @@ public class PeripheralsPlusPlus {
 	public static final List<Integer> SATELLITE_UPGRADE_ID_REGISTRY = new ArrayList<Integer>();
 
 	/**
-	 * Object containing all registered upgrades, the iterator is the upgrade id
+	 * Object containing all registered upgrades, the key is the upgrade id
 	 */
-	public static final ArrayList<ISatelliteUpgrade> UPGRADE_REGISTRY = new ArrayList<ISatelliteUpgrade>();
+	public static final HashMap<Integer, ISatelliteUpgrade> UPGRADE_REGISTRY = new HashMap<Integer, ISatelliteUpgrade>();
 
 	public static SimpleNetworkWrapper NETWORK;
 
@@ -101,8 +104,6 @@ public class PeripheralsPlusPlus {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
-		ModItems.init();//Inits satellite upgrades
-		Recipes.init();
 		Logger.info("Registering peripherals...");
 		proxy.registerTileEntities();
 		ComputerCraftAPI.registerPeripheralProvider(new BlockChatBox());
@@ -149,6 +150,9 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleTank());
         registerUpgrade(new TurtleNoteBlock());
 		Logger.info("All peripherals and turtle upgrades registered!");
+		Logger.info("Registering satellite upgrades...");
+		PeripheralsPlusPlusAPI.registerSatelliteUpgrade(new BlackBoxUpgrade());
+		Logger.info("All satellite upgrades registered!");
 		proxy.registerRenderers();
 		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, instance, 64, 20, true);
@@ -158,7 +162,8 @@ public class PeripheralsPlusPlus {
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-
+		ModItems.init();//Inits satellite upgrades
+		Recipes.init();
 	}
 	
 	public static void registerUpgrade(ITurtleUpgrade u) {

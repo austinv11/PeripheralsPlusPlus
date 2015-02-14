@@ -14,6 +14,8 @@ public class ModItems {
 	public static final ItemPPP rocket = new ItemRocket();
 	public static final ItemPPP tank = new ItemTank();
 	public static final Item smartHelmet = new ItemSmartHelmet();
+	public static final ItemPPP socket = new ItemSocket();
+	public static final ItemPPP blackBox = new ItemBlackBox();
 
 	public static void preInit(){
 		GameRegistry.registerItem(feederUpgrade, "feederUpgrade");
@@ -21,6 +23,8 @@ public class ModItems {
 		GameRegistry.registerItem(rocket, "rocket");
 		GameRegistry.registerItem(tank, "tank");
 		GameRegistry.registerItem(smartHelmet, "smartHelmet");
+		GameRegistry.registerItem(socket, "socket");
+		GameRegistry.registerItem(blackBox, "blackBox");
 	}
 
 	public static void init() {
