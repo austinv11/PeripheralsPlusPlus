@@ -21,7 +21,7 @@ public class GuiSmartHelmetOverlay extends Gui {
 
 	@SubscribeEvent
 	public void renderOverlay(RenderGameOverlayEvent.Post event) {
-		if (event.isCanceled() || event.type != RenderGameOverlayEvent.ElementType.CROSSHAIRS)
+		if (event.isCanceled() || event.type != RenderGameOverlayEvent.ElementType.FOOD)
 			return;
 		if (Minecraft.getMinecraft().thePlayer.getCurrentArmor(3) != null && Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getItem() instanceof ItemSmartHelmet)
 			if (NBTHelper.hasTag(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3), "identifier")) {

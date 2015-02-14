@@ -16,12 +16,18 @@ public class CommandPacket implements IMessage {
 
 	public ICommand[] commands;
 	public UUID uuid;
+	public boolean doAdd = false;
 
 	public CommandPacket() {}
 
 	public CommandPacket(ICommand[] commands, UUID uuid) {
 		this.commands = commands;
 		this.uuid = uuid;
+	}
+
+	public CommandPacket(ICommand[] commands, UUID uuid, boolean doAdd) {
+		this(commands, uuid);
+		this.doAdd = doAdd;
 	}
 
 	@Override
@@ -41,6 +47,7 @@ public class CommandPacket implements IMessage {
 				e.printStackTrace();
 			}
 		}
+		doAdd = tagCompound.getBoolean("doAdd");
 	}
 
 	@Override
@@ -58,6 +65,7 @@ public class CommandPacket implements IMessage {
 			tag.setTag("command", command);
 			tagCompound.setTag(i+"", tag);
 		}
+		tagCompound.setBoolean("doAdd", doAdd);
 		ByteBufUtils.writeTag(buf, tagCompound);
 	}
 
@@ -66,6 +74,10 @@ public class CommandPacket implements IMessage {
 		@Override
 		public IMessage onMessage(CommandPacket message, MessageContext ctx) {
 			ArrayDeque<ICommand> commands = new ArrayDeque<ICommand>();
+			if (message.doAdd) {
+				if (GuiSmartHelmetOverlay.renderStack.containsKey(message.uuid))
+					commands = GuiSmartHelmetOverlay.renderStack.get(message.uuid);
+			}
 			for (ICommand command : message.commands)
 				if (command != null)
 					commands.offer(command);
