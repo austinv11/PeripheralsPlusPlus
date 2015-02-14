@@ -142,9 +142,11 @@ public class TileEntityNoteBlock extends MountedTileEntity {
 
     public void updateEntity(boolean turtle) {
         if(turtle) {
-            this.xCoord = this.turtle.getPosition().posX;
-            this.yCoord = this.turtle.getPosition().posY;
-            this.zCoord = this.turtle.getPosition().posZ;
+            location = new Location(this.turtle.getPosition().posX, this.turtle.getPosition().posY,
+                    this.turtle.getPosition().posZ, this.turtle.getWorld());
+            this.xCoord = (int) location.getX();
+            this.yCoord = (int) location.getY();
+            this.zCoord = (int) location.getZ();
         }
         updateEntity();
     }
