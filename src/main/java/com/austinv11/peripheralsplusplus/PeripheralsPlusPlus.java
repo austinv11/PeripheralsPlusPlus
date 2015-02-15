@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus;
 
-import com.austinv11.peripheralsplusplus.api.PeripheralsPlusPlusAPI;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
@@ -18,7 +17,6 @@ import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteEventHandler;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteTickHandler;
-import com.austinv11.peripheralsplusplus.satellites.upgrades.BlackBoxUpgrade;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
 import com.austinv11.peripheralsplusplus.turtles.*;
@@ -151,7 +149,6 @@ public class PeripheralsPlusPlus {
         registerUpgrade(new TurtleNoteBlock());
 		Logger.info("All peripherals and turtle upgrades registered!");
 		Logger.info("Registering satellite upgrades...");
-		PeripheralsPlusPlusAPI.registerSatelliteUpgrade(new BlackBoxUpgrade());
 		Logger.info("All satellite upgrades registered!");
 		proxy.registerRenderers();
 		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
