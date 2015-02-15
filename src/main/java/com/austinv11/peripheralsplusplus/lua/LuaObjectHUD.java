@@ -25,6 +25,7 @@ public class LuaObjectHUD implements ILuaObject{
 	public LuaObjectHUD(String player, UUID uuid) {
 		this.player = Util.getPlayer(player);
 		this.uuid = uuid;
+		renderStack.add(new MessageCommand());
 	}
 
 	@Override
@@ -34,7 +35,7 @@ public class LuaObjectHUD implements ILuaObject{
 
 	@Override
 	public Object[] callMethod(ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		try {
+//		try {
 		switch (method) {
 			case 0:
 				return new Object[]{width, height};
@@ -176,16 +177,19 @@ public class LuaObjectHUD implements ILuaObject{
 				break;
 			case 7:
 				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(stackToArray(), uuid), (EntityPlayerMP) player);
+				MessageCommand.messageStack.clear();
 				renderStack.clear();
 				renderStack.add(new MessageCommand());
 				break;
 			case 8:
 				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(new ICommand[0], uuid), (EntityPlayerMP) player);
+				MessageCommand.messageStack.clear();
 				renderStack.clear();
 				renderStack.add(new MessageCommand());
 				break;
 			case 9:
 				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(stackToArray(), uuid, true), (EntityPlayerMP) player);
+				MessageCommand.messageStack.clear();
 				renderStack.clear();
 				renderStack.add(new MessageCommand());
 				break;
@@ -199,14 +203,14 @@ public class LuaObjectHUD implements ILuaObject{
 				if (!(arguments[2] instanceof Double))
 					throw new LuaException("Bad argument #3 (expected number)");
 				if (arguments.length > 3 && !(arguments[3] instanceof Double))
-					throw new LuaException("BAd argument #4 (expected number)");
+					throw new LuaException("Bad argument #4 (expected number)");
 				if (arguments.length > 3)
 					return new Object[]{new Color((int)(double)(Double)arguments[0], (int)(double)(Double)arguments[1], (int)(double)(Double)arguments[2], (int)(double)(Double)arguments[3]).getRGB()};
 				return new Object[]{new Color((int)(double)(Double)arguments[0], (int)(double)(Double)arguments[1], (int)(double)(Double)arguments[2]).getRGB()};
 		}
-		}catch (Exception e) {
-			e.printStackTrace();
-		}
+//		}catch (Exception e) {
+//			e.printStackTrace();
+//		}
 		return new Object[0];
 	}
 

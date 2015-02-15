@@ -32,6 +32,7 @@ public class MessageCommand extends ICommand {
 
 	@Override
 	public void readFromNBT(NBTTagCompound tagCompound) {
+		messageStack.clear();
 		String[] array = Util.stringToArray(tagCompound.getString("stack"));
 		for (String s : array)
 			messageStack.push(s);

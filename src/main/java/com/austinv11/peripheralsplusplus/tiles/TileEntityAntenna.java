@@ -141,7 +141,7 @@ public class TileEntityAntenna extends MountedTileEntity {
 							if (((EntityPlayer) player).getCurrentArmor(3) != null && ((EntityPlayer) player).getCurrentArmor(3).getItem() instanceof ItemSmartHelmet && NBTHelper.hasTag(((EntityPlayer) player).getCurrentArmor(3), "identifier"))
 								if (identifier.equals(UUID.fromString(NBTHelper.getString(((EntityPlayer) player).getCurrentArmor(3), "identifier"))))
 									players.add(((EntityPlayer) player).getCommandSenderName());
-					return new Object[]{Util.listToString(players)};
+					return new Object[]{Util.arrayToMap(players.toArray())};
 				}
 			case 3:
 				synchronized (this) {

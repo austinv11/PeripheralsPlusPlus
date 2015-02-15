@@ -56,7 +56,6 @@ public class Recipes {
 			}
 			GameRegistry.addRecipe(new UpgradeRecipe());
 			GameRegistry.addShapelessRecipe(new ItemStack(ModItems.satellite), new ItemStack(ModItems.satellite));
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.blackBox), "iii", "iri", "iii", 'i', "ingotIron", 'r', "dustRedstone"));
 		}
 		if (Config.enableSpeaker)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.speaker), "gng", "nrn", "gng", 'g', "ingotGold", 'n', Blocks.noteblock, 'r', "blockRedstone"));

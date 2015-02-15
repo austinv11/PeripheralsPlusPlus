@@ -20,32 +20,32 @@ import java.util.List;
 public class UpgradeRecipe implements IRecipe {
 
 	@Override
-	public boolean matches(InventoryCrafting p_77569_1_, World p_77569_2_) {
+	public boolean matches(InventoryCrafting inventory, World world) {
 		int sats = 0;
 		float weight = 0.0F;
-		for (int i = 0; i < p_77569_1_.getSizeInventory(); i++) {
-			if (p_77569_1_.getStackInSlot(i) != null)
-				if (p_77569_1_.getStackInSlot(i).isItemEqual(new ItemStack(ModItems.satellite)))
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			if (inventory.getStackInSlot(i) != null)
+				if (inventory.getStackInSlot(i).isItemEqual(new ItemStack(ModItems.satellite)))
 					sats++;
-				else if (!(p_77569_1_.getStackInSlot(i).getItem() instanceof SatelliteUpgradeBase))
+				else if (!(inventory.getStackInSlot(i).getItem() instanceof SatelliteUpgradeBase))
 					return false;
 				else
-					weight += ((SatelliteUpgradeBase)p_77569_1_.getStackInSlot(i).getItem()).getUpgrade().getAddonWeight();
+					weight += ((SatelliteUpgradeBase)inventory.getStackInSlot(i).getItem()).getUpgrade().getAddonWeight();
 		}
 		return (sats == 1 && weight <= 1.0F);
 	}
 
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_) {
+	public ItemStack getCraftingResult(InventoryCrafting inventory) {
 		List<ISatelliteUpgrade> upgrades = new ArrayList<ISatelliteUpgrade>();
 		ItemStack result = new ItemStack(ModItems.satellite);
-		for (int i = 0; i < p_77572_1_.getSizeInventory(); i++) {
-			if (p_77572_1_.getStackInSlot(i) == null)
+		for (int i = 0; i < inventory.getSizeInventory(); i++) {
+			if (inventory.getStackInSlot(i) == null)
 				continue;
-			if (p_77572_1_.getStackInSlot(i).isItemEqual(new ItemStack(ModItems.satellite)))
-				result = p_77572_1_.getStackInSlot(i).copy();
-			else if (!(p_77572_1_.getStackInSlot(i).getItem() instanceof SatelliteUpgradeBase))
-				upgrades.add(((SatelliteUpgradeBase)p_77572_1_.getStackInSlot(i).getItem()).getUpgrade());
+			if (inventory.getStackInSlot(i).isItemEqual(new ItemStack(ModItems.satellite)))
+				result = inventory.getStackInSlot(i).copy();
+			else if (!(inventory.getStackInSlot(i).getItem() instanceof SatelliteUpgradeBase))
+				upgrades.add(((SatelliteUpgradeBase)inventory.getStackInSlot(i).getItem()).getUpgrade());
 		}
 		HashMap<ISatelliteUpgrade, Integer> map = new HashMap<ISatelliteUpgrade, Integer>();
 		for (ISatelliteUpgrade s : upgrades) {
