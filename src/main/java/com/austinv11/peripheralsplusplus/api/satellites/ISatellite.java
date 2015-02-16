@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.api.satellites;
 
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
@@ -78,4 +79,18 @@ public interface ISatellite {
 	 * @return Whether the satellite is in orbit
 	 */
 	public boolean isInOrbit();
+
+	/**
+	 * Gets nbt tag for given upgrade
+	 * @param upgrade The satellite upgrade
+	 * @return The tag, or null if the upgrade doesn't exist
+	 */
+	public NBTTagCompound getTag(ISatelliteUpgrade upgrade);
+
+	/**
+	 * Updates the tag for the given upgrade
+	 * @param upgrade The upgrade whose tag you want to upgrade
+	 * @param tag The tag
+	 */
+	public void updateTag(ISatelliteUpgrade upgrade, NBTTagCompound tag);
 }
