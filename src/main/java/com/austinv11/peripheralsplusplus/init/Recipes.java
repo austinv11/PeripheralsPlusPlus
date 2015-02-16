@@ -1,7 +1,9 @@
 package com.austinv11.peripheralsplusplus.init;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
+import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.recipe.ContainerRecipe;
+import com.austinv11.peripheralsplusplus.recipe.SatelliteUpgradeRecipe;
 import com.austinv11.peripheralsplusplus.recipe.UpgradeRecipe;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import cpw.mods.fml.common.Loader;
@@ -52,7 +54,8 @@ public class Recipes {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.rocket), " r ", " b ", "ibi", 'r', new ItemStack(Blocks.redstone_torch), 'b', new ItemStack(Blocks.iron_block), 'i', new ItemStack(Blocks.iron_bars)));
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.socket), "   ", "trt", "iii", 't', new ItemStack(Blocks.redstone_torch), 'r', new ItemStack(Items.repeater), 'i', "ingotIron"));
 			for (int i = 0; i < PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.size(); i++) {
-				GameRegistry.addShapelessRecipe(new ItemStack(PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.get(i))), PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.get(i)).getUpgrade().getRecipe(), new ItemStack(ModItems.socket));
+				ISatelliteUpgrade upgrade = PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.get(i)).getUpgrade();
+				GameRegistry.addRecipe(new SatelliteUpgradeRecipe(new ItemStack(PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.get(i))), upgrade.getRecipe(), upgrade.doesRecipeRetainNBT()));
 			}
 			GameRegistry.addRecipe(new UpgradeRecipe());
 			GameRegistry.addShapelessRecipe(new ItemStack(ModItems.satellite), new ItemStack(ModItems.satellite));

@@ -22,6 +22,12 @@ public interface ISatelliteUpgrade {
 	public ItemStack getRecipe();
 
 	/**
+	 * Returns whether the item used to craft the upgrade should have its nbt kept
+	 * @return Whether to retain NBT
+	 */
+	public boolean doesRecipeRetainNBT();
+
+	/**
 	 * Called to update the satellite (only when it's a MAIN upgrade)
 	 * @param satellite The satellite accessing the upgrade
 	 */
