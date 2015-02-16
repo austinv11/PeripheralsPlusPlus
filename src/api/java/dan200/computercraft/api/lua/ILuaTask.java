@@ -4,7 +4,9 @@
  * For help using the API, and posting your mods, visit the forums at computercraft.info.
  */
 
-@API( owner="ComputerCraft", provides="ComputerCraft|API|FileSystem", apiVersion="1.7" )
-package dan200.computercraft.api.filesystem;
+package dan200.computercraft.api.lua;
 
-import cpw.mods.fml.common.API;
+public interface ILuaTask
+{
+    public Object[] execute() throws LuaException;
+}
