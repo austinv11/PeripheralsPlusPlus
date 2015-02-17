@@ -41,6 +41,7 @@ peripheralsplusplus.turtleUpgrade.feeder=Feeding
 peripheralsplusplus.turtleUpgrade.speaker=Talkative
 peripheralsplusplus.turtleUpgrade.tank=Thirsty
 peripheralsplusplus.turtleUpgrade.note=Musical
+peripheralsplusplus.turtleUpgrade.signReader=Reading
 
 #GUIs
 peripheralsplusplus.inv.analyzer=Analyzer
