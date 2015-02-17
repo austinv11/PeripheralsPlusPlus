@@ -5,10 +5,12 @@ import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.oredict.OreDictionary;
@@ -19,6 +21,16 @@ import java.io.IOException;
 import java.util.*;
 
 public class Util {
+
+	public static HashMap<Integer, Object> iteratorToMap(Iterator iterator) {
+		HashMap<Integer,Object> map = new HashMap<Integer,Object>();
+		int i = 1;
+		while (iterator.hasNext()) {
+			map.put(i, iterator.next());
+			i++;
+		}
+		return map;
+	}
 
 	public static HashMap<Integer, Object> EnumSetToMap(EnumSet<EnumPlantType> iterable) {
 		HashMap<Integer,Object> map = new HashMap<Integer,Object>();
@@ -137,5 +149,21 @@ public class Util {
 			if (map.get(key).equals(val))
 				return key;
 		return null;
+	}
+
+	public static EntityPlayer getPlayer(String ign) {
+		List<EntityPlayer> players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+		for (EntityPlayer p : players) {
+			if (p.getDisplayName().equalsIgnoreCase(ign))
+				return p;
+		}
+		return null;
+	}
+
+	public static String[] stringToArray(String array) {
+		String[] array_ = array.replace("]", "").replace("[", "").split(",");
+		for (int i = 0; i < array_.length; i++)
+			array_[i] = array_[i].trim();
+		return array_;
 	}
 }

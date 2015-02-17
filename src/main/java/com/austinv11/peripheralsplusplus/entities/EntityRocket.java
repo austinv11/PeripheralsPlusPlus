@@ -37,7 +37,7 @@ public class EntityRocket extends EntityInventory{
 	private RocketSound sound;
 	public static final double ACCELERATION_MODIFIER = .3;
 	public static final double BASE_FUEL_USAGE = 1;
-	public static final double MAX_HEIGHT = 450;
+	public static final double MAX_HEIGHT = 350;
 	public static final double INITIAL_ACCELERATION_CONSTANT = .005;
 	public static final double ACCELERATION_CONSTANT = .05;
 
@@ -275,10 +275,10 @@ public class EntityRocket extends EntityInventory{
 	}
 
 	public boolean isSkyClear() {
-		boolean skyClear = true;
 		for (double i = this.posY-1; i < 255; i+=1)
-			skyClear = this.worldObj.isAirBlock((int)this.posX, (int)i, (int)this.posZ);
-		return skyClear;
+			if (!this.worldObj.isAirBlock((int)this.posX, (int)i, (int)this.posZ))
+				return false;
+		return true;
 	}
 
 	private void initSatellite() {

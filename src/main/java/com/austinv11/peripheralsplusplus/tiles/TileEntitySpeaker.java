@@ -98,6 +98,8 @@ public class TileEntitySpeaker extends MountedTileEntity {
 				throw new LuaException("Bad argument #2 (expected string)");
 			if (arguments.length > 2 && !(arguments[2] instanceof String))
 				throw new LuaException("Bad argument #3 (expected boolean)");
+			if (arguments.length > 3 && !(arguments[3] instanceof Boolean))
+				throw new LuaException("Bad argument #4 (expected boolean");
 			String lang = null;
 			if (arguments.length > 2)
 				if (TranslateUtils.isPrefix((String) arguments[2]))
@@ -125,6 +127,8 @@ public class TileEntitySpeaker extends MountedTileEntity {
 			packetInfo[2] = arguments[0];
 			packetInfo[3] = range;
 			lastMessage = (String)arguments[0];
+			if ((Boolean) arguments[3])
+				context.pullEvent("speechComplete");
 			return new Object[]{lastMessage, lang};
 //			}catch (Exception e) {
 //				e.printStackTrace();

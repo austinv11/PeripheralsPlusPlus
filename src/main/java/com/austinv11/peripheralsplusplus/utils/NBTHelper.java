@@ -177,11 +177,41 @@ public class NBTHelper {
 		}
 	}
 
+	public static void setInfo(ItemStack itemStack, List<String> text) {
+		initNBTTagCompound(itemStack);
+		NBTTagCompound display = new NBTTagCompound();
+		NBTTagList list = new NBTTagList();
+		for (String s : text)
+			list.appendTag(new NBTTagString(s));
+		display.setTag("Lore", list);
+		itemStack.stackTagCompound.setTag("display", display);
+	}
+
 	public static void removeInfo(ItemStack itemStack) {
 		if (hasTag(itemStack, "display")) {
 			NBTTagCompound display = itemStack.stackTagCompound.getCompoundTag("display");
 			display.removeTag("Lore");
 			itemStack.stackTagCompound.setTag("display", display);
 		}
+	}
+
+	public static void setOther(ItemStack itemStack, String keyName, NBTBase tag) {
+		initNBTTagCompound(itemStack);
+		itemStack.stackTagCompound.setTag(keyName, tag);
+	}
+
+	public static NBTBase getOther(ItemStack itemStack, String keyName) {
+		initNBTTagCompound(itemStack);
+		return itemStack.stackTagCompound.getTag(keyName);
+	}
+
+	public static void setIntArray(ItemStack itemStack, String keyName, int[] array) {
+		initNBTTagCompound(itemStack);
+		itemStack.stackTagCompound.setIntArray(keyName, array);
+	}
+
+	public static int[] getIntArray(ItemStack itemStack, String keyName) {
+		initNBTTagCompound(itemStack);
+		return itemStack.stackTagCompound.getIntArray(keyName);
 	}
 }

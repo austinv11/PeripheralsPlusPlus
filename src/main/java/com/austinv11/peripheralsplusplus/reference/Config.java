@@ -32,6 +32,15 @@ public class Config {
 	public static boolean enableProjectRedTurtles = true;
 	public static boolean enableSpeaker = true;
 	public static double speechRange = 64;
+	public static boolean enableAPIs = true;
+	public static boolean enablePeripheralContainer = true;
+	public static int maxNumberOfPeripherals = 6;
+	public static boolean enableMEBridge = true;
+	public static boolean enableTankTurtle = true;
+	public static int maxNumberOfMillibuckets = 10000;
+	public static boolean enableSmartHelmet = true;
+    public static double noteBlockRange = 16;
+    public static boolean noteBlockEnabled = true;
 
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)

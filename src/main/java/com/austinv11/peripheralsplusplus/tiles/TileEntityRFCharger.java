@@ -4,6 +4,7 @@ import cofh.api.energy.EnergyStorage;
 import cofh.api.energy.IEnergyReceiver;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
+import cpw.mods.fml.common.Optional;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
@@ -12,6 +13,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.ArrayList;
 import java.util.List;
 
+@Optional.Interface(modid = "ThermalExpansion;BuildCraft|Core", iface = "cofh.api.energy.IEnergyReceiver", striprefs = true)
 public class TileEntityRFCharger extends NetworkedTileEntity implements IEnergyReceiver {
 	private EnergyStorage storage = new EnergyStorage(80000);//Leadstone Capacitor
 

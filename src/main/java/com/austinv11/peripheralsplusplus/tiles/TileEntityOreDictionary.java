@@ -11,7 +11,6 @@ import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.ChatComponentText;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.HashMap;
@@ -205,7 +204,7 @@ public class TileEntityOreDictionary extends MountedTileEntity {
 				computer.queueEvent("oreDict", new Object[]{Util.getEntries(player.getHeldItem())});
 			}
 			if (Config.oreDictionaryMessage)
-				ChatUtil.sendMessage(player.getDisplayName(), this, new ChatComponentText(Util.getEntries(player.getHeldItem()).entrySet().toString()), 100, true);
+				ChatUtil.sendMessage(player.getDisplayName(), this, Util.getEntries(player.getHeldItem()).entrySet().toString(), 100, true);
 		}
 	}
 }

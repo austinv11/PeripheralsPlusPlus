@@ -3,6 +3,8 @@ package com.austinv11.peripheralsplusplus.turtles;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.turtles.peripherals.PeripheralXP;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import net.minecraft.init.Blocks;
@@ -43,6 +45,7 @@ public class TurtleXP implements ITurtleUpgrade {
 		return null;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
 		return Blocks.enchanting_table.getIcon(1, 0);

@@ -5,20 +5,19 @@ import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
+import com.austinv11.peripheralsplusplus.event.PeripheralContainerHandler;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
 import com.austinv11.peripheralsplusplus.items.SatelliteUpgradeBase;
 import com.austinv11.peripheralsplusplus.mount.DynamicMount;
-import com.austinv11.peripheralsplusplus.network.AudioPacket;
-import com.austinv11.peripheralsplusplus.network.AudioResponsePacket;
-import com.austinv11.peripheralsplusplus.network.RocketCountdownPacket;
-import com.austinv11.peripheralsplusplus.network.RocketLaunchPacket;
+import com.austinv11.peripheralsplusplus.network.*;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteEventHandler;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteTickHandler;
+import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
 import com.austinv11.peripheralsplusplus.turtles.*;
 import com.austinv11.peripheralsplusplus.turtles.TurtleProjRed.ToolMaterial;
@@ -41,6 +40,7 @@ import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Mod(modid= Reference.MOD_ID,name = Reference.MOD_NAME,version = Reference.VERSION/*, guiFactory = Reference.GUI_FACTORY_CLASS*/)
@@ -52,9 +52,9 @@ public class PeripheralsPlusPlus {
 	public static final List<Integer> SATELLITE_UPGRADE_ID_REGISTRY = new ArrayList<Integer>();
 
 	/**
-	 * Object containing all registered upgrades, the iterator is the upgrade id
+	 * Object containing all registered upgrades, the key is the upgrade id
 	 */
-	public static final ArrayList<ISatelliteUpgrade> UPGRADE_REGISTRY = new ArrayList<ISatelliteUpgrade>();
+	public static final HashMap<Integer, ISatelliteUpgrade> UPGRADE_REGISTRY = new HashMap<Integer, ISatelliteUpgrade>();
 
 	public static SimpleNetworkWrapper NETWORK;
 
@@ -64,7 +64,7 @@ public class PeripheralsPlusPlus {
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	public static CommonProxy proxy;
 
-	public static String BASE_PPP_DIR = (FMLCommonHandler.instance().getSavesDirectory().getParent()+"/mods/PPP/").replace("null", "");
+	public static String BASE_PPP_DIR = "./mods/PPP/";
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -74,12 +74,19 @@ public class PeripheralsPlusPlus {
 		NETWORK.registerMessage(AudioResponsePacket.AudioResponsePacketHandler.class, AudioResponsePacket.class, 1, Side.SERVER);
 		NETWORK.registerMessage(RocketCountdownPacket.RocketCountdownPacketHandler.class, RocketCountdownPacket.class, 2, Side.CLIENT);
 		NETWORK.registerMessage(RocketLaunchPacket.RocketLaunchPacketHandler.class, RocketLaunchPacket.class, 3, Side.SERVER);
+		NETWORK.registerMessage(ChatPacket.ChatPacketHandler.class, ChatPacket.class, 4, Side.CLIENT);
+		NETWORK.registerMessage(ScaleRequestPacket.ScaleRequestPacketHandler.class, ScaleRequestPacket.class, 5, Side.CLIENT);
+		NETWORK.registerMessage(ScaleRequestResponsePacket.ScaleRequestResponsePacketHandler.class, ScaleRequestResponsePacket.class, 6, Side.SERVER);
+		NETWORK.registerMessage(CommandPacket.CommandPacketHandler.class, CommandPacket.class, 7, Side.CLIENT);
+        NETWORK.registerMessage(ParticlePacket.ParticlePacketHandler.class, ParticlePacket.class, 8, Side.CLIENT);
 		proxy.iconManagerInit();
 		proxy.prepareGuis();
 		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
 		FMLCommonHandler.instance().bus().register(new SatelliteTickHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
 		MinecraftForge.EVENT_BUS.register(new SatelliteEventHandler());
+		MinecraftForge.EVENT_BUS.register(new PeripheralContainerHandler());
+		MinecraftForge.EVENT_BUS.register(new TileEntityAntenna());
 		ModItems.preInit();
 		ModBlocks.init();
 		Logger.info("Preparing the mount...");
@@ -95,8 +102,6 @@ public class PeripheralsPlusPlus {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
-		ModItems.init();//Inits satellite upgrades
-		Recipes.init();
 		Logger.info("Registering peripherals...");
 		proxy.registerTileEntities();
 		ComputerCraftAPI.registerPeripheralProvider(new BlockChatBox());
@@ -114,6 +119,12 @@ public class PeripheralsPlusPlus {
 		ComputerCraftAPI.registerPeripheralProvider(new BlockEnvironmentScanner());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockSpeaker());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockAntenna());
+		ComputerCraftAPI.registerPeripheralProvider(new BlockPeripheralContainer());
+		if (Loader.isModLoaded("appliedenergistics2")) {
+			Logger.info("Applied Energistics is loaded! Registering the ME Bridge...");
+			ComputerCraftAPI.registerPeripheralProvider(new BlockMEBridge());
+		}else
+			Logger.info("Applied Energistics not found, skipping the ME Bridge");
 		Logger.info("Registering turtle upgrades...");
 		registerUpgrade(new TurtleChatBox());
 		registerUpgrade(new TurtlePlayerSensor());
@@ -134,7 +145,11 @@ public class PeripheralsPlusPlus {
 		} else
 			Logger.info("Project Red Exploration not found, skipping Project Red tools turtle upgrades");
 		registerUpgrade(new TurtleSpeaker());
+		registerUpgrade(new TurtleTank());
+        registerUpgrade(new TurtleNoteBlock());
 		Logger.info("All peripherals and turtle upgrades registered!");
+		Logger.info("Registering satellite upgrades...");
+		Logger.info("All satellite upgrades registered!");
 		proxy.registerRenderers();
 		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, instance, 64, 20, true);
@@ -144,7 +159,8 @@ public class PeripheralsPlusPlus {
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) {
-
+		ModItems.init();//Inits satellite upgrades
+		Recipes.init();
 	}
 	
 	public static void registerUpgrade(ITurtleUpgrade u) {

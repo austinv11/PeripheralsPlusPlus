@@ -6,6 +6,8 @@ import com.austinv11.peripheralsplusplus.utils.FakeTurtlePlayer;
 import com.austinv11.peripheralsplusplus.utils.TurtleUtil;
 import com.austinv11.peripheralsplusplus.utils.Util;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import net.minecraft.entity.Entity;
@@ -104,6 +106,7 @@ public abstract class TurtleProjRed extends TurtleDropCollector implements ITurt
 		return TurtleCommandResult.failure("An unknown error has occurred, please tell the mod author");
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
 		return getItem().getItem().getIconIndex(getItem());
