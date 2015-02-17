@@ -66,6 +66,7 @@ public class ConfigurationHandler {
 			Config.enableSmartHelmet = config.get("Smart Helmet", "enableSmartHelmet", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
             Config.noteBlockRange = config.get("NoteBlock", "noteBlockRange", 16.0, "Audible range for the noteblock").getDouble(16.0);
             Config.noteBlockEnabled = config.get("NoteBlock", "noteBlockEnabled", true, "If disabled, crafting recipes will be removed and existing items will stop functioning").getBoolean(true);
+			Config.enableReaderTurtle = config.get("Sign Reading Turtle", "enableReaderTurtle", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean();
 		}catch (Exception e){//Log exception
 			Logger.warn("Config exception!");
 			Logger.warn(e.getStackTrace());

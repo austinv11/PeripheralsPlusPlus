@@ -139,6 +139,7 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleEnvironmentScanner());
 		registerUpgrade(new TurtleFeeder());
 		registerUpgrade(new TurtleShear());
+		registerUpgrade(new TurtleSignReader());
 		if (Loader.isModLoaded("ProjRed|Exploration")) {
 			Logger.info("Project Red Exploration is loaded! Registering Project Red tools turtle upgrades...");
 			registerProjRedUpgrades();
