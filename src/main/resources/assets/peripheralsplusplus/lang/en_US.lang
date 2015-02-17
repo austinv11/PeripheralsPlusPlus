@@ -48,6 +48,9 @@ peripheralsplusplus.inv.rocket.0=Rocket
 peripheralsplusplus.inv.rocket.1=Fuel:
 peripheralsplusplus.inv.rocket.2=Oxidizer:
 peripheralsplusplus.button.rocket=Launch!
+peripheralsplusplus.inv.satellite=Satellite
+peripheralsplusplus.inv.satellite.0=Main:
+peripheralsplusplus.inv.satellite.1=Addons:
 
 #Chat Messages
 peripheralsplusplus.chat.launchFailure=You cannot launch the rocket!

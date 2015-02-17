@@ -22,7 +22,7 @@ public class Reference {
     public static final int NOTE_BLOCK_UPGRADE = 127;
 
 	public static enum GUIs {
-		ANALYZER,ROCKET;
+		ANALYZER,ROCKET,SATELLITE;
 	}
 
 	public static class Colors {
