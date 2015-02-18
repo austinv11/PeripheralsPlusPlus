@@ -1,7 +1,9 @@
 package com.austinv11.peripheralsplusplus.init;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
-import com.austinv11.peripheralsplusplus.recipe.UpgradeRecipe;
+import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
+import com.austinv11.peripheralsplusplus.recipe.ContainerRecipe;
+import com.austinv11.peripheralsplusplus.recipe.SatelliteUpgradeRecipe;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -10,6 +12,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.oredict.ShapelessOreRecipe;
 
 public class Recipes {
 
@@ -48,14 +51,27 @@ public class Recipes {
 		if (Config.enableSatellites) {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.satellite), "ded", "ptp", "iii", 'd', new ItemStack(Blocks.daylight_detector), 'e', new ItemStack(Items.ender_eye), 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate), 't', new ItemStack(GameRegistry.findBlock("ComputerCraft", "CC-TurtleAdvanced")), 'i', "ingotIron"));
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.rocket), " r ", " b ", "ibi", 'r', new ItemStack(Blocks.redstone_torch), 'b', new ItemStack(Blocks.iron_block), 'i', new ItemStack(Blocks.iron_bars)));
-			for (int i = 0; i < PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.size(); i++)
-				GameRegistry.addRecipe(PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.get(i)).getUpgrade().getRecipe());
-			GameRegistry.addRecipe(new UpgradeRecipe());
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.socket), "   ", "trt", "iii", 't', new ItemStack(Blocks.redstone_torch), 'r', new ItemStack(Items.repeater), 'i', "ingotIron"));
+			for (int i = 0; i < PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.size(); i++) {
+				ISatelliteUpgrade upgrade = PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.get(i)).getUpgrade();
+				GameRegistry.addRecipe(new SatelliteUpgradeRecipe(new ItemStack(PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.get(i))), upgrade.getRecipe(), upgrade.doesRecipeRetainNBT()));
+			}
 			GameRegistry.addShapelessRecipe(new ItemStack(ModItems.satellite), new ItemStack(ModItems.satellite));
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.antenna), "sms", " i ", "ppp", 's', "stone", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1), 'i', "ingotIron", 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate)));
-			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.modem), "sss", "sms", "sss", 's', "stone", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1)));
 		}
 		if (Config.enableSpeaker)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.speaker), "gng", "nrn", "gng", 'g', "ingotGold", 'n', Blocks.noteblock, 'r', "blockRedstone"));
+		if (Config.enablePeripheralContainer) {
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.peripheralContainer), "iii", "ici", "imi", 'i', "ingotIron", 'c', Blocks.chest, 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Cable"), 1, 1)));
+			GameRegistry.addRecipe(new ContainerRecipe());
+		}
+		if (Config.enableMEBridge && Loader.isModLoaded("appliedenergistics2"))
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModBlocks.meBridge), new ItemStack(GameRegistry.findItem("appliedenergistics2", "tile.BlockInterface")), new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Cable"), 1, 1)));
+		if (Config.enableTankTurtle)
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.tank), "ggg", "gmg", "ggg", 'g', "blockGlass", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Cable"), 1, 1)));
+		if (Config.enableSmartHelmet)
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.smartHelmet), new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1), Items.iron_helmet));
+		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.antenna), "sms", " i ", "ppp", 's', "stone", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1), 'i', "ingotIron", 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate)));
+        if (Config.noteBlockEnabled)
+            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.noteBlock), "igi", "rnr", "igi", 'i', "ingotIron", 'g', "ingotGold", 'r', "dustRedstone", 'n', Blocks.noteblock));
 	}
 }

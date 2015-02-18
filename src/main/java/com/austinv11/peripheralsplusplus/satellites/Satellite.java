@@ -4,6 +4,7 @@ import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.SatelliteUpgradeType;
+import com.austinv11.peripheralsplusplus.event.SateliiteCrashEvent;
 import com.austinv11.peripheralsplusplus.utils.Logger;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
@@ -11,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,6 +31,8 @@ public class Satellite implements ISatellite{
 	private ISatelliteUpgrade mainUpgrade;
 	private List<ISatelliteUpgrade> addons = new ArrayList<ISatelliteUpgrade>();
 	private boolean isInOrbit = true;
+	private NBTTagCompound mainTag = new NBTTagCompound();
+	private HashMap<Integer, NBTTagCompound> addonTags =  new HashMap<Integer,NBTTagCompound>();
 
 	public Satellite(int x, int y, int z, World w) {
 		coords = new ChunkCoordinates(x,y,z);
@@ -52,6 +56,9 @@ public class Satellite implements ISatellite{
 		for (int i = 0; i < addons.size(); i++)
 			ids[i] = addons.get(i).getUpgradeID();
 		nbt.setIntArray("addonIds", ids);
+		nbt.setTag("main", mainTag);
+		for (int j : addonTags.keySet())
+			nbt.setTag(String.valueOf(j), addonTags.get(j));
 		return nbt;
 	}
 
@@ -60,14 +67,18 @@ public class Satellite implements ISatellite{
 				MinecraftServer.getServer().worldServerForDimension(nbt.getInteger("dim")));
 		sat.setID(nbt.getInteger("id"));
 		try {
-			sat.setMainUpgrade(PeripheralsPlusPlus.instance.UPGRADE_REGISTRY.get(nbt.getInteger("mainId")));
+			sat.setMainUpgrade(PeripheralsPlusPlus.UPGRADE_REGISTRY.get(nbt.getInteger("mainId")));
+			sat.mainTag = nbt.getCompoundTag("main");
 		} catch (Exception e) {
 			Logger.error("There was a problem loading the upgrade for satellite "+sat.getID());
 		}
 		try {
 			List<ISatelliteUpgrade> upgrades = new ArrayList<ISatelliteUpgrade>();
-			for (int i : nbt.getIntArray("addonIds"))
-				upgrades.add(PeripheralsPlusPlus.instance.UPGRADE_REGISTRY.get(i));
+			for (int i : nbt.getIntArray("addonIds")) {
+				ISatelliteUpgrade upgrade = PeripheralsPlusPlus.UPGRADE_REGISTRY.get(i);
+				upgrades.add(upgrade);
+				sat.addonTags.put(upgrade.getUpgradeID(), nbt.getCompoundTag(String.valueOf(i)));
+			}
 			sat.setAddons(upgrades);
 		} catch (Exception e) {
 			Logger.error("There was a problem loading the addons for satellite "+sat.getID());
@@ -126,6 +137,7 @@ public class Satellite implements ISatellite{
 		data.removeSatellite(this.id);
 		data.markDirty();
 		isInOrbit = false;
+		MinecraftForge.EVENT_BUS.post(new SateliiteCrashEvent(this, dropCoords));
 		return dropCoords;
 	}
 
@@ -138,6 +150,7 @@ public class Satellite implements ISatellite{
 	public void setMainUpgrade(ISatelliteUpgrade upgrade) throws Exception {
 		if (upgrade.getType() == SatelliteUpgradeType.MAIN) {
 			mainUpgrade = upgrade;
+			mainTag = new NBTTagCompound();
 			return;
 		}
 		throw new Exception("Incompatible Satellite Upgrade Type");
@@ -150,10 +163,43 @@ public class Satellite implements ISatellite{
 				throw new Exception("Incompatible Satellite Addon Type");
 		}
 		this.addons = addons;
+		addonTags =  new HashMap<Integer,NBTTagCompound>();
 	}
 
 	@Override
 	public boolean isInOrbit() {
 		return isInOrbit;
+	}
+
+	@Override
+	public NBTTagCompound getTag(ISatelliteUpgrade upgrade) {
+		if (upgrade.getType() == SatelliteUpgradeType.MAIN) {
+			if (mainUpgrade.getUpgradeID() == upgrade.getUpgradeID())
+				return mainTag;
+		} else {
+			if (addonTags.containsKey(upgrade.getUpgradeID()))
+				return addonTags.get(upgrade.getUpgradeID());
+			else if (contains(upgrade))
+				return new NBTTagCompound();
+		}
+		return null;
+	}
+
+	@Override
+	public void updateTag(ISatelliteUpgrade upgrade, NBTTagCompound tag) {
+		if (upgrade.getType() == SatelliteUpgradeType.MAIN) {
+			if (mainUpgrade.getUpgradeID() == upgrade.getUpgradeID())
+				mainTag = tag;
+		} else {
+			if (addonTags.containsKey(upgrade.getUpgradeID()))
+				addonTags.put(upgrade.getUpgradeID(), tag);
+		}
+	}
+
+	private boolean contains(ISatelliteUpgrade upgrade) {
+		for (ISatelliteUpgrade up : addons)
+			if (up.getUpgradeID() == upgrade.getUpgradeID())
+				return true;
+		return false;
 	}
 }

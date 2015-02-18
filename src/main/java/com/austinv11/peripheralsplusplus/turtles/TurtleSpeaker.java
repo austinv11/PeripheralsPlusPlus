@@ -3,6 +3,8 @@ package com.austinv11.peripheralsplusplus.turtles;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntitySpeaker;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import net.minecraft.item.ItemStack;
@@ -40,6 +42,7 @@ public class TurtleSpeaker implements ITurtleUpgrade{
 		return null;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
 		return ModBlocks.speaker.getIcon(ForgeDirection.EAST.ordinal(), 0);

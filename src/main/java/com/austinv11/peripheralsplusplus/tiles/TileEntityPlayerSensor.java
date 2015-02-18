@@ -69,20 +69,22 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 			//try {
 			if (arguments.length > 0 && !(arguments[0] instanceof Double))
 				throw new LuaException("Bad argument #1 (expected number)");
-			double range = Config.sensorRange;
-			if (arguments.length > 0)
-				range = (Double) arguments[0];
-			HashMap<String,Double> map = location.getPlayers(this, range);
-			HashMap<Integer, HashMap<String, Object>> returnVal = new HashMap<Integer, HashMap<String, Object>>();
-			int i = 1;
-			for (String player : map.keySet()) {
-				HashMap<String, Object> table = new HashMap<String,Object>();
-				table.put("player", player);
-				table.put("distance", map.get(player));
-				returnVal.put(i, table);
-				i++;
+			synchronized (this) {
+				double range = Config.sensorRange;
+				if (arguments.length > 0)
+					range = (Double) arguments[0];
+					HashMap<String,Double> map = location.getPlayers(this, range);
+					HashMap<Integer,HashMap<String,Object>> returnVal = new HashMap<Integer,HashMap<String,Object>>();
+					int i = 1;
+					for (String player : map.keySet()) {
+						HashMap<String,Object> table = new HashMap<String,Object>();
+						table.put("player", player);
+						table.put("distance", map.get(player));
+						returnVal.put(i, table);
+						i++;
+					}
+				return new Object[]{returnVal};
 			}
-			return new Object[]{returnVal};
 			/*}catch (Exception e) {
 				e.printStackTrace();
 			}*/
@@ -92,13 +94,15 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 			boolean inWorld = false;
 			if (arguments.length > 0)
 				inWorld = (Boolean) arguments[0];
-			HashMap<Integer, String> map = new HashMap<Integer,String>();
-			int i = 1;
-			for (String p : location.getPlayers(inWorld)) {
-				map.put(i, p);
-				i++;
+			synchronized (this) {
+				HashMap<Integer,String> map = new HashMap<Integer,String>();
+				int i = 1;
+				for (String p : location.getPlayers(inWorld)) {
+					map.put(i, p);
+					i++;
+				}
+				return new Object[]{map};
 			}
-			return new Object[]{map};
 		}
 		return new Object[0];
 	}

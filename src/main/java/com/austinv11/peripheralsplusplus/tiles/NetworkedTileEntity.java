@@ -1,5 +1,7 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
@@ -19,6 +21,7 @@ public abstract class NetworkedTileEntity extends TileEntity {
 		return new S35PacketUpdateTileEntity(xCoord, yCoord, zCoord, 3, tag);
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public void onDataPacket(NetworkManager net, S35PacketUpdateTileEntity pkt) {
 		readFromNBT(pkt.func_148857_g());

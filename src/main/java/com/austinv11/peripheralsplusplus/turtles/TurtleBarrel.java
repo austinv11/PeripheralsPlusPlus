@@ -5,6 +5,8 @@ import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.turtles.peripherals.PeripheralBarrel;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import net.minecraft.init.Blocks;
@@ -49,6 +51,7 @@ public class TurtleBarrel implements ITurtleUpgrade {
 		return null;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
 		return Blocks.log.getIcon(2, 0);

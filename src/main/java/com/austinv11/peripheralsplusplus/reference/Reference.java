@@ -18,10 +18,12 @@ public class Reference {
 	public static final int FEEDER_UPGRADE = 109;
 	public static final int BASE_PROJ_RED_UPGRADE = 110;
 	public static final int SPEAKER_UPGRADE = 125;
-	public static final int CLICKY_UPGRADE = 126; //TODO Remember to update the id list on the wiki
+	public static final int TANK_UPGRADE = 126; //TODO Remember to update the id list on the wiki
+    public static final int NOTE_BLOCK_UPGRADE = 127;
+	public static final int SIGN_READER_UPGRADE = 128;
 
 	public static enum GUIs {
-		ANALYZER,ROCKET;
+		ANALYZER,ROCKET,SATELLITE;
 	}
 
 	public static class Colors {

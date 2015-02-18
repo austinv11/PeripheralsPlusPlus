@@ -29,7 +29,7 @@ group= "com.austinv11.peripheralsplusplus" // http://maven.apache.org/guides/min
 archivesBaseName = "Peripherals++"
 
 minecraft {
-    version = "1.7.10-10.13.2.1230"
+    version = "1.7.10-10.13.2.1291"
     runDir = "eclipse"
     replace("@VERSION@",project.version)
 }
@@ -47,9 +47,9 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    compile "codechicken:NotEnoughItems:1.7.10-1.0.2.15:dev"
-    compile "codechicken:CodeChickenLib:1.7.10-1.1.1.93:dev"
-    compile "codechicken:CodeChickenCore:1.7.10-1.0.2.9:dev"
+	compile "codechicken:NotEnoughItems:1.7.10-1.0.3.74:dev"
+	compile "codechicken:CodeChickenLib:1.7.10-1.1.1.99:dev"
+	compile "codechicken:CodeChickenCore:1.7.10-1.0.4.29:dev"
 }
 
 processResources
@@ -72,6 +72,12 @@ processResources
     }
 }
 
-//jar {
-//    from "libs"
-//}
+jar {
+    manifest {
+        attributes 'FMLAT': 'ppp_at.cfg'
+    }
+}
+
+sourceSets {
+    main { output.resourcesDir = output.classesDir }
+}

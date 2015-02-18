@@ -10,8 +10,6 @@ import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +21,7 @@ public class PeripheralsPlusPlusAPI {
 	 * @param upgrade The upgrade to register
 	 */
 	public static void registerSatelliteUpgrade(final ISatelliteUpgrade upgrade) {
-		PeripheralsPlusPlus.UPGRADE_REGISTRY.set(upgrade.getUpgradeID(), upgrade);
+		PeripheralsPlusPlus.UPGRADE_REGISTRY.put(upgrade.getUpgradeID(), upgrade);
 		PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.add(new SatelliteUpgradeBase() {
 			@Override
 			public String getUnlocalizedName() {
@@ -57,11 +55,11 @@ public class PeripheralsPlusPlusAPI {
 		if (!(stack.getItem() instanceof ItemSatellite))
 			return null;
 		List<ISatelliteUpgrade> upgrades = new ArrayList<ISatelliteUpgrade>();
-		NBTTagList list = NBTHelper.getList(stack, "upgradeIds", Constants.NBT.TAG_STRING);
-		for (int i = 0; i < list.tagCount(); i++) {
-			ISatelliteUpgrade up = getUpgradeFromId(Integer.valueOf(list.getStringTagAt(i)));
-			if (up != null)
-				upgrades.add(up);
+		int slots = NBTHelper.getInt(stack, "slots");
+		for (int i = 0; i < slots; i++) {
+			ItemStack upgrade = ItemStack.loadItemStackFromNBT(NBTHelper.getCompoundTag(stack, "slot:"+i));
+			if (upgrade != null)
+				upgrades.add(getUpgradeFromItem(upgrade.getItem()));
 		}
 		return upgrades.isEmpty() ? null : upgrades;
 	}

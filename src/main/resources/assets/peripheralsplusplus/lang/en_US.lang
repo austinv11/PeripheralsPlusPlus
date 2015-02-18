@@ -11,7 +11,9 @@ tile.peripheralsplusplus:teleporterT2.name=Advanced Turtle Teleporter
 tile.peripheralsplusplus:environmentScanner.name=Environment Scanner
 tile.peripheralsplusplus:speaker.name=Speaker
 tile.peripheralsplusplus:antenna.name=Antenna
-tile.peripheralsplusplus:enderNetModem.name=EnderNet Modem
+tile.peripheralsplusplus:peripheralContainer.name=Peripheral Container
+tile.peripheralsplusplus:meBridge.name=ME Bridge
+tile.peripheralsplusplus:noteBlock.name=Iron Note Block
 
 #Items
 item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade
@@ -20,6 +22,8 @@ item.peripheralsplusplus:rocket.name=Rocket
 item.peripheralsplusplus:ingotIron.name=Turtle Ingot
 item.peripheralsplusplus:dustRedstone.name=Computer Dust
 item.peripheralsplusplus:iphone.name=Pineapple UPhone
+item.peripheralsplusplus:tank.name=Fluid Tank
+item.peripheralsplusplus:smartHelmet.name=Smart Helmet
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++
@@ -35,7 +39,9 @@ peripheralsplusplus.turtleUpgrade.shears=Shearing
 peripheralsplusplus.turtleUpgrade.environmentScanner=Environmentalist
 peripheralsplusplus.turtleUpgrade.feeder=Feeding
 peripheralsplusplus.turtleUpgrade.speaker=Talkative
-peripheralsplusplus.turtleUpgrade.clicky=Clicky
+peripheralsplusplus.turtleUpgrade.tank=Thirsty
+peripheralsplusplus.turtleUpgrade.note=Musical
+peripheralsplusplus.turtleUpgrade.signReader=Reading
 
 #GUIs
 peripheralsplusplus.inv.analyzer=Analyzer
@@ -43,6 +49,9 @@ peripheralsplusplus.inv.rocket.0=Rocket
 peripheralsplusplus.inv.rocket.1=Fuel:
 peripheralsplusplus.inv.rocket.2=Oxidizer:
 peripheralsplusplus.button.rocket=Launch!
+peripheralsplusplus.inv.satellite=Satellite
+peripheralsplusplus.inv.satellite.0=Main:
+peripheralsplusplus.inv.satellite.1=Addons:
 
 #Chat Messages
 peripheralsplusplus.chat.launchFailure=You cannot launch the rocket!

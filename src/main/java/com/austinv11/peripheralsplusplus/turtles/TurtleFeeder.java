@@ -1,8 +1,11 @@
 package com.austinv11.peripheralsplusplus.turtles;
 
+import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.turtles.peripherals.PeripheralFeeder;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
 import net.minecraft.item.ItemStack;
@@ -40,9 +43,10 @@ public class TurtleFeeder implements ITurtleUpgrade {
 		return null;
 	}
 
+	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
-		return ModItems.feederUpgrade.getIconIndex(new ItemStack(ModItems.feederUpgrade));
+		return ModBlocks.dummyBlock.getIcon(0,0);
 	}
 
 	@Override
