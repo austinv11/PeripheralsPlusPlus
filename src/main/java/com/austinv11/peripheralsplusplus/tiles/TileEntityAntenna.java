@@ -54,12 +54,16 @@ public class TileEntityAntenna extends MountedTileEntity {
 		super.readFromNBT(nbttagcompound);
 		if (nbttagcompound.hasKey("identifier"))
 			identifier = UUID.fromString(nbttagcompound.getString("identifier"));
+		if (nbttagcompound.hasKey("label"))
+			label = nbttagcompound.getString("label");
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
 		nbttagcompound.setString("identifier", identifier.toString());
+		if (label != null)
+			nbttagcompound.setString("label", label);
 	}
 
 	@Override
