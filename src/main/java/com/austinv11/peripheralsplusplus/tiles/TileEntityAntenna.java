@@ -35,8 +35,9 @@ public class TileEntityAntenna extends MountedTileEntity {
 	private  String name = "tileEntityAntenna";
 	private int world = 0;
 	private static HashMap<Integer, HashMap<Integer, List<IComputerAccess>>> connectedComputers = new HashMap<Integer,HashMap<Integer,List<IComputerAccess>>>();
-	private HashMap<IComputerAccess, Boolean> computers = new HashMap<IComputerAccess,Boolean>();
+	public HashMap<IComputerAccess, Boolean> computers = new HashMap<IComputerAccess,Boolean>();
 	private HashMap<Integer, LuaObjectHUD> huds = new HashMap<Integer,LuaObjectHUD>();
+	public static HashMap<UUID, TileEntityAntenna> antenna_registry = new HashMap<UUID,TileEntityAntenna>();
 	public UUID identifier;
 	public String label;
 
@@ -190,8 +191,11 @@ public class TileEntityAntenna extends MountedTileEntity {
 
 	@Override
 	public void updateEntity() {
-		if (worldObj != null)
+		if (worldObj != null) {
 			world = worldObj.provider.dimensionId;
+			if (!antenna_registry.containsKey(identifier))
+				antenna_registry.put(identifier, this);
+		}
 	}
 
 	@SubscribeEvent

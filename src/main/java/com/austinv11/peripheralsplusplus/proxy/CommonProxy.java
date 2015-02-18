@@ -1,11 +1,17 @@
 package com.austinv11.peripheralsplusplus.proxy;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
+import com.austinv11.peripheralsplusplus.event.PeripheralContainerHandler;
+import com.austinv11.peripheralsplusplus.satellites.SatelliteEventHandler;
+import com.austinv11.peripheralsplusplus.satellites.SatelliteTickHandler;
 import com.austinv11.peripheralsplusplus.tiles.*;
+import com.austinv11.peripheralsplusplus.utils.ConfigurationHandler;
 import com.austinv11.peripheralsplusplus.villagers.TradeHandler;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
+import net.minecraftforge.common.MinecraftForge;
 
 public class CommonProxy {
 
@@ -43,4 +49,13 @@ public class CommonProxy {
 	public void registerRenderers() {}
 
 	public void prepareGuis() {}
+
+	public void registerEvents() {
+		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
+		FMLCommonHandler.instance().bus().register(new SatelliteTickHandler());
+		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
+		MinecraftForge.EVENT_BUS.register(new SatelliteEventHandler());
+		MinecraftForge.EVENT_BUS.register(new PeripheralContainerHandler());
+		MinecraftForge.EVENT_BUS.register(new TileEntityAntenna());
+	}
 }
