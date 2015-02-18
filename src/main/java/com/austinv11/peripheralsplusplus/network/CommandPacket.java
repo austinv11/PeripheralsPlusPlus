@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.network;
 
+import com.austinv11.peripheralsplusplus.client.gui.GuiHelmet;
 import com.austinv11.peripheralsplusplus.client.gui.GuiSmartHelmetOverlay;
 import com.austinv11.peripheralsplusplus.smarthelmet.HelmetCommand;
 import cpw.mods.fml.common.network.ByteBufUtils;
@@ -17,6 +18,7 @@ public class CommandPacket implements IMessage {
 	public HelmetCommand[] commands;
 	public UUID uuid;
 	public boolean doAdd = false;
+	public boolean isGui = false;
 
 	public CommandPacket() {}
 
@@ -28,6 +30,11 @@ public class CommandPacket implements IMessage {
 	public CommandPacket(HelmetCommand[] commands, UUID uuid, boolean doAdd) {
 		this(commands, uuid);
 		this.doAdd = doAdd;
+	}
+
+	public CommandPacket(HelmetCommand[] commands, UUID uuid, boolean doAdd, boolean isGui) {
+		this(commands, uuid, doAdd);
+		this.isGui = isGui;
 	}
 
 	@Override
@@ -48,6 +55,7 @@ public class CommandPacket implements IMessage {
 			}
 		}
 		doAdd = tagCompound.getBoolean("doAdd");
+		isGui = tagCompound.getBoolean("isGui");
 	}
 
 	@Override
@@ -66,6 +74,7 @@ public class CommandPacket implements IMessage {
 			tagCompound.setTag(i+"", tag);
 		}
 		tagCompound.setBoolean("doAdd", doAdd);
+		tagCompound.setBoolean("isGui", isGui);
 		ByteBufUtils.writeTag(buf, tagCompound);
 	}
 
@@ -75,13 +84,22 @@ public class CommandPacket implements IMessage {
 		public IMessage onMessage(CommandPacket message, MessageContext ctx) {
 			ArrayDeque<HelmetCommand> commands = new ArrayDeque<HelmetCommand>();
 			if (message.doAdd) {
-				if (GuiSmartHelmetOverlay.renderStack.containsKey(message.uuid))
-					commands = GuiSmartHelmetOverlay.renderStack.get(message.uuid);
+				if (!message.isGui) {
+					if (GuiSmartHelmetOverlay.renderStack.containsKey(message.uuid))
+						commands = GuiSmartHelmetOverlay.renderStack.get(message.uuid);
+				}else {
+					if (GuiHelmet.renderStack.containsKey(message.uuid))
+						commands = GuiHelmet.renderStack.get(message.uuid);
+				}
 			}
 			for (HelmetCommand command : message.commands)
 				if (command != null)
 					commands.offer(command);
-			GuiSmartHelmetOverlay.renderStack.put(message.uuid, commands);
+			if (message.isGui) {
+				GuiHelmet.renderStack.put(message.uuid, commands);
+			}else {
+				GuiSmartHelmetOverlay.renderStack.put(message.uuid, commands);
+			}
 			return null;
 		}
 	}

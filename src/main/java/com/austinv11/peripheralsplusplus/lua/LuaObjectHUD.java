@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.lua;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.network.CommandPacket;
+import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.smarthelmet.*;
 import com.austinv11.peripheralsplusplus.utils.Util;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -21,6 +22,7 @@ public class LuaObjectHUD implements ILuaObject{
 	public int width = -1;
 	public int height = -1;
 	private UUID uuid;
+	private boolean isGui = false;
 
 	public LuaObjectHUD(String player, UUID uuid) {
 		this.player = Util.getPlayer(player);
@@ -28,9 +30,14 @@ public class LuaObjectHUD implements ILuaObject{
 		renderStack.add(new MessageCommand());
 	}
 
+	public LuaObjectHUD(String player, UUID uuid, boolean isGui) {
+		this(player, uuid);
+		this.isGui = isGui;
+	}
+
 	@Override
 	public String[] getMethodNames() {
-		return new String[]{"getResolution", "sendMessage", "drawString", "drawTexture", "drawRectangle", "drawHorizontalLine", "drawVerticalLine", "sync", "clear", "add", "getColorFromRGB"};
+		return isGui ? new String[]{"getResolution", "sendMessage", "drawString", "drawTexture", "drawRectangle", "drawHorizontalLine", "drawVerticalLine", "getColorFromRGB", "sync", "clear", "add", "open", "close", "drawBackground"} : new String[]{"getResolution", "sendMessage", "drawString", "drawTexture", "drawRectangle", "drawHorizontalLine", "drawVerticalLine", "getColorFromRGB", "sync", "clear", "add", "getGUI"};
 	}
 
 	@Override
@@ -176,24 +183,6 @@ public class LuaObjectHUD implements ILuaObject{
 				renderStack.add(c1);
 				break;
 			case 7:
-				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(stackToArray(), uuid), (EntityPlayerMP) player);
-				MessageCommand.messageStack.clear();
-				renderStack.clear();
-				renderStack.add(new MessageCommand());
-				break;
-			case 8:
-				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(new HelmetCommand[0], uuid), (EntityPlayerMP) player);
-				MessageCommand.messageStack.clear();
-				renderStack.clear();
-				renderStack.add(new MessageCommand());
-				break;
-			case 9:
-				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(stackToArray(), uuid, true), (EntityPlayerMP) player);
-				MessageCommand.messageStack.clear();
-				renderStack.clear();
-				renderStack.add(new MessageCommand());
-				break;
-			case 10:
 				if (arguments.length < 3)
 					throw new LuaException("Not enough arguments");
 				if (!(arguments[0] instanceof Double))
@@ -207,6 +196,43 @@ public class LuaObjectHUD implements ILuaObject{
 				if (arguments.length > 3)
 					return new Object[]{new Color((int)(double)(Double)arguments[0], (int)(double)(Double)arguments[1], (int)(double)(Double)arguments[2], (int)(double)(Double)arguments[3]).getRGB()};
 				return new Object[]{new Color((int)(double)(Double)arguments[0], (int)(double)(Double)arguments[1], (int)(double)(Double)arguments[2]).getRGB()};
+			case 8:
+				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(stackToArray(), uuid, false, isGui), (EntityPlayerMP) player);
+				MessageCommand.messageStack.clear();
+				renderStack.clear();
+				renderStack.add(new MessageCommand());
+				break;
+			case 9:
+				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(new HelmetCommand[0], uuid, false, isGui), (EntityPlayerMP) player);
+				MessageCommand.messageStack.clear();
+				renderStack.clear();
+				renderStack.add(new MessageCommand());
+				break;
+			case 10:
+				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(stackToArray(), uuid, true, isGui), (EntityPlayerMP) player);
+				MessageCommand.messageStack.clear();
+				renderStack.clear();
+				renderStack.add(new MessageCommand());
+				break;
+			case 11:
+				if (isGui)
+					player.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.HELMET.ordinal(), player.worldObj, (int)player.posX, (int)player.posY, (int)player.posZ);
+				else
+					return new Object[]{new LuaObjectHUD(this.player.getDisplayName(), this.uuid, true)};
+				break;
+			case 12:
+				player.closeScreen();
+				break;
+			case 13:
+				if (arguments.length > 0 && !(arguments[0] instanceof Boolean))
+					throw new LuaException("Bad argument #1 (expected boolean)");
+				if (arguments.length > 0) {
+					DrawBackgroundCommand background = new DrawBackgroundCommand();
+					background.defaultBackground = (Boolean)arguments[0];
+					renderStack.add(background);
+				}else
+					renderStack.add(new DrawBackgroundCommand());
+				break;
 		}
 //		}catch (Exception e) {
 //			e.printStackTrace();
