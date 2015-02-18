@@ -195,12 +195,12 @@ public class NBTHelper {
 		}
 	}
 
-	public static void setOther(ItemStack itemStack, String keyName, NBTBase tag) {
+	public static void setTag(ItemStack itemStack, String keyName, NBTBase tag) {
 		initNBTTagCompound(itemStack);
 		itemStack.stackTagCompound.setTag(keyName, tag);
 	}
 
-	public static NBTBase getOther(ItemStack itemStack, String keyName) {
+	public static NBTBase getTag(ItemStack itemStack, String keyName) {
 		initNBTTagCompound(itemStack);
 		return itemStack.stackTagCompound.getTag(keyName);
 	}
@@ -213,5 +213,10 @@ public class NBTHelper {
 	public static int[] getIntArray(ItemStack itemStack, String keyName) {
 		initNBTTagCompound(itemStack);
 		return itemStack.stackTagCompound.getIntArray(keyName);
+	}
+
+	public static NBTTagCompound getCompoundTag(ItemStack itemStack, String keyName) {
+		initNBTTagCompound(itemStack);
+		return itemStack.stackTagCompound.getCompoundTag(keyName);
 	}
 }

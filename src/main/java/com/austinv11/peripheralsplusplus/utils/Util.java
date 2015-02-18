@@ -26,7 +26,7 @@ public class Util {
 		HashMap<Integer,Object> map = new HashMap<Integer,Object>();
 		int i = 1;
 		while (iterator.hasNext()) {
-			map.put(i, iterator.next());
+			map.put(i+1, iterator.next());
 			i++;
 		}
 		return map;
@@ -53,7 +53,7 @@ public class Util {
 	public static HashMap<Integer,Integer> arrayToMap(int[] array) {
 		HashMap<Integer,Integer> map = new HashMap<Integer,Integer>();
 		for (int i = 0; i < array.length; i++) {
-			map.put(i, array[i]);
+			map.put(i+1, array[i]);
 		}
 		return map;
 	}
@@ -61,7 +61,7 @@ public class Util {
 	public static HashMap<Integer,Object> arrayToMap(Object[] array) {
 		HashMap<Integer,Object> map = new HashMap<Integer,Object>();
 		for (int i = 0; i < array.length; i++) {
-			map.put(i, array[i]);
+			map.put(i+1, array[i]);
 		}
 		return map;
 	}
@@ -70,7 +70,7 @@ public class Util {
 		int[] ids = OreDictionary.getOreIDs(stack);
 		HashMap<Integer, String> entries = new HashMap<Integer,String>();
 		for (int i = 0; i < ids.length; i++) {
-			entries.put(i, OreDictionary.getOreName(ids[i]));
+			entries.put(i+1, OreDictionary.getOreName(ids[i]));
 		}
 		return entries;
 	}

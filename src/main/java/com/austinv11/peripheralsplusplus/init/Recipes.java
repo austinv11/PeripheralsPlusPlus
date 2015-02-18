@@ -4,7 +4,6 @@ import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.recipe.ContainerRecipe;
 import com.austinv11.peripheralsplusplus.recipe.SatelliteUpgradeRecipe;
-import com.austinv11.peripheralsplusplus.recipe.UpgradeRecipe;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -57,7 +56,6 @@ public class Recipes {
 				ISatelliteUpgrade upgrade = PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.get(i)).getUpgrade();
 				GameRegistry.addRecipe(new SatelliteUpgradeRecipe(new ItemStack(PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.get(i))), upgrade.getRecipe(), upgrade.doesRecipeRetainNBT()));
 			}
-			GameRegistry.addRecipe(new UpgradeRecipe());
 			GameRegistry.addShapelessRecipe(new ItemStack(ModItems.satellite), new ItemStack(ModItems.satellite));
 		}
 		if (Config.enableSpeaker)

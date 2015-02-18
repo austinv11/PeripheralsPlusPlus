@@ -41,6 +41,7 @@ public class Config {
 	public static boolean enableSmartHelmet = true;
     public static double noteBlockRange = 16;
     public static boolean noteBlockEnabled = true;
+	public static boolean enableReaderTurtle = true;
 
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)
