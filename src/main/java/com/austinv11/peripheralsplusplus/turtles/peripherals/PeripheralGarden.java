@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.turtles.peripherals;
 
+import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -32,6 +33,8 @@ public class PeripheralGarden extends MountedPeripheral {
 
     @Override
     public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+        if (!Config.enableGardeningTurtle)
+            throw new LuaException("Gardening Turtles have been disabled!");
         if (method == 0) {
             int blockX = turtle.getPosition().posX + Facing.offsetsXForSide[turtle.getDirection()];
             int blockY = turtle.getPosition().posY + Facing.offsetsYForSide[turtle.getDirection()];
