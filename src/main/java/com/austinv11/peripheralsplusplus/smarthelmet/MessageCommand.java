@@ -10,7 +10,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import java.awt.*;
 import java.util.Stack;
 
-public class MessageCommand extends ICommand {
+public class MessageCommand extends HelmetCommand {
 
 	public static Stack<String> messageStack = new Stack<String>();
 

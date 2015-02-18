@@ -68,8 +68,10 @@ public class Recipes {
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModBlocks.meBridge), new ItemStack(GameRegistry.findItem("appliedenergistics2", "tile.BlockInterface")), new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Cable"), 1, 1)));
 		if (Config.enableTankTurtle)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.tank), "ggg", "gmg", "ggg", 'g', "blockGlass", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Cable"), 1, 1)));
-		if (Config.enableSmartHelmet)
+		if (Config.enableSmartHelmet) {
 			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(ModItems.smartHelmet), new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1), Items.iron_helmet));
+			GameRegistry.addShapelessRecipe(new ItemStack(ModItems.smartHelmet), new ItemStack(ModItems.smartHelmet));
+		}
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.antenna), "sms", " i ", "ppp", 's', "stone", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1), 'i', "ingotIron", 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate)));
         if (Config.noteBlockEnabled)
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.noteBlock), "igi", "rnr", "igi", 'i', "ingotIron", 'g', "ingotGold", 'r', "dustRedstone", 'n', Blocks.noteblock));

@@ -50,18 +50,19 @@ public class ItemSatellite extends ItemPPP {
 	@Override
 	public void onUpdate(ItemStack itemStack, World world, Entity entity, int slot, boolean p_77663_5_) {
 		if (entity instanceof EntityPlayer)
-			if (((EntityPlayer) entity).getCurrentEquippedItem().equals(itemStack))
-				if (!world.isRemote) {
-					SatelliteInventory inv = getInventoryFromStack((EntityPlayer) entity);
-					if (inv != null)
-						if (inv.items.containsKey(1) && PeripheralsPlusPlusAPI.getUpgradeFromItem(inv.items.get(1).getItem()) != null) {
-							ISatelliteUpgrade up = PeripheralsPlusPlusAPI.getUpgradeFromItem(inv.items.get(1).getItem());
-							if (calcWeight(itemStack)+up.getAddonWeight() <= 1.0F) {
-								inv.setInventorySlotContents(inv.getSizeInventory()+1, inv.getStackInSlot(1));
-								inv.setInventorySlotContents(1, null);
+			if (((EntityPlayer) entity).getCurrentEquippedItem() != null)
+				if (((EntityPlayer) entity).getCurrentEquippedItem().equals(itemStack))
+					if (!world.isRemote) {
+						SatelliteInventory inv = getInventoryFromStack((EntityPlayer) entity);
+						if (inv != null)
+							if (inv.items.containsKey(1) && PeripheralsPlusPlusAPI.getUpgradeFromItem(inv.items.get(1).getItem()) != null) {
+								ISatelliteUpgrade up = PeripheralsPlusPlusAPI.getUpgradeFromItem(inv.items.get(1).getItem());
+								if (calcWeight(itemStack)+up.getAddonWeight() <= 1.0F) {
+									inv.setInventorySlotContents(inv.getSizeInventory()+1, inv.getStackInSlot(1));
+									inv.setInventorySlotContents(1, null);
+								}
 							}
-						}
-				}
+					}
 	}
 
 	private float calcWeight(ItemStack stack) {

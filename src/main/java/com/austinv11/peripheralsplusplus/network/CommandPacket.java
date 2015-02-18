@@ -1,7 +1,7 @@
 package com.austinv11.peripheralsplusplus.network;
 
 import com.austinv11.peripheralsplusplus.client.gui.GuiSmartHelmetOverlay;
-import com.austinv11.peripheralsplusplus.smarthelmet.ICommand;
+import com.austinv11.peripheralsplusplus.smarthelmet.HelmetCommand;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
@@ -14,18 +14,18 @@ import java.util.UUID;
 
 public class CommandPacket implements IMessage {
 
-	public ICommand[] commands;
+	public HelmetCommand[] commands;
 	public UUID uuid;
 	public boolean doAdd = false;
 
 	public CommandPacket() {}
 
-	public CommandPacket(ICommand[] commands, UUID uuid) {
+	public CommandPacket(HelmetCommand[] commands, UUID uuid) {
 		this.commands = commands;
 		this.uuid = uuid;
 	}
 
-	public CommandPacket(ICommand[] commands, UUID uuid, boolean doAdd) {
+	public CommandPacket(HelmetCommand[] commands, UUID uuid, boolean doAdd) {
 		this(commands, uuid);
 		this.doAdd = doAdd;
 	}
@@ -35,12 +35,12 @@ public class CommandPacket implements IMessage {
 		NBTTagCompound tagCompound = ByteBufUtils.readTag(buf);
 		uuid = UUID.fromString(tagCompound.getString("uuid"));
 		int num = tagCompound.getInteger("num");
-		commands = new ICommand[num];
+		commands = new HelmetCommand[num];
 		for (int i = 0; i < num; i++) {
 			NBTTagCompound tag = tagCompound.getCompoundTag(i+"");
-			ICommand command = null;
+			HelmetCommand command = null;
 			try {
-				command = ICommand.getCommandFromName(tag.getString("type"));
+				command = HelmetCommand.getCommandFromName(tag.getString("type"));
 				command.readFromNBT(tag.getCompoundTag("command"));
 				commands[i] = command;
 			} catch (Exception e) {
@@ -73,12 +73,12 @@ public class CommandPacket implements IMessage {
 
 		@Override
 		public IMessage onMessage(CommandPacket message, MessageContext ctx) {
-			ArrayDeque<ICommand> commands = new ArrayDeque<ICommand>();
+			ArrayDeque<HelmetCommand> commands = new ArrayDeque<HelmetCommand>();
 			if (message.doAdd) {
 				if (GuiSmartHelmetOverlay.renderStack.containsKey(message.uuid))
 					commands = GuiSmartHelmetOverlay.renderStack.get(message.uuid);
 			}
-			for (ICommand command : message.commands)
+			for (HelmetCommand command : message.commands)
 				if (command != null)
 					commands.offer(command);
 			GuiSmartHelmetOverlay.renderStack.put(message.uuid, commands);

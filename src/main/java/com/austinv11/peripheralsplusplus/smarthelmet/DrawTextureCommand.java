@@ -12,7 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
-public class DrawTextureCommand extends ICommand {
+public class DrawTextureCommand extends HelmetCommand {
 
 	public String resource;
 	public int x, y, u, v, width, height;
