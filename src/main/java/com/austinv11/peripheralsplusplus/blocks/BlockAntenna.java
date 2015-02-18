@@ -75,7 +75,16 @@ public class BlockAntenna extends BlockPPP implements ITileEntityProvider, IPeri
 			UUID id = antenna.identifier;
 			NBTHelper.setString(player.getCurrentEquippedItem(), "identifier", id.toString());
 			List<String> info = new ArrayList<String>();
-			info.add(Reference.Colors.RESET+Reference.Colors.GRAY+id.toString());
+
+			if (antenna.getLabel() == null) {
+				info.add(Reference.Colors.RESET + Reference.Colors.GRAY + id.toString());
+			}
+			else {
+				String label = antenna.getLabel();
+				info.add(Reference.Colors.RESET + Reference.Colors.GRAY + label);
+				NBTHelper.setString(player.getCurrentEquippedItem(), "label", label);
+			}
+
 			NBTHelper.setInfo(player.getCurrentEquippedItem(), info);
 		}
 		return true;
