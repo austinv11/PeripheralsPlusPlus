@@ -18,6 +18,7 @@ public abstract class MountedTileEntity extends TileEntity implements IPeriphera
 
 	@Override
 	public void detach(IComputerAccess computer) {
+		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
 		computer.unmount(DynamicMount.DIRECTORY);
 	}
 }
