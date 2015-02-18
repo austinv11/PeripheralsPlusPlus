@@ -37,7 +37,7 @@ public class RenderAntenna extends TileEntitySpecialRenderer {
 			case WEST:
 				return 0.7853981633974483F*6;//270
 			default:
-				return 0.0F;//0
+				return 0.7853981633974483F*4;//180
 		}
 	}
 }

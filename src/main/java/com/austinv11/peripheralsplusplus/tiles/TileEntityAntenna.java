@@ -38,6 +38,7 @@ public class TileEntityAntenna extends MountedTileEntity {
 	private HashMap<IComputerAccess, Boolean> computers = new HashMap<IComputerAccess,Boolean>();
 	private HashMap<Integer, LuaObjectHUD> huds = new HashMap<Integer,LuaObjectHUD>();
 	public UUID identifier;
+	public String label;
 
 	public TileEntityAntenna() {
 		super();
@@ -53,12 +54,16 @@ public class TileEntityAntenna extends MountedTileEntity {
 		super.readFromNBT(nbttagcompound);
 		if (nbttagcompound.hasKey("identifier"))
 			identifier = UUID.fromString(nbttagcompound.getString("identifier"));
+		if (nbttagcompound.hasKey("label"))
+			label = nbttagcompound.getString("label");
 	}
 
 	@Override
 	public void writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
 		nbttagcompound.setString("identifier", identifier.toString());
+		if (label != null)
+			nbttagcompound.setString("label", label);
 	}
 
 	@Override
@@ -72,7 +77,9 @@ public class TileEntityAntenna extends MountedTileEntity {
 				"connectToSatelliteById",/*Gets an handle representing a satellite*/
 				//===Satellite APIs end===
 				"getPlayers",/*Lists players wearing smart helmets linked to this antenna*/
-				"getHUD"/*Returns a hud handle for the given player*/};
+				"getHUD",/*Returns a hud handle for the given player*/
+				"setLabel",/*Sets the label of the antenna*/
+				"getLabel"/*Gets the current label of the antenna*/};
 	}
 
 	@Override
@@ -157,6 +164,16 @@ public class TileEntityAntenna extends MountedTileEntity {
 					context.pullEvent("resolution");
 					return new Object[]{obj};
 				}
+			case 4:
+				synchronized (this){
+					if (arguments.length != 1)
+						throw new LuaException("Incorrect Arguments!");
+					this.setLabel(arguments[0].toString());
+				}
+			case 5:
+				synchronized (this){
+					return new Object[]{this.getLabel()};
+				}
 		}
 //		}catch (Exception e) {
 //			e.printStackTrace();
@@ -234,5 +251,15 @@ public class TileEntityAntenna extends MountedTileEntity {
 				if (comp.getID() == id)
 					comp.queueEvent("resolution", new Object[]{height, width});
 		}
+	}
+
+	public void setLabel(String newLabel)
+	{
+		this.label = newLabel;
+	}
+
+	public String getLabel()
+	{
+		return this.label;
 	}
 }

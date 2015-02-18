@@ -7,7 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import java.awt.*;
 
-public class DrawRectangleCommand extends ICommand {
+public class DrawRectangleCommand extends HelmetCommand {
 
 	public int x1,y1,x2,y2;
 	public Color color, color2;

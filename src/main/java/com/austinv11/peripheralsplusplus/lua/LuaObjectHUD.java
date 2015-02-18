@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class LuaObjectHUD implements ILuaObject{
 
-	public ArrayDeque<ICommand> renderStack = new ArrayDeque<ICommand>();
+	public ArrayDeque<HelmetCommand> renderStack = new ArrayDeque<HelmetCommand>();
 	private EntityPlayer player;
 	public int width = -1;
 	public int height = -1;
@@ -182,7 +182,7 @@ public class LuaObjectHUD implements ILuaObject{
 				renderStack.add(new MessageCommand());
 				break;
 			case 8:
-				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(new ICommand[0], uuid), (EntityPlayerMP) player);
+				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(new HelmetCommand[0], uuid), (EntityPlayerMP) player);
 				MessageCommand.messageStack.clear();
 				renderStack.clear();
 				renderStack.add(new MessageCommand());
@@ -214,8 +214,8 @@ public class LuaObjectHUD implements ILuaObject{
 		return new Object[0];
 	}
 
-	private ICommand[] stackToArray() {
-		ICommand[] array = new ICommand[renderStack.size()];
+	private HelmetCommand[] stackToArray() {
+		HelmetCommand[] array = new HelmetCommand[renderStack.size()];
 		int i = 0;
 		while (!renderStack.isEmpty()) {
 			array[i] = renderStack.poll();
