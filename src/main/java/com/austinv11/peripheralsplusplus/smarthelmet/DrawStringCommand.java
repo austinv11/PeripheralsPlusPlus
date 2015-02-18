@@ -6,7 +6,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class DrawStringCommand extends ICommand {
+public class DrawStringCommand extends HelmetCommand {
 
 	public String message;
 	public int x,y,color;
