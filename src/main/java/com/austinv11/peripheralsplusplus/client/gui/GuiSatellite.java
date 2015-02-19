@@ -3,6 +3,8 @@ package com.austinv11.peripheralsplusplus.client.gui;
 import com.austinv11.peripheralsplusplus.items.ItemSatellite;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.containers.ContainerSatellite;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.ResourceLocation;
@@ -10,6 +12,7 @@ import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
+@SideOnly(Side.CLIENT)
 public class GuiSatellite extends GuiContainer {
 	
 	private int x, y, z;

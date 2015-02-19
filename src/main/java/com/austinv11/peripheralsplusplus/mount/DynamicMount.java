@@ -61,7 +61,7 @@ public class DynamicMount implements IMount {
 		for (File f : file.listFiles()) {
 			String type = getSafeType();
 			if (f.getName().equals(type) || file.getAbsolutePath().contains(type))
-				if (!path.contains("json"))
+				if (!path.contains("index"))
 					contents.add(f.getName());
 		}
 	}

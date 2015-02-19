@@ -66,6 +66,7 @@ public class PeripheralGarden extends MountedPeripheral {
                 return new Object[]{Math.floor((turtle.getWorld().getBlockMetadata(blockX, blockY, blockZ) / (blockFacing instanceof BlockCocoa ? 8.0F : 7.0F)) * 100.0F)};
             }
         } else if (method == 3) {
+			boolean success = false;
             if (turtle.getInventory().getStackInSlot(turtle.getSelectedSlot()) != null && turtle.getInventory().getStackInSlot(turtle.getSelectedSlot()).isItemEqual(new ItemStack(Items.dye, 1, 15))) {
                 ItemStack bonemeal = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot());
                 int blockX = turtle.getPosition().posX + Facing.offsetsXForSide[turtle.getDirection()];
@@ -75,14 +76,16 @@ public class PeripheralGarden extends MountedPeripheral {
                 Block blockFacing = turtle.getWorld().getBlock(blockX, blockY, blockZ);
 
                 if (blockFacing instanceof IGrowable) {
-                    ItemDye.applyBonemeal(bonemeal, turtle.getWorld(), blockX, blockY, blockZ, null);
+					success = ItemDye.applyBonemeal(bonemeal, turtle.getWorld(), blockX, blockY, blockZ, null);
                     if (!turtle.getWorld().isRemote) {
                         turtle.getWorld().playAuxSFX(2005, blockX, blockY, blockZ, 0);
                     }
                 }
             }
+			return new Object[]{success};
         } else if (method == 4) {
-            if (turtle.getInventory().getStackInSlot(turtle.getSelectedSlot()) != null && turtle.getInventory().getStackInSlot(turtle.getSelectedSlot()).isItemEqual(new ItemStack(Items.dye, 1, 15))) {
+			boolean success = false;
+			if (turtle.getInventory().getStackInSlot(turtle.getSelectedSlot()) != null && turtle.getInventory().getStackInSlot(turtle.getSelectedSlot()).isItemEqual(new ItemStack(Items.dye, 1, 15))) {
                 ItemStack bonemeal = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot());
                 int blockX = turtle.getPosition().posX;
                 int blockY = turtle.getPosition().posY + +1;
@@ -91,13 +94,15 @@ public class PeripheralGarden extends MountedPeripheral {
                 Block blockFacing = turtle.getWorld().getBlock(blockX, blockY, blockZ);
 
                 if (blockFacing instanceof IGrowable) {
-                    ItemDye.applyBonemeal(bonemeal, turtle.getWorld(), blockX, blockY, blockZ, null);
+					success = ItemDye.applyBonemeal(bonemeal, turtle.getWorld(), blockX, blockY, blockZ, null);
                     if (!turtle.getWorld().isRemote) {
                         turtle.getWorld().playAuxSFX(2005, blockX, blockY, blockZ, 0);
                     }
                 }
             }
+			return new Object[]{success};
         } else if (method == 5) {
+			boolean success = false;
             if (turtle.getInventory().getStackInSlot(turtle.getSelectedSlot()) != null && turtle.getInventory().getStackInSlot(turtle.getSelectedSlot()).isItemEqual(new ItemStack(Items.dye, 1, 15))) {
                 ItemStack bonemeal = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot());
                 int blockX = turtle.getPosition().posX;
@@ -107,12 +112,13 @@ public class PeripheralGarden extends MountedPeripheral {
                 Block blockFacing = turtle.getWorld().getBlock(blockX, blockY, blockZ);
 
                 if (blockFacing instanceof IGrowable) {
-                    ItemDye.applyBonemeal(bonemeal, turtle.getWorld(), blockX, blockY, blockZ, null);
+					success = ItemDye.applyBonemeal(bonemeal, turtle.getWorld(), blockX, blockY, blockZ, null);
                     if (!turtle.getWorld().isRemote) {
                         turtle.getWorld().playAuxSFX(2005, blockX, blockY, blockZ, 0);
                     }
                 }
             }
+			return new Object[]{success};
         }
 
         return new Object[0];

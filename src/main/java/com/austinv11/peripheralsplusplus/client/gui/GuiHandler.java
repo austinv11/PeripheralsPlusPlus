@@ -36,6 +36,8 @@ public class GuiHandler implements IGuiHandler {
 			return new GuiRocket(player, world, x/*In this case, the entity id*/, y, z);
 		} else if (id == Reference.GUIs.SATELLITE.ordinal()) {
 			return new GuiSatellite(player, world, x, y, z);
+		} else if (id == Reference.GUIs.HELMET.ordinal()) {
+			return new GuiHelmet();
 		}
 		return null;
 	}
