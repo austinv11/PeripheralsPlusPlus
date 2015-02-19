@@ -57,6 +57,7 @@ public class Recipes {
 				GameRegistry.addRecipe(new SatelliteUpgradeRecipe(new ItemStack(PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.get(PeripheralsPlusPlus.SATELLITE_UPGRADE_ID_REGISTRY.get(i))), upgrade.getRecipe(), upgrade.doesRecipeRetainNBT()));
 			}
 			GameRegistry.addShapelessRecipe(new ItemStack(ModItems.satellite), new ItemStack(ModItems.satellite));
+			GameRegistry.addShapelessRecipe(new ItemStack(ModItems.positionalUnit), Items.ender_eye, new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1));
 		}
 		if (Config.enableSpeaker)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.speaker), "gng", "nrn", "gng", 'g', "ingotGold", 'n', Blocks.noteblock, 'r', "blockRedstone"));

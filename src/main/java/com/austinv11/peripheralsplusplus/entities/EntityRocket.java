@@ -275,7 +275,7 @@ public class EntityRocket extends EntityInventory{
 	}
 
 	public boolean isSkyClear() {
-		for (double i = this.posY-1; i < 255; i+=1)
+		for (double i = this.posY; i < 255; i+=1)
 			if (!this.worldObj.isAirBlock((int)this.posX, (int)i, (int)this.posZ))
 				return false;
 		return true;
