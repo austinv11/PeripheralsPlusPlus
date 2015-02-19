@@ -1,4 +1,5 @@
 {
-  "ver" : "1.0",
-  "dirs" : ["chatBox", "environmentScanner", "analyzers", "oreDictionary", "barrel", "compass", "feeder", "xp", "speaker"]
+  "ver" : "1.1",
+  "dirs" : ["chatBox", "environmentScanner", "analyzers", "oreDictionary", "barrel", "compass", "feeder", "xp", "speaker",
+  "noteBlock", "peripheralContainer", "antenna"]
 }
