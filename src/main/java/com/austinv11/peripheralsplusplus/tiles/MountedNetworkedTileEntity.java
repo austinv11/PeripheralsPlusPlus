@@ -17,6 +17,7 @@ public abstract class MountedNetworkedTileEntity extends NetworkedTileEntity imp
 
 	@Override
 	public void detach(IComputerAccess computer) {
+		computer.mount(DynamicMount.DIRECTORY, new DynamicMount(this));
 		computer.unmount(DynamicMount.DIRECTORY);
 	}
 }

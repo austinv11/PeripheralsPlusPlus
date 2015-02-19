@@ -24,7 +24,7 @@ public class Reference {
 	public static final int GARDEN_UPGRADE = 129;
 
 	public static enum GUIs {
-		ANALYZER,ROCKET,SATELLITE;
+		ANALYZER,ROCKET,SATELLITE,HELMET;
 	}
 
 	public static class Colors {

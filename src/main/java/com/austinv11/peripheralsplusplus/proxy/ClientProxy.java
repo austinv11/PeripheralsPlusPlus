@@ -7,6 +7,7 @@ import com.austinv11.peripheralsplusplus.client.models.ItemRenderAntenna;
 import com.austinv11.peripheralsplusplus.client.models.RenderAntenna;
 import com.austinv11.peripheralsplusplus.client.models.RenderRocket;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
+import com.austinv11.peripheralsplusplus.event.SmartHelmetHandler;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
@@ -14,6 +15,7 @@ import com.austinv11.peripheralsplusplus.turtles.TurtleCompass;
 import com.austinv11.peripheralsplusplus.utils.IconManager;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.registry.VillagerRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -51,5 +53,11 @@ public class ClientProxy extends CommonProxy {
 	public void prepareGuis() {
 		MinecraftForge.EVENT_BUS.register(new GuiRocket.EventHandler());
 		MinecraftForge.EVENT_BUS.register(new GuiSmartHelmetOverlay());
+	}
+
+	@SideOnly(Side.CLIENT)
+	@Override
+	public void registerEvents() {
+		FMLCommonHandler.instance().bus().register(new SmartHelmetHandler());
 	}
 }
