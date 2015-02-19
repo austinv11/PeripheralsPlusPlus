@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.event;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
+import com.austinv11.peripheralsplusplus.client.gui.GuiHelmet;
 import com.austinv11.peripheralsplusplus.items.ItemSmartHelmet;
 import com.austinv11.peripheralsplusplus.network.InputEventPacket;
 import com.austinv11.peripheralsplusplus.utils.NBTHelper;
@@ -10,6 +11,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.client.event.GuiScreenEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -30,6 +32,13 @@ public class SmartHelmetHandler {
 		if (checkSmartHelmetStatus()) {
 			PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(UUID.fromString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getTagCompound().getString("identifier")), Keyboard.getEventKey(), Keyboard.getEventKeyState(), "keyInput", Minecraft.getMinecraft().thePlayer.getDisplayName()));
 		}
+	}
+
+	@SubscribeEvent
+	public void onButtonClick(GuiScreenEvent.ActionPerformedEvent.Post event) {
+		if (event.gui instanceof GuiHelmet)
+			if (checkSmartHelmetStatus())
+				PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(UUID.fromString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getTagCompound().getString("identifier")), event.button.id, true, "buttonClicked", Minecraft.getMinecraft().thePlayer.getDisplayName()));
 	}
 
 	private boolean checkSmartHelmetStatus() {

@@ -11,19 +11,17 @@ import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.UUID;
 
-public class InputEventPacket implements IMessage {
+public class TextFieldInputEventPacket implements IMessage {
 
 	public UUID uuid;
-	public int key;
-	public String event, player;
-	public boolean state;
+	public String event, player, text, key;
 
-	public InputEventPacket() {}
+	public TextFieldInputEventPacket() {}
 
-	public InputEventPacket(UUID uuid, int key, boolean state, String event, String player) {
+	public TextFieldInputEventPacket(UUID uuid, String key, String text, String event, String player) {
 		this.uuid = uuid;
 		this.key = key;
-		this.state = state;
+		this.text = text;
 		this.event = event;
 		this.player = player;
 	}
@@ -32,31 +30,31 @@ public class InputEventPacket implements IMessage {
 	public void fromBytes(ByteBuf buf) {
 		NBTTagCompound tag = ByteBufUtils.readTag(buf);
 		uuid = UUID.fromString(tag.getString("uuid"));
-		key = tag.getInteger("key");
+		key = tag.getString("key");
 		event = tag.getString("event");
 		player = tag.getString("player");
-		state = tag.getBoolean("text");
+		text = tag.getString("text");
 	}
 
 	@Override
 	public void toBytes(ByteBuf buf) {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setString("uuid", uuid.toString());
-		tag.setInteger("key", key);
+		tag.setString("key", key);
 		tag.setString("event", event);
 		tag.setString("player", player);
-		tag.setBoolean("text", state);
+		tag.setString("text", text);
 		ByteBufUtils.writeTag(buf, tag);
 	}
 
-	public static class InputEventPacketHandler implements IMessageHandler<InputEventPacket, IMessage> {
+	public static class TextFieldInputEventPacketHandler implements IMessageHandler<TextFieldInputEventPacket, IMessage> {
 
 		@Override
-		public IMessage onMessage(InputEventPacket message, MessageContext ctx) {
+		public IMessage onMessage(TextFieldInputEventPacket message, MessageContext ctx) {
 			TileEntityAntenna antenna = TileEntityAntenna.antenna_registry.get(message.uuid);
 			if (antenna != null) {
 				for (IComputerAccess computer : antenna.computers.keySet())
-					computer.queueEvent(message.event, new Object[]{message.player, message.key, message.state});
+					computer.queueEvent(message.event, new Object[]{message.player, message.key, message.text});
 			}
 			return null;
 		}

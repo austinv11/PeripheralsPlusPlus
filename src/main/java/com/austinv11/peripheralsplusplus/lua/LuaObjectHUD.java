@@ -2,7 +2,7 @@ package com.austinv11.peripheralsplusplus.lua;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.network.CommandPacket;
-import com.austinv11.peripheralsplusplus.reference.Reference;
+import com.austinv11.peripheralsplusplus.network.GuiPacket;
 import com.austinv11.peripheralsplusplus.smarthelmet.*;
 import com.austinv11.peripheralsplusplus.utils.Util;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -13,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 
 import java.awt.*;
 import java.util.ArrayDeque;
+import java.util.Stack;
 import java.util.UUID;
 
 public class LuaObjectHUD implements ILuaObject{
@@ -23,11 +24,15 @@ public class LuaObjectHUD implements ILuaObject{
 	public int height = -1;
 	private UUID uuid;
 	private boolean isGui = false;
+	public MessageCommand messageCommand = new MessageCommand();
 
 	public LuaObjectHUD(String player, UUID uuid) {
 		this.player = Util.getPlayer(player);
 		this.uuid = uuid;
-		renderStack.add(new MessageCommand());
+		if (!MessageCommand.messageStacks.containsKey(player))
+			MessageCommand.messageStacks.put(player, new Stack<String>());
+		messageCommand.player = player;
+		renderStack.add(messageCommand);
 	}
 
 	public LuaObjectHUD(String player, UUID uuid, boolean isGui) {
@@ -37,7 +42,7 @@ public class LuaObjectHUD implements ILuaObject{
 
 	@Override
 	public String[] getMethodNames() {
-		return isGui ? new String[]{"getResolution", "sendMessage", "drawString", "drawTexture", "drawRectangle", "drawHorizontalLine", "drawVerticalLine", "getColorFromRGB", "sync", "clear", "add", "open", "close", "drawBackground"} : new String[]{"getResolution", "sendMessage", "drawString", "drawTexture", "drawRectangle", "drawHorizontalLine", "drawVerticalLine", "getColorFromRGB", "sync", "clear", "add", "getGUI"};
+		return isGui ? new String[]{"getResolution", "sendMessage", "drawString", "drawTexture", "drawRectangle", "drawHorizontalLine", "drawVerticalLine", "getColorFromRGB", "sync", "clear", "add", "open", "close", "drawBackground", "addButton", "addTextField"} : new String[]{"getResolution", "sendMessage", "drawString", "drawTexture", "drawRectangle", "drawHorizontalLine", "drawVerticalLine", "getColorFromRGB", "sync", "clear", "add", "getGUI"};
 	}
 
 	@Override
@@ -51,7 +56,7 @@ public class LuaObjectHUD implements ILuaObject{
 					throw new LuaException("Not enough arguments");
 				if (!(arguments[0] instanceof String))
 					throw new LuaException("Bad argument #1 (expected string)");
-				MessageCommand.messageStack.push((String) arguments[0]);
+				MessageCommand.messageStacks.get(player.getDisplayName()).push((String) arguments[0]);
 				break;
 			case 2:
 				if (arguments.length < 3)
@@ -198,30 +203,30 @@ public class LuaObjectHUD implements ILuaObject{
 				return new Object[]{new Color((int)(double)(Double)arguments[0], (int)(double)(Double)arguments[1], (int)(double)(Double)arguments[2]).getRGB()};
 			case 8:
 				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(stackToArray(), uuid, false, isGui), (EntityPlayerMP) player);
-				MessageCommand.messageStack.clear();
+				MessageCommand.messageStacks.get(player.getDisplayName()).clear();
 				renderStack.clear();
-				renderStack.add(new MessageCommand());
+				renderStack.add(messageCommand);
 				break;
 			case 9:
 				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(new HelmetCommand[0], uuid, false, isGui), (EntityPlayerMP) player);
-				MessageCommand.messageStack.clear();
+				MessageCommand.messageStacks.get(player.getDisplayName()).clear();
 				renderStack.clear();
-				renderStack.add(new MessageCommand());
+				renderStack.add(messageCommand);
 				break;
 			case 10:
 				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(stackToArray(), uuid, true, isGui), (EntityPlayerMP) player);
-				MessageCommand.messageStack.clear();
+				MessageCommand.messageStacks.get(player.getDisplayName()).clear();
 				renderStack.clear();
-				renderStack.add(new MessageCommand());
+				renderStack.add(messageCommand);
 				break;
 			case 11:
 				if (isGui)
-					player.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.HELMET.ordinal(), player.worldObj, (int)player.posX, (int)player.posY, (int)player.posZ);
+					PeripheralsPlusPlus.NETWORK.sendTo(new GuiPacket(false), (EntityPlayerMP) this.player);
 				else
 					return new Object[]{new LuaObjectHUD(this.player.getDisplayName(), this.uuid, true)};
 				break;
 			case 12:
-				player.closeScreen();
+				PeripheralsPlusPlus.NETWORK.sendTo(new GuiPacket(true), (EntityPlayerMP) this.player);
 				break;
 			case 13:
 				if (arguments.length > 0 && !(arguments[0] instanceof Boolean))
@@ -232,6 +237,55 @@ public class LuaObjectHUD implements ILuaObject{
 					renderStack.add(background);
 				}else
 					renderStack.add(new DrawBackgroundCommand());
+				break;
+			case 14:
+				if (arguments.length < 6)
+					throw new LuaException("Not enough arguments");
+				if (!(arguments[0] instanceof Double))
+					throw new LuaException("Bad argument #1 (expected number)");
+				if (!(arguments[1] instanceof Double))
+					throw new LuaException("Bad argument #2 (expected number)");
+				if (!(arguments[2] instanceof Double))
+					throw new LuaException("Bad argument #3 (expected number)");
+				if (!(arguments[3] instanceof Double))
+					throw new LuaException("Bad argument #4 (expected number)");
+				if (!(arguments[4] instanceof Double))
+					throw new LuaException("Bad argument #5 (expected number)");
+				if (!(arguments[5] instanceof String))
+					throw new LuaException("Bad argument #6 (expected string)");
+				AddButtonCommand addButtonCommand = new AddButtonCommand();
+				addButtonCommand.id = (int)(double)(Double)arguments[0];
+				addButtonCommand.x = (int)(double)(Double)arguments[1];
+				addButtonCommand.y = (int)(double)(Double)arguments[2];
+				addButtonCommand.width = (int)(double)(Double)arguments[3];
+				addButtonCommand.height = (int)(double)(Double)arguments[4];
+				addButtonCommand.message = (String)arguments[5];
+				renderStack.add(addButtonCommand);
+				break;
+			case 15:
+				if (arguments.length < 5)
+					throw new LuaException("Not enough arguments");
+				if (!(arguments[0] instanceof Double))
+					throw new LuaException("Bad argument #1 (expected number)");
+				if (!(arguments[1] instanceof Double))
+					throw new LuaException("Bad argument #2 (expected number)");
+				if (!(arguments[2] instanceof Double))
+					throw new LuaException("Bad argument #3 (expected number)");
+				if (!(arguments[3] instanceof Double))
+					throw new LuaException("Bad argument #4 (expected number)");
+				if (!(arguments[4] instanceof Double))
+					throw new LuaException("Bad argument #5 (expected number)");
+				if (arguments.length > 6 && !(arguments[5] instanceof String))
+					throw new LuaException("Bad argument #6 (expected string)");
+				AddTextFieldCommand addTextFieldCommand = new AddTextFieldCommand();
+				addTextFieldCommand.id = (int)(double)(Double)arguments[0];
+				addTextFieldCommand.x = (int)(double)(Double)arguments[1];
+				addTextFieldCommand.y = (int)(double)(Double)arguments[2];
+				addTextFieldCommand.width = (int)(double)(Double)arguments[3];
+				addTextFieldCommand.height = (int)(double)(Double)arguments[4];
+				if (arguments.length > 5)
+					addTextFieldCommand.message = (String)arguments[5];
+				renderStack.add(addTextFieldCommand);
 				break;
 		}
 //		}catch (Exception e) {

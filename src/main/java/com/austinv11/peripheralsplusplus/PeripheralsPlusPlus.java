@@ -74,6 +74,8 @@ public class PeripheralsPlusPlus {
 		NETWORK.registerMessage(CommandPacket.CommandPacketHandler.class, CommandPacket.class, 7, Side.CLIENT);
         NETWORK.registerMessage(ParticlePacket.ParticlePacketHandler.class, ParticlePacket.class, 8, Side.CLIENT);
 		NETWORK.registerMessage(InputEventPacket.InputEventPacketHandler.class, InputEventPacket.class, 9, Side.SERVER);
+		NETWORK.registerMessage(GuiPacket.GuiPacketHandler.class, GuiPacket.class, 10, Side.CLIENT);
+		NETWORK.registerMessage(TextFieldInputEventPacket.TextFieldInputEventPacketHandler.class, TextFieldInputEventPacket.class, 11, Side.SERVER);
 		proxy.iconManagerInit();
 		proxy.prepareGuis();
 		proxy.registerEvents();

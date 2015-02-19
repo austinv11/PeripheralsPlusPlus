@@ -8,11 +8,14 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.awt.*;
+import java.util.HashMap;
 import java.util.Stack;
 
 public class MessageCommand extends HelmetCommand {
 
 	public static Stack<String> messageStack = new Stack<String>();
+	public static HashMap<String, Stack<String>> messageStacks = new HashMap<String,Stack<String>>();
+	public String player;
 
 	@SideOnly(Side.CLIENT)
 	@Override
@@ -40,6 +43,7 @@ public class MessageCommand extends HelmetCommand {
 
 	@Override
 	public void writeToNBT(NBTTagCompound tagCompound) {
-		tagCompound.setString("stack", messageStack.toString());
+		Stack<String> messages = messageStacks.get(player);
+		tagCompound.setString("stack", messages.toString());
 	}
 }
