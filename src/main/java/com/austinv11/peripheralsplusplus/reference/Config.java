@@ -43,8 +43,9 @@ public class Config {
     public static boolean noteBlockEnabled = true;
 	public static boolean enableReaderTurtle = true;
 	public static boolean enableGardeningTurtle = true;
+    public static boolean enableChunkLoading;
 
-	public static void setWhitelist(int[] dims) {
+    public static void setWhitelist(int[] dims) {
 		for (int i : dims)
 			dimWhitelist.add(i);
 	}

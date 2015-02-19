@@ -68,6 +68,7 @@ public class ConfigurationHandler {
             Config.noteBlockEnabled = config.get("NoteBlock", "noteBlockEnabled", true, "If disabled, crafting recipes will be removed and existing items will stop functioning").getBoolean(true);
 			Config.enableReaderTurtle = config.get("Sign Reading Turtle", "enableReaderTurtle", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean();
 			Config.enableGardeningTurtle = config.get("Gardening Turtle", "enabelGardeningTurtle", true, "If disabled, the recipe will be disabled the current peripherals would cease to work").getBoolean();
+            Config.enableChunkLoading = config.get("Chunk Loading Turtle", "enableChunkLoadingTurtle", true, "If disabled, the recipe will be disabled. The current peripheral would cease to work").getBoolean();
 		}catch (Exception e){//Log exception
 			Logger.warn("Config exception!");
 			Logger.warn(e.getStackTrace());
