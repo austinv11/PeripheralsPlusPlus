@@ -46,7 +46,7 @@ public class TurtleSignReader implements ITurtleUpgrade
     @SideOnly(Side.CLIENT)
     @Override
     public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
-        return ModBlocks.dummyBlock.getIcon(0,0);
+        return ModBlocks.dummyBlock.getIcon(0,2);
     }
 
     @Override

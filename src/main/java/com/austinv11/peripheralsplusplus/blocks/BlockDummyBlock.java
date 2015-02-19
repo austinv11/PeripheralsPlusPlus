@@ -7,7 +7,7 @@ import net.minecraft.util.IIcon;
 
 public class BlockDummyBlock extends BlockPPP {
 
-	private String[] locations = new String[]{"peripheralsplusplus:feederUpgrade", "peripheralsplusplus:tank"};
+	private String[] locations = new String[]{"peripheralsplusplus:feederUpgrade", "peripheralsplusplus:tank", "peripheralsplusplus:signUpgrade", "peripheralsplusplus:gardenerUpgrade"};
 	private IIcon[] icons;
 
 	public BlockDummyBlock() {
