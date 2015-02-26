@@ -13,7 +13,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.ArrayList;
 import java.util.List;
 
-@Optional.Interface(modid = "ThermalExpansion;BuildCraft|Core", iface = "cofh.api.energy.IEnergyReceiver", striprefs = true)
+@Optional.Interface(modid = "ThermalExpansion", iface = "cofh.api.energy.IEnergyReceiver", striprefs = true)
 public class TileEntityRFCharger extends NetworkedTileEntity implements IEnergyReceiver {
 	private EnergyStorage storage = new EnergyStorage(80000);//Leadstone Capacitor
 
