@@ -6,6 +6,8 @@ import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgra
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.SatelliteUpgradeType;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.utils.NBTHelper;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -24,6 +26,12 @@ public class ItemSatellite extends ItemPPP {
 		super();
 		this.setMaxStackSize(1);
 		this.setUnlocalizedName("satellite");
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack item, EntityPlayer player, List info, boolean isShiftHeld) {
+		info.add("[WIP] This item may produce unexpected results!");
 	}
 
 	@Override

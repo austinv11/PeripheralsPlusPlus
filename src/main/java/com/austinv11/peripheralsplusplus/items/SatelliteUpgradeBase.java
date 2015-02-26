@@ -33,8 +33,8 @@ public abstract class SatelliteUpgradeBase extends ItemPPP {
 
 	@Override
 	@SideOnly(Side.CLIENT)
-	public void addInformation(ItemStack p_77624_1_, EntityPlayer p_77624_2_, List p_77624_3_, boolean p_77624_4_) {
+	public void addInformation(ItemStack item, EntityPlayer player, List info, boolean isShiftHeld) {
 		if (getUpgrade().getType() == SatelliteUpgradeType.MODIFIER)
-			p_77624_3_.add(Reference.Colors.RESET+Reference.Colors.GRAY+"Upgrade wWight: "+String.format("%.2f", getUpgrade().getAddonWeight()*100)+"%");
+			info.add(Reference.Colors.RESET+Reference.Colors.GRAY+"Upgrade wWight: "+String.format("%.2f", getUpgrade().getAddonWeight()*100)+"%");
 	}
 }

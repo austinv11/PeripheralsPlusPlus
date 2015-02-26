@@ -1,11 +1,15 @@
 package com.austinv11.peripheralsplusplus.items;
 
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Facing;
 import net.minecraft.world.World;
+
+import java.util.List;
 
 public class ItemRocket extends ItemPPP {
 
@@ -13,6 +17,12 @@ public class ItemRocket extends ItemPPP {
 		super();
 		this.setMaxStackSize(1);
 		this.setUnlocalizedName("rocket");
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void addInformation(ItemStack item, EntityPlayer player, List info, boolean isShiftHeld) {
+		info.add("[WIP] This item may produce unexpected results!");
 	}
 
 	@Override

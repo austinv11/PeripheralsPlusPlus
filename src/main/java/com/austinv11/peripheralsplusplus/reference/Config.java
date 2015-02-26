@@ -26,7 +26,7 @@ public class Config {
 	public static double teleporterPenalty = 2.0;
 	public static boolean enableEnvironmentScanner = true;
 	public static boolean enableFeederTurtle = true;
-	public static boolean enableSatellites = true;
+	public static boolean enableSatellites = false;
 	public static List<Integer> dimWhitelist = new ArrayList<Integer>();
 	public static boolean enableVillagers = true;
 	public static boolean enableProjectRedTurtles = true;

@@ -51,13 +51,13 @@ public class ConfigurationHandler {
 			Config.teleporterPenalty = config.get("Turtle Teleporters", "teleporterPenalty", 2.0, "Fuel penalty for using a Turtle Teleporter. For example, 1.0 is a 0% penalty, or 2.0 (default) is a 100% penalty").getDouble(2.0);
 			Config.enableEnvironmentScanner = config.get("Environment Scanner", "enableEnvironmentScanner", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
 			Config.enableFeederTurtle = config.get("Feeder Turtle", "enableFeederTurtle", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean(true);
-			Config.enableSatellites = config.get("Satellites", "enableSatellites", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
+			Config.enableSatellites = config.get("Satellites", "enableSatellites", false, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(false);
 			Config.setWhitelist(config.get("Satellites", "dimWhitelist", new int[]{0}, "Whitelist for dimensions that could have a satellite launch in, input dimension ids (e.g. 0 is the overworld").getIntList());
 			Config.enableVillagers = config.get("Villagers", "enableVillagers", true, "Whether to enable villagers from this mod").getBoolean(true);
 			Config.enableProjectRedTurtles = config.get("Project Red Turtles", "enableProjectRedTurtles", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
 			Config.enableSpeaker = config.get("Speaker", "enableSpeaker", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
 			Config.speechRange = config.get("Speaker", "speechRange", 64.0, "Range for the Speaker peripheral's say/tell function. Negative values indicate infinite").getDouble(64.0);
-			Config.enableAPIs = config.get("APIs", "enableAPIs", true, "This enables additional apis added by this mod, just note that if this is enabled, the *initial* computer startup is lengthened somewhat").getBoolean(true);
+//			Config.enableAPIs = config.get("APIs", "enableAPIs", true, "This enables additional apis added by this mod, just note that if this is enabled, the *initial* computer startup is lengthened somewhat").getBoolean(true);
 			Config.enablePeripheralContainer = config.get("Peripheral Container", "enablePeripheralContainer", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);
 			Config.maxNumberOfPeripherals = config.get("Peripheral Container", "maxNumberOfPeripherals", 6, "The maximum number of peripherals the container is allows to contain").getInt(6);
 			Config.enableMEBridge = config.get("ME Bridge", "enableMEBridge", true, "If disabled, the recipes will be disabled and the current peripherals would cease to work").getBoolean(true);

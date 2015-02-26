@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus;
 
-import com.austinv11.peripheralsplusplus.api.PeripheralsPlusPlusAPI;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
@@ -15,7 +14,6 @@ import com.austinv11.peripheralsplusplus.network.*;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.satellites.upgrades.GPSUpgrade;
 import com.austinv11.peripheralsplusplus.turtles.*;
 import com.austinv11.peripheralsplusplus.turtles.TurtleProjRed.ToolMaterial;
 import com.austinv11.peripheralsplusplus.turtles.TurtleProjRed.ToolType;
@@ -144,9 +142,9 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleTank());
         registerUpgrade(new TurtleNoteBlock());
 		Logger.info("All peripherals and turtle upgrades registered!");
-		Logger.info("Registering satellite upgrades...");
-		PeripheralsPlusPlusAPI.registerSatelliteUpgrade(new GPSUpgrade());
-		Logger.info("All satellite upgrades registered!");
+//		Logger.info("Registering satellite upgrades...");
+//		PeripheralsPlusPlusAPI.registerSatelliteUpgrade(new GPSUpgrade());
+//		Logger.info("All satellite upgrades registered!");
 		proxy.registerRenderers();
 		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, instance, 64, 20, true);
