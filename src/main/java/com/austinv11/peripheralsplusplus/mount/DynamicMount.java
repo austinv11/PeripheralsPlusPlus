@@ -14,7 +14,7 @@ public class DynamicMount implements IMount {
 
 	public static final String MOUNT_DIRECTORY = PeripheralsPlusPlus.BASE_PPP_DIR+"ppp_mount";
 	public static final String DIRECTORY = "/ppp";
-	public static final String JSON_VER = "1.0";
+	public static final String JSON_VER = "1.1";
 	private IPeripheral peripheral;
 
 	public DynamicMount(IPeripheral peripheral) {
@@ -25,7 +25,7 @@ public class DynamicMount implements IMount {
 		Gson gson = new Gson();
 		JSONIndex index = gson.fromJson(Util.listToString(WebUtil.readGithub("lua/index.json")), JSONIndex.class);
 		if (!index.ver.equals(JSON_VER))
-			throw new Exception("JSON version mismatch!");
+			Logger.warn("JSON Version mismatch!");
 		String[] dirs = index.dirs;
 		Logger.info(dirs.length+" directories found! Attempting to update (if necessary)...");
 		for (String d : dirs) {

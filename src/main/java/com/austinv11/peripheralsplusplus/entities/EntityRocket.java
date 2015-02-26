@@ -6,6 +6,7 @@ import com.austinv11.peripheralsplusplus.event.SatelliteLaunchEvent;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.network.RocketCountdownPacket;
 import com.austinv11.peripheralsplusplus.reference.Reference;
+import com.austinv11.peripheralsplusplus.utils.Logger;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -35,11 +36,11 @@ public class EntityRocket extends EntityInventory{
 	public boolean isFlipped = false;
 	private int flameTicker = 0;
 	private RocketSound sound;
-	public static final double ACCELERATION_MODIFIER = .3;
+	public static final double ACCELERATION_MODIFIER = .1;
 	public static final double BASE_FUEL_USAGE = 1;
-	public static final double MAX_HEIGHT = 350;
-	public static final double INITIAL_ACCELERATION_CONSTANT = .005;
-	public static final double ACCELERATION_CONSTANT = .05;
+	public static final double MAX_HEIGHT = 275 ;
+	public static final double INITIAL_ACCELERATION_CONSTANT = .05;
+	public static final double ACCELERATION_CONSTANT = .5;
 
 	public EntityRocket(World p_i1582_1_) {
 		super(p_i1582_1_);
@@ -47,8 +48,8 @@ public class EntityRocket extends EntityInventory{
 		this.ignoreFrustumCheck = true;
 		this.renderDistanceWeight = 5.0D;
 		DataWatcher data = this.getDataWatcher();
-		data.addObject(FUEL_ID, 0);
-		data.addObject(OXIDIZER_ID, 0);
+		data.addObject(FUEL_ID, Integer.MAX_VALUE);
+		data.addObject(OXIDIZER_ID,Integer.MAX_VALUE);
 		data.addObject(IS_USABLE_ID, 0);
 		data.addObject(IS_ACTIVE_ID, 0);
 		data.addObject(MOTION_ID, 0.0F);
@@ -266,6 +267,7 @@ public class EntityRocket extends EntityInventory{
 		}
 		if (getIsActive() && isFlipped)
 			setIsActive(false);
+		Logger.info(posX+","+posY+","+posZ);
 	}
 
 	@Override
