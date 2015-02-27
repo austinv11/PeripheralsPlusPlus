@@ -58,7 +58,7 @@ public class ClientProxy extends CommonProxy {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void registerEvents() {
-        super.registerEvents();
+		super.registerEvents();
 		FMLCommonHandler.instance().bus().register(new SmartHelmetHandler());
 		MinecraftForge.EVENT_BUS.register(new SmartHelmetHandler());
 	}
