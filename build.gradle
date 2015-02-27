@@ -24,7 +24,7 @@ repositories{
 
 apply plugin: 'forge'
 
-ext.buildNumber = System.getenv("BUILD_NUMBER") ?: "dev"
+ext.buildNumber = System.getenv("BUILD_ID") ?: "dev"
 version = "1.3.0-$buildNumber"
 group= "com.austinv11.peripheralsplusplus" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Peripherals++"
