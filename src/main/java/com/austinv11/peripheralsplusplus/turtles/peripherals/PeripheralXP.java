@@ -177,7 +177,7 @@ public class PeripheralXP extends MountedPeripheral {//Beware, a lot of the math
 				if (enchants == null || enchants.isEmpty())
 					return new Object[] {false};
 				ItemStack enchanted = slot.copy();
-				if (enchanted.isItemEqual(new ItemStack(Items.enchanted_book))) {
+				if (enchanted.isItemEqual(new ItemStack(Items.book))) {
 					enchanted = new ItemStack(Items.enchanted_book);
 					enchanted.stackTagCompound = new NBTTagCompound();
 					NBTTagList storedEnchantments = new NBTTagList();
