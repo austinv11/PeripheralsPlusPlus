@@ -1,12 +1,34 @@
+/*
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2013 AlgorithmX2
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package appeng.api.storage.data;
 
-import io.netty.buffer.ByteBuf;
-
-import java.io.IOException;
-
-import net.minecraft.nbt.NBTTagCompound;
 import appeng.api.config.FuzzyMode;
 import appeng.api.storage.StorageChannel;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.nbt.NBTTagCompound;
+
+import java.io.IOException;
 
 public interface IAEStack<StackType extends IAEStack>
 {
@@ -14,7 +36,7 @@ public interface IAEStack<StackType extends IAEStack>
 	/**
 	 * add two stacks together
 	 * 
-	 * @param is
+	 * @param is added item
 	 */
 	void add(StackType is);
 
@@ -28,7 +50,7 @@ public interface IAEStack<StackType extends IAEStack>
 	/**
 	 * changes the number of items in the stack.
 	 * 
-	 * @param basically
+	 * @param stackSize
 	 *            , ItemStack.stackSize = N
 	 */
 	StackType setStackSize(long stackSize);
@@ -57,12 +79,12 @@ public interface IAEStack<StackType extends IAEStack>
 	/**
 	 * change weather the item can be crafted.
 	 * 
-	 * @param isCraftable
+	 * @param isCraftable can item be crafted
 	 */
 	StackType setCraftable(boolean isCraftable);
 
 	/**
-	 * clears, requsetable, craftable, and stack sizes.
+	 * clears, requestable, craftable, and stack sizes.
 	 */
 	StackType reset();
 
@@ -71,12 +93,12 @@ public interface IAEStack<StackType extends IAEStack>
 	 * 
 	 * @return isThisRecordMeaningful
 	 */
-	boolean isMeaninful();
+	boolean isMeaningful();
 
 	/**
 	 * Adds more to the stack size...
 	 * 
-	 * @param i
+	 * @param i additional stack size
 	 */
 	void incStackSize(long i);
 
@@ -88,21 +110,21 @@ public interface IAEStack<StackType extends IAEStack>
 	/**
 	 * adds items to the requestable
 	 * 
-	 * @param i
+	 * @param i increased amount of requested items
 	 */
 	void incCountRequestable(long i);
 
 	/**
-	 * removes items from the requsetable
+	 * removes items from the requestable
 	 * 
-	 * @param i
+	 * @param i decreased amount of requested items
 	 */
 	void decCountRequestable(long i);
 
 	/**
 	 * write to a NBTTagCompound.
 	 * 
-	 * @param i
+	 * @param i to be written data
 	 */
 	void writeToNBT(NBTTagCompound i);
 
@@ -115,7 +137,7 @@ public interface IAEStack<StackType extends IAEStack>
 	 * 
 	 * IAEFluidStack, FluidStack
 	 * 
-	 * @param obj
+	 * @param obj compared object
 	 * @return true if they are the same.
 	 */
 	@Override
@@ -126,8 +148,8 @@ public interface IAEStack<StackType extends IAEStack>
 	 * 
 	 * a IAEItemStack to another AEItemStack or a ItemStack.
 	 * 
-	 * @param st
-	 * @param mode
+	 * @param st stacks
+	 * @param mode used fuzzy mode
 	 * @return true if two stacks are equal based on AE Fuzzy Comparison.
 	 */
 	boolean fuzzyComparison(Object st, FuzzyMode mode);
@@ -135,7 +157,7 @@ public interface IAEStack<StackType extends IAEStack>
 	/**
 	 * Slower for disk saving, but smaller/more efficient for packets.
 	 * 
-	 * @param data
+	 * @param data to be written data
 	 * @throws IOException
 	 */
 	void writeToPacket(ByteBuf data) throws IOException;
@@ -157,7 +179,7 @@ public interface IAEStack<StackType extends IAEStack>
 	/**
 	 * obtain the NBT Data for the item.
 	 * 
-	 * @return
+	 * @return nbt data
 	 */
 	IAETagCompound getTagCompound();
 

@@ -1,3 +1,26 @@
+/*
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2013 AlgorithmX2
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package appeng.api.implementations.items;
 
 import net.minecraft.item.ItemStack;
@@ -19,19 +42,19 @@ public interface IStorageCell extends ICellWorkbenchItem
 {
 
 	/**
-	 * If this returns something where N % 8 != 0 Then you will be shot on
-	 * sight, or your car will explode, something like that least...
+	 * It wont work if the return is not a multiple of 8.
+	 * The limit is ({@link Integer#MAX_VALUE} + 1) / 8.
 	 * 
-	 * @param cellItem
-	 * @return numberofBytes
+	 * @param cellItem item
+	 * @return number of bytes
 	 */
 	int getBytes(ItemStack cellItem);
 
 	/**
 	 * Determines the number of bytes used for any type included on the cell.
 	 * 
-	 * @param cellItem
-	 * @return numberOfBytes
+	 * @param cellItem item
+	 * @return number of bytes
 	 */
 	int BytePerType(ItemStack cellItem);
 
@@ -39,8 +62,8 @@ public interface IStorageCell extends ICellWorkbenchItem
 	 * Must be between 1 and 63, indicates how many types you want to store on
 	 * the item.
 	 * 
-	 * @param cellItem
-	 * @return numberOfTypes
+	 * @param cellItem item
+	 * @return number of types
 	 */
 	int getTotalTypes(ItemStack cellItem);
 
@@ -49,8 +72,8 @@ public interface IStorageCell extends ICellWorkbenchItem
 	 * don't care, just return false; As the handler for this type of cell is
 	 * still the default cells, the normal AE black list is also applied.
 	 * 
-	 * @param cellItem
-	 * @param requestedAddition
+	 * @param cellItem item
+	 * @param requestedAddition requested addition
 	 * @return true to preventAdditionOfItem
 	 */
 	boolean isBlackListed(ItemStack cellItem, IAEItemStack requestedAddition);
@@ -70,7 +93,7 @@ public interface IStorageCell extends ICellWorkbenchItem
 	 * Allows an item to selectively enable or disable its status as a storage
 	 * cell.
 	 * 
-	 * @param i
+	 * @param i item
 	 * @return if the ItemStack should behavior as a storage cell.
 	 */
 	boolean isStorageCell(ItemStack i);

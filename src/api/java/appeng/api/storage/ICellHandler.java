@@ -1,3 +1,26 @@
+/*
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2013 AlgorithmX2
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package appeng.api.storage;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -17,7 +40,7 @@ public interface ICellHandler
 	 * return true if the provided item is handled by your cell handler. ( AE May choose to skip this method, and just
 	 * request a handler )
 	 * 
-	 * @param is
+	 * @param is to be checked item
 	 * @return return true, if getCellHandler will not return null.
 	 */
 	boolean isCell(ItemStack is);
@@ -27,11 +50,11 @@ public interface ICellHandler
 	 * 
 	 * @param is
 	 *            a storage cell item.
-	 * @param save
-	 *            host, anytime the contents of your storage cell changes it should use this to request a save, please
+	 * @param host
+	 *            anytime the contents of your storage cell changes it should use this to request a save, please
 	 *            note, this value can be null.
-	 * @param the
-	 *            storage channel requested.
+	 * @param channel
+	 *            the storage channel requested.
 	 * 
 	 * @return a new IMEHandler for the provided item
 	 */
@@ -67,12 +90,12 @@ public interface ICellHandler
 	 * is not available via ME Chests simply tell the user they can't use it, or something, other wise you should open
 	 * your gui and display the cell to the user.
 	 * 
-	 * @param player
-	 * @param chest
-	 * @param cellHandler
-	 * @param inv
-	 * @param is
-	 * @param chan
+	 * @param player player opening chest gui
+	 * @param chest to be opened chest
+	 * @param cellHandler cell handler
+	 * @param inv inventory handler
+	 * @param is item
+	 * @param chan storage channel
 	 */
 	void openChestGui(EntityPlayer player, IChestOrDrive chest, ICellHandler cellHandler, IMEInventoryHandler inv, ItemStack is, StorageChannel chan);
 
@@ -85,10 +108,8 @@ public interface ICellHandler
 	 * 
 	 * 3 - red, ( usually means the cell is 100% full )
 	 * 
-	 * @param is
-	 *            the cell item. ( use the handler for any details you can )
-	 * @param the
-	 *            handler for the cell is provides for reference, you can cast this to your handler.
+	 * @param is the cell item. ( use the handler for any details you can )
+	 * @param handler the handler for the cell is provides for reference, you can cast this to your handler.
 	 * 
 	 * @return get the status of the cell based on its contents.
 	 */

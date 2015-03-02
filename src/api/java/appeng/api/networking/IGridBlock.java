@@ -1,12 +1,35 @@
+/*
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2013 AlgorithmX2
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package appeng.api.networking;
 
-import java.util.EnumSet;
-
-import net.minecraft.item.ItemStack;
-import net.minecraftforge.common.util.ForgeDirection;
 import appeng.api.parts.IPart;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.common.util.ForgeDirection;
+
+import java.util.EnumSet;
 
 /**
  * An Implementation is required to create your node for IGridHost
@@ -39,7 +62,7 @@ public interface IGridBlock
 	 * 
 	 * @return if the world can connect to this node, and the node can connect to the world.
 	 */
-	boolean isWorldAccessable();
+	boolean isWorldAccessible();
 
 	/**
 	 * @return current location of this node
@@ -58,13 +81,14 @@ public interface IGridBlock
 
 	/**
 	 * Update Blocks network/connection/booting status. grid,
-	 * 
-	 * @param isReady
+	 *
+	 * @param grid grid
+	 * @param channelsInUse used channels
 	 */
 	public void setNetworkStatus(IGrid grid, int channelsInUse);
 
 	/**
-	 * Determine which sides of the block can be connected too, only used when isWorldAccessable returns true, not used
+	 * Determine which sides of the block can be connected too, only used when isWorldAccessible returns true, not used
 	 * for {@link IPart} implementations.
 	 */
 	EnumSet<ForgeDirection> getConnectableSides();

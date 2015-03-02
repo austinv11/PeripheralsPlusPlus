@@ -292,9 +292,10 @@ public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, 
 	public EnumSet<GridFlags> getFlags() {
 		return EnumSet.of(GridFlags.REQUIRE_CHANNEL);
 	}
-
+	
+	
 	@Override
-	public boolean isWorldAccessable() {
+	public boolean isWorldAccessible() {
 		return true;
 	}
 
