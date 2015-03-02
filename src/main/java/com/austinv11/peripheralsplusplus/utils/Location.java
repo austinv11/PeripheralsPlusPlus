@@ -1,9 +1,10 @@
 package com.austinv11.peripheralsplusplus.utils;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -14,14 +15,22 @@ public class Location {
 
 	private double x,y,z;
 	private World world;
-	private Vec3 position;
+	private ChunkCoordinates position;
 
-	public Location (double x, double y, double z, World world) {
+	public Location(double x, double y, double z, World world) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 		this.world = world;
-		this.position = Vec3.createVectorHelper(x, y, z);
+		this.position = new ChunkCoordinates((int)x, (int)y, (int)z);
+	}
+	
+	public Location(Entity ent) {
+		this(ent.posX, ent.posY, ent.posZ, ent.worldObj);
+	}
+	
+	public Location(TileEntity block) {
+		this(block.xCoord, block.yCoord, block.zCoord, block.getWorldObj());
 	}
 
 	public double getX() {
@@ -40,15 +49,16 @@ public class Location {
 		return this.world;
 	}
 
-	public Vec3 getPosition() {
+	@Deprecated
+	public ChunkCoordinates getPosition() {
 		return this.position;
 	}
 
-	public HashMap<String, Double> getPlayers(TileEntity te, double range) {
+	public HashMap<String, Double> getPlayers(double range) {
 		HashMap<String, Double> map = new HashMap<String,Double>();
-		for (EntityPlayer player : (Iterable<EntityPlayer>) te.getWorldObj().playerEntities) {
-			if (player.getPosition(1f).distanceTo(Vec3.createVectorHelper(te.xCoord, te.yCoord, te.zCoord)) <= range) {
-				map.put(player.getDisplayName(), player.getPosition(1f).distanceTo(Vec3.createVectorHelper(te.xCoord, te.yCoord, te.zCoord)));
+		for (EntityPlayer player : (Iterable<EntityPlayer>) world.playerEntities) {
+			if (new Location(player).getDisance(this) <= range) {
+				map.put(player.getDisplayName(), new Location(player).getDisance(this));
 			}
 		}
 		return map;
@@ -64,6 +74,17 @@ public class Location {
 				list.add(player);
 		}
 		return list;
+	}
+	
+	//sqrt((x2-x1)^2 + (y2 - y2)^2 (z2 - z1)^2) --Geometry ftw!
+	public double getDisance(Location other) {
+		double xDist = (this.getX() - other.getX());
+		xDist *= xDist;
+		double yDist = (this.getY() - other.getY());
+		yDist *= yDist;
+		double zDist = (this.getZ() - other.getZ());
+		zDist *= zDist;
+		return Math.sqrt(xDist + yDist + zDist);
 	}
 
 	@Deprecated
