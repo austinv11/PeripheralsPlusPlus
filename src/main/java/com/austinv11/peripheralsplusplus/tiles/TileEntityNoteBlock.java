@@ -10,7 +10,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.ChunkCoordinates;
 import net.minecraft.world.World;
 
 public class TileEntityNoteBlock extends MountedTileEntity {
@@ -116,7 +116,7 @@ public class TileEntityNoteBlock extends MountedTileEntity {
         }
 
         // Check position
-        Vec3 position = location.getPosition();
+        ChunkCoordinates position = location.getPosition();
         World world = location.getWorld();
         if(position == null || world == null) {
             return;
