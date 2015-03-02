@@ -1,3 +1,26 @@
+/*
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2013 AlgorithmX2
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in
+ * the Software without restriction, including without limitation the rights to
+ * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+ * the Software, and to permit persons to whom the Software is furnished to do so,
+ * subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+ * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+ * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+ * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 package appeng.api.movable;
 
 import net.minecraft.block.Block;
@@ -39,7 +62,7 @@ public interface IMovableRegistry
 	 * You can also use the IMC, FMLInterModComms.sendMessage( "appliedenergistics2", "whitelist-spatial",
 	 * "appeng.common.AppEngTile" );
 	 * 
-	 * @param blk
+	 * @param blk block
 	 */
 	void blacklistBlock(Block blk);
 
@@ -54,7 +77,7 @@ public interface IMovableRegistry
 	void whiteListTileEntity(Class<? extends TileEntity> c);
 
 	/**
-	 * @param te
+	 * @param te to be moved tile entity
 	 * @return true if the tile has accepted your request to move it
 	 */
 	boolean askToMove(TileEntity te);
@@ -62,14 +85,14 @@ public interface IMovableRegistry
 	/**
 	 * tells the tile you are done moving it.
 	 * 
-	 * @param te
+	 * @param te moved tile entity
 	 */
 	void doneMoving(TileEntity te);
 
 	/**
 	 * add a new handler movable handler.
 	 * 
-	 * @param handler
+	 * @param handler moving handler
 	 */
 	void addHandler(IMovableHandler handler);
 
@@ -78,8 +101,8 @@ public interface IMovableRegistry
 	 * 
 	 * only valid after askToMove(...) = true
 	 * 
-	 * @param te
-	 * @return
+	 * @param te tile entity
+	 * @return moving handler of tile entity
 	 */
 	IMovableHandler getHandler(TileEntity te);
 
@@ -89,7 +112,7 @@ public interface IMovableRegistry
 	IMovableHandler getDefaultHandler();
 
 	/**
-	 * @param blk
+	 * @param blk block
 	 * @return true if this block is blacklisted
 	 */
 	boolean isBlacklisted(Block blk);

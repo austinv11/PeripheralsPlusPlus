@@ -73,7 +73,7 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 				double range = Config.sensorRange;
 				if (arguments.length > 0)
 					range = (Double) arguments[0];
-					HashMap<String,Double> map = location.getPlayers(this, range);
+					HashMap<String,Double> map = location.getPlayers(range);
 					HashMap<Integer,HashMap<String,Object>> returnVal = new HashMap<Integer,HashMap<String,Object>>();
 					int i = 1;
 					for (String player : map.keySet()) {
