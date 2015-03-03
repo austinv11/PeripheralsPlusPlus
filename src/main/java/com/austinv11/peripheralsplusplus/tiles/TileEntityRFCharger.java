@@ -42,31 +42,33 @@ public class TileEntityRFCharger extends NetworkedTileEntity implements IEnergyR
 
 	@Override
 	public void updateEntity() {
-		List<ITurtleAccess> turtles = new ArrayList<ITurtleAccess>(6);
-		ForgeDirection[] dirs = {ForgeDirection.DOWN, ForgeDirection.EAST, ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.UP, ForgeDirection.WEST};
-		for (int i = 0; i < 6; i++) {
-			int x = this.xCoord + dirs[i].offsetX;
-			int y = this.yCoord + dirs[i].offsetY;
-			int z = this.zCoord + dirs[i].offsetZ;
-			if (!getWorldObj().blockExists(x, y, z))
-				continue;
-			TileEntity te = getWorldObj().getTileEntity(x, y, z);
-			if (te != null) {
-				try {
-					ITurtleAccess turtle = ReflectionHelper.getTurtle(te);
-					if (turtle != null) {
-						turtles.add(turtle);
-						//Logger.info(":D");
+		if (!getWorldObj().isRemote) {
+			List<ITurtleAccess> turtles = new ArrayList<ITurtleAccess>(6);
+			ForgeDirection[] dirs = {ForgeDirection.DOWN, ForgeDirection.EAST, ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.UP, ForgeDirection.WEST};
+			for (int i = 0; i < 6; i++) {
+				int x = this.xCoord+dirs[i].offsetX;
+				int y = this.yCoord+dirs[i].offsetY;
+				int z = this.zCoord+dirs[i].offsetZ;
+				if (!getWorldObj().blockExists(x, y, z))
+					continue;
+				TileEntity te = getWorldObj().getTileEntity(x, y, z);
+				if (te != null) {
+					try {
+						ITurtleAccess turtle = ReflectionHelper.getTurtle(te);
+						if (turtle != null) {
+							turtles.add(turtle);
+							//Logger.info(":D");
+						}
+					} catch (Exception e) {
+						e.printStackTrace();
 					}
-				} catch (Exception e) {
-					e.printStackTrace();
 				}
 			}
-		}
-		int rate = ((int) Math.floor((float) 6 / (float) turtles.size()));
-		for (ITurtleAccess turtle : turtles) {
-			if (storage.getEnergyStored() >= rate)
-				storage.extractEnergy(addFuel(turtle, rate) * Config.fuelRF, false);
+			int rate = ((int) Math.floor((float) 6/(float) turtles.size()));
+			for (ITurtleAccess turtle : turtles) {
+				if (storage.getEnergyStored() >= rate)
+					storage.extractEnergy(addFuel(turtle, rate)*Config.fuelRF, false);
+			}
 		}
 	}
 
