@@ -7,6 +7,7 @@ import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ChunkCoordinates;
@@ -47,7 +48,8 @@ public class ScaleRequestPacket implements IMessage {
 
 		@Override
 		public IMessage onMessage(ScaleRequestPacket message, MessageContext ctx) {
-			PeripheralsPlusPlus.NETWORK.sendToServer(new ScaleRequestResponsePacket(message.coords, message.id, Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight, message.dim));
+			ScaledResolution resolution = new ScaledResolution(Minecraft.getMinecraft(), Minecraft.getMinecraft().displayWidth, Minecraft.getMinecraft().displayHeight);
+			PeripheralsPlusPlus.NETWORK.sendToServer(new ScaleRequestResponsePacket(message.coords, message.id, resolution.getScaledWidth(), resolution.getScaledHeight(), message.dim));
 			return null;
 		}
 	}
