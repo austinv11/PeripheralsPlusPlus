@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.client.gui;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.items.ItemSmartHelmet;
+import com.austinv11.peripheralsplusplus.network.InputEventPacket;
 import com.austinv11.peripheralsplusplus.network.TextFieldInputEventPacket;
 import com.austinv11.peripheralsplusplus.smarthelmet.AddButtonCommand;
 import com.austinv11.peripheralsplusplus.smarthelmet.AddTextFieldCommand;
@@ -13,6 +14,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayDeque;
@@ -82,6 +85,7 @@ public class GuiHelmet extends GuiScreen {
 		super.mouseClicked(x, y, mouseEvent);
 		for (GuiTextField text : textFields.values())
 			text.mouseClicked(x, y, mouseEvent);
+		PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(UUID.fromString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getTagCompound().getString("identifier")), Mouse.getEventButton(), Mouse.getEventButtonState(), "mouseInput", Minecraft.getMinecraft().thePlayer.getDisplayName()));
 	}
 
 	@Override
@@ -97,5 +101,6 @@ public class GuiHelmet extends GuiScreen {
 		for (GuiTextField text : textFields.values())
 			if (text.textboxKeyTyped(eventChar, eventKey))
 				PeripheralsPlusPlus.NETWORK.sendToServer(new TextFieldInputEventPacket(UUID.fromString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getTagCompound().getString("identifier")), eventChar+"", text.getText(), "textboxEntry", Minecraft.getMinecraft().thePlayer.getDisplayName()));
+		PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(UUID.fromString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getTagCompound().getString("identifier")), Keyboard.getEventKey(), Keyboard.getEventKeyState(), "keyInput", Minecraft.getMinecraft().thePlayer.getDisplayName()));
 	}
 }
