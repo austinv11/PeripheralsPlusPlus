@@ -74,7 +74,7 @@ public class TileEntityRFCharger extends NetworkedTileEntity implements IEnergyR
 
 	private int addFuel(ITurtleAccess turtle, int rate) {
 		if (turtle.getFuelLimit() > turtle.getFuelLevel()) {
-			turtle.addFuel(rate);
+			turtle.setFuelLevel(rate+turtle.getFuelLevel());//Bad fix for a crash with turtle.addFuel()
 			return rate;
 		}
 		return 0;
