@@ -127,7 +127,7 @@ public class TileEntitySpeaker extends MountedTileEntity {
 			packetInfo[2] = arguments[0];
 			packetInfo[3] = range;
 			lastMessage = (String)arguments[0];
-			if ((Boolean) arguments[3])
+			if (arguments.length > 3 && (Boolean) arguments[3])
 				context.pullEvent("speechComplete");
 			return new Object[]{lastMessage, lang};
 //			}catch (Exception e) {
