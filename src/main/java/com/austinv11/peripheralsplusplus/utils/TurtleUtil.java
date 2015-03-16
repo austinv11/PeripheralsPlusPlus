@@ -24,7 +24,7 @@ public class TurtleUtil {
 		if (!turtle.getWorld().isAirBlock(x,y,z)) {
 			Block block = turtle.getWorld().getBlock(x,y,z);
 			player.setCurrentItemOrArmor(0, itemToUse);
-			if (block.canHarvestBlock(player, block.getDamageValue(turtle.getWorld(),x,y,z))) {
+			if (block.getBlockHardness(turtle.getWorld(), x,y,z) >= 0 && block.canHarvestBlock(player, block.getDamageValue(turtle.getWorld(),x,y,z))) {
 				List<ItemStack> items = block.getDrops(turtle.getWorld(),x,y,z, block.getDamageValue(turtle.getWorld(),x,y,z), 0);
 				turtle.getWorld().setBlockToAir(x,y,z);
 				return items;
