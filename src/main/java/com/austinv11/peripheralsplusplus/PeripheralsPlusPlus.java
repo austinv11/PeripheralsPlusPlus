@@ -146,7 +146,7 @@ public class PeripheralsPlusPlus {
 //		PeripheralsPlusPlusAPI.registerSatelliteUpgrade(new GPSUpgrade());
 //		Logger.info("All satellite upgrades registered!");
 		proxy.registerRenderers();
-		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
+//		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, instance, 64, 20, true);
 		if (Config.enableVillagers)
 			proxy.setupVillagers();
