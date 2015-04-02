@@ -20,12 +20,15 @@ repositories{
         name = "chickenbones"
         url = "http://chickenbones.net/maven"
     }
+    maven {
+        url  "http://jcenter.bintray.com"
+    }
 }
 
 apply plugin: 'forge'
 
-//ext.buildNumber = System.getenv("BUILD_ID") ?: "dev"
-version = "1.2.6"
+ext.buildNumber = System.getenv("BUILD_ID") ?: "dev"
+version = "1.3.0-$buildNumber"
 group= "com.austinv11.peripheralsplusplus" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Peripherals++"
 
@@ -51,6 +54,7 @@ dependencies {
 	compile "codechicken:NotEnoughItems:1.7.10-1.0.3.74:dev"
 	compile "codechicken:CodeChickenLib:1.7.10-1.1.1.99:dev"
 	compile "codechicken:CodeChickenCore:1.7.10-1.0.4.29:dev"
+    compile "com.austinv11.collectiveframework:CollectiveFramework:1.0.0-57:deobf"
 }
 
 processResources
@@ -79,6 +83,8 @@ jar {
     }
 }
 
-sourceSets {
-    main { output.resourcesDir = output.classesDir }
+idea { 
+    module { 
+        inheritOutputDirs = true 
+    } 
 }
