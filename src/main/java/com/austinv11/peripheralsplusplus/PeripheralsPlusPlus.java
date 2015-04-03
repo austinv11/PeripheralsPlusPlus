@@ -82,13 +82,7 @@ public class PeripheralsPlusPlus {
 		ModItems.preInit();
 		ModBlocks.init();
 		Logger.info("Preparing the mount...");
-		try {
-			DynamicMount.prepareMount();
-			Logger.info("Mount has been successfully prepared!");
-		}catch (Exception e) {
-			Logger.error("An exception was thrown attempting to prepare mount programs; if your internet connection is fine, please report the following to the mod author:");
-			e.printStackTrace();
-		}
+		DynamicMount.prepareMount();
 	}
 
 	@Mod.EventHandler
