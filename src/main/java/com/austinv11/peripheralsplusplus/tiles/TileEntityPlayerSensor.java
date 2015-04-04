@@ -21,7 +21,6 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 
 	public TileEntityPlayerSensor() {
 		super();
-		location = new Location(xCoord,zCoord,yCoord,worldObj);
 	}
 
 	public TileEntityPlayerSensor(ITurtleAccess turtle) {
@@ -33,7 +32,15 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 		this.setWorldObj(turtle.getWorld());
 	}
 
-	public String getName() {
+    @Override
+    public void validate() {
+        super.validate();
+
+        if(worldObj != null)
+            location = new Location(this);
+    }
+
+    public String getName() {
 		return name;
 	}
 
@@ -66,28 +73,30 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 		if (!Config.additionalMethods)
 			throw new LuaException("Additional methods for player sensors have been disabled");
 		if (method == 0) {
-			//try {
-			if (arguments.length > 0 && !(arguments[0] instanceof Double))
-				throw new LuaException("Bad argument #1 (expected number)");
-			synchronized (this) {
-				double range = Config.sensorRange;
-				if (arguments.length > 0)
-					range = (Double) arguments[0];
-					HashMap<String,Double> map = location.getPlayers(range);
-					HashMap<Integer,HashMap<String,Object>> returnVal = new HashMap<Integer,HashMap<String,Object>>();
-					int i = 1;
-					for (String player : map.keySet()) {
-						HashMap<String,Object> table = new HashMap<String,Object>();
-						table.put("player", player);
-						table.put("distance", map.get(player));
-						returnVal.put(i, table);
-						i++;
-					}
-				return new Object[]{returnVal};
-			}
-			/*}catch (Exception e) {
+			try {
+                if (arguments.length > 0 && !(arguments[0] instanceof Double))
+                    throw new LuaException("Bad argument #1 (expected number)");
+                synchronized (this) {
+                    double range = Config.sensorRange;
+                    if (arguments.length > 0)
+                        range = (Double) arguments[0];
+
+                    System.out.println(range);
+                    HashMap<String,Double> map = location.getPlayers(range);
+                    HashMap<Integer,HashMap<String,Object>> returnVal = new HashMap<Integer,HashMap<String,Object>>();
+                    int i = 1;
+                    for (String player : map.keySet()) {
+                        HashMap<String,Object> table = new HashMap<String,Object>();
+                        table.put("player", player);
+                        table.put("distance", map.get(player));
+                        returnVal.put(i, table);
+                        i++;
+                    }
+                    return new Object[]{returnVal};
+                }
+			}catch (Exception e) {
 				e.printStackTrace();
-			}*/
+			}
 		}else if (method == 1) {
 			if (arguments.length > 0 && !(arguments[0] instanceof Boolean))
 				throw new LuaException("Bad argument #1 (expected boolean)");
