@@ -1,7 +1,7 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.reference.Config;
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -205,7 +205,7 @@ public class TileEntityTeleporter extends MountedTileEntity {
 								boolean unlinked = false;
 								for (int i = 0; i < src.links.size(); i++) {
 									LinkData rlink = src.links.get(i);
-									Logger.info("Comparing: " + rlink.link.posX + " " + xCoord + " " + rlink.link.posY + " " + yCoord + " " + rlink.link.posZ + " " + zCoord);
+									PeripheralsPlusPlus.LOGGER.info("Comparing: " + rlink.link.posX + " " + xCoord + " " + rlink.link.posY + " " + yCoord + " " + rlink.link.posZ + " " + zCoord);
 									if (rlink.link.posX == xCoord && rlink.link.posY == yCoord && rlink.link.posZ == zCoord && rlink.linkDim == worldObj.provider.dimensionId) {
 										player.addChatComponentMessage(new ChatComponentText("Unlinked teleporter at " + rlink.linkDim + ":(" + rlink.link.posX + "," + rlink.link.posY + "," + rlink.link.posZ + ") (link " + (i + 1) + ") from this teleporter"));
 										src.links.remove(i);
@@ -253,7 +253,7 @@ public class TileEntityTeleporter extends MountedTileEntity {
 	}
 
 	public int addLink(int linkDim, ChunkCoordinates link) {
-		Logger.info(link);
+		PeripheralsPlusPlus.LOGGER.info(link);
 		links.add(new LinkData(linkDim, link));
 		while (links.size() > getMaxLinks())
 			links.pop();

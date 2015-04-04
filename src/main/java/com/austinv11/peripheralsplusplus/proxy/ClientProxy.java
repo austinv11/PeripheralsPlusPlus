@@ -12,7 +12,7 @@ import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
 import com.austinv11.peripheralsplusplus.turtles.TurtleCompass;
-import com.austinv11.peripheralsplusplus.utils.IconManager;
+import com.austinv11.collectiveframework.minecraft.utils.IconManager;
 import cpw.mods.fml.client.registry.ClientRegistry;
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -36,8 +36,7 @@ public class ClientProxy extends CommonProxy {
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void iconManagerInit() {
-		IconManager.upgrades.add(new TurtleCompass());
-		MinecraftForge.EVENT_BUS.register(new IconManager());
+		IconManager.register(new TurtleCompass());
 	}
 
 	@SideOnly(Side.CLIENT)

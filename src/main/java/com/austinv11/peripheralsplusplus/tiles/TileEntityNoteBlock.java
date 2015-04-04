@@ -1,9 +1,9 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.collectiveframework.minecraft.utils.Location;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.network.ParticlePacket;
 import com.austinv11.peripheralsplusplus.reference.Config;
-import com.austinv11.peripheralsplusplus.utils.Location;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -55,7 +55,7 @@ public class TileEntityNoteBlock extends MountedTileEntity {
 
     @Override
     public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-        if(!Config.noteBlockEnabled) throw new LuaException("Iron Note Blocks have been disabled");
+        if(!Config.enableNoteBlock) throw new LuaException("Iron Note Blocks have been disabled");
         switch(method) {
             case 0:
                 checkPlayNote(arguments);
@@ -116,7 +116,7 @@ public class TileEntityNoteBlock extends MountedTileEntity {
         }
 
         // Check position
-        ChunkCoordinates position = location.getPosition();
+        ChunkCoordinates position = location.toChunkCoordinates();
         World world = location.getWorld();
         if(position == null || world == null) {
             return;

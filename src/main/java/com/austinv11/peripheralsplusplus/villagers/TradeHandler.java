@@ -1,7 +1,7 @@
 package com.austinv11.peripheralsplusplus.villagers;
 
+import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.utils.Util;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;

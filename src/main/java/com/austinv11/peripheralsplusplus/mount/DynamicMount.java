@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.mount;
 
 import com.austinv11.collectiveframework.multithreading.SimpleRunnable;
+import com.austinv11.collectiveframework.utils.WebUtils;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzer;
 import com.austinv11.peripheralsplusplus.utils.*;
@@ -23,18 +24,19 @@ public class DynamicMount implements IMount {
 	}
 
 	public static void prepareMount() {
-		SimpleRunnable thread = new SimpleRunnable() {
+		new SimpleRunnable() {
+			
 			@Override
 			public void run() {
 				try {
 					Gson gson = new Gson();
-					JSONIndex index = gson.fromJson(Util.listToString(WebUtil.readGithub("lua/index.json")), JSONIndex.class);
+					JSONIndex index = gson.fromJson(Util.listToString(WebUtils.readGithub("PeripheralsPlusPlus", "lua/index.json")), JSONIndex.class);
 					if (!index.ver.equals(JSON_VER))
-						Logger.warn("JSON Version mismatch! Is your version of Peripherals++ outdated?");
+						PeripheralsPlusPlus.LOGGER.warn("JSON Version mismatch! Is your version of Peripherals++ outdated?");
 					String[] dirs = index.dirs;
-					Logger.info(dirs.length+" directories found! Attempting to update (if necessary)...");
+					PeripheralsPlusPlus.LOGGER.info(dirs.length+" directories found! Attempting to update (if necessary)...");
 					for (String d : dirs) {
-						JSONFileList files = gson.fromJson(Util.listToString(WebUtil.readGithub("lua/"+d+"/index.json")), JSONFileList.class);
+						JSONFileList files = gson.fromJson(Util.listToString(WebUtils.readGithub("PeripheralsPlusPlus", "lua/"+d+"/index.json")), JSONFileList.class);
 						if (Util.checkFileVersion(MOUNT_DIRECTORY+"/"+d, files)) {
 							String[] files1 = files.files;
 							for (String f : files1) {
@@ -43,14 +45,14 @@ public class DynamicMount implements IMount {
 								file.delete();//FIXME:Too inefficient
 								file.createNewFile();
 								FileWriter writer = new FileWriter(file);
-								writer.write(Util.listToString(WebUtil.readGithub("lua/"+d+"/"+f)));
+								writer.write(Util.listToString(WebUtils.readGithub("PeripheralsPlusPlus", "lua/"+d+"/"+f)));
 								writer.close();
 							}
 						}
 					}
-					Logger.info("Mount has been successfully prepared!");
+					PeripheralsPlusPlus.LOGGER.info("Mount has been successfully prepared!");
 				} catch (Exception e) {
-					Logger.error("An exception was thrown attempting to prepare mount programs; if your internet connection is fine, please report the following to the mod author:");
+					PeripheralsPlusPlus.LOGGER.error("An exception was thrown attempting to prepare mount programs; if your internet connection is fine, please report the following to the mod author:");
 					e.printStackTrace();
 				} finally {
 					this.disable(true);
@@ -61,8 +63,7 @@ public class DynamicMount implements IMount {
 			public String getName() {
 				return "Dynamic Mount Update Thread";
 			}
-		};
-		thread.start();
+		}.start();
 	}
 
 	@Override

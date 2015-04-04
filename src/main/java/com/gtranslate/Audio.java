@@ -1,12 +1,14 @@
 package com.gtranslate;
 
+import rehost.javazoom.jl.decoder.JavaLayerException;
+import rehost.javazoom.jl.player.Player;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.net.URLConnection;
-import javazoom.jl.decoder.JavaLayerException;
-import javazoom.jl.player.Player;
+
 
 public class Audio {
 

@@ -5,7 +5,6 @@ import com.austinv11.peripheralsplusplus.event.PeripheralContainerHandler;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteEventHandler;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteTickHandler;
 import com.austinv11.peripheralsplusplus.tiles.*;
-import com.austinv11.peripheralsplusplus.utils.ConfigurationHandler;
 import com.austinv11.peripheralsplusplus.villagers.TradeHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -51,7 +50,6 @@ public class CommonProxy {
 	public void prepareGuis() {}
 
 	public void registerEvents() {
-		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
 		FMLCommonHandler.instance().bus().register(new SatelliteTickHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
 		MinecraftForge.EVENT_BUS.register(new SatelliteEventHandler());

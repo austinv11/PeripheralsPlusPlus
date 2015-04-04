@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -165,5 +166,17 @@ public class Util {
 		for (int i = 0; i < array_.length; i++)
 			array_[i] = array_[i].trim();
 		return array_;
+	}
+	
+	public static List<String> getPlayers(World world) {
+		List<String> list = new ArrayList<String>();
+		if (world != null) {
+			for (EntityPlayer player : (Iterable<EntityPlayer>) world.playerEntities)
+				list.add(player.getDisplayName());
+		}else {
+			for (String player : MinecraftServer.getServer().getAllUsernames())
+				list.add(player);
+		}
+		return list;
 	}
 }

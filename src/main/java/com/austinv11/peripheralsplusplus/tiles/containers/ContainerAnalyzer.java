@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus.tiles.containers;
 
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;

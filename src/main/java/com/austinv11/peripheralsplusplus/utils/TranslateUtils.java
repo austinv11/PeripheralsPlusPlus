@@ -3,7 +3,7 @@ package com.austinv11.peripheralsplusplus.utils;
 import com.gtranslate.Audio;
 import com.gtranslate.Language;
 import com.gtranslate.Translator;
-import javazoom.jl.decoder.JavaLayerException;
+import rehost.javazoom.jl.decoder.JavaLayerException;
 
 import java.io.IOException;
 import java.io.InputStream;

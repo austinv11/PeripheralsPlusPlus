@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.client.gui;
 
+import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.items.ItemSmartHelmet;
 import com.austinv11.peripheralsplusplus.network.InputEventPacket;
@@ -7,7 +8,6 @@ import com.austinv11.peripheralsplusplus.network.TextFieldInputEventPacket;
 import com.austinv11.peripheralsplusplus.smarthelmet.AddButtonCommand;
 import com.austinv11.peripheralsplusplus.smarthelmet.AddTextFieldCommand;
 import com.austinv11.peripheralsplusplus.smarthelmet.HelmetCommand;
-import com.austinv11.peripheralsplusplus.utils.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;

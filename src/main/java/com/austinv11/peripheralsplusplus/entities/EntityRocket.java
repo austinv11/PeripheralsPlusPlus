@@ -6,7 +6,6 @@ import com.austinv11.peripheralsplusplus.event.SatelliteLaunchEvent;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.network.RocketCountdownPacket;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -267,7 +266,7 @@ public class EntityRocket extends EntityInventory{
 		}
 		if (getIsActive() && isFlipped)
 			setIsActive(false);
-		Logger.info(posX+","+posY+","+posZ);
+		PeripheralsPlusPlus.LOGGER.info(posX+","+posY+","+posZ);
 	}
 
 	@Override

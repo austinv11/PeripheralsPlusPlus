@@ -1,7 +1,8 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.collectiveframework.minecraft.utils.Location;
 import com.austinv11.peripheralsplusplus.reference.Config;
-import com.austinv11.peripheralsplusplus.utils.Location;
+import com.austinv11.peripheralsplusplus.utils.Util;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -21,7 +22,6 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 
 	public TileEntityPlayerSensor() {
 		super();
-		location = new Location(xCoord,zCoord,yCoord,worldObj);
 	}
 
 	public TileEntityPlayerSensor(ITurtleAccess turtle) {
@@ -32,6 +32,14 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 		this.zCoord = turtle.getPosition().posZ;
 		this.setWorldObj(turtle.getWorld());
 	}
+	
+	@Override
+	public void validate() {
+		super.validate();
+		
+		if(worldObj != null)
+			location = new Location(this);
+   }
 
 	public String getName() {
 		return name;
@@ -97,7 +105,7 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 			synchronized (this) {
 				HashMap<Integer,String> map = new HashMap<Integer,String>();
 				int i = 1;
-				for (String p : location.getPlayers(inWorld)) {
+				for (String p : Util.getPlayers(inWorld ? getWorldObj() : null)) {
 					map.put(i, p);
 					i++;
 				}
