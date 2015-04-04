@@ -56,18 +56,24 @@ public class Location {
 
 	public HashMap<String, Double> getPlayers(double range) {
 		HashMap<String, Double> map = new HashMap<String,Double>();
-		for (EntityPlayer player : (Iterable<EntityPlayer>) world.playerEntities) {
-			if (new Location(player).getDisance(this) <= range) {
-				map.put(player.getDisplayName(), new Location(player).getDisance(this));
-			}
-		}
+        if(world == null)
+            return map;
+
+        for (EntityPlayer player : (Iterable<EntityPlayer>) world.playerEntities) {
+            if (new Location(player).getDistance(this) <= range) {
+                map.put(player.getDisplayName(), new Location(player).getDistance(this));
+            }
+        }
 		return map;
 	}
 
 	public List<String> getPlayers(boolean inWorld) {
 		List<String> list = new ArrayList<String>();
 		if (inWorld) {
-			for (EntityPlayer player : (Iterable<EntityPlayer>) world.playerEntities)
+            if(world == null)
+                return list;
+
+            for (EntityPlayer player : (Iterable<EntityPlayer>) world.playerEntities)
 				list.add(player.getDisplayName());
 		}else {
 			for (String player : MinecraftServer.getServer().getAllUsernames())
@@ -76,15 +82,15 @@ public class Location {
 		return list;
 	}
 	
-	//sqrt((x2-x1)^2 + (y2 - y2)^2 (z2 - z1)^2) --Geometry ftw!
-	public double getDisance(Location other) {
+	//sqrt((x2 - x1)^2 + (y2 - y1)^2 + (z2 - z1)^2) --Geometry ftw!
+	public double getDistance(Location other) {
 		double xDist = (this.getX() - other.getX());
-		xDist *= xDist;
-		double yDist = (this.getY() - other.getY());
-		yDist *= yDist;
+        xDist *= xDist;
+        double yDist = (this.getY() - other.getY());
+        yDist *= yDist;
 		double zDist = (this.getZ() - other.getZ());
-		zDist *= zDist;
-		return Math.sqrt(xDist + yDist + zDist);
+        zDist *= zDist;
+        return Math.sqrt(xDist + yDist + zDist);
 	}
 
 	@Deprecated
