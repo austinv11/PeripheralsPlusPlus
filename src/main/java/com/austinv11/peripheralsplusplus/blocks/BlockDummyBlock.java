@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
+import com.austinv11.peripheralsplusplus.reference.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -7,7 +8,7 @@ import net.minecraft.util.IIcon;
 
 public class BlockDummyBlock extends BlockPPP {
 
-	private String[] locations = new String[]{"peripheralsplusplus:feederUpgrade", "peripheralsplusplus:tank", "peripheralsplusplus:signUpgrade", "peripheralsplusplus:gardenerUpgrade"};
+	private String[] locations = new String[]{"peripheralsplusplus:feederUpgrade", "peripheralsplusplus:tank", "peripheralsplusplus:signUpgrade", "peripheralsplusplus:gardenerUpgrade", "peripheralsplusplus:ridableUpgrade"};
 	private IIcon[] icons;
 
 	public BlockDummyBlock() {

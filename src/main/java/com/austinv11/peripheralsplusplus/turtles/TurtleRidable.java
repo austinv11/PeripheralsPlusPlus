@@ -55,7 +55,7 @@ public class TurtleRidable implements ITurtleUpgrade {
 
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
-		return ModBlocks.dummyBlock.getIcon(0, 0); // TODO add icon to dummy block
+		return ModBlocks.dummyBlock.getIcon(0, 4);
 	}
 
 	@Override
