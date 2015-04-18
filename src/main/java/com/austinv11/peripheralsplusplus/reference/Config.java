@@ -43,6 +43,7 @@ public class Config {
     public static boolean noteBlockEnabled = true;
 	public static boolean enableReaderTurtle = true;
 	public static boolean enableGardeningTurtle = true;
+	public static boolean enableRidableTurtle = true;
 
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)
