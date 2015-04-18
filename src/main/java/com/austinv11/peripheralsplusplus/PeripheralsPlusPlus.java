@@ -143,7 +143,7 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleSpeaker());
 		registerUpgrade(new TurtleTank());
         registerUpgrade(new TurtleNoteBlock());
-		registerUpgrade(new TurtleRideable());
+		registerUpgrade(new TurtleRidable());
 		Logger.info("All peripherals and turtle upgrades registered!");
 //		Logger.info("Registering satellite upgrades...");
 //		PeripheralsPlusPlusAPI.registerSatelliteUpgrade(new GPSUpgrade());
@@ -154,7 +154,7 @@ public class PeripheralsPlusPlus {
 		if (Config.enableVillagers)
 			proxy.setupVillagers();
 		EntityRegistry.registerGlobalEntityID(EntityRidableTurtle.class, "Ridable Turtle", EntityRegistry.findGlobalUniqueEntityId());
-		EntityRegistry.registerModEntity(EntityRidableTurtle.class, "Ridable Turtle", 1 /* TODO? */, instance, 64, 1, true);
+		EntityRegistry.registerModEntity(EntityRidableTurtle.class, "Ridable Turtle", 1, instance, 64, 1, true);
 	}
 
 	@Mod.EventHandler

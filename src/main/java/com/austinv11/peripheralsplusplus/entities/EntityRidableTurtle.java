@@ -2,11 +2,13 @@ package com.austinv11.peripheralsplusplus.entities;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.network.RidableTurtlePacket;
+import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleAnimation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -114,13 +116,19 @@ public class EntityRidableTurtle extends Entity {
 		RidableTurtlePacket.MovementCode which = RidableTurtlePacket.MovementCode.values()[queuedActionCode];
 		switch (which) {
 			case FORWARD:
-				moveTurtleForward();
+				moveTurtle(0);
 				break;
 			case TURN_LEFT:
 				turnTurtle("left");
 				break;
 			case TURN_RIGHT:
 				turnTurtle("right");
+				break;
+			case DESCEND:
+				moveTurtle(1);
+				break;
+			case ASCEND:
+				moveTurtle(2);
 				break;
 		}
 		queuedActionCode = -1;
@@ -149,32 +157,49 @@ public class EntityRidableTurtle extends Entity {
 			turtle.playAnimation(TurtleAnimation.TurnRight);
 	}
 
-	private void moveTurtleForward() {
+	private void moveTurtle(int direction) {
 		int x = turtle.getPosition().posX;
 		int y = turtle.getPosition().posY;
 		int z = turtle.getPosition().posZ;
-		switch (turtle.getDirection()) {
-			case 2: // North
-				z--;
+		TurtleAnimation animation = TurtleAnimation.None;
+		switch (direction) {
+			case 0: // Forward
+				switch (turtle.getDirection()) {
+					case 2: // North
+						z--;
+						break;
+					case 5: // East
+						x++;
+						break;
+					case 3: // South
+						z++;
+						break;
+					case 4: // West
+						x--;
+						break;
+				}
+				animation = TurtleAnimation.MoveForward;
 				break;
-			case 5: // East
-				x++;
+			case 1: // Descend
+				y--;
+				animation = TurtleAnimation.MoveDown;
 				break;
-			case 3: // South
-				z++;
-				break;
-			case 4: // West
-				x--;
+			case 2: // Ascend
+				y++;
+				animation = TurtleAnimation.MoveUp;
 				break;
 		}
-		turtle.playAnimation(TurtleAnimation.MoveForward);
-		turtle.teleportTo(turtle.getWorld(), x, y, z);
+		if (this.worldObj.getBlock(x, y, z) == Blocks.air && turtle.isFuelNeeded() && turtle.getFuelLevel() >= Config.fuelPerTurtleMovement) {
+			turtle.playAnimation(animation);
+			turtle.teleportTo(turtle.getWorld(), x, y, z);
+			turtle.consumeFuel(Config.fuelPerTurtleMovement);
+		}
 	}
 
 	private void checkPlayerMovementRequest() {
 		if (this.worldObj.isRemote && this.riddenByEntity != null &&
 				this.riddenByEntity == Minecraft.getMinecraft().thePlayer) {
-			if (Keyboard.isKeyDown(Keyboard.KEY_W)) {
+			if (Keyboard.isKeyDown(Keyboard.KEY_W)) { // TODO Forge keybinds
 				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(this.getEntityId(),
 						RidableTurtlePacket.MovementCode.FORWARD.code, this.dimension));
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
@@ -183,6 +208,12 @@ public class EntityRidableTurtle extends Entity {
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
 				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(this.getEntityId(),
 						RidableTurtlePacket.MovementCode.TURN_LEFT.code, this.dimension));
+			} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
+				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(this.getEntityId(),
+						RidableTurtlePacket.MovementCode.DESCEND.code, this.dimension));
+			} else if (Keyboard.isKeyDown(Keyboard.KEY_X)) {
+				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(this.getEntityId(),
+						RidableTurtlePacket.MovementCode.ASCEND.code, this.dimension));
 			}
 		}
 	}
@@ -192,6 +223,7 @@ public class EntityRidableTurtle extends Entity {
 	}
 
 	public void queueAction(int movementCode) {
-		this.queuedActionCode = movementCode;
+		if (canPerformAction)
+			this.queuedActionCode = movementCode;
 	}
 }

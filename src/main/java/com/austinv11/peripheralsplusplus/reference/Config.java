@@ -44,6 +44,7 @@ public class Config {
 	public static boolean enableReaderTurtle = true;
 	public static boolean enableGardeningTurtle = true;
 	public static boolean enableRidableTurtle = true;
+	public static int fuelPerTurtleMovement = 1;
 
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)

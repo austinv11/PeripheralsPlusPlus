@@ -19,9 +19,7 @@ import net.minecraft.world.World;
 
 import java.util.List;
 
-public class TurtleRideable implements ITurtleUpgrade {
-
-	private EntityRidableTurtle ridableTurtle;
+public class TurtleRidable implements ITurtleUpgrade {
 
 	@Override
 	public int getUpgradeID() {
@@ -62,6 +60,8 @@ public class TurtleRideable implements ITurtleUpgrade {
 
 	@Override
 	public void update(ITurtleAccess turtle, TurtleSide side) {
+		if (!Config.enableRidableTurtle)
+			return;
 		World world = turtle.getWorld();
 		if (!world.isRemote) {
 			AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(
@@ -70,7 +70,7 @@ public class TurtleRideable implements ITurtleUpgrade {
 					turtle.getPosition().posY + 1, turtle.getPosition().posZ + 1);
 			List entities = world.getEntitiesWithinAABB(EntityRidableTurtle.class, bb);
 			if (entities.size() < 1) {
-				ridableTurtle = new EntityRidableTurtle(world);
+				EntityRidableTurtle ridableTurtle = new EntityRidableTurtle(world);
 				ridableTurtle.setPosition(turtle.getPosition().posX + 0.5, turtle.getPosition().posY,
 						turtle.getPosition().posZ + 0.5);
 				ridableTurtle.setTurtle(turtle);

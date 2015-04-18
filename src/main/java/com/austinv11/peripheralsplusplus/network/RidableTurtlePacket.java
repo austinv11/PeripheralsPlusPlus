@@ -43,7 +43,9 @@ public class RidableTurtlePacket implements IMessage {
 	public enum MovementCode {
 		FORWARD(0),
 		TURN_LEFT(1),
-		TURN_RIGHT(2);
+		TURN_RIGHT(2),
+		ASCEND(3),
+		DESCEND(4);
 		public int code;
 		MovementCode(int code) {this.code = code;}
 	}
