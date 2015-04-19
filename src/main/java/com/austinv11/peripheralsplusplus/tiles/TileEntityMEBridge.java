@@ -155,12 +155,14 @@ public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, 
 									ItemStack current = inventory.getStackInSlot(currentSlot);
 									ItemStack toAdd = resultant.getItemStack();
 									if (current.isItemEqual(toAdd)) {
-										int stackSize = (int) (resultant.getStackSize()-current.stackSize <= inventory.getInventoryStackLimit() ? resultant.getStackSize()-current.stackSize : inventory.getInventoryStackLimit());
+										int stackSize = (int) (resultant.getStackSize()+current.stackSize <= inventory.getInventoryStackLimit() ? resultant.getStackSize()+current.stackSize : inventory.getInventoryStackLimit());
+										int change = stackSize - current.stackSize;
 										current.stackSize = stackSize;
-										//inventory.setInventorySlotContents(currentSlot, current);
-										resultant.setStackSize(resultant.getStackSize()-stackSize);
+										inventory.setInventorySlotContents(currentSlot, current);
+										resultant.setStackSize(resultant.getStackSize()-change);
 									}
 								}
+								inventory.markDirty();
 							}
 							currentSlot++;
 						}
