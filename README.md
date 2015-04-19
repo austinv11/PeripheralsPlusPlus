@@ -5,4 +5,10 @@ PeripheralsPlusPlus [![Build Status](https://drone.io/github.com/austinv11/Perip
 
 A pseudo-port of miscperipherals, with other stuff as well!
 
-Visit the wiki here: https://github.com/austinv11/PeripheralsPlusPlus/wiki
+Visit the [wiki](https://github.com/austinv11/PeripheralsPlusPlus/wiki)!
+
+## Developing for this mod
+
+So, you think you have something to add to this mod to make it more awesome than it already is?
+
+If you wish to contribute, please read [this](https://github.com/austinv11/PeripheralsPlusPlus/DEVELOPING.md)!

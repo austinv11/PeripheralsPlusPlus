@@ -144,7 +144,7 @@ public class PeripheralsPlusPlus {
 			LOGGER.info("Project Red Exploration not found, skipping Project Red tools turtle upgrades");
 		registerUpgrade(new TurtleSpeaker());
 		registerUpgrade(new TurtleTank());
-        registerUpgrade(new TurtleNoteBlock());
+		registerUpgrade(new TurtleNoteBlock());
 		registerUpgrade(new TurtleRidable());
 		LOGGER.info("All peripherals and turtle upgrades registered!");
 //		LOGGER.info("Registering satellite upgrades...");
