@@ -11,4 +11,4 @@ Visit the [wiki](https://github.com/austinv11/PeripheralsPlusPlus/wiki)!
 
 So, you think you have something to add to this mod to make it more awesome than it already is?
 
-If you wish to contribute, please read [this](https://github.com/austinv11/PeripheralsPlusPlus/DEVELOPING.md)!
+If you wish to contribute, please read [this](https://github.com/austinv11/PeripheralsPlusPlus/blob/master/DEVELOPING.md)!
