@@ -6,11 +6,13 @@ import com.austinv11.peripheralsplusplus.client.gui.GuiSmartHelmetOverlay;
 import com.austinv11.peripheralsplusplus.client.models.ItemRenderAntenna;
 import com.austinv11.peripheralsplusplus.client.models.RenderAntenna;
 import com.austinv11.peripheralsplusplus.client.models.RenderRocket;
+import com.austinv11.peripheralsplusplus.client.models.RenderTurtle;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.event.SmartHelmetHandler;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
+import com.austinv11.peripheralsplusplus.tiles.TileEntityTurtle;
 import com.austinv11.peripheralsplusplus.turtles.TurtleCompass;
 import com.austinv11.collectiveframework.minecraft.utils.IconManager;
 import cpw.mods.fml.client.registry.ClientRegistry;
@@ -45,6 +47,8 @@ public class ClientProxy extends CommonProxy {
 		RenderingRegistry.registerEntityRenderingHandler(EntityRocket.class, new RenderRocket());
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityAntenna.class, new RenderAntenna());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.antenna), new ItemRenderAntenna(new RenderAntenna(), new TileEntityAntenna()));
+		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurtle.class, new RenderTurtle());
+		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.turtle), new ItemRenderAntenna(new RenderTurtle(), new TileEntityTurtle()));
 	}
 
 	@SideOnly(Side.CLIENT)

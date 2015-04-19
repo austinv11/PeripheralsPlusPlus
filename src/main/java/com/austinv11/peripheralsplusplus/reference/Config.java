@@ -5,7 +5,7 @@ import com.austinv11.collectiveframework.minecraft.config.Description;
 import java.util.ArrayList;
 import java.util.List;
 
-@com.austinv11.collectiveframework.minecraft.config.Config(fileName = "PeripheralsPlusPlus", exclude = {"dimWhitelist", "enableAPIs", "ENABLE_CONFIG_MESSAGE"})
+@com.austinv11.collectiveframework.minecraft.config.Config(fileName = "PeripheralsPlusPlus.cfg", exclude = {"dimWhitelist", "enableAPIs", "ENABLE_CONFIG_MESSAGE"})
 public class Config {
 	
 	private static final String ENABLE_CONFIG_MESSAGE = "If disabled, the recipe will be disabled and the current peripherals would cease to work";

@@ -24,7 +24,7 @@ public class CommonProxy {
 	public void registerTileEntities() {
 		GameRegistry.registerTileEntity(TileEntityChatBox.class, TileEntityChatBox.publicName);
 		GameRegistry.registerTileEntity(TileEntityPlayerSensor.class, TileEntityPlayerSensor.publicName);
-		if (Loader.isModLoaded("ThermalExpansion")/* || Loader.isModLoaded("BuildCraft|Core")*/)
+		if (Loader.isModLoaded("ThermalExpansion") || Loader.isModLoaded("BuildCraft|Core"))
 			GameRegistry.registerTileEntity(TileEntityRFCharger.class, TileEntityRFCharger.publicName);
 		GameRegistry.registerTileEntity(TileEntityOreDictionary.class, TileEntityOreDictionary.publicName);
 		if (Loader.isModLoaded("Forestry")) {
@@ -41,6 +41,7 @@ public class CommonProxy {
 		if (Loader.isModLoaded("appliedenergistics2"))
 			GameRegistry.registerTileEntity(TileEntityMEBridge.class, TileEntityMEBridge.publicName);
         GameRegistry.registerTileEntity(TileEntityNoteBlock.class, TileEntityNoteBlock.publicName);
+		GameRegistry.registerTileEntity(TileEntityTurtle.class, TileEntityTurtle.publicName);
 	}
 
 	public void iconManagerInit() {}

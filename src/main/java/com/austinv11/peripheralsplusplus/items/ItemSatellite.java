@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.items;
 
+import com.austinv11.collectiveframework.minecraft.utils.Colors;
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.api.PeripheralsPlusPlusAPI;
@@ -161,23 +162,23 @@ public class ItemSatellite extends ItemPPP {
 			player.getCurrentEquippedItem().setTagCompound(saveToTag());
 			List<String> text = new ArrayList<String>();
 			List<ISatelliteUpgrade> upgrades = PeripheralsPlusPlusAPI.getUpgradesFromItemStack(player.getCurrentEquippedItem());
-			text.add(Reference.Colors.RESET+Reference.Colors.GRAY+Reference.Colors.UNDERLINE+"Main Upgrade:");
-			text.add(Reference.Colors.RESET+Reference.Colors.GRAY+(items.containsKey(0) && upgrades != null && upgrades.get(0) != null ? StatCollector.translateToLocal(upgrades.get(0).getUnlocalisedName()) : "No Main Upgrade!"));
-			text.add(Reference.Colors.RESET+Reference.Colors.GRAY+Reference.Colors.UNDERLINE+"Addon Upgrades:");
+			text.add(Colors.RESET.toString()+Colors.GRAY+Colors.UNDERLINE+"Main Upgrade:");
+			text.add(Colors.RESET.toString()+Colors.GRAY+(items.containsKey(0) && upgrades != null && upgrades.get(0) != null ? StatCollector.translateToLocal(upgrades.get(0).getUnlocalisedName()) : "No Main Upgrade!"));
+			text.add(Colors.RESET.toString()+Colors.GRAY+Colors.UNDERLINE+"Addon Upgrades:");
 			boolean hasMod = false;
 			if (items.containsKey(1) && upgrades != null) {
 				for (int i = 0; i < items.size(); i++) {
 					if (upgrades.size() > i) {
 						ISatelliteUpgrade upgrade = upgrades.get(i);
 						if (upgrade != null && upgrade.getType() == SatelliteUpgradeType.MODIFIER) {
-							text.add(Reference.Colors.RESET+Reference.Colors.GRAY+StatCollector.translateToLocal(upgrade.getUnlocalisedName())+" (uses "+String.format("%.2f", upgrade.getAddonWeight()*100)+"% of the satellite's capacity)");
+							text.add(Colors.RESET.toString()+Colors.GRAY+StatCollector.translateToLocal(upgrade.getUnlocalisedName())+" (uses "+String.format("%.2f", upgrade.getAddonWeight()*100)+"% of the satellite's capacity)");
 							hasMod = true;
 						}
 					}
 				}
 			}
 			if (!hasMod)
-				text.add(Reference.Colors.RESET+Reference.Colors.GRAY+"No Addon Upgrades!");
+				text.add(Colors.RESET.toString()+Colors.GRAY+"No Addon Upgrades!");
 			NBTHelper.setInfo(player.getCurrentEquippedItem(), text);
 		}
 

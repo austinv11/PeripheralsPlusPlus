@@ -1,10 +1,10 @@
 package com.austinv11.peripheralsplusplus.recipe;
 
+import com.austinv11.collectiveframework.minecraft.utils.Colors;
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.blocks.BlockPeripheralContainer;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Config;
-import com.austinv11.peripheralsplusplus.reference.Reference;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.block.Block;
@@ -66,12 +66,12 @@ public class ContainerRecipe implements IRecipe {
 		List<String> text = new ArrayList<String>();
 		if (base.stackTagCompound == null || base.stackTagCompound.hasNoTags() || !base.stackTagCompound.hasKey("ids")) {
 			NBTHelper.setIntArray(base, "ids", setToArray(map.keySet()));
-			text.add(Reference.Colors.RESET+Reference.Colors.UNDERLINE+"Contained Peripherals:");
+			text.add(Colors.RESET.toString()+Colors.UNDERLINE+"Contained Peripherals:");
 			for (IPeripheral p : map.values())
-				text.add(Reference.Colors.RESET+p.getType());
+				text.add(Colors.RESET+p.getType());
 			NBTHelper.addInfo(base, text);
 		} else {
-			text.add(Reference.Colors.RESET+Reference.Colors.UNDERLINE+"Contained Peripherals:");
+			text.add(Colors.RESET.toString()+Colors.UNDERLINE+"Contained Peripherals:");
 			int[] ids = NBTHelper.getIntArray(base, "ids");
 			int[] newIds = new int[ids.length+map.size()];
 			for (int j = 0; j < ids.length+map.size(); j++)
@@ -80,7 +80,7 @@ public class ContainerRecipe implements IRecipe {
 			for (int id : newIds) {
 				Block peripheral = Block.getBlockById(id);
 				IPeripheral iPeripheral = (IPeripheral)peripheral.createTileEntity(null, 0);
-				text.add(Reference.Colors.RESET+iPeripheral.getType());
+				text.add(Colors.RESET+iPeripheral.getType());
 			}
 			NBTHelper.setInfo(base, text);
 		}
