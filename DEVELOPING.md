@@ -33,7 +33,11 @@ Now, just run these following commands (in order!) before doing anything to star
 
 You should know what to do
 
-### 4. Making the pull request
+### 4. Building
+
+Simply run `gradlew build` and navigate to the build/libs directory relative to the project directory
+
+### 5. Making the pull request
 
 So, you followed everything and you believe that your contribution is good enough to be included? If so, make the Pull Request!
 Please refer to your preferred method of using git's documentation if you don't know how.
