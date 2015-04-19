@@ -114,7 +114,7 @@ public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, 
 					throw new LuaException("Bad argument #2 (expected number");
 				if (!(arguments[2] instanceof String) && !(arguments[2] instanceof Double))
 					throw new LuaException("Bad argument #3 (expected string or number)");
-				Item item = GameRegistry.findItem(((String) arguments[0]).split(":")[0], ((String) arguments[0]).split(":")[1]);
+				Item item = GameRegistry.findItem(((String) arguments[0]).split(":")[0], ((String) arguments[0]).split(":")[1].split(" ")[0]);
 				long amount = (long) (int) (double) (Double) arguments[1];
 				if (arguments[2] instanceof String)
 					dir = ForgeDirection.valueOf(((String) arguments[2]).toUpperCase());
@@ -124,7 +124,8 @@ public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, 
 					throw new LuaException("Block is not a valid inventory");
 				IInventory inventory = (IInventory) worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ);
 				long extracted = 0;
-				IAEItemStack stack = findAEStackFromItemStack(monitor, new ItemStack(item));
+				int meta = ((String) arguments[0]).contains(" ") ? Integer.valueOf(((String)arguments[0]).split(" ")[1]) : 0;
+				IAEItemStack stack = findAEStackFromItemStack(monitor, new ItemStack(item, 1, meta));
 				if (stack != null) {
 					if (amount > stack.getStackSize())
 						amount = stack.getStackSize();
@@ -174,8 +175,9 @@ public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, 
 				if (!(arguments[1] instanceof Double))
 					throw new LuaException("Bad argument #2 (expected number");
 				ICraftingGrid craftingGrid = node.getGrid().getCache(ICraftingGrid.class);
-				Item toCraft = GameRegistry.findItem(((String) arguments[0]).split(":")[0], ((String) arguments[0]).split(":")[1]);
-				IAEItemStack aeToCraft_ = findAEStackFromItemStack(monitor, new ItemStack(toCraft));
+				Item toCraft = GameRegistry.findItem(((String) arguments[0]).split(":")[0], ((String) arguments[0]).split(":")[1].split(" ")[0]);
+				int meta_ = ((String) arguments[0]).contains(" ") ? Integer.valueOf(((String)arguments[0]).split(" ")[1]) : 0;
+				IAEItemStack aeToCraft_ = findAEStackFromItemStack(monitor, new ItemStack(toCraft, 1, meta_));
 				if (aeToCraft_ != null && aeToCraft_.isCraftable()) {
 					IAEItemStack aeToCraft = aeToCraft_.copy();
 					aeToCraft.setStackSize((long) (int) (double) (Double) arguments[1]);
@@ -266,13 +268,13 @@ public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, 
 
 	private Object getObjectFromStack(IAEItemStack stack, int flag) {
 		if (flag == 0) {
-			return Item.itemRegistry.getNameForObject(stack.getItem());
+			return Item.itemRegistry.getNameForObject(stack.getItem())+" "+stack.getItemDamage();
 		} else if (flag == 1) {
 			if (stack.getCountRequestable() > 0)
-				return Item.itemRegistry.getNameForObject(stack.getItem());
+				return Item.itemRegistry.getNameForObject(stack.getItem())+" "+stack.getItemDamage();
 		} else if (flag == 2) {
 			if (stack.isCraftable())
-				return Item.itemRegistry.getNameForObject(stack.getItem());
+				return Item.itemRegistry.getNameForObject(stack.getItem())+" "+stack.getItemDamage();
 		}
 		return null;
 	}
