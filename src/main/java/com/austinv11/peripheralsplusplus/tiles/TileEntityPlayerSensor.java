@@ -32,14 +32,6 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 		this.zCoord = turtle.getPosition().posZ;
 		this.setWorldObj(turtle.getWorld());
 	}
-	
-	@Override
-	public void validate() {
-		super.validate();
-		
-		if(worldObj != null)
-			location = new Location(this);
-   }
 
     @Override
     public void validate() {

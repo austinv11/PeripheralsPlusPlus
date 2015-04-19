@@ -1,7 +1,7 @@
 package com.austinv11.peripheralsplusplus.villagers;
 
+import com.austinv11.collectiveframework.minecraft.utils.Colors;
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
-import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.utils.Util;
 import cpw.mods.fml.common.registry.GameRegistry;
 import cpw.mods.fml.common.registry.VillagerRegistry;
@@ -24,7 +24,7 @@ public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
 	public void manipulateTradesForVillager(EntityVillager villager, MerchantRecipeList recipeList, Random random) {
 		ItemStack error = new ItemStack(Items.diamond);
 		ItemStack emerald = new ItemStack(Items.emerald);
-		error.setStackDisplayName(Reference.Colors.RED+"THIS IS A BUG, REPORT TO THE P++ AUTHOR ASAP");
+		error.setStackDisplayName(Colors.RED+"THIS IS A BUG, REPORT TO THE P++ AUTHOR ASAP");
 		MerchantRecipe recipe = new MerchantRecipe(new ItemStack(Blocks.dirt), error);
 		do {
 			int trade = MathHelper.getRandomIntegerInRange(random, 0, 8);
@@ -130,13 +130,13 @@ public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
 		ItemStack stack = new ItemStack(Items.written_book);
 		switch (type) {
 			case 0:
-				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.1.title", Reference.Colors.MAGIC+"dan200", getTextFromInt(type));
+				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.1.title", Colors.MAGIC+"dan200", getTextFromInt(type));
 				break;
 			case 1:
-				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.2.title", Reference.Colors.MAGIC+"dan200", getTextFromInt(type));
+				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.2.title", Colors.MAGIC+"dan200", getTextFromInt(type));
 				break;
 			case 2:
-				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.3.title", Reference.Colors.MAGIC+"dan200", getTextFromInt(type));
+				stack.stackTagCompound = Util.writeToBookNBT("peripheralsplusplus.lore.3.title", Colors.MAGIC+"dan200", getTextFromInt(type));
 				break;
 		}
 		return stack;

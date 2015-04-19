@@ -1,8 +1,8 @@
 package com.austinv11.peripheralsplusplus.event;
 
+import com.austinv11.collectiveframework.minecraft.utils.Colors;
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.items.ItemBlockPeripheralContainer;
-import com.austinv11.peripheralsplusplus.reference.Reference;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.block.Block;
@@ -23,7 +23,7 @@ public class PeripheralContainerHandler {
 				List<String> text = new ArrayList<String>();
 				ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
 				NBTHelper.removeInfo(stack);
-				text.add(Reference.Colors.RESET+Reference.Colors.UNDERLINE+"Contained Peripherals:");
+				text.add(Colors.RESET.toString()+Colors.UNDERLINE+"Contained Peripherals:");
 				int[] ids = NBTHelper.getIntArray(stack, "ids");
 				if (ids.length > 0) {
 					if (ids.length > 1) {
@@ -34,7 +34,7 @@ public class PeripheralContainerHandler {
 						for (int id : newIds) {
 							Block peripheral = Block.getBlockById(id);
 							IPeripheral iPeripheral = (IPeripheral) peripheral.createTileEntity(null, 0);
-							text.add(Reference.Colors.RESET+iPeripheral.getType());
+							text.add(Colors.RESET+iPeripheral.getType());
 						}
 						if (text.size() > 1)
 							NBTHelper.setInfo(stack, text);
