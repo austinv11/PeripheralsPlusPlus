@@ -1,8 +1,8 @@
 package com.austinv11.peripheralsplusplus.items;
 
+import com.austinv11.collectiveframework.minecraft.utils.Colors;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.SatelliteUpgradeType;
-import com.austinv11.peripheralsplusplus.reference.Reference;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -35,6 +35,6 @@ public abstract class SatelliteUpgradeBase extends ItemPPP {
 	@SideOnly(Side.CLIENT)
 	public void addInformation(ItemStack item, EntityPlayer player, List info, boolean isShiftHeld) {
 		if (getUpgrade().getType() == SatelliteUpgradeType.MODIFIER)
-			info.add(Reference.Colors.RESET+Reference.Colors.GRAY+"Upgrade wWight: "+String.format("%.2f", getUpgrade().getAddonWeight()*100)+"%");
+			info.add(Colors.RESET.toString()+Colors.GRAY+"Upgrade Weight: "+String.format("%.2f", getUpgrade().getAddonWeight()*100)+"%");
 	}
 }

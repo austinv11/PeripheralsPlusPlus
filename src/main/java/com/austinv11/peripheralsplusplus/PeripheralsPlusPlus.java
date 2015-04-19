@@ -1,5 +1,8 @@
 package com.austinv11.peripheralsplusplus;
 
+import com.austinv11.collectiveframework.minecraft.config.ConfigException;
+import com.austinv11.collectiveframework.minecraft.config.ConfigRegistry;
+import com.austinv11.collectiveframework.minecraft.logging.Logger;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
@@ -18,8 +21,6 @@ import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.turtles.*;
 import com.austinv11.peripheralsplusplus.turtles.TurtleProjRed.ToolMaterial;
 import com.austinv11.peripheralsplusplus.turtles.TurtleProjRed.ToolType;
-import com.austinv11.peripheralsplusplus.utils.ConfigurationHandler;
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -38,7 +39,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Mod(modid= Reference.MOD_ID,name = Reference.MOD_NAME,version = Reference.VERSION/*, guiFactory = Reference.GUI_FACTORY_CLASS*/)
+@Mod(modid= Reference.MOD_ID,name = Reference.MOD_NAME,version = Reference.VERSION/*, guiFactory = Reference.GUI_FACTORY_CLASS*/, dependencies = "after:CollectiveFramework")
 public class PeripheralsPlusPlus {
 
 	public static int VILLAGER_ID = 1337; //:P
@@ -58,12 +59,18 @@ public class PeripheralsPlusPlus {
 
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY_CLASS, serverSide = Reference.SERVER_PROXY_CLASS)
 	public static CommonProxy proxy;
+	
+	public static Logger LOGGER = new Logger(Reference.MOD_NAME);
 
 	public static String BASE_PPP_DIR = "./mods/PPP/";
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
-		ConfigurationHandler.init(event.getSuggestedConfigurationFile());
+		try {
+			ConfigRegistry.registerConfig(new Config());
+		} catch (ConfigException e) {
+			e.printStackTrace();
+		}
 		NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("ppp");
 		NETWORK.registerMessage(AudioPacket.AudioPacketHandler.class, AudioPacket.class, 0, Side.CLIENT);
 		NETWORK.registerMessage(AudioResponsePacket.AudioResponsePacketHandler.class, AudioResponsePacket.class, 1, Side.SERVER);
@@ -83,31 +90,26 @@ public class PeripheralsPlusPlus {
 		proxy.registerEvents();
 		ModItems.preInit();
 		ModBlocks.init();
-		Logger.info("Preparing the mount...");
-		try {
-			DynamicMount.prepareMount();
-			Logger.info("Mount has been successfully prepared!");
-		}catch (Exception e) {
-			Logger.error("An exception was thrown attempting to prepare mount programs; if your internet connection is fine, please report the following to the mod author:");
-			e.printStackTrace();
-		}
+		LOGGER.info("Preparing the mount...");
+		DynamicMount.prepareMount();
 	}
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
+		Config.setWhitelist(Config.dimensionWhitelist);
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
-		Logger.info("Registering peripherals...");
+		LOGGER.info("Registering peripherals...");
 		proxy.registerTileEntities();
 		ComputerCraftAPI.registerPeripheralProvider(new BlockChatBox());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockPlayerSensor());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockOreDictionary());
 		if (Loader.isModLoaded("Forestry")) {
-			Logger.info("Forestry is loaded! Registering analyzer peripherals...");
+			LOGGER.info("Forestry is loaded! Registering analyzer peripherals...");
 			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerBee());
 			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerTree());
 			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerButterfly());
 		} else
-			Logger.info("Forestry not found, skipping analyzer peripherals");
+			LOGGER.info("Forestry not found, skipping analyzer peripherals");
 		ComputerCraftAPI.registerPeripheralProvider(new BlockTeleporter());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockTeleporterT2());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockEnvironmentScanner());
@@ -115,20 +117,20 @@ public class PeripheralsPlusPlus {
 		ComputerCraftAPI.registerPeripheralProvider(new BlockAntenna());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockPeripheralContainer());
 		if (Loader.isModLoaded("appliedenergistics2")) {
-			Logger.info("Applied Energistics is loaded! Registering the ME Bridge...");
+			LOGGER.info("Applied Energistics is loaded! Registering the ME Bridge...");
 			ComputerCraftAPI.registerPeripheralProvider(new BlockMEBridge());
 		}else
-			Logger.info("Applied Energistics not found, skipping the ME Bridge");
-		Logger.info("Registering turtle upgrades...");
+			LOGGER.info("Applied Energistics not found, skipping the ME Bridge");
+		LOGGER.info("Registering turtle upgrades...");
 		registerUpgrade(new TurtleChatBox());
 		registerUpgrade(new TurtlePlayerSensor());
 		registerUpgrade(new TurtleCompass());
 		registerUpgrade(new TurtleXP());
 		if (Loader.isModLoaded("factorization") || Loader.isModLoaded("JABBA")) {
-			Logger.info("A mod that adds barrels is loaded! Registering the barrel turtle upgrade...");
+			LOGGER.info("A mod that adds barrels is loaded! Registering the barrel turtle upgrade...");
 			registerUpgrade(new TurtleBarrel());
 		} else
-			Logger.info("No barrel-adding mods found, skipping the barrel turtle upgrade");
+			LOGGER.info("No barrel-adding mods found, skipping the barrel turtle upgrade");
 		registerUpgrade(new TurtleOreDictionary());
 		registerUpgrade(new TurtleEnvironmentScanner());
 		registerUpgrade(new TurtleFeeder());
@@ -136,24 +138,24 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleSignReader());
 		registerUpgrade(new TurtleGarden());
 		if (Loader.isModLoaded("ProjRed|Exploration")) {
-			Logger.info("Project Red Exploration is loaded! Registering Project Red tools turtle upgrades...");
+			LOGGER.info("Project Red Exploration is loaded! Registering Project Red tools turtle upgrades...");
 			registerProjRedUpgrades();
 		} else
-			Logger.info("Project Red Exploration not found, skipping Project Red tools turtle upgrades");
+			LOGGER.info("Project Red Exploration not found, skipping Project Red tools turtle upgrades");
 		registerUpgrade(new TurtleSpeaker());
 		registerUpgrade(new TurtleTank());
         registerUpgrade(new TurtleNoteBlock());
 		registerUpgrade(new TurtleRidable());
-		Logger.info("All peripherals and turtle upgrades registered!");
-//		Logger.info("Registering satellite upgrades...");
+		LOGGER.info("All peripherals and turtle upgrades registered!");
+//		LOGGER.info("Registering satellite upgrades...");
 //		PeripheralsPlusPlusAPI.registerSatelliteUpgrade(new GPSUpgrade());
-//		Logger.info("All satellite upgrades registered!");
+//		LOGGER.info("All satellite upgrades registered!");
 		proxy.registerRenderers();
 //		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, instance, 64, 20, true);
 		if (Config.enableVillagers)
 			proxy.setupVillagers();
-		EntityRegistry.registerGlobalEntityID(EntityRidableTurtle.class, "Ridable Turtle", EntityRegistry.findGlobalUniqueEntityId());
+//		EntityRegistry.registerGlobalEntityID(EntityRidableTurtle.class, "Ridable Turtle", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerModEntity(EntityRidableTurtle.class, "Ridable Turtle", 1, instance, 64, 1, true);
 	}
 

@@ -1,9 +1,10 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
+import com.austinv11.collectiveframework.minecraft.utils.Colors;
+import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.items.ItemSmartHelmet;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
-import com.austinv11.peripheralsplusplus.utils.NBTHelper;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -77,11 +78,11 @@ public class BlockAntenna extends BlockPPP implements ITileEntityProvider, IPeri
 			List<String> info = new ArrayList<String>();
 
 			if (antenna.getLabel() == null) {
-				info.add(Reference.Colors.RESET + Reference.Colors.GRAY + id.toString());
+				info.add(Colors.RESET.toString() + Colors.GRAY + id.toString());
 			}
 			else {
 				String label = antenna.getLabel();
-				info.add(Reference.Colors.RESET + Reference.Colors.GRAY + label);
+				info.add(Colors.RESET.toString() + Colors.GRAY + label);
 				NBTHelper.setString(player.getCurrentEquippedItem(), "label", label);
 			}
 

@@ -30,8 +30,8 @@ public class Recipes {
 		if (Config.enableRFCharger)
 			if (Loader.isModLoaded("ThermalExpansion"))
 				GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.rfCharger), "rlr", "lcl", "rer", 'r', "dustRedstone", 'l', "ingotLead", 'c', new ItemStack(GameRegistry.findItem("ThermalExpansion", "capacitor"), 1, 2), 'e', new ItemStack(GameRegistry.findItem("ThermalExpansion", "material"), 1, 3)));
-//			else if (Loader.isModLoaded("BuildCraft|Core"))
-//				GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.rfCharger), "rlr", "lcl", "rer", 'r', "dustRedstone", 'l', "gearIron", 'c', "gearGold", 'e', new ItemStack(GameRegistry.findItem("BuildCraft|Transport", "item.buildcraftPipe.pipepowergold"))));
+			else if (Loader.isModLoaded("BuildCraft|Core"))
+				GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.rfCharger), "rlr", "lcl", "rer", 'r', "dustRedstone", 'l', "gearIron", 'c', "gearGold", 'e', new ItemStack(GameRegistry.findItem("BuildCraft|Transport", "item.buildcraftPipe.pipepowergold"))));
 		if (Config.enableOreDictionary)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.oreDictionary), "isi", "sbs", "isi", 'i', "ingotIron", 's', "stone", 'b', new ItemStack(Items.book)));
 		if (Config.enableAnalyzers && Loader.isModLoaded("Forestry")) {
@@ -73,7 +73,10 @@ public class Recipes {
 			GameRegistry.addShapelessRecipe(new ItemStack(ModItems.smartHelmet), new ItemStack(ModItems.smartHelmet));
 		}
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.antenna), "sms", " i ", "ppp", 's', "stone", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1), 'i', "ingotIron", 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate)));
-        if (Config.noteBlockEnabled)
+        if (Config.enableNoteBlock)
             GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.noteBlock), "igi", "rnr", "igi", 'i', "ingotIron", 'g', "ingotGold", 'r', "dustRedstone", 'n', Blocks.noteblock));
+		GameRegistry.addShapelessRecipe(new ItemStack(ModBlocks.turtle), GameRegistry.findBlock("ComputerCraft", "CC-TurtleAdvanced"));
+		GameRegistry.addShapelessRecipe(new ItemStack(ModBlocks.turtle), GameRegistry.findBlock("ComputerCraft", "CC-TurtleExpanded"));
+		GameRegistry.addShapelessRecipe(new ItemStack(ModBlocks.turtle), GameRegistry.findBlock("ComputerCraft", "CC-Turtle"));
 	}
 }

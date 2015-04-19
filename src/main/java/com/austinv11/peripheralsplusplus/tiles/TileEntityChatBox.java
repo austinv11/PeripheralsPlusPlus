@@ -2,7 +2,6 @@ package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ChatUtil;
-import com.austinv11.peripheralsplusplus.utils.Location;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -28,20 +27,17 @@ public class TileEntityChatBox extends MountedTileEntity {
 	private static final int TICKER_INTERVAL = 20;
 	private int ticker = 0;
 	private int subticker = 0;
-	private Location location;
 	private ITurtleAccess turtle;
 
 	public TileEntityChatBox() {
 		super();
-		this.location = new Location(xCoord,yCoord,zCoord,getWorldObj());
 	}
 
 	public TileEntityChatBox(ITurtleAccess turtle) {
-		this.location = new Location(turtle.getPosition().posX, turtle.getPosition().posY, turtle.getPosition().posZ, turtle.getWorld());
-		this.xCoord = (int) location.getX();
-		this.yCoord = (int) location.getY();
-		this.zCoord = (int) location.getZ();
-		this.setWorldObj(location.getWorld());
+		this.xCoord = turtle.getPosition().posX;
+		this.yCoord = turtle.getPosition().posY;
+		this.zCoord = turtle.getPosition().posZ;
+		this.setWorldObj(turtle.getWorld());
 		this.turtle = turtle;
 	}
 

@@ -1,10 +1,10 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.collectiveframework.minecraft.utils.Colors;
+import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.lua.LuaObjectPeripheralWrap;
 import com.austinv11.peripheralsplusplus.reference.Config;
-import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.utils.NBTHelper;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -159,11 +159,11 @@ public class TileEntityPeripheralContainer extends MountedNetworkedTileEntity {
 				this.writeToNBT(tag);
 				drop.stackTagCompound = tag;
 				List<String> text = new ArrayList<String>();
-				text.add(Reference.Colors.RESET+Reference.Colors.UNDERLINE+"Contained Peripherals:");
+				text.add(Colors.RESET.toString()+Colors.UNDERLINE+"Contained Peripherals:");
 				for (int id : NBTHelper.getIntArray(drop, "ids")) {
 					Block peripheral = Block.getBlockById(id);
 					IPeripheral iPeripheral = (IPeripheral) peripheral.createTileEntity(null, 0);
-					text.add(Reference.Colors.RESET+iPeripheral.getType());
+					text.add(Colors.RESET+iPeripheral.getType());
 				}
 				NBTHelper.setInfo(drop, text);
 			}

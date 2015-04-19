@@ -1,8 +1,8 @@
 package com.austinv11.peripheralsplusplus.network;
 
+import com.austinv11.collectiveframework.multithreading.SimpleRunnable;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import com.austinv11.peripheralsplusplus.utils.TranslateUtils;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
@@ -63,36 +63,38 @@ public class AudioPacket implements IMessage {
 
 		@Override
 		public IMessage onMessage(AudioPacket message, MessageContext ctx) {
-			Thread audio = new AudioThread(message);
-			audio.start();
+			new AudioThread(message).start();
 			return null;
 		}
 
-		private class AudioThread extends Thread {
+		private class AudioThread extends SimpleRunnable {
 
 			private AudioPacket message;
-			private boolean work = true;
 
 			public AudioThread(AudioPacket message) {
-				super(Reference.MOD_NAME+" Audio Thread");
 				this.message = message;
 			}
 
 			@Override
 			public void run(){
-				if (work)
 					try {
 						if (message.text.replace(" ", "%20").length() < 100)
 							TranslateUtils.playAudio(message.text, message.lang);
 						else
 							playSplitAudio();
-						work = false;
 						PeripheralsPlusPlus.NETWORK.sendToServer(new AudioResponsePacket(message.text, message.lang, message.x, message.y, message.z, Minecraft.getMinecraft().theWorld, message.side));
 					} catch (Exception e) {
 						e.printStackTrace();
+					} finally {
+						this.disable(true);
 					}
 			}
-
+			
+			@Override
+			public String getName() {
+				return Reference.MOD_NAME+" Audio Thread";
+			}
+			
 			private void playSplitAudio() {
 				String[] splitString = message.text.split(" ");
 				ArrayList<String> words = new ArrayList<String>();

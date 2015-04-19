@@ -1,12 +1,12 @@
 package com.austinv11.peripheralsplusplus.entities;
 
+import com.austinv11.collectiveframework.minecraft.entities.EntityInventory;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.client.sounds.RocketSound;
 import com.austinv11.peripheralsplusplus.event.SatelliteLaunchEvent;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.network.RocketCountdownPacket;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -22,7 +22,7 @@ import net.minecraft.util.*;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
-public class EntityRocket extends EntityInventory{
+public class EntityRocket extends EntityInventory {
 
 	protected int damage = 0;
 	public static final int FUEL_ID = 2;
@@ -42,8 +42,8 @@ public class EntityRocket extends EntityInventory{
 	public static final double INITIAL_ACCELERATION_CONSTANT = .05;
 	public static final double ACCELERATION_CONSTANT = .5;
 
-	public EntityRocket(World p_i1582_1_) {
-		super(p_i1582_1_);
+	public EntityRocket(World world) {
+		super(world);
 		this.preventEntitySpawning = true;
 		this.ignoreFrustumCheck = true;
 		this.renderDistanceWeight = 5.0D;
@@ -55,8 +55,8 @@ public class EntityRocket extends EntityInventory{
 		data.addObject(MOTION_ID, 0.0F);
 	}
 
-	public EntityRocket(World p_i1582_1_, double x, double y, double z) {
-		this(p_i1582_1_);
+	public EntityRocket(World world, double x, double y, double z) {
+		this(world);
 		this.posX = x;
 		this.posY = y;
 		this.posZ = z;
@@ -118,42 +118,42 @@ public class EntityRocket extends EntityInventory{
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int p_94041_1_, ItemStack p_94041_2_) {
-		switch (p_94041_1_) {
+	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+		switch (slot) {
 			case 0:
-				return p_94041_2_.isItemEqual(new ItemStack(ModItems.satellite)) && items[p_94041_1_] != null && p_94041_2_.stackSize == 1;
+				return stack.isItemEqual(new ItemStack(ModItems.satellite)) && items[slot] != null && stack.stackSize == 1;
 			case 1:
-				return TileEntityFurnace.isItemFuel(p_94041_2_);
+				return TileEntityFurnace.isItemFuel(stack);
 			case 2:
-				return p_94041_2_.isItemEqual(new ItemStack(Items.gunpowder));
+				return stack.isItemEqual(new ItemStack(Items.gunpowder));
 			default:
 				return false;
 		}
 	}
 
 	@Override
-	public boolean interactFirst(EntityPlayer p_130002_1_) {
+	public boolean interactFirst(EntityPlayer player) {
 		if (!worldObj.isRemote && !getIsActive()) {
-			p_130002_1_.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.ROCKET.ordinal(), worldObj, this.getEntityId()/*Im a 1337 uber haxor*/, (int)this.posY, (int)this.posZ);
+			player.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.ROCKET.ordinal(), worldObj, this.getEntityId()/*Im a 1337 uber haxor*/, (int) this.posY, (int) this.posZ);
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public void readEntityFromNBT(NBTTagCompound p_70037_1_) {
-		super.readEntityFromNBT(p_70037_1_);
-		setFuel(p_70037_1_.getInteger("fuel"));
-		setOxidizer(p_70037_1_.getInteger("oxidizer"));
-		setIsActive(p_70037_1_.getBoolean("isActive"));
+	public void readEntityFromNBT(NBTTagCompound tag) {
+		super.readEntityFromNBT(tag);
+		setFuel(tag.getInteger("fuel"));
+		setOxidizer(tag.getInteger("oxidizer"));
+		setIsActive(tag.getBoolean("isActive"));
 	}
 
 	@Override
-	public void writeEntityToNBT(NBTTagCompound p_70014_1_) {
-		super.writeEntityToNBT(p_70014_1_);
-		p_70014_1_.setInteger("fuel", getFuel());
-		p_70014_1_.setInteger("oxidizer", getOxidizer());
-		p_70014_1_.setBoolean("isActive", getIsActive());
+	public void writeEntityToNBT(NBTTagCompound tag) {
+		super.writeEntityToNBT(tag);
+		tag.setInteger("fuel", getFuel());
+		tag.setInteger("oxidizer", getOxidizer());
+		tag.setBoolean("isActive", getIsActive());
 	}
 
 	@Override
@@ -162,7 +162,7 @@ public class EntityRocket extends EntityInventory{
 	}
 
 	@Override
-	public AxisAlignedBB getCollisionBox(Entity par1Entity) {
+	public AxisAlignedBB getCollisionBox(Entity entity) {
 		return null;
 	}
 
@@ -177,11 +177,11 @@ public class EntityRocket extends EntityInventory{
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource par1DamageSource, float par2) {
+	public boolean attackEntityFrom(DamageSource damageSource, float par2) {
 		if (!this.worldObj.isRemote && !this.isDead) {
 			if (this.isEntityInvulnerable())
 				return false;
-			if (par1DamageSource.getEntity() instanceof EntityPlayer)
+			if (damageSource.getEntity() instanceof EntityPlayer)
 				this.damage = 100;
 			if (this.damage > 90) {
 				this.entityDropItem(new ItemStack(ModItems.rocket), 0.5F);
@@ -267,7 +267,7 @@ public class EntityRocket extends EntityInventory{
 		}
 		if (getIsActive() && isFlipped)
 			setIsActive(false);
-		Logger.info(posX+","+posY+","+posZ);
+		PeripheralsPlusPlus.LOGGER.info(posX+","+posY+","+posZ);
 	}
 
 	@Override

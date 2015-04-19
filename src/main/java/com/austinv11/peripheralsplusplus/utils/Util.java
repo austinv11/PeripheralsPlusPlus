@@ -1,5 +1,7 @@
 package com.austinv11.peripheralsplusplus.utils;
 
+import com.austinv11.collectiveframework.utils.FileUtils;
+import com.austinv11.collectiveframework.utils.StringUtils;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
@@ -12,11 +14,11 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
 
@@ -118,28 +120,12 @@ public class Util {
 		return returnVal;
 	}
 
-	public static String readFile(File file) throws IOException {
-		FileReader reader = new FileReader(file);
-		String result = "";
-		int nextChar;
-		while ((nextChar = reader.read()) != -1) {
-			char newChar = (char)nextChar;
-			result = result+newChar;
-		}
-		reader.close();
-		return result;
-	}
-
-	public static String readFile(String filePath) throws IOException {
-		return readFile(new File(filePath));
-	}
-
 	public static boolean checkFileVersion(String dir, JSONFileList json) throws IOException{
 		File file = new File(dir+"/index.json");
 		if (!file.exists())
 			return true;
 		Gson gson = new Gson();
-		String localJson = readFile(file);
+		String localJson = StringUtils.stringFromList(FileUtils.readAll(file));
 		JSONFileList localFile = gson.fromJson(localJson, JSONFileList.class);
 		return !localFile.ver.equals(json.ver);
 	}
@@ -165,5 +151,17 @@ public class Util {
 		for (int i = 0; i < array_.length; i++)
 			array_[i] = array_[i].trim();
 		return array_;
+	}
+	
+	public static List<String> getPlayers(World world) {
+		List<String> list = new ArrayList<String>();
+		if (world != null) {
+			for (EntityPlayer player : (Iterable<EntityPlayer>) world.playerEntities)
+				list.add(player.getDisplayName());
+		}else {
+			for (String player : MinecraftServer.getServer().getAllUsernames())
+				list.add(player);
+		}
+		return list;
 	}
 }

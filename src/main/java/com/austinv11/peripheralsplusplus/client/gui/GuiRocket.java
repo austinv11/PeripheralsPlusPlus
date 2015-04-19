@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.client.gui;
 
+import com.austinv11.collectiveframework.minecraft.utils.Colors;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.network.RocketLaunchPacket;
@@ -55,9 +56,9 @@ public class GuiRocket extends GuiContainer {
 		super.initGui();
 		int x = (width - sizeX) / 2;
 		int y = (height - sizeY) / 2;
-		String color = Reference.Colors.GREEN;
+		Colors color = Colors.GREEN;
 		if (!rocket.getIsUsable())
-			color = Reference.Colors.RED;
+			color = Colors.RED;
 		buttonList.add(new GuiButton(0/*id*/, x+63/*xpos*/, y+60/*ypos*/, 50 /*width*/, 20/*height*/, color+StatCollector.translateToLocal("peripheralsplusplus.button.rocket")));
 	}
 
@@ -71,9 +72,9 @@ public class GuiRocket extends GuiContainer {
 		if (isReady != rocket.getIsUsable()) {
 			int x = (width-sizeX)/2;
 			int y = (height-sizeY)/2;
-			String color = Reference.Colors.GREEN;
+			Colors color = Colors.GREEN;
 			if (!rocket.getIsUsable())
-				color = Reference.Colors.RED;
+				color = Colors.RED;
 			buttonList.set(0, new GuiButton(0/*id*/, x+63/*xpos*/, y+60/*ypos*/, 50 /*width*/, 20/*height*/, color+StatCollector.translateToLocal("peripheralsplusplus.button.rocket")));
 			isReady = rocket.getIsUsable();
 		}
@@ -91,7 +92,7 @@ public class GuiRocket extends GuiContainer {
 						rocket.player.closeScreen();
 						PeripheralsPlusPlus.NETWORK.sendToServer(new RocketLaunchPacket(rocket.rocket, rocket.rocket.worldObj));
 					}else {
-						rocket.player.addChatComponentMessage(new ChatComponentText(Reference.Colors.RED+StatCollector.translateToLocal("peripheralsplusplus.chat.launchFailure")));
+						rocket.player.addChatComponentMessage(new ChatComponentText(Colors.RED+StatCollector.translateToLocal("peripheralsplusplus.chat.launchFailure")));
 					}
 				}
 			}

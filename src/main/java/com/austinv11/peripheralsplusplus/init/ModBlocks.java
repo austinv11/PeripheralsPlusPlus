@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.init;
 
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.items.ItemBlockPeripheralContainer;
+import com.austinv11.peripheralsplusplus.items.ItemBlockTurtle;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
@@ -25,6 +26,7 @@ public class ModBlocks {
 	public static final BlockPPP meBridge = new BlockMEBridge();
 	public static final BlockPPP dummyBlock = new BlockDummyBlock();
     public static final BlockPPP noteBlock = new BlockNote();
+	public static final BlockPPP turtle = new BlockTurtle();
 
 	public static void init(){
 		GameRegistry.registerBlock(chatBox, "chatBox");
@@ -52,5 +54,6 @@ public class ModBlocks {
 			GameRegistry.registerBlock(meBridge, "meBridge");
 		GameRegistry.registerBlock(dummyBlock, "dummyBlock");
         GameRegistry.registerBlock(noteBlock, "noteBlock");
+		GameRegistry.registerBlock(turtle, ItemBlockTurtle.class, "turtle");
 	}
 }

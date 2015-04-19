@@ -16,7 +16,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.core.WorldSettings;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Config;
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -142,7 +141,6 @@ public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, 
 						extracted = resultant.getStackSize();
 						int currentSlot = 0;
 						while (!(resultant.getStackSize() < 1)) {
-							Logger.info(currentSlot);
 							if (inventory.isItemValidForSlot(currentSlot, new ItemStack(resultant.getItem()))) {
 								if (inventory.getStackInSlot(currentSlot) == null) {
 									ItemStack toAdd = resultant.getItemStack();

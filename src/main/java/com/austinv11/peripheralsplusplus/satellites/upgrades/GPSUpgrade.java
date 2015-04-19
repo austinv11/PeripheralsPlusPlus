@@ -4,7 +4,6 @@ import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.SatelliteUpgradeType;
 import com.austinv11.peripheralsplusplus.init.ModItems;
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -58,7 +57,6 @@ public class GPSUpgrade implements ISatelliteUpgrade {
 	
 	@Override
 	public Object[] callMethod(ISatellite satellite, IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		Logger.info(method);
 		return new Object[0];
 	}
 	

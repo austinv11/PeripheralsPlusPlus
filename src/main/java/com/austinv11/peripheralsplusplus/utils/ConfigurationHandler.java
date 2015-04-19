@@ -68,8 +68,6 @@ public class ConfigurationHandler {
             Config.noteBlockEnabled = config.get("NoteBlock", "noteBlockEnabled", true, "If disabled, crafting recipes will be removed and existing items will stop functioning").getBoolean(true);
 			Config.enableReaderTurtle = config.get("Sign Reading Turtle", "enableReaderTurtle", true, "If disabled, the recipe will be disabled and the current peripherals would cease to work").getBoolean();
 			Config.enableGardeningTurtle = config.get("Gardening Turtle", "enabelGardeningTurtle", true, "If disabled, the recipe will be disabled the current peripherals would cease to work").getBoolean();
-			Config.enableRidableTurtle = config.get("Ridable Turtle", "enableRidableturtle", true, "If disabled, the recipe will be disabled and the current peripherals will cease to work").getBoolean(true);
-			Config.fuelPerTurtleMovement = config.get("Ridable Turtle", "fuelPerTurtleMovement", 1, "Sets how much fuel is consumed per movement. Note: This does not change the consumption rate for lua movement calls").getInt(1);
 		}catch (Exception e){//Log exception
 			Logger.warn("Config exception!");
 			Logger.warn(e.getStackTrace());

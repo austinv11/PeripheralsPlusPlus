@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
@@ -11,7 +12,6 @@ import com.austinv11.peripheralsplusplus.lua.LuaObjectSatellite;
 import com.austinv11.peripheralsplusplus.network.ScaleRequestPacket;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteData;
-import com.austinv11.peripheralsplusplus.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.utils.Util;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import dan200.computercraft.api.lua.ILuaContext;

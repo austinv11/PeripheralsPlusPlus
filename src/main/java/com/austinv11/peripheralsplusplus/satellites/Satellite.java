@@ -5,7 +5,6 @@ import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.SatelliteUpgradeType;
 import com.austinv11.peripheralsplusplus.event.SateliiteCrashEvent;
-import com.austinv11.peripheralsplusplus.utils.Logger;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -70,7 +69,7 @@ public class Satellite implements ISatellite{
 			sat.setMainUpgrade(PeripheralsPlusPlus.UPGRADE_REGISTRY.get(nbt.getInteger("mainId")));
 			sat.mainTag = nbt.getCompoundTag("main");
 		} catch (Exception e) {
-			Logger.error("There was a problem loading the upgrade for satellite "+sat.getID());
+			PeripheralsPlusPlus.LOGGER.error("There was a problem loading the upgrade for satellite "+sat.getID());
 		}
 		try {
 			List<ISatelliteUpgrade> upgrades = new ArrayList<ISatelliteUpgrade>();
@@ -81,7 +80,7 @@ public class Satellite implements ISatellite{
 			}
 			sat.setAddons(upgrades);
 		} catch (Exception e) {
-			Logger.error("There was a problem loading the addons for satellite "+sat.getID());
+			PeripheralsPlusPlus.LOGGER.error("There was a problem loading the addons for satellite "+sat.getID());
 		}
 		return sat;
 	}

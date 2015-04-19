@@ -14,6 +14,7 @@ tile.peripheralsplusplus:antenna.name=Antenna
 tile.peripheralsplusplus:peripheralContainer.name=Peripheral Container
 tile.peripheralsplusplus:meBridge.name=ME Bridge
 tile.peripheralsplusplus:noteBlock.name=Iron Note Block
+tile.peripheralsplusplus:turtle.name=Turtle
 
 #Items
 item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade
@@ -59,6 +60,13 @@ peripheralsplusplus.inv.satellite.1=Addons:
 peripheralsplusplus.chat.launchFailure=You cannot launch the rocket!
 peripheralsplusplus.chat.launchStart=T-minus 10 seconds until launch!
 peripheralsplusplus.chat.launch=We have liftoff!
+
+#Item Descriptions
+peripheralsplusplus.description.turtle.1=This one seems a little broken...
+peripheralsplusplus.description.turtle.2=You wonder why it doesn't do anything when you yell turtle.forward() at it...
+peripheralsplusplus.description.turtle.3=Ow! Did it just bite you?
+peripheralsplusplus.description.turtle.4=What are you supposed to do with this?
+peripheralsplusplus.description.turtle.5=You wanted a turtle, didn't you?
 
 #Lore Books
 peripheralsplusplus.lore.1.title=The Journey of the First Programmer; Volume 1

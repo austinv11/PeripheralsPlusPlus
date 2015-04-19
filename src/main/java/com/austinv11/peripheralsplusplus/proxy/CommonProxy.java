@@ -5,7 +5,6 @@ import com.austinv11.peripheralsplusplus.event.PeripheralContainerHandler;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteEventHandler;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteTickHandler;
 import com.austinv11.peripheralsplusplus.tiles.*;
-import com.austinv11.peripheralsplusplus.utils.ConfigurationHandler;
 import com.austinv11.peripheralsplusplus.villagers.TradeHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.Loader;
@@ -25,7 +24,7 @@ public class CommonProxy {
 	public void registerTileEntities() {
 		GameRegistry.registerTileEntity(TileEntityChatBox.class, TileEntityChatBox.publicName);
 		GameRegistry.registerTileEntity(TileEntityPlayerSensor.class, TileEntityPlayerSensor.publicName);
-		if (Loader.isModLoaded("ThermalExpansion")/* || Loader.isModLoaded("BuildCraft|Core")*/)
+		if (Loader.isModLoaded("ThermalExpansion") || Loader.isModLoaded("BuildCraft|Core"))
 			GameRegistry.registerTileEntity(TileEntityRFCharger.class, TileEntityRFCharger.publicName);
 		GameRegistry.registerTileEntity(TileEntityOreDictionary.class, TileEntityOreDictionary.publicName);
 		if (Loader.isModLoaded("Forestry")) {
@@ -42,6 +41,7 @@ public class CommonProxy {
 		if (Loader.isModLoaded("appliedenergistics2"))
 			GameRegistry.registerTileEntity(TileEntityMEBridge.class, TileEntityMEBridge.publicName);
         GameRegistry.registerTileEntity(TileEntityNoteBlock.class, TileEntityNoteBlock.publicName);
+		GameRegistry.registerTileEntity(TileEntityTurtle.class, TileEntityTurtle.publicName);
 	}
 
 	public void iconManagerInit() {}
@@ -51,7 +51,6 @@ public class CommonProxy {
 	public void prepareGuis() {}
 
 	public void registerEvents() {
-		FMLCommonHandler.instance().bus().register(new ConfigurationHandler());
 		FMLCommonHandler.instance().bus().register(new SatelliteTickHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityChatBox.ChatListener());
 		MinecraftForge.EVENT_BUS.register(new SatelliteEventHandler());
