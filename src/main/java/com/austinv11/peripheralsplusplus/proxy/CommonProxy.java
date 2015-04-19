@@ -40,7 +40,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEntityPeripheralContainer.class, TileEntityPeripheralContainer.publicName);
 		if (Loader.isModLoaded("appliedenergistics2"))
 			GameRegistry.registerTileEntity(TileEntityMEBridge.class, TileEntityMEBridge.publicName);
-        GameRegistry.registerTileEntity(TileEntityNoteBlock.class, TileEntityNoteBlock.publicName);
+		GameRegistry.registerTileEntity(TileEntityNoteBlock.class, TileEntityNoteBlock.publicName);
 		GameRegistry.registerTileEntity(TileEntityTurtle.class, TileEntityTurtle.publicName);
 	}
 

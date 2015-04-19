@@ -73,8 +73,9 @@ public class Recipes {
 			GameRegistry.addShapelessRecipe(new ItemStack(ModItems.smartHelmet), new ItemStack(ModItems.smartHelmet));
 		}
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.antenna), "sms", " i ", "ppp", 's', "stone", 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1), 'i', "ingotIron", 'p', new ItemStack(Blocks.heavy_weighted_pressure_plate)));
-        if (Config.enableNoteBlock)
-            GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.noteBlock), "igi", "rnr", "igi", 'i', "ingotIron", 'g', "ingotGold", 'r', "dustRedstone", 'n', Blocks.noteblock));
+		if (Config.enableNoteBlock) {
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.noteBlock), "igi", "rnr", "igi", 'i', "ingotIron", 'g', "ingotGold", 'r', "dustRedstone", 'n', Blocks.noteblock));
+		}
 		GameRegistry.addShapelessRecipe(new ItemStack(ModBlocks.turtle), GameRegistry.findBlock("ComputerCraft", "CC-TurtleAdvanced"));
 		GameRegistry.addShapelessRecipe(new ItemStack(ModBlocks.turtle), GameRegistry.findBlock("ComputerCraft", "CC-TurtleExpanded"));
 		GameRegistry.addShapelessRecipe(new ItemStack(ModBlocks.turtle), GameRegistry.findBlock("ComputerCraft", "CC-Turtle"));
