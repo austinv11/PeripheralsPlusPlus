@@ -5,8 +5,10 @@ import com.austinv11.peripheralsplusplus.client.gui.GuiRocket;
 import com.austinv11.peripheralsplusplus.client.gui.GuiSmartHelmetOverlay;
 import com.austinv11.peripheralsplusplus.client.models.ItemRenderAntenna;
 import com.austinv11.peripheralsplusplus.client.models.RenderAntenna;
+import com.austinv11.peripheralsplusplus.client.models.RenderRidableTurtle;
 import com.austinv11.peripheralsplusplus.client.models.RenderRocket;
 import com.austinv11.peripheralsplusplus.client.models.RenderTurtle;
+import com.austinv11.peripheralsplusplus.entities.EntityRidableTurtle;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.event.SmartHelmetHandler;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
@@ -49,6 +51,7 @@ public class ClientProxy extends CommonProxy {
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.antenna), new ItemRenderAntenna(new RenderAntenna(), new TileEntityAntenna()));
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurtle.class, new RenderTurtle());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.turtle), new ItemRenderAntenna(new RenderTurtle(), new TileEntityTurtle()));
+		RenderingRegistry.registerEntityRenderingHandler(EntityRidableTurtle.class, new RenderRidableTurtle());
 	}
 
 	@SideOnly(Side.CLIENT)

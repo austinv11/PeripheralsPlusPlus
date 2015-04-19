@@ -128,6 +128,12 @@ public class Config {
 	@Description(category = "Gardening Turtle", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableGardeningTurtle = true;
 	
+	@Description(category = "Ridable Turtle", comment = ENABLE_CONFIG_MESSAGE)
+	public static boolean enableRidableTurtle = true;
+	
+	@Description(category = "Ridable Turtle", comment = "The amount of fuel used after each turtle movement")
+	public static int fuelPerTurtleMovement = 1;
+
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)
 			dimWhitelist.add(i);

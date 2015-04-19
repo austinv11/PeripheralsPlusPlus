@@ -7,6 +7,7 @@ import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgra
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
+import com.austinv11.peripheralsplusplus.entities.EntityRidableTurtle;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
@@ -83,6 +84,7 @@ public class PeripheralsPlusPlus {
 		NETWORK.registerMessage(InputEventPacket.InputEventPacketHandler.class, InputEventPacket.class, 9, Side.SERVER);
 		NETWORK.registerMessage(GuiPacket.GuiPacketHandler.class, GuiPacket.class, 10, Side.CLIENT);
 		NETWORK.registerMessage(TextFieldInputEventPacket.TextFieldInputEventPacketHandler.class, TextFieldInputEventPacket.class, 11, Side.SERVER);
+		NETWORK.registerMessage(RidableTurtlePacket.RidableTurtlePacketHandler.class, RidableTurtlePacket.class, 12, Side.SERVER);
 		proxy.iconManagerInit();
 		proxy.prepareGuis();
 		proxy.registerEvents();
@@ -143,6 +145,7 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleSpeaker());
 		registerUpgrade(new TurtleTank());
         registerUpgrade(new TurtleNoteBlock());
+		registerUpgrade(new TurtleRidable());
 		LOGGER.info("All peripherals and turtle upgrades registered!");
 //		LOGGER.info("Registering satellite upgrades...");
 //		PeripheralsPlusPlusAPI.registerSatelliteUpgrade(new GPSUpgrade());
@@ -152,6 +155,8 @@ public class PeripheralsPlusPlus {
 		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, instance, 64, 20, true);
 		if (Config.enableVillagers)
 			proxy.setupVillagers();
+//		EntityRegistry.registerGlobalEntityID(EntityRidableTurtle.class, "Ridable Turtle", EntityRegistry.findGlobalUniqueEntityId());
+		EntityRegistry.registerModEntity(EntityRidableTurtle.class, "Ridable Turtle", 1, instance, 64, 1, true);
 	}
 
 	@Mod.EventHandler
