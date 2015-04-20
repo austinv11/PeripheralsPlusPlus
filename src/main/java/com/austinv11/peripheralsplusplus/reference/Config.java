@@ -120,7 +120,7 @@ public class Config {
 	public static boolean enableNoteBlock = true;
 	
 	@Description(category = "Iron Note Block", comment = "Audible range for the noteblock")
-    public static double noteBlockRange = 16;
+	public static double noteBlockRange = 16;
 	
 	@Description(category = "Sign Reading Turtle", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableReaderTurtle = true;

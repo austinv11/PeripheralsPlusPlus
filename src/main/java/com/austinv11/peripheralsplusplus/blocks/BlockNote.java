@@ -9,19 +9,19 @@ import net.minecraft.world.World;
 
 public class BlockNote extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
 
-    public BlockNote() {
-        super();
-        this.setBlockName("noteBlock");
-    }
+	public BlockNote() {
+		super();
+		this.setBlockName("noteBlock");
+	}
 
-    @Override
-    public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
-        return (IPeripheral) world.getTileEntity(x, y, z);
-    }
+	@Override
+	public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
+		return (IPeripheral) world.getTileEntity(x, y, z);
+	}
 
-    @Override
-    public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
-        return new TileEntityNoteBlock();
-    }
+	@Override
+	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+		return new TileEntityNoteBlock();
+	}
 
 }

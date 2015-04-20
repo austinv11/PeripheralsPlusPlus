@@ -38,8 +38,9 @@ public class TurtleRidable implements ITurtleUpgrade {
 
 	@Override
 	public ItemStack getCraftingItem() {
-		if (Config.enableRidableTurtle)
+		if (Config.enableRidableTurtle) {
 			return new ItemStack(Items.saddle);
+		}
 		return null;
 	}
 
@@ -60,8 +61,9 @@ public class TurtleRidable implements ITurtleUpgrade {
 
 	@Override
 	public void update(ITurtleAccess turtle, TurtleSide side) {
-		if (!Config.enableRidableTurtle)
+		if (!Config.enableRidableTurtle) {
 			return;
+		}
 		World world = turtle.getWorld();
 		if (!world.isRemote) {
 			AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(

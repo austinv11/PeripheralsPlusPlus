@@ -51,8 +51,9 @@ public class EntityRidableTurtle extends Entity {
 	}
 
 	private boolean playerIsHoldingRideEnablingItem() {
-		if (!this.worldObj.isRemote)
+		if (!this.worldObj.isRemote) {
 			return false;
+		}
 		ItemStack item = Minecraft.getMinecraft().thePlayer.getHeldItem();
 		return item != null && (item.isItemEqual(new ItemStack(Items.carrot_on_a_stick)) || item.isItemEqual(new ItemStack(Items.stick)));
 	}
@@ -65,8 +66,9 @@ public class EntityRidableTurtle extends Entity {
 		} else if (this.riddenByEntity != null && this.riddenByEntity != player) {
 			return false;
 		} else {
-			if (!this.worldObj.isRemote)
+			if (!this.worldObj.isRemote) {
 				player.mountEntity(this);
+			}
 			return true;
 		}
 	}
@@ -92,11 +94,12 @@ public class EntityRidableTurtle extends Entity {
 	}
 
 	private void updateTick() {
-		if (canPerformAction)
+		if (canPerformAction) {
 			return;
-		if (tick < 40) // ~1 second
+		}
+		if (tick < 40) { // ~1 second
 			tick++;
-		else {
+		} else {
 			tick = 0;
 			canPerformAction = true;
 		}
@@ -104,15 +107,17 @@ public class EntityRidableTurtle extends Entity {
 
 	private void checkLocation() {
 		if (this.worldObj.isRemote || turtle == null || turtle.getPosition().equals(new ChunkCoordinates(
-				(int)Math.floor(this.posX), (int)Math.floor(this.posY), (int)Math.floor(this.posZ))))
+				(int)Math.floor(this.posX), (int)Math.floor(this.posY), (int)Math.floor(this.posZ)))) {
 			return;
+		}
 		this.setPosition(turtle.getPosition().posX + 0.5, turtle.getPosition().posY, turtle.getPosition().posZ + 0.5);
 	}
 
 	private void checkMovementQueue() {
 		if ((!canPerformAction) || this.worldObj.isRemote || queuedActionCode < 0
-				|| queuedActionCode > RidableTurtlePacket.MovementCode.values().length - 1 || turtle == null)
+				|| queuedActionCode > RidableTurtlePacket.MovementCode.values().length - 1 || turtle == null) {
 			return;
+		}
 		RidableTurtlePacket.MovementCode which = RidableTurtlePacket.MovementCode.values()[queuedActionCode];
 		switch (which) {
 			case FORWARD:
@@ -144,17 +149,23 @@ public class EntityRidableTurtle extends Entity {
 				break;
 			}
 		}
-		if (turnTo.equalsIgnoreCase("left"))
-			index--; else index++;
-		if (index < 0)
+		if (turnTo.equalsIgnoreCase("left")) {
+			index--;
+		} else {
+			index++;
+		}
+		if (index < 0) {
 			index = directions.length - 1;
-		if (index >= directions.length)
+		}
+		if (index >= directions.length) {
 			index = 0;
+		}
 		turtle.setDirection(directions[index]);
-		if (turnTo.equalsIgnoreCase("left"))
+		if (turnTo.equalsIgnoreCase("left")) {
 			turtle.playAnimation(TurtleAnimation.TurnLeft);
-		else
+		} else {
 			turtle.playAnimation(TurtleAnimation.TurnRight);
+		}
 	}
 
 	private void moveTurtle(int direction) {
@@ -223,7 +234,8 @@ public class EntityRidableTurtle extends Entity {
 	}
 
 	public void queueAction(int movementCode) {
-		if (canPerformAction)
+		if (canPerformAction) {
 			this.queuedActionCode = movementCode;
+		}
 	}
 }

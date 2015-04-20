@@ -25,7 +25,7 @@ public class ModBlocks {
 	public static final BlockPPP peripheralContainer = new BlockPeripheralContainer();
 	public static final BlockPPP meBridge = new BlockMEBridge();
 	public static final BlockPPP dummyBlock = new BlockDummyBlock();
-    public static final BlockPPP noteBlock = new BlockNote();
+	public static final BlockPPP noteBlock = new BlockNote();
 	public static final BlockPPP turtle = new BlockTurtle();
 
 	public static void init(){
@@ -53,7 +53,7 @@ public class ModBlocks {
 		if (Loader.isModLoaded("appliedenergistics2"))
 			GameRegistry.registerBlock(meBridge, "meBridge");
 		GameRegistry.registerBlock(dummyBlock, "dummyBlock");
-        GameRegistry.registerBlock(noteBlock, "noteBlock");
+		GameRegistry.registerBlock(noteBlock, "noteBlock");
 		GameRegistry.registerBlock(turtle, ItemBlockTurtle.class, "turtle");
 	}
 }
