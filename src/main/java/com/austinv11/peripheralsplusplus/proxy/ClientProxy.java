@@ -3,11 +3,8 @@ package com.austinv11.peripheralsplusplus.proxy;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.client.gui.GuiRocket;
 import com.austinv11.peripheralsplusplus.client.gui.GuiSmartHelmetOverlay;
-import com.austinv11.peripheralsplusplus.client.models.ItemRenderAntenna;
-import com.austinv11.peripheralsplusplus.client.models.RenderAntenna;
-import com.austinv11.peripheralsplusplus.client.models.RenderRidableTurtle;
-import com.austinv11.peripheralsplusplus.client.models.RenderRocket;
-import com.austinv11.peripheralsplusplus.client.models.RenderTurtle;
+import com.austinv11.peripheralsplusplus.client.models.*;
+import com.austinv11.peripheralsplusplus.entities.EntityNanoBotSwarm;
 import com.austinv11.peripheralsplusplus.entities.EntityRidableTurtle;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.event.SmartHelmetHandler;
@@ -52,6 +49,7 @@ public class ClientProxy extends CommonProxy {
 		ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTurtle.class, new RenderTurtle());
 		MinecraftForgeClient.registerItemRenderer(Item.getItemFromBlock(ModBlocks.turtle), new ItemRenderAntenna(new RenderTurtle(), new TileEntityTurtle()));
 		RenderingRegistry.registerEntityRenderingHandler(EntityRidableTurtle.class, new RenderRidableTurtle());
+		RenderingRegistry.registerEntityRenderingHandler(EntityNanoBotSwarm.class, new RenderNanoSwarm());
 	}
 
 	@SideOnly(Side.CLIENT)

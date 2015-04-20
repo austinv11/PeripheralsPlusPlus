@@ -7,6 +7,7 @@ import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgra
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
+import com.austinv11.peripheralsplusplus.entities.EntityNanoBotSwarm;
 import com.austinv11.peripheralsplusplus.entities.EntityRidableTurtle;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
@@ -157,6 +158,7 @@ public class PeripheralsPlusPlus {
 			proxy.setupVillagers();
 //		EntityRegistry.registerGlobalEntityID(EntityRidableTurtle.class, "Ridable Turtle", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerModEntity(EntityRidableTurtle.class, "Ridable Turtle", 1, instance, 64, 1, true);
+		EntityRegistry.registerModEntity(EntityNanoBotSwarm.class, "NanoBotSwarm", 2, instance, 64, 20, true);
 	}
 
 	@Mod.EventHandler

@@ -16,6 +16,7 @@ public class ModItems {
 	public static final Item smartHelmet = new ItemSmartHelmet();
 	public static final ItemPPP socket = new ItemSocket();
 	public static final ItemPPP positionalUnit = new ItemPositionalUnit();
+	public static final ItemPPP nanoSwarm = new ItemNanoSwarm();
 
 	public static void preInit(){
 		GameRegistry.registerItem(feederUpgrade, "feederUpgrade");
@@ -25,6 +26,7 @@ public class ModItems {
 		GameRegistry.registerItem(smartHelmet, "smartHelmet");
 		GameRegistry.registerItem(socket, "socket");
 		GameRegistry.registerItem(positionalUnit, "positionalUnit");
+		GameRegistry.registerItem(nanoSwarm, "nanoSwarm");
 	}
 
 	public static void init() {
