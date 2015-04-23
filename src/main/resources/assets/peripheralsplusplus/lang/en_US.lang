@@ -67,6 +67,11 @@ peripheralsplusplus.description.turtle.2=You wonder why it doesn't do anything w
 peripheralsplusplus.description.turtle.3=Ow! Did it just bite you?
 peripheralsplusplus.description.turtle.4=What are you supposed to do with this?
 peripheralsplusplus.description.turtle.5=You wanted a turtle, didn't you?
+peripheralsplusplus.description.turtle.6=turtle.dig()! turtle.dig()...?
+peripheralsplusplus.description.turtle.7=It definitely just bit you.
+peripheralsplusplus.description.turtle.8=turtle.exe has stopped responding...
+peripheralsplusplus.description.turtle.9=If you ask it really nicely, it might work.
+peripheralsplusplus.description.turtle.10=Remember, all turtles should be treated equally.
 
 #Lore Books
 peripheralsplusplus.lore.1.title=The Journey of the First Programmer; Volume 1

@@ -28,7 +28,7 @@ public class ItemBlockTurtle extends ItemBlock {
 			String description = StatCollector.translateToLocal("peripheralsplusplus.description.turtle."+NBTHelper.getInt(item, "desc"));
 			info.add(description);
 		} else {
-			NBTHelper.setInteger(item, "desc", MathHelper.getRandomIntegerInRange(rng, 1, 5));
+			NBTHelper.setInteger(item, "desc", MathHelper.getRandomIntegerInRange(rng, 1, 10));
 			addInformation(item, player, info, isShiftHeld);
 		}
 	}

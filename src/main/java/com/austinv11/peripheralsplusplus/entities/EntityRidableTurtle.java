@@ -97,7 +97,7 @@ public class EntityRidableTurtle extends Entity {
 		if (canPerformAction) {
 			return;
 		}
-		if (tick < 40) { // ~1 second
+		if (tick < 10) { // ~.5 second
 			tick++;
 		} else {
 			tick = 0;
