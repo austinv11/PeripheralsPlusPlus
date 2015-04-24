@@ -133,7 +133,10 @@ public class Config {
 	
 	@Description(category = "Ridable Turtle", comment = "The amount of fuel used after each turtle movement")
 	public static int fuelPerTurtleMovement = 1;
-
+	
+	@Description(category = "Version Update Notification", comment = "Setting this to false disables version update checking")
+	public static boolean doVersionUpdateChecks = true;
+	
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)
 			dimWhitelist.add(i);

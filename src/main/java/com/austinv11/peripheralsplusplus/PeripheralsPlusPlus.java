@@ -3,9 +3,12 @@ package com.austinv11.peripheralsplusplus;
 import com.austinv11.collectiveframework.minecraft.config.ConfigException;
 import com.austinv11.collectiveframework.minecraft.config.ConfigRegistry;
 import com.austinv11.collectiveframework.minecraft.logging.Logger;
+import com.austinv11.collectiveframework.minecraft.utils.CurseVersionChecker;
+import com.austinv11.collectiveframework.multithreading.SimpleRunnable;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
+import com.austinv11.peripheralsplusplus.commands.CommandUpdate;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.entities.EntityNanoBotSwarm;
 import com.austinv11.peripheralsplusplus.entities.EntityRidableTurtle;
@@ -28,14 +31,18 @@ import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLInitializationEvent;
 import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.event.FMLServerStartingEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import net.minecraft.util.IChatComponent;
+import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -64,6 +71,12 @@ public class PeripheralsPlusPlus {
 	public static Logger LOGGER = new Logger(Reference.MOD_NAME);
 
 	public static String BASE_PPP_DIR = "./mods/PPP/";
+	
+	public static volatile CurseVersionChecker VERSION_CHECKER;
+	public static volatile IChatComponent versionMessage;
+	public static volatile boolean didMessage = false;
+	public static int tries = 1;
+	public static volatile File currentFile;
 
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
@@ -72,6 +85,9 @@ public class PeripheralsPlusPlus {
 		} catch (ConfigException e) {
 			e.printStackTrace();
 		}
+		currentFile = event.getSourceFile();
+		VERSION_CHECKER = new CurseVersionChecker("226687-peripherals", Reference.MOD_NAME+"-"+Reference.VERSION+".jar");
+		doVersionCheck();
 		NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("ppp");
 		NETWORK.registerMessage(AudioPacket.AudioPacketHandler.class, AudioPacket.class, 0, Side.CLIENT);
 		NETWORK.registerMessage(AudioResponsePacket.AudioResponsePacketHandler.class, AudioResponsePacket.class, 1, Side.SERVER);
@@ -165,6 +181,34 @@ public class PeripheralsPlusPlus {
 	public void postInit(FMLPostInitializationEvent event) {
 		ModItems.init();//Inits satellite upgrades
 		Recipes.init();
+	}
+	
+	@Mod.EventHandler
+	public void onServerStart(FMLServerStartingEvent event) {
+		event.registerServerCommand(new CommandUpdate());
+	}
+	
+	private void doVersionCheck() {
+		if (Config.doVersionUpdateChecks) {
+			new SimpleRunnable() {
+				
+				@Override
+				public void run() {
+					PeripheralsPlusPlus.LOGGER.info("Starting version check...");
+					if (VERSION_CHECKER.isUpdateAvailable()) {
+						PeripheralsPlusPlus.LOGGER.warn("Update for Peripherals++ found!");
+						versionMessage = IChatComponent.Serializer.func_150699_a(StatCollector.translateToLocal("peripheralsplusplus.chat.notification"));
+					} else
+						PeripheralsPlusPlus.LOGGER.info("No update found");
+					this.disable(true);
+				}
+				
+				@Override
+				public String getName() {
+					return "Peripherals++ Version Checker";
+				}
+			}.start();
+		}
 	}
 	
 	public static void registerUpgrade(ITurtleUpgrade u) {

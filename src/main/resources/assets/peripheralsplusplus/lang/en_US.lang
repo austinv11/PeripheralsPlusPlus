@@ -60,6 +60,12 @@ peripheralsplusplus.inv.satellite.1=Addons:
 peripheralsplusplus.chat.launchFailure=You cannot launch the rocket!
 peripheralsplusplus.chat.launchStart=T-minus 10 seconds until launch!
 peripheralsplusplus.chat.launch=We have liftoff!
+peripheralsplusplus.chat.notification=["§6Update for Peripherals++ found! Click for: [",{"text":"Download","color":"aqua","hoverEvent":{"action":"show_text","value":{"text":"Click this to install the latest version","color":"white"}},"clickEvent":{"action":"run_command","value":"/ppp-update"}},"§6] [",{"text":"Website","color":"aqua","hoverEvent":{"action":"show_text","value":{"text":"Click this to go to the CurseForge page","color":"white"}},"clickEvent":{"action":"open_url","value":"http://minecraft.curseforge.com/mc-mods/226687-peripherals"}},"§6] §6[",{"text":"Changelog","color":"aqua","hoverEvent":{"action":"show_text","value":{"text":"Click this to see the changelog","color":"white"}},"clickEvent":{"action":"open_url","value":"https://github.com/austinv11/PeripheralsPlusPlus/releases/latest"}},"§6]"]
+peripheralsplusplus.chat.updatedAlready=You already have the latest version!
+peripheralsplusplus.chat.stillUpdating=§cThe mod file is still being updated, please be patient
+peripheralsplusplus.chat.startUpdate=§6Peripherals++ will now start updating
+peripheralsplusplus.chat.updateFailed=§cThere was a problem updating Peripherals++
+peripheralsplusplus.chat.updateSucceeded=§6Peripherals++ has been updated! Please restart Minecraft.
 
 #Item Descriptions
 peripheralsplusplus.description.turtle.1=This one seems a little broken...
