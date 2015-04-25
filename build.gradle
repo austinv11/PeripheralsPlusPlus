@@ -9,19 +9,17 @@ buildscript {
             name = "sonatype"
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
+        jcenter()
     }
     dependencies {
         classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
     }
 }
 
-repositories{
+repositories {
     maven {
         name = "chickenbones"
         url = "http://chickenbones.net/maven"
-    }
-    maven {
-        url  "http://jcenter.bintray.com"
     }
 }
 
