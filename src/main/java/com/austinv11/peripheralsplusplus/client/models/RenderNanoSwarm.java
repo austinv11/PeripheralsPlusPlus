@@ -18,6 +18,7 @@ public class RenderNanoSwarm extends Render {
 		GL11.glPushMatrix();
 		this.bindEntityTexture(entity);
 		GL11.glTranslated(x, y, z);
+		GL11.glRotatef(entity.rotationYaw, 0, 1, 0);
 		model.render(entity, 0.0F, 0.0F, -0.1F, 0.0F, 0.0F, 0.1F);
 		GL11.glPopMatrix();
 	}

@@ -25,6 +25,7 @@ item.peripheralsplusplus:dustRedstone.name=Computer Dust
 item.peripheralsplusplus:iphone.name=Pineapple UPhone
 item.peripheralsplusplus:tank.name=Fluid Tank
 item.peripheralsplusplus:smartHelmet.name=Smart Helmet
+item.peripheralsplusplus:nanoSwarm.name=Nano Bot Swarm
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++
@@ -99,3 +100,6 @@ peripheralsplusplus.lore.3.header=§lMine Turtle!§r
 peripheralsplusplus.lore.3.pg1=§lLog 11: §rTinkering with peripherals is fun and all, but there is one fundamental flaw, computers are stationary. After a few long years, I have found a way to condense the machinery necessary for a computer to function.
 peripheralsplusplus.lore.3.pg2=§lLog 12: §rIf you are reading this...You're doomed! Run while you still can, these turtles, as I have called them, have become sentient.
 peripheralsplusplus.lore.3.pg3=§lLog 13: §rNo matter what you do...just don't let go of your humanity. Emotion is what makes us different. Without that, we would just all be cybermen. §kDid you catch all my references? ;)
+
+#Damage Sources
+death.attack.peripheralsplusplus.nanobot=%1$s was destroyed from the inside out by nanobots

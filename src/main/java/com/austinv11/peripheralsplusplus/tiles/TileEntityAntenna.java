@@ -7,6 +7,7 @@ import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgra
 import com.austinv11.peripheralsplusplus.event.SateliiteCrashEvent;
 import com.austinv11.peripheralsplusplus.event.SatelliteLaunchEvent;
 import com.austinv11.peripheralsplusplus.items.ItemSmartHelmet;
+import com.austinv11.peripheralsplusplus.lua.LuaObjectEntityControl;
 import com.austinv11.peripheralsplusplus.lua.LuaObjectHUD;
 import com.austinv11.peripheralsplusplus.lua.LuaObjectSatellite;
 import com.austinv11.peripheralsplusplus.network.ScaleRequestPacket;
@@ -18,16 +19,14 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.StatCollector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class TileEntityAntenna extends MountedTileEntity {
 
@@ -40,10 +39,16 @@ public class TileEntityAntenna extends MountedTileEntity {
 	public static HashMap<UUID, TileEntityAntenna> antenna_registry = new HashMap<UUID,TileEntityAntenna>();
 	public UUID identifier;
 	public String label;
+	public volatile List<Entity> swarmNetwork = new ArrayList<Entity>();
 
 	public TileEntityAntenna() {
 		super();
 		identifier = UUID.randomUUID();
+		while (antenna_registry.containsKey(identifier)) {
+			if (antenna_registry.get(identifier).equals(this))
+				break;
+			identifier = UUID.randomUUID();
+		}
 	}
 
 	public String getName() {
@@ -80,15 +85,20 @@ public class TileEntityAntenna extends MountedTileEntity {
 				"getPlayers",/*Lists players wearing smart helmets linked to this antenna*/
 				"getHUD",/*Returns a hud handle for the given player*/
 				"setLabel",/*Sets the label of the antenna*/
-				"getLabel"/*Gets the current label of the antenna*/};
+				"getLabel",/*Gets the current label of the antenna*/
+				//==Smart Helmet APIs end===
+				"getInfectedEntities", /*Lists the entity ids for all entities currently infected by a nanobot swarm*/
+				"getInfectedEntity"/*Gets the handle for a specified entity*/};
 	}
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 		if (!Config.enableSatellites && method < 2)
 			throw new LuaException("Satellites and associated systems have been disabled");
-		else if (!Config.enableSmartHelmet)
+		else if (!Config.enableSmartHelmet && method < 6)
 			throw new LuaException("Smart Helmets have been disabled");
+		else if (!Config.enableNanoBots)
+			throw new LuaException("Nano bots have been disabled");
 //		try {
 		switch (method) {
 			case 0://listSatellites
@@ -175,11 +185,34 @@ public class TileEntityAntenna extends MountedTileEntity {
 				synchronized (this){
 					return new Object[]{this.getLabel()};
 				}
+			case 6:
+				HashMap<Integer, Integer> entities = new HashMap<Integer, Integer>();
+				for (int i = 0; i < swarmNetwork.size(); i++) {
+					entities.put(i+1, swarmNetwork.get(i).getEntityId());
+				}
+				return new Object[]{entities};
+			case 7:
+				if (arguments.length < 1)
+					throw new LuaException("Too few arguments");
+				if (!(arguments[0] instanceof Double))
+					throw new LuaException("Bad argument #1 (expected number)");
+				Entity ent = entityFromId((int)(double)(Double)arguments[0]);
+				if (ent != null)
+					return new Object[]{new LuaObjectEntityControl(identifier, ent)};
+				else
+					throw new LuaException("Entity with id "+arguments[0]+" not found");
 		}
 //		}catch (Exception e) {
 //			e.printStackTrace();
 //		}
 		return new Object[0];
+	}
+	
+	private Entity entityFromId(int id) {
+		for (Entity entity : swarmNetwork)
+			if (entity.getEntityId() == id)
+				return entity;
+		return null;
 	}
 
 	private HashMap<Integer, String> satListToMap(List<ISatelliteUpgrade> list) {
@@ -196,6 +229,12 @@ public class TileEntityAntenna extends MountedTileEntity {
 			if (!antenna_registry.containsKey(identifier))
 				antenna_registry.put(identifier, this);
 		}
+	}
+	
+	@Override
+	public void invalidate() {
+		super.invalidate();
+		antenna_registry.remove(identifier);
 	}
 
 	@SubscribeEvent

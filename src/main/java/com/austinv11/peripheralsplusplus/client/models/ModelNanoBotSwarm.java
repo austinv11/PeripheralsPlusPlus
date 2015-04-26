@@ -5,11 +5,17 @@ import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Random;
+
 /**
  * NanoBots - austinv11
  * Created using Tabula 4.1.1
  */
 public class ModelNanoBotSwarm extends ModelBase {
+    
+    private Random rng = new Random();
+    private float randOffsetX = 0, randOffsetY = 0, randOffsetZ = 0;
+    
     public ModelRenderer Bot0;
     public ModelRenderer Bot1;
     public ModelRenderer Bot2;
@@ -51,66 +57,74 @@ public class ModelNanoBotSwarm extends ModelBase {
     @Override
     public void render(Entity entity, float f, float f1, float f2, float f3, float f4, float f5) { 
         GL11.glPushMatrix();
-        GL11.glTranslatef(this.Bot3.offsetX, this.Bot3.offsetY, this.Bot3.offsetZ);
+        genOffset();
+        GL11.glTranslatef(this.Bot3.offsetX + randOffsetX, this.Bot3.offsetY + randOffsetY, this.Bot3.offsetZ + randOffsetZ);
         GL11.glTranslatef(this.Bot3.rotationPointX * f5, this.Bot3.rotationPointY * f5, this.Bot3.rotationPointZ * f5);
         GL11.glScaled(1.0D, 0.5D, 0.8D);
-        GL11.glTranslatef(-this.Bot3.offsetX, -this.Bot3.offsetY, -this.Bot3.offsetZ);
+        GL11.glTranslatef(-this.Bot3.offsetX - randOffsetX, -this.Bot3.offsetY - randOffsetY, -this.Bot3.offsetZ - randOffsetZ);
         GL11.glTranslatef(-this.Bot3.rotationPointX * f5, -this.Bot3.rotationPointY * f5, -this.Bot3.rotationPointZ * f5);
         this.Bot3.render(f5);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
-        GL11.glTranslatef(this.Bot0.offsetX, this.Bot0.offsetY, this.Bot0.offsetZ);
+        genOffset();
+        GL11.glTranslatef(this.Bot0.offsetX + randOffsetX, this.Bot0.offsetY + randOffsetY, this.Bot0.offsetZ + randOffsetZ);
         GL11.glTranslatef(this.Bot0.rotationPointX * f5, this.Bot0.rotationPointY * f5, this.Bot0.rotationPointZ * f5);
         GL11.glScaled(1.0D, 0.5D, 0.8D);
-        GL11.glTranslatef(-this.Bot0.offsetX, -this.Bot0.offsetY, -this.Bot0.offsetZ);
+        GL11.glTranslatef(-this.Bot0.offsetX - randOffsetX, -this.Bot0.offsetY - randOffsetY, -this.Bot0.offsetZ - randOffsetZ);
         GL11.glTranslatef(-this.Bot0.rotationPointX * f5, -this.Bot0.rotationPointY * f5, -this.Bot0.rotationPointZ * f5);
         this.Bot0.render(f5);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
-        GL11.glTranslatef(this.Bot5.offsetX, this.Bot5.offsetY, this.Bot5.offsetZ);
+        genOffset();
+        GL11.glTranslatef(this.Bot5.offsetX + randOffsetX, this.Bot5.offsetY + randOffsetY, this.Bot5.offsetZ + randOffsetZ);
         GL11.glTranslatef(this.Bot5.rotationPointX * f5, this.Bot5.rotationPointY * f5, this.Bot5.rotationPointZ * f5);
         GL11.glScaled(1.0D, 0.5D, 0.8D);
-        GL11.glTranslatef(-this.Bot5.offsetX, -this.Bot5.offsetY, -this.Bot5.offsetZ);
+        GL11.glTranslatef(-this.Bot5.offsetX - randOffsetX, -this.Bot5.offsetY - randOffsetY, -this.Bot5.offsetZ - randOffsetZ);
         GL11.glTranslatef(-this.Bot5.rotationPointX * f5, -this.Bot5.rotationPointY * f5, -this.Bot5.rotationPointZ * f5);
         this.Bot5.render(f5);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
-        GL11.glTranslatef(this.Bot6.offsetX, this.Bot6.offsetY, this.Bot6.offsetZ);
+        genOffset();
+        GL11.glTranslatef(this.Bot6.offsetX + randOffsetX, this.Bot6.offsetY + randOffsetY, this.Bot6.offsetZ + randOffsetZ);
         GL11.glTranslatef(this.Bot6.rotationPointX * f5, this.Bot6.rotationPointY * f5, this.Bot6.rotationPointZ * f5);
         GL11.glScaled(1.0D, 0.5D, 0.8D);
-        GL11.glTranslatef(-this.Bot6.offsetX, -this.Bot6.offsetY, -this.Bot6.offsetZ);
+        GL11.glTranslatef(-this.Bot6.offsetX - randOffsetX, -this.Bot6.offsetY - randOffsetY, -this.Bot6.offsetZ - randOffsetZ);
         GL11.glTranslatef(-this.Bot6.rotationPointX * f5, -this.Bot6.rotationPointY * f5, -this.Bot6.rotationPointZ * f5);
         this.Bot6.render(f5);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
-        GL11.glTranslatef(this.Bot4.offsetX, this.Bot4.offsetY, this.Bot4.offsetZ);
+        genOffset();
+        GL11.glTranslatef(this.Bot4.offsetX + randOffsetX, this.Bot4.offsetY + randOffsetY, this.Bot4.offsetZ + randOffsetZ);
         GL11.glTranslatef(this.Bot4.rotationPointX * f5, this.Bot4.rotationPointY * f5, this.Bot4.rotationPointZ * f5);
         GL11.glScaled(1.0D, 0.5D, 0.8D);
-        GL11.glTranslatef(-this.Bot4.offsetX, -this.Bot4.offsetY, -this.Bot4.offsetZ);
+        GL11.glTranslatef(-this.Bot4.offsetX - randOffsetX, -this.Bot4.offsetY - randOffsetY, -this.Bot4.offsetZ - randOffsetZ);
         GL11.glTranslatef(-this.Bot4.rotationPointX * f5, -this.Bot4.rotationPointY * f5, -this.Bot4.rotationPointZ * f5);
         this.Bot4.render(f5);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
-        GL11.glTranslatef(this.Bot2.offsetX, this.Bot2.offsetY, this.Bot2.offsetZ);
+        genOffset();
+        GL11.glTranslatef(this.Bot2.offsetX + randOffsetX, this.Bot2.offsetY + randOffsetY, this.Bot2.offsetZ + randOffsetZ);
         GL11.glTranslatef(this.Bot2.rotationPointX * f5, this.Bot2.rotationPointY * f5, this.Bot2.rotationPointZ * f5);
         GL11.glScaled(1.0D, 0.5D, 0.8D);
-        GL11.glTranslatef(-this.Bot2.offsetX, -this.Bot2.offsetY, -this.Bot2.offsetZ);
+        GL11.glTranslatef(-this.Bot2.offsetX - randOffsetX, -this.Bot2.offsetY - randOffsetY, -this.Bot2.offsetZ - randOffsetZ);
         GL11.glTranslatef(-this.Bot2.rotationPointX * f5, -this.Bot2.rotationPointY * f5, -this.Bot2.rotationPointZ * f5);
         this.Bot2.render(f5);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
-        GL11.glTranslatef(this.Bot7.offsetX, this.Bot7.offsetY, this.Bot7.offsetZ);
+        genOffset();
+        GL11.glTranslatef(this.Bot7.offsetX + randOffsetX, this.Bot7.offsetY + randOffsetY, this.Bot7.offsetZ + randOffsetZ);
         GL11.glTranslatef(this.Bot7.rotationPointX * f5, this.Bot7.rotationPointY * f5, this.Bot7.rotationPointZ * f5);
         GL11.glScaled(1.0D, 0.5D, 0.8D);
-        GL11.glTranslatef(-this.Bot7.offsetX, -this.Bot7.offsetY, -this.Bot7.offsetZ);
+        GL11.glTranslatef(-this.Bot7.offsetX - randOffsetX, -this.Bot7.offsetY - randOffsetY, -this.Bot7.offsetZ - randOffsetZ);
         GL11.glTranslatef(-this.Bot7.rotationPointX * f5, -this.Bot7.rotationPointY * f5, -this.Bot7.rotationPointZ * f5);
         this.Bot7.render(f5);
         GL11.glPopMatrix();
         GL11.glPushMatrix();
-        GL11.glTranslatef(this.Bot1.offsetX, this.Bot1.offsetY, this.Bot1.offsetZ);
+        genOffset();
+        GL11.glTranslatef(this.Bot1.offsetX + randOffsetX, this.Bot1.offsetY + randOffsetY, this.Bot1.offsetZ + randOffsetZ);
         GL11.glTranslatef(this.Bot1.rotationPointX * f5, this.Bot1.rotationPointY * f5, this.Bot1.rotationPointZ * f5);
         GL11.glScaled(1.0D, 0.5D, 0.8D);
-        GL11.glTranslatef(-this.Bot1.offsetX, -this.Bot1.offsetY, -this.Bot1.offsetZ);
+        GL11.glTranslatef(-this.Bot1.offsetX - randOffsetX, -this.Bot1.offsetY - randOffsetY, -this.Bot1.offsetZ -randOffsetZ);
         GL11.glTranslatef(-this.Bot1.rotationPointX * f5, -this.Bot1.rotationPointY * f5, -this.Bot1.rotationPointZ * f5);
         this.Bot1.render(f5);
         GL11.glPopMatrix();
@@ -123,5 +137,11 @@ public class ModelNanoBotSwarm extends ModelBase {
         modelRenderer.rotateAngleX = x;
         modelRenderer.rotateAngleY = y;
         modelRenderer.rotateAngleZ = z;
+    }
+    
+    private void genOffset() {
+        randOffsetX = (float)rng.nextGaussian();
+        randOffsetY = (float)rng.nextGaussian();
+        randOffsetZ = (float)rng.nextGaussian();
     }
 }

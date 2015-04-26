@@ -16,6 +16,7 @@ import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
+import com.austinv11.peripheralsplusplus.items.ItemNanoSwarm;
 import com.austinv11.peripheralsplusplus.items.SatelliteUpgradeBase;
 import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.network.*;
@@ -38,6 +39,7 @@ import cpw.mods.fml.common.registry.EntityRegistry;
 import cpw.mods.fml.relauncher.Side;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import net.minecraft.block.BlockDispenser;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
 import net.minecraftforge.common.MinecraftForge;
@@ -83,6 +85,7 @@ public class PeripheralsPlusPlus {
 		try {
 			ConfigRegistry.registerConfig(new Config());
 		} catch (ConfigException e) {
+			LOGGER.fatal("Fatal problem with the Peripherals++ config has been caught, if this continues, please delete the config file");
 			e.printStackTrace();
 		}
 		currentFile = event.getSourceFile();
@@ -102,6 +105,7 @@ public class PeripheralsPlusPlus {
 		NETWORK.registerMessage(GuiPacket.GuiPacketHandler.class, GuiPacket.class, 10, Side.CLIENT);
 		NETWORK.registerMessage(TextFieldInputEventPacket.TextFieldInputEventPacketHandler.class, TextFieldInputEventPacket.class, 11, Side.SERVER);
 		NETWORK.registerMessage(RidableTurtlePacket.RidableTurtlePacketHandler.class, RidableTurtlePacket.class, 12, Side.SERVER);
+		NETWORK.registerMessage(RobotEventPacket.RobotEventPacketHandler.class, RobotEventPacket.class, 13, Side.CLIENT);
 		proxy.iconManagerInit();
 		proxy.prepareGuis();
 		proxy.registerEvents();
@@ -181,6 +185,7 @@ public class PeripheralsPlusPlus {
 	public void postInit(FMLPostInitializationEvent event) {
 		ModItems.init();//Inits satellite upgrades
 		Recipes.init();
+		BlockDispenser.dispenseBehaviorRegistry.putObject(ModItems.nanoSwarm, new ItemNanoSwarm.BehaviorNanoSwarm());
 	}
 	
 	@Mod.EventHandler

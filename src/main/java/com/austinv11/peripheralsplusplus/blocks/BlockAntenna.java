@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.blocks;
 
 import com.austinv11.collectiveframework.minecraft.utils.Colors;
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
+import com.austinv11.peripheralsplusplus.items.ItemNanoSwarm;
 import com.austinv11.peripheralsplusplus.items.ItemSmartHelmet;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
@@ -69,7 +70,8 @@ public class BlockAntenna extends BlockPPP implements ITileEntityProvider, IPeri
 
 	@Override
 	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int meta, float hitX, float hitY, float hitZ) {
-		if (player.getCurrentEquippedItem() == null || !(player.getCurrentEquippedItem().getItem() instanceof ItemSmartHelmet))
+		if (player.getCurrentEquippedItem() == null || !((player.getCurrentEquippedItem().getItem() instanceof ItemSmartHelmet) 
+				|| (player.getCurrentEquippedItem().getItem() instanceof ItemNanoSwarm)))
 			return false;
 		if (!world.isRemote) {
 			TileEntityAntenna antenna = (TileEntityAntenna) world.getTileEntity(x,y,z);

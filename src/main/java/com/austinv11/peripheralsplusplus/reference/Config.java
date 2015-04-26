@@ -137,6 +137,15 @@ public class Config {
 	@Description(category = "Version Update Notification", comment = "Setting this to false disables version update checking")
 	public static boolean doVersionUpdateChecks = true;
 	
+	@Description(category = "Nano Bots", comment = ENABLE_CONFIG_MESSAGE)
+	public static boolean enableNanoBots = true;
+	
+	@Description(category = "Nano Bots", comment = "The amount of instructions allowed per nano swarm used on an entity, negative denotes infinite")
+	public static int numberOfInstructions = 8;
+	
+	@Description(category = "Nano Bots", comment = "The amount of seconds before a key is 'released', negative denotes infinite")
+	public static double secondsBeforeReversal = 5.0;
+	
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)
 			dimWhitelist.add(i);
