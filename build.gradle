@@ -39,6 +39,10 @@ minecraft {
     replace("@VERSION@",project.version)
 }
 
+configurations {
+	extcompile
+}
+
 dependencies {
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
@@ -52,10 +56,11 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    compile "com.austinv11.collectiveframework:CollectiveFramework:1.0.0-82:deobf"
+	extcompile "com.austinv11.collectiveframework:CollectiveFramework:1.0.0-82:deobf"
     compile "codechicken:NotEnoughItems:1.7.10-1.0.3.74:dev"
 	compile "codechicken:CodeChickenLib:1.7.10-1.1.1.99:dev"
 	compile "codechicken:CodeChickenCore:1.7.10-1.0.4.29:dev"
+	compile configurations.extcompile
 }
 
 processResources
@@ -82,6 +87,9 @@ jar {
     manifest {
         attributes 'FMLAT': 'ppp_at.cfg'
     }
+	from configurations.extcompile.collect {
+		it.isDirectory() ? it : zipTree(it)
+	}
 }
 
 idea { 
