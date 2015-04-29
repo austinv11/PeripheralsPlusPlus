@@ -267,7 +267,6 @@ public class EntityRocket extends EntityInventory {
 		}
 		if (getIsActive() && isFlipped)
 			setIsActive(false);
-		PeripheralsPlusPlus.LOGGER.info(posX+","+posY+","+posZ);
 	}
 
 	@Override

@@ -52,7 +52,7 @@ public class LuaObjectEntityControl implements ILuaObject {
 	
 	@Override
 	public Object[] callMethod(ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		if (method < 9) {
+		if (method < 8) {
 			switch (method) {
 				case 0:
 					return new Object[]{isPlayer};
@@ -242,7 +242,7 @@ public class LuaObjectEntityControl implements ILuaObject {
 						if (!(arguments[2] instanceof Double))
 							throw new LuaException("Bad argument #3 (expected number)");
 						if (!ItemNanoSwarm.doInstruction(id, entity))
-							throw new LuaException("Entity with id "+id+" cannot be interacted with");
+							return new Object[]{false};
 						entity.navigator.setPath(entity.navigator.getPathToXYZ((Double)arguments[0], (Double)arguments[1],
 								(Double)arguments[2]), entity.getAIMoveSpeed());
 						break;
@@ -253,7 +253,7 @@ public class LuaObjectEntityControl implements ILuaObject {
 						if (!(arguments[0] instanceof Double))
 							throw new LuaException("Bad argument #1 (expected number)");
 						if (!ItemNanoSwarm.doInstruction(id, entity))
-							throw new LuaException("Entity with id "+id+" cannot be interacted with");
+							return new Object[]{false};
 						entity.rotationYaw = (float)(double)(Double)arguments[0];
 						entity.rotationYawHead = (float)(double)(Double)arguments[0];
 						break;

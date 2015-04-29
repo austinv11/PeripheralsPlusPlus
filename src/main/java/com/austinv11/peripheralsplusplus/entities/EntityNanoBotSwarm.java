@@ -4,11 +4,13 @@ import com.austinv11.collectiveframework.minecraft.utils.Colors;
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.items.ItemNanoSwarm;
+import com.austinv11.peripheralsplusplus.reference.Reference;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -38,6 +40,7 @@ public class EntityNanoBotSwarm extends EntityThrowable {
 	protected void onImpact(MovingObjectPosition mop) {
 		if (!worldObj.isRemote) {
 			if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
+				mop.entityHit.attackEntityFrom(new DamageSource(Reference.MOD_ID.toLowerCase()+".nanobots"), 0);
 				ItemNanoSwarm.addSwarmForEntity(this, mop.entityHit);
 			} else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
 				ItemStack stack = new ItemStack(ModItems.nanoSwarm);

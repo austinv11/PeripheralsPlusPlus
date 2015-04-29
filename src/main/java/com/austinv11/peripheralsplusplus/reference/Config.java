@@ -146,6 +146,9 @@ public class Config {
 	@Description(category = "Nano Bots", comment = "The amount of seconds before a key is 'released', negative denotes infinite")
 	public static double secondsBeforeReversal = 5.0;
 	
+	@Description(category = "Flinging Turtle", comment = ENABLE_CONFIG_MESSAGE)
+	public static boolean enableFlingingTurtle = true;
+	
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)
 			dimWhitelist.add(i);

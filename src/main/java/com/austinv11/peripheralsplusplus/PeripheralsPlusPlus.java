@@ -167,6 +167,7 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleTank());
 		registerUpgrade(new TurtleNoteBlock());
 		registerUpgrade(new TurtleRidable());
+		registerUpgrade(new TurtleDispenser());
 		LOGGER.info("All peripherals and turtle upgrades registered!");
 //		LOGGER.info("Registering satellite upgrades...");
 //		PeripheralsPlusPlusAPI.registerSatelliteUpgrade(new GPSUpgrade());

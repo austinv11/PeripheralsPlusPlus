@@ -52,6 +52,7 @@ public class ItemNanoSwarm extends ItemPPP {
 			}
 			NanoProperties properties = (NanoProperties)hit.getExtendedProperties(NanoProperties.IDENTIFIER);
 			properties.numOfBots += Config.numberOfInstructions;
+			properties.antenna = swarm.antennaIdentifier;
 		}
 	}
 	

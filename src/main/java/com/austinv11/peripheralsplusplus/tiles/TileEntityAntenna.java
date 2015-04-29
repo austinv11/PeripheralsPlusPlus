@@ -236,6 +236,12 @@ public class TileEntityAntenna extends MountedTileEntity {
 		super.invalidate();
 		antenna_registry.remove(identifier);
 	}
+	
+	@Override
+	public void validate() {
+		super.validate();
+		antenna_registry.put(identifier, this);
+	}
 
 	@SubscribeEvent
 	public void onSatelliteCrash(SateliiteCrashEvent event) {
