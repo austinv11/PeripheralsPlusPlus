@@ -6,11 +6,16 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class NanoProperties implements IExtendedEntityProperties {
 	
 	public static String IDENTIFIER = "NANOBOT_PROPERTIES";
+	
+	public static HashMap<UUID, List<NanoProperties>> earlyInitProperties = new HashMap<UUID, List<NanoProperties>>(); //Properties which need to be registered
 	
 	public int numOfBots = 0;
 	public UUID antenna;
@@ -32,13 +37,17 @@ public class NanoProperties implements IExtendedEntityProperties {
 			numOfBots = tag.getInteger("bots");
 			if (tag.hasKey("antenna"))
 				antenna = UUID.fromString(tag.getString("antenna"));
-//			PeripheralsPlusPlus.LOGGER.info(entity.getClass().getSimpleName()+": "+(antenna == null));
 			if (antenna != null) {
 				if (TileEntityAntenna.antenna_registry.containsKey(antenna)) {
 					TileEntityAntenna antenna = TileEntityAntenna.antenna_registry.get(this.antenna);
 					antenna.swarmNetwork.add(entity);
-				} else
-					antenna = null;
+				} else {
+					if (!earlyInitProperties.containsKey(antenna))
+						earlyInitProperties.put(antenna, new ArrayList<NanoProperties>());
+					List<NanoProperties> propertiesList = earlyInitProperties.get(antenna);
+					propertiesList.add(this);
+					earlyInitProperties.put(antenna, propertiesList);
+				}
 			}
 		}
 	}

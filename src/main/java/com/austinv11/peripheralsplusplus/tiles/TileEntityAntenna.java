@@ -4,6 +4,7 @@ import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
+import com.austinv11.peripheralsplusplus.entities.NanoProperties;
 import com.austinv11.peripheralsplusplus.event.SateliiteCrashEvent;
 import com.austinv11.peripheralsplusplus.event.SatelliteLaunchEvent;
 import com.austinv11.peripheralsplusplus.items.ItemSmartHelmet;
@@ -241,6 +242,12 @@ public class TileEntityAntenna extends MountedTileEntity {
 	public void validate() {
 		super.validate();
 		antenna_registry.put(identifier, this);
+		if (NanoProperties.earlyInitProperties.containsKey(identifier)) {
+			List<NanoProperties> propertiesList = NanoProperties.earlyInitProperties.get(identifier);
+			for (NanoProperties property : propertiesList)
+				swarmNetwork.add(property.entity);
+			NanoProperties.earlyInitProperties.remove(identifier);
+		}
 	}
 
 	@SubscribeEvent
