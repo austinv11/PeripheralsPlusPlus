@@ -1,32 +1,28 @@
 package com.austinv11.peripheralsplusplus.entities;
 
+import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
 import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 import net.minecraftforge.common.IExtendedEntityProperties;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class NanoProperties implements IExtendedEntityProperties {
 	
 	public static String IDENTIFIER = "NANOBOT_PROPERTIES";
 	
-	public static HashMap<UUID, List<NanoProperties>> earlyInitProperties = new HashMap<UUID, List<NanoProperties>>(); //Properties which need to be registered
-	
 	public int numOfBots = 0;
-	public UUID antenna;
+	public UUID antennaID;
 	public Entity entity;
 	
 	@Override
 	public void saveNBTData(NBTTagCompound compound) {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("bots", numOfBots);
-		if (antenna != null)
-			tag.setString("antenna", antenna.toString());
+		if (this.antennaID != null) {
+			tag.setString("antenna", antennaID.toString());
+		}
 		compound.setTag(IDENTIFIER, tag);
 	}
 	
@@ -35,19 +31,20 @@ public class NanoProperties implements IExtendedEntityProperties {
 		if (compound.hasKey(IDENTIFIER)) {
 			NBTTagCompound tag = compound.getCompoundTag(IDENTIFIER);
 			numOfBots = tag.getInteger("bots");
-			if (tag.hasKey("antenna"))
-				antenna = UUID.fromString(tag.getString("antenna"));
-			if (antenna != null) {
-				if (TileEntityAntenna.antenna_registry.containsKey(antenna)) {
-					TileEntityAntenna antenna = TileEntityAntenna.antenna_registry.get(this.antenna);
-					antenna.swarmNetwork.add(entity);
-				} else {
-					if (!earlyInitProperties.containsKey(antenna))
-						earlyInitProperties.put(antenna, new ArrayList<NanoProperties>());
-					List<NanoProperties> propertiesList = earlyInitProperties.get(antenna);
-					propertiesList.add(this);
-					earlyInitProperties.put(antenna, propertiesList);
-				}
+
+			try {
+				antennaID = UUID.fromString(tag.getString("antenna"));
+			}
+			catch (IllegalArgumentException e) {
+				// NO-OP
+			}
+
+			if (TileEntityAntenna.antenna_registry.containsKey(antennaID)) {
+				PeripheralsPlusPlus.LOGGER.info("Added");
+				TileEntityAntenna.antenna_registry.get(antennaID).associatedEntities.add(this.entity);
+			}
+			else {
+				PeripheralsPlusPlus.LOGGER.info("Not added");
 			}
 		}
 	}

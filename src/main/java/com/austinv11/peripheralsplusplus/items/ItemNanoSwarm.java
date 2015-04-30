@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.items;
 
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
+import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.entities.EntityNanoBotSwarm;
 import com.austinv11.peripheralsplusplus.entities.NanoProperties;
 import com.austinv11.peripheralsplusplus.reference.Config;
@@ -20,8 +21,6 @@ import java.util.List;
 import java.util.UUID;
 
 public class ItemNanoSwarm extends ItemPPP {
-	
-	private static HashMap<UUID, List<Entity>> swarmNetwork = new HashMap<UUID, List<Entity>>();
 	
 	public ItemNanoSwarm() {
 		super();
@@ -47,12 +46,13 @@ public class ItemNanoSwarm extends ItemPPP {
 	public static void addSwarmForEntity(EntityNanoBotSwarm swarm, Entity hit) {
 		if (TileEntityAntenna.antenna_registry.containsKey(swarm.antennaIdentifier)) {
 			TileEntityAntenna antenna = TileEntityAntenna.antenna_registry.get(swarm.antennaIdentifier);
-			if (!antenna.swarmNetwork.contains(hit)) {
-				antenna.swarmNetwork.add(hit);
+			if (!antenna.associatedEntities.contains(hit)) {
+				PeripheralsPlusPlus.LOGGER.info("Entity added by hit");
+				antenna.associatedEntities.add(hit);
 			}
 			NanoProperties properties = (NanoProperties)hit.getExtendedProperties(NanoProperties.IDENTIFIER);
 			properties.numOfBots += Config.numberOfInstructions;
-			properties.antenna = swarm.antennaIdentifier;
+			properties.antennaID = swarm.antennaIdentifier;
 		}
 	}
 	
@@ -60,11 +60,11 @@ public class ItemNanoSwarm extends ItemPPP {
 		if (!performer.isDead)
 			if (TileEntityAntenna.antenna_registry.containsKey(identifier)) {
 				TileEntityAntenna antenna = TileEntityAntenna.antenna_registry.get(identifier);
-				if (antenna.swarmNetwork.contains(performer)) {
+				if (antenna.associatedEntities.contains(performer)) {
 					NanoProperties properties = (NanoProperties)performer.getExtendedProperties(NanoProperties.IDENTIFIER);
 					properties.numOfBots--;
 					if (properties.numOfBots == 0)
-						antenna.swarmNetwork.remove(performer);
+						antenna.associatedEntities.remove(performer);
 					return true;
 				}
 			}

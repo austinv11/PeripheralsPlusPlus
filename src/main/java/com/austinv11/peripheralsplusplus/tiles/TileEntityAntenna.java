@@ -4,7 +4,6 @@ import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.api.satellites.ISatellite;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
-import com.austinv11.peripheralsplusplus.entities.NanoProperties;
 import com.austinv11.peripheralsplusplus.event.SateliiteCrashEvent;
 import com.austinv11.peripheralsplusplus.event.SatelliteLaunchEvent;
 import com.austinv11.peripheralsplusplus.items.ItemSmartHelmet;
@@ -40,7 +39,7 @@ public class TileEntityAntenna extends MountedTileEntity {
 	public static HashMap<UUID, TileEntityAntenna> antenna_registry = new HashMap<UUID,TileEntityAntenna>();
 	public UUID identifier;
 	public String label;
-	public volatile List<Entity> swarmNetwork = new ArrayList<Entity>();
+	public volatile List<Entity> associatedEntities = new ArrayList<Entity>();
 
 	public TileEntityAntenna() {
 		super();
@@ -188,8 +187,8 @@ public class TileEntityAntenna extends MountedTileEntity {
 				}
 			case 6:
 				HashMap<Integer, Integer> entities = new HashMap<Integer, Integer>();
-				for (int i = 0; i < swarmNetwork.size(); i++) {
-					entities.put(i+1, swarmNetwork.get(i).getEntityId());
+				for (int i = 0; i < associatedEntities.size(); i++) {
+					entities.put(i + 1, associatedEntities.get(i).getEntityId());
 				}
 				return new Object[]{entities};
 			case 7:
@@ -210,7 +209,7 @@ public class TileEntityAntenna extends MountedTileEntity {
 	}
 	
 	private Entity entityFromId(int id) {
-		for (Entity entity : swarmNetwork)
+		for (Entity entity : associatedEntities)
 			if (entity.getEntityId() == id)
 				return entity;
 		return null;
@@ -227,8 +226,10 @@ public class TileEntityAntenna extends MountedTileEntity {
 	public void updateEntity() {
 		if (worldObj != null) {
 			world = worldObj.provider.dimensionId;
-			if (!antenna_registry.containsKey(identifier))
+			if (!antenna_registry.containsKey(identifier)) {
+				PeripheralsPlusPlus.LOGGER.info("Update entity added");
 				antenna_registry.put(identifier, this);
+			}
 		}
 	}
 	
@@ -242,12 +243,6 @@ public class TileEntityAntenna extends MountedTileEntity {
 	public void validate() {
 		super.validate();
 		antenna_registry.put(identifier, this);
-		if (NanoProperties.earlyInitProperties.containsKey(identifier)) {
-			List<NanoProperties> propertiesList = NanoProperties.earlyInitProperties.get(identifier);
-			for (NanoProperties property : propertiesList)
-				swarmNetwork.add(property.entity);
-			NanoProperties.earlyInitProperties.remove(identifier);
-		}
 	}
 
 	@SubscribeEvent
