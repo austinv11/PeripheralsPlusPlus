@@ -20,8 +20,10 @@ public class NanoProperties implements IExtendedEntityProperties {
 	public void saveNBTData(NBTTagCompound compound) {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setInteger("bots", numOfBots);
-		if (this.antennaID != null) {
+		try {
 			tag.setString("antenna", antennaID.toString());
+		} catch (NullPointerException e) {
+			// antennaID is null meaning this entity has not yet been associated with any antenna.
 		}
 		compound.setTag(IDENTIFIER, tag);
 	}
@@ -34,17 +36,12 @@ public class NanoProperties implements IExtendedEntityProperties {
 
 			try {
 				antennaID = UUID.fromString(tag.getString("antenna"));
-			}
-			catch (IllegalArgumentException e) {
-				// NO-OP
+			} catch (IllegalArgumentException e) {
+				// antennaID is null meaning this entity has not yet been associated with any antenna.
 			}
 
 			if (TileEntityAntenna.antenna_registry.containsKey(antennaID)) {
-				PeripheralsPlusPlus.LOGGER.info("Added");
 				TileEntityAntenna.antenna_registry.get(antennaID).associatedEntities.add(this.entity);
-			}
-			else {
-				PeripheralsPlusPlus.LOGGER.info("Not added");
 			}
 		}
 	}

@@ -226,10 +226,8 @@ public class TileEntityAntenna extends MountedTileEntity {
 	public void updateEntity() {
 		if (worldObj != null) {
 			world = worldObj.provider.dimensionId;
-			if (!antenna_registry.containsKey(identifier)) {
-				PeripheralsPlusPlus.LOGGER.info("Update entity added");
+			if (!antenna_registry.containsKey(identifier))
 				antenna_registry.put(identifier, this);
-			}
 		}
 	}
 	
