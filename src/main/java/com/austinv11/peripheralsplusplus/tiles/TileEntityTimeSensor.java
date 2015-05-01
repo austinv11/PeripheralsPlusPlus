@@ -40,7 +40,7 @@ public class TileEntityTimeSensor extends MountedTileEntity {
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 		if (method == 0) {
 			if (Config.enableTimeSensor) {
-					String timeStamp = new SimpleDateFormat("yyy.MM.dd.HH.mm.ss").format(new Date());
+					String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date());
 					return new Object[] {timeStamp};
 			}
 		}
