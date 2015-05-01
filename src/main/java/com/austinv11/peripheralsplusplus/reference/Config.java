@@ -148,6 +148,9 @@ public class Config {
 	
 	@Description(category = "Flinging Turtle", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableFlingingTurtle = true;
+
+	@Description(category = "Time Sensor", comment = ENABLE_CONFIG_MESSAGE)
+	public static boolean enableTimeSensor = true;
 	
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)

@@ -15,6 +15,7 @@ tile.peripheralsplusplus:peripheralContainer.name=Peripheral Container
 tile.peripheralsplusplus:meBridge.name=ME Bridge
 tile.peripheralsplusplus:noteBlock.name=Iron Note Block
 tile.peripheralsplusplus:turtle.name=Turtle
+tile.peripheralsplusplus:timeSensor.name=Time Sensor
 
 #Items
 item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade
