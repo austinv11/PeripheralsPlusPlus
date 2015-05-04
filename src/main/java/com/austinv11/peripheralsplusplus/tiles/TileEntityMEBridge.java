@@ -6,7 +6,8 @@ import appeng.api.networking.*;
 import appeng.api.networking.crafting.ICraftingCallback;
 import appeng.api.networking.crafting.ICraftingGrid;
 import appeng.api.networking.crafting.ICraftingJob;
-import appeng.api.networking.security.BaseActionSource;
+import appeng.api.networking.security.IActionHost;
+import appeng.api.networking.security.MachineSource;
 import appeng.api.networking.storage.IStorageGrid;
 import appeng.api.storage.IMEMonitor;
 import appeng.api.storage.data.IAEItemStack;
@@ -35,7 +36,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 @Optional.InterfaceList(value = {@Optional.Interface(modid="appliedenergistics2",iface="appeng.api.networking.IGridHost", striprefs=true), @Optional.Interface(modid="appliedenergistics2",iface="appeng.api.networking.IGridBlock", striprefs=true)})
-public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, IGridBlock {
+public class TileEntityMEBridge extends MountedTileEntity implements IActionHost, IGridBlock {
 
 	public static String publicName = "meBridge";
 	private  String name = "tileEntityMEBridge";
@@ -132,12 +133,7 @@ public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, 
 						amount = getRemainingSlots(item, inventory);
 					IAEItemStack stackToGet = stack.copy();
 					stackToGet.setStackSize(amount);
-					IAEItemStack resultant = monitor.extractItems(stackToGet, Actionable.MODULATE, new BaseActionSource() {
-						@Override
-						public boolean isMachine() {
-							return true;
-						}
-					});
+					IAEItemStack resultant = monitor.extractItems(stackToGet, Actionable.MODULATE, new MachineSource(this));
 					if (resultant != null) {
 						extracted = resultant.getStackSize();
 						int currentSlot = 0;
@@ -174,7 +170,7 @@ public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, 
 					throw new LuaException("Bad argument #1 (expected string)");
 				if (!(arguments[1] instanceof Double))
 					throw new LuaException("Bad argument #2 (expected number");
-				ICraftingGrid craftingGrid = node.getGrid().getCache(ICraftingGrid.class);
+				final ICraftingGrid craftingGrid = node.getGrid().getCache(ICraftingGrid.class);
 				Item toCraft = GameRegistry.findItem(((String) arguments[0]).split(":")[0], ((String) arguments[0]).split(":")[1].split(" ")[0]);
 				int meta_ = ((String) arguments[0]).contains(" ") ? Integer.valueOf(((String)arguments[0]).split(" ")[1]) : 0;
 				IAEItemStack aeToCraft_ = findAEStackFromItemStack(monitor, new ItemStack(toCraft, 1, meta_));
@@ -182,14 +178,10 @@ public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, 
 					IAEItemStack aeToCraft = aeToCraft_.copy();
 					aeToCraft.setStackSize((long) (int) (double) (Double) arguments[1]);
 					synchronized (this) {
-						craftingGrid.beginCraftingJob(worldObj, node.getGrid(), new BaseActionSource() {
-							@Override
-							public boolean isMachine() {
-								return true;
-							}
-						}, aeToCraft, new ICraftingCallback() {
+						craftingGrid.beginCraftingJob(worldObj, node.getGrid(), new MachineSource(this), aeToCraft, new ICraftingCallback() {
 							@Override
 							public void calculationComplete(ICraftingJob job) {
+								craftingGrid.submitJob(job, null, null, false, new MachineSource((IActionHost) getMachine()));
 								for (IComputerAccess comp : computers.keySet())
 									comp.queueEvent("craftingComplete", new Object[]{Item.itemRegistry.getNameForObject(job.getOutput().getItem()), job.getOutput().getStackSize(), job.getByteTotal()});
 							}
@@ -357,5 +349,10 @@ public class TileEntityMEBridge extends MountedTileEntity implements IGridHost, 
 		for (IComputerAccess computer : computers.keySet())
 			computer.queueEvent("securityBreak", new Object[0]);
 		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+	}
+
+	@Override
+	public IGridNode getActionableNode() {
+		return node;
 	}
 }
