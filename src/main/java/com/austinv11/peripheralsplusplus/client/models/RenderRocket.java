@@ -22,6 +22,7 @@ public class RenderRocket extends Render {
 
 	public void renderRocket(EntityRocket entityRocket, double x, double y, double z, float yaw, float pitch) {
 		GL11.glPushMatrix();
+		GL11.glDisable(GL11.GL_CULL_FACE);
 		this.bindEntityTexture(entityRocket);
 		GL11.glTranslated(x, y+2.41D, z);
 		if (!entityRocket.isFlipped)
