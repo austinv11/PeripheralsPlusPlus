@@ -200,7 +200,7 @@ public class EntityRidableTurtle extends Entity {
 				animation = TurtleAnimation.MoveUp;
 				break;
 		}
-		if (this.worldObj.getBlock(x, y, z) == Blocks.air && (turtle.getFuelLevel() >= Config.fuelPerTurtleMovement || !turtle.isFuelNeeded())) {
+		if (this.worldObj.isAirBlock(x, y, z) && (turtle.getFuelLevel() >= Config.fuelPerTurtleMovement || !turtle.isFuelNeeded())) {
 			turtle.playAnimation(animation);
 			turtle.teleportTo(turtle.getWorld(), x, y, z);
 			turtle.consumeFuel(Config.fuelPerTurtleMovement);
