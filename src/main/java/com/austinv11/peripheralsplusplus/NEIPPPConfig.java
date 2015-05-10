@@ -3,6 +3,7 @@ package com.austinv11.peripheralsplusplus;
 import codechicken.nei.api.API;
 import codechicken.nei.api.IConfigureNEI;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
+import com.austinv11.peripheralsplusplus.nei.TurtleRecipeHandler;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
@@ -35,6 +36,9 @@ public class NEIPPPConfig implements IConfigureNEI{
 			upg1.stackTagCompound.setShort("leftUpgrade", (short) upgrade.getUpgradeID());
 			API.addItemListEntry(upg1);
 		}
+		
+		API.registerRecipeHandler(new TurtleRecipeHandler());
+		API.registerUsageHandler(new TurtleRecipeHandler());
 	}
 
 	@Override
@@ -44,6 +48,6 @@ public class NEIPPPConfig implements IConfigureNEI{
 
 	@Override
 	public String getVersion() {
-		return "1.0.0";
+		return "2.0";
 	}
 }

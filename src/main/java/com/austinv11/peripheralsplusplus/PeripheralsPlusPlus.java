@@ -13,6 +13,7 @@ import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.entities.EntityNanoBotSwarm;
 import com.austinv11.peripheralsplusplus.entities.EntityRidableTurtle;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
+import com.austinv11.peripheralsplusplus.hooks.ComputerCraftNotFoundException;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
@@ -183,7 +184,7 @@ public class PeripheralsPlusPlus {
 	}
 
 	@Mod.EventHandler
-	public void postInit(FMLPostInitializationEvent event) {
+	public void postInit(FMLPostInitializationEvent event) throws ComputerCraftNotFoundException {
 		ModItems.init();//Inits satellite upgrades
 		Recipes.init();
 		BlockDispenser.dispenseBehaviorRegistry.putObject(ModItems.nanoSwarm, new ItemNanoSwarm.BehaviorNanoSwarm());

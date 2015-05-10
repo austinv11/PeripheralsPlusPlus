@@ -1,6 +1,9 @@
 package com.austinv11.peripheralsplusplus.utils;
 
+import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
+import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.turtle.ITurtleAccess;
+import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -109,5 +112,26 @@ public class TurtleUtil {
 			int dir = turtle.getDirection();
 			turtle.getWorld().spawnEntityInWorld(new EntityItem(turtle.getWorld(), coords.posX+Facing.offsetsXForSide[dir], coords.posY+Facing.offsetsYForSide[dir]+1, coords.posZ+Facing.offsetsZForSide[dir], stack.copy()));
 		}
+	}
+	
+	public static ItemStack getTurtle(boolean isAdvanced, ITurtleUpgrade upgradeLeft, ITurtleUpgrade upgradeRight) {
+		if (upgradeLeft == null && upgradeRight == null) {
+			return new ItemStack(GameRegistry.findBlock("ComputerCraft", isAdvanced ? "CC-TurtleAdvanced" : "CC-Turtle"));
+		} else {
+			ItemStack turtle = new ItemStack(GameRegistry.findBlock("ComputerCraft", isAdvanced ? "CC-TurtleAdvanced" : "CC-TurtleExpanded"));
+			if (upgradeLeft != null)
+				NBTHelper.setShort(turtle, "leftUpgrade", (short)upgradeLeft.getUpgradeID());
+			if (upgradeRight != null)
+				NBTHelper.setShort(turtle, "rightUpgrade", (short)upgradeRight.getUpgradeID());
+			return turtle;
+		}
+	}
+	
+	public static ItemStack getTurtle(boolean isAdvanced, ITurtleUpgrade upgrade) {
+		return getTurtle(isAdvanced, upgrade, null);
+	}
+	
+	public static ItemStack getTurtle(boolean isAdvanced) {
+		return getTurtle(isAdvanced, null);
 	}
 }

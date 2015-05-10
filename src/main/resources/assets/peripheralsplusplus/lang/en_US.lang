@@ -105,3 +105,6 @@ peripheralsplusplus.lore.3.pg3=§lLog 13: §rNo matter what you do...just don't 
 
 #Damage Sources
 death.attack.peripheralsplusplus.nanobot=%1$s was destroyed from the inside out by nanobots
+
+#NEI
+peripheralsplusplus.nei.turtleRecipeHandler.name=Turtles
