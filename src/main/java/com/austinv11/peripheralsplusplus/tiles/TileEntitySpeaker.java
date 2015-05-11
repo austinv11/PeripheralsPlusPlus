@@ -116,10 +116,10 @@ public class TileEntitySpeaker extends MountedTileEntity {
 			else
 				lang = Language.ENGLISH;//TranslateUtils.detectLangPrefix((String) arguments[0]);
 			double range;
-			if (Config.sayRange < 0)
+			if (Config.speechRange < 0)
 				range = Double.MAX_VALUE;
 			else
-				range = Config.sayRange;
+				range = Config.speechRange;
 			if (arguments.length > 1)
 				range = (Double) arguments[1];
 			packetInfo[0] = "something";

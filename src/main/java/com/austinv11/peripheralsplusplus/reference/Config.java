@@ -110,7 +110,7 @@ public class Config {
 	@Description(category = "Tank Turtle", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableTankTurtle = true;
 	
-	@Description(category = "Tank Turtle", comment = "The maximimum mB that the Thirsty Turtle can store internally")
+	@Description(category = "Tank Turtle", comment = "The maximum mB that the Thirsty Turtle can store internally")
 	public static int maxNumberOfMillibuckets = 10000;
 	
 	@Description(category = "Smart Helmet", comment = ENABLE_CONFIG_MESSAGE)
