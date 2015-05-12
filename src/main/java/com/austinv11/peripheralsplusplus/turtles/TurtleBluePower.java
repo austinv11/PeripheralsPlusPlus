@@ -19,50 +19,51 @@ import net.minecraft.util.IIcon;
 
 import java.util.List;
 
-public abstract class TurtleProjRed extends TurtleDropCollector implements ITurtleUpgrade {
-
+//Mostly based on the project red upgrades
+public abstract class TurtleBluePower extends TurtleDropCollector implements ITurtleUpgrade {
+	
 	public abstract int getID();
-
+	
 	public abstract ToolType getToolType();
-
+	
 	public abstract ToolMaterial getToolMaterial();
-
+	
 	public ItemStack getItem() {
-		return getProjRedTool(getToolType(), getToolMaterial());
+		return getBluePowerTool(getToolType(), getToolMaterial());
 	}
-
-	public static ItemStack getProjRedTool(ToolType toolType, ToolMaterial toolMaterial) {
-		String name = "projectred.exploration."+toolType.getName()+toolMaterial.getName();
-		return new ItemStack(GameRegistry.findItem("ProjRed|Exploration", name));
+	
+	public static ItemStack getBluePowerTool(ToolType toolType, ToolMaterial toolMaterial) {
+		String name = toolMaterial.getName()+"_"+toolType.getName();
+		return new ItemStack(GameRegistry.findItem("bluepower", name));
 	}
-
+	
 	@Override
 	public int getUpgradeID() {
-		return Reference.BASE_PROJ_RED_UPGRADE + getID();
+		return Reference.BASE_BLUEPOWER_UPGRADE + getID();
 	}
-
+	
 	@Override
 	public String getUnlocalisedAdjective() {
 		return getToolType().getAdj();
 	}
-
+	
 	@Override
 	public TurtleUpgradeType getType() {
 		return TurtleUpgradeType.Tool;
 	}
-
+	
 	@Override
 	public ItemStack getCraftingItem() {
 		if (Config.enableRedPowerLikeTurtles)
 			return getItem();
 		return null;
 	}
-
+	
 	@Override
 	public IPeripheral createPeripheral(ITurtleAccess turtle, TurtleSide side) {
 		return null;
 	}
-
+	
 	@Override
 	public TurtleCommandResult useTool(ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, int direction) {
 		if (!Config.enableRedPowerLikeTurtles)
@@ -105,17 +106,17 @@ public abstract class TurtleProjRed extends TurtleDropCollector implements ITurt
 		}
 		return TurtleCommandResult.failure("An unknown error has occurred, please tell the mod author");
 	}
-
+	
 	@SideOnly(Side.CLIENT)
 	@Override
 	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
 		return getItem().getItem().getIconIndex(getItem());
 	}
-
+	
 	@Override
 	public void update(ITurtleAccess turtle, TurtleSide side) {}
-
-
+	
+	
 	public static enum ToolType {
 		SWORD("upgrade.minecraft:diamond_sword.adjective", "sword"),AXE("upgrade.minecraft:diamond_axe.adjective", "axe"),SHOVEL("upgrade.minecraft:diamond_shovel.adjective", "shovel"),PICKAXE("upgrade.minecraft:diamond_pickaxe.adjective", "pickaxe"),HOE("upgrade.minecraft:diamond_hoe.adjective", "hoe"),UNKNOWN("ERROR", "ERROR");
 		private String adj;
@@ -131,9 +132,9 @@ public abstract class TurtleProjRed extends TurtleDropCollector implements ITurt
 			name = s2;
 		}
 	}
-
+	
 	public static enum ToolMaterial {
-		PERIDOT("peridot"),RUBY("ruby"),SAPPHIRE("sapphire"), UNKNOWN("ERROR");
+		AMETHYST("amethyst"),RUBY("ruby"),SAPPHIRE("sapphire"), UNKNOWN("ERROR");
 		private String name;
 		public String getName(){
 			return name;

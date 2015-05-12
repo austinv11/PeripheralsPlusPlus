@@ -25,8 +25,6 @@ import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.turtles.*;
-import com.austinv11.peripheralsplusplus.turtles.TurtleProjRed.ToolMaterial;
-import com.austinv11.peripheralsplusplus.turtles.TurtleProjRed.ToolType;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -159,11 +157,11 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleShear());
 		registerUpgrade(new TurtleSignReader());
 		registerUpgrade(new TurtleGarden());
-		if (Loader.isModLoaded("ProjRed|Exploration")) {
-			LOGGER.info("Project Red Exploration is loaded! Registering Project Red tools turtle upgrades...");
-			registerProjRedUpgrades();
+		if (Loader.isModLoaded("ProjRed|Exploration") || Loader.isModLoaded("bluepower")) {
+			LOGGER.info("At least one RedPower-like mod is loaded! Registering RedPower-like turtle upgrades...");
+			registerRedPowerLikeUpgrades();
 		} else
-			LOGGER.info("Project Red Exploration not found, skipping Project Red tools turtle upgrades");
+			LOGGER.info("No RedPower-like mods found, skipping RedPower-like turtle upgrades");
 		registerUpgrade(new TurtleSpeaker());
 		registerUpgrade(new TurtleTank());
 		registerUpgrade(new TurtleNoteBlock());
@@ -225,7 +223,7 @@ public class PeripheralsPlusPlus {
 			MinecraftForge.EVENT_BUS.register(((TurtleDropCollector) u).newInstanceOfListener());
 	}
 
-	private void registerProjRedUpgrades() {
+	private void registerRedPowerLikeUpgrades() {
 		
 //		Better solution but don't keeps old ids
 		
@@ -260,11 +258,36 @@ public class PeripheralsPlusPlus {
 //		Not as good as the first but better than yours and it keeps the same ids as before
 		
 		int i = 0;
-		for (final ToolMaterial material : new ToolMaterial[] { ToolMaterial.PERIDOT, ToolMaterial.RUBY, ToolMaterial.SAPPHIRE }) {
-			for (final ToolType type : new ToolType[] { ToolType.AXE, ToolType.HOE, ToolType.PICKAXE, ToolType.SHOVEL, ToolType.SWORD }) {
+		for (final TurtleProjRed.ToolMaterial material : new TurtleProjRed.ToolMaterial[] { TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolMaterial.SAPPHIRE }) {
+			for (final TurtleProjRed.ToolType type : new TurtleProjRed.ToolType[] { TurtleProjRed.ToolType.AXE, TurtleProjRed.ToolType.HOE, TurtleProjRed.ToolType.PICKAXE, TurtleProjRed.ToolType.SHOVEL, TurtleProjRed.ToolType.SWORD }) {
 				
 				final int id = i++;
 				registerUpgrade(new TurtleProjRed() {
+					
+					@Override
+					public ToolType getToolType() {
+						return type;
+					}
+					
+					@Override
+					public ToolMaterial getToolMaterial() {
+						return material;
+					}
+					
+					@Override
+					public int getID() {
+						return id;
+					}
+				});
+			}
+		}
+		
+		int j = 0;
+		for (final TurtleBluePower.ToolMaterial material : new TurtleBluePower.ToolMaterial[] { TurtleBluePower.ToolMaterial.AMETHYST, TurtleBluePower.ToolMaterial.RUBY, TurtleBluePower.ToolMaterial.SAPPHIRE }) {
+			for (final TurtleBluePower.ToolType type : new TurtleBluePower.ToolType[] { TurtleBluePower.ToolType.AXE, TurtleBluePower.ToolType.HOE, TurtleBluePower.ToolType.PICKAXE, TurtleBluePower.ToolType.SHOVEL, TurtleBluePower.ToolType.SWORD }) {
+				
+				final int id = j++;
+				registerUpgrade(new TurtleBluePower() {
 					
 					@Override
 					public ToolType getToolType() {

@@ -24,6 +24,7 @@ public class Reference {
 	public static final int GARDEN_UPGRADE = 129;
 	public static final int RIDABLE_UPGRADE = 130;
 	public static final int DISPENSER_UPGRADE = 131;
+	public static final int BASE_BLUEPOWER_UPGRADE = 132;
 
 	public static enum GUIs {
 		ANALYZER,ROCKET,SATELLITE,HELMET;

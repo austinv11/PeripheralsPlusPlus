@@ -86,8 +86,8 @@ public class Config {
 	@Description(category = "Villagers", comment = "Whether to enable villagers from this mod")
 	public static boolean enableVillagers = true;
 	
-	@Description(category = "Navigational Turtle", comment = ENABLE_CONFIG_MESSAGE)
-	public static boolean enableProjectRedTurtles = true;
+	@Description(category = "RedPower-Like Turtles", comment = ENABLE_CONFIG_MESSAGE)
+	public static boolean enableRedPowerLikeTurtles = true;
 	
 	@Description(category = "Speaker", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableSpeaker = true;
