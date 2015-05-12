@@ -256,54 +256,57 @@ public class PeripheralsPlusPlus {
 //		}
 		
 //		Not as good as the first but better than yours and it keeps the same ids as before
-		
-		int i = 0;
-		for (final TurtleProjRed.ToolMaterial material : new TurtleProjRed.ToolMaterial[] { TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolMaterial.SAPPHIRE }) {
-			for (final TurtleProjRed.ToolType type : new TurtleProjRed.ToolType[] { TurtleProjRed.ToolType.AXE, TurtleProjRed.ToolType.HOE, TurtleProjRed.ToolType.PICKAXE, TurtleProjRed.ToolType.SHOVEL, TurtleProjRed.ToolType.SWORD }) {
-				
-				final int id = i++;
-				registerUpgrade(new TurtleProjRed() {
+		if (Loader.isModLoaded("ProjRed|Exploration")) {
+			int i = 0;
+			for (final TurtleProjRed.ToolMaterial material : new TurtleProjRed.ToolMaterial[]{TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolMaterial.SAPPHIRE}) {
+				for (final TurtleProjRed.ToolType type : new TurtleProjRed.ToolType[]{TurtleProjRed.ToolType.AXE, TurtleProjRed.ToolType.HOE, TurtleProjRed.ToolType.PICKAXE, TurtleProjRed.ToolType.SHOVEL, TurtleProjRed.ToolType.SWORD}) {
 					
-					@Override
-					public ToolType getToolType() {
-						return type;
-					}
-					
-					@Override
-					public ToolMaterial getToolMaterial() {
-						return material;
-					}
-					
-					@Override
-					public int getID() {
-						return id;
-					}
-				});
+					final int id = i++;
+					registerUpgrade(new TurtleProjRed() {
+						
+						@Override
+						public ToolType getToolType() {
+							return type;
+						}
+						
+						@Override
+						public ToolMaterial getToolMaterial() {
+							return material;
+						}
+						
+						@Override
+						public int getID() {
+							return id;
+						}
+					});
+				}
 			}
 		}
 		
-		int j = 0;
-		for (final TurtleBluePower.ToolMaterial material : new TurtleBluePower.ToolMaterial[] { TurtleBluePower.ToolMaterial.AMETHYST, TurtleBluePower.ToolMaterial.RUBY, TurtleBluePower.ToolMaterial.SAPPHIRE }) {
-			for (final TurtleBluePower.ToolType type : new TurtleBluePower.ToolType[] { TurtleBluePower.ToolType.AXE, TurtleBluePower.ToolType.HOE, TurtleBluePower.ToolType.PICKAXE, TurtleBluePower.ToolType.SHOVEL, TurtleBluePower.ToolType.SWORD }) {
-				
-				final int id = j++;
-				registerUpgrade(new TurtleBluePower() {
+		if (Loader.isModLoaded("bluepower")) {
+			int j = 0;
+			for (final TurtleBluePower.ToolMaterial material : new TurtleBluePower.ToolMaterial[]{TurtleBluePower.ToolMaterial.AMETHYST, TurtleBluePower.ToolMaterial.RUBY, TurtleBluePower.ToolMaterial.SAPPHIRE}) {
+				for (final TurtleBluePower.ToolType type : new TurtleBluePower.ToolType[]{TurtleBluePower.ToolType.AXE, TurtleBluePower.ToolType.HOE, TurtleBluePower.ToolType.PICKAXE, TurtleBluePower.ToolType.SHOVEL, TurtleBluePower.ToolType.SWORD}) {
 					
-					@Override
-					public ToolType getToolType() {
-						return type;
-					}
-					
-					@Override
-					public ToolMaterial getToolMaterial() {
-						return material;
-					}
-					
-					@Override
-					public int getID() {
-						return id;
-					}
-				});
+					final int id = j++;
+					registerUpgrade(new TurtleBluePower() {
+						
+						@Override
+						public ToolType getToolType() {
+							return type;
+						}
+						
+						@Override
+						public ToolMaterial getToolMaterial() {
+							return material;
+						}
+						
+						@Override
+						public int getID() {
+							return id;
+						}
+					});
+				}
 			}
 		}
 	}
