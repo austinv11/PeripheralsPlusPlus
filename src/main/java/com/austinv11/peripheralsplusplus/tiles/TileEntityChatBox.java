@@ -100,7 +100,7 @@ public class TileEntityChatBox extends MountedTileEntity {
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		//try { TODO Remember to document the new arg
+		//try {
 		if (Config.enableChatBox) {
 			if (method == 0) {
 				if (arguments.length < 1)
@@ -111,11 +111,12 @@ public class TileEntityChatBox extends MountedTileEntity {
 					throw new LuaException("Bad argument #2 (expected number)");
 				if (arguments.length > 2 && !(arguments[2] instanceof Boolean))
 					throw new LuaException("Bad argument #3 (expected boolean)");
-				if (arguments.length > 3 && Config.logCoords && !(arguments[3] instanceof String)) {
+				if (arguments.length > 3) {
 					if (Config.logCoords) {
 						throw new LuaException("Coordinate logging is enabled, disable this to enable naming");
+					} else if(!(arguments[3] instanceof String)) {
+						throw new LuaException("Bad argument #4 (expected string)");
 					}
-					throw new LuaException("Bad argument #4 (expected string)");
 				}
 				if (ticker == Config.sayRate) {
 					throw new LuaException("Please try again later, you are sending messages too often");
@@ -153,11 +154,12 @@ public class TileEntityChatBox extends MountedTileEntity {
 					throw new LuaException("Bad argument #3 (expected number)");
 				else if (arguments.length > 3 && !(arguments[3] instanceof Boolean))
 					throw new LuaException("Bad argument #4 (expected boolean)");
-				if (arguments.length > 4 && Config.logCoords && !(arguments[4] instanceof String)) {
+				if (arguments.length > 4) {
 					if (Config.logCoords) {
 						throw new LuaException("Coordinate logging is enabled, disable this to enable naming");
+					} else if (!(arguments[4] instanceof String)) {
+						throw new LuaException("Bad argument #5 (expected string)");
 					}
-					throw new LuaException("Bad argument #5 (expected string)");
 				}
 				if (ticker == Config.sayRate) {
 					throw new LuaException("Please try again later, you are sending messages too often");
