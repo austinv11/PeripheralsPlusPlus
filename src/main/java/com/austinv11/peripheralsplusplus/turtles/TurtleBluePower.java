@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.turtles;
 
+import com.austinv11.collectiveframework.minecraft.reference.ModIds;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.utils.FakeTurtlePlayer;
@@ -34,7 +35,7 @@ public abstract class TurtleBluePower extends TurtleDropCollector implements ITu
 	
 	public static ItemStack getBluePowerTool(ToolType toolType, ToolMaterial toolMaterial) {
 		String name = toolMaterial.getName()+"_"+toolType.getName();
-		return new ItemStack(GameRegistry.findItem("bluepower", name));
+		return new ItemStack(GameRegistry.findItem(ModIds.BluePower, name));
 	}
 	
 	@Override

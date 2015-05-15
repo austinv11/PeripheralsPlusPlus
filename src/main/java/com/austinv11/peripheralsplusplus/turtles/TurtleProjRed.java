@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.turtles;
 
+import com.austinv11.collectiveframework.minecraft.reference.ModIds;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.utils.FakeTurtlePlayer;
@@ -33,7 +34,7 @@ public abstract class TurtleProjRed extends TurtleDropCollector implements ITurt
 
 	public static ItemStack getProjRedTool(ToolType toolType, ToolMaterial toolMaterial) {
 		String name = "projectred.exploration."+toolType.getName()+toolMaterial.getName();
-		return new ItemStack(GameRegistry.findItem("ProjRed|Exploration", name));
+		return new ItemStack(GameRegistry.findItem(ModIds.ProjectRed_Exploration, name));
 	}
 
 	@Override

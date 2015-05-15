@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.proxy;
 
+import com.austinv11.collectiveframework.minecraft.reference.ModIds;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.event.PeripheralContainerHandler;
 import com.austinv11.peripheralsplusplus.event.PropertiesHandler;
@@ -25,10 +26,10 @@ public class CommonProxy {
 	public void registerTileEntities() {
 		GameRegistry.registerTileEntity(TileEntityChatBox.class, TileEntityChatBox.publicName);
 		GameRegistry.registerTileEntity(TileEntityPlayerSensor.class, TileEntityPlayerSensor.publicName);
-		if (Loader.isModLoaded("ThermalExpansion") || Loader.isModLoaded("BuildCraft|Core"))
+		if (Loader.isModLoaded(ModIds.ThermalExpansion) || Loader.isModLoaded(ModIds.BuildCraft_Core))
 			GameRegistry.registerTileEntity(TileEntityRFCharger.class, TileEntityRFCharger.publicName);
 		GameRegistry.registerTileEntity(TileEntityOreDictionary.class, TileEntityOreDictionary.publicName);
-		if (Loader.isModLoaded("Forestry")) {
+		if (Loader.isModLoaded(ModIds.Forestry)) {
 			GameRegistry.registerTileEntity(TileEntityAnalyzerBee.class, TileEntityAnalyzerBee.publicName);
 			GameRegistry.registerTileEntity(TileEntityAnalyzerButterfly.class, TileEntityAnalyzerButterfly.publicName);
 			GameRegistry.registerTileEntity(TileEntityAnalyzerTree.class, TileEntityAnalyzerTree.publicName);
@@ -39,7 +40,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEntitySpeaker.class, TileEntitySpeaker.publicName);
 		GameRegistry.registerTileEntity(TileEntityAntenna.class, TileEntityAntenna.publicName);
 		GameRegistry.registerTileEntity(TileEntityPeripheralContainer.class, TileEntityPeripheralContainer.publicName);
-		if (Loader.isModLoaded("appliedenergistics2"))
+		if (Loader.isModLoaded(ModIds.AppliedEnergistics2))
 			GameRegistry.registerTileEntity(TileEntityMEBridge.class, TileEntityMEBridge.publicName);
 		GameRegistry.registerTileEntity(TileEntityNoteBlock.class, TileEntityNoteBlock.publicName);
 		GameRegistry.registerTileEntity(TileEntityTurtle.class, TileEntityTurtle.publicName);

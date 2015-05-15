@@ -3,6 +3,7 @@ package com.austinv11.peripheralsplusplus;
 import com.austinv11.collectiveframework.minecraft.config.ConfigException;
 import com.austinv11.collectiveframework.minecraft.config.ConfigRegistry;
 import com.austinv11.collectiveframework.minecraft.logging.Logger;
+import com.austinv11.collectiveframework.minecraft.reference.ModIds;
 import com.austinv11.collectiveframework.minecraft.utils.CurseVersionChecker;
 import com.austinv11.collectiveframework.multithreading.SimpleRunnable;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
@@ -123,7 +124,7 @@ public class PeripheralsPlusPlus {
 		ComputerCraftAPI.registerPeripheralProvider(new BlockChatBox());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockPlayerSensor());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockOreDictionary());
-		if (Loader.isModLoaded("Forestry")) {
+		if (Loader.isModLoaded(ModIds.Forestry)) {
 			LOGGER.info("Forestry is loaded! Registering analyzer peripherals...");
 			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerBee());
 			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerTree());
@@ -136,7 +137,7 @@ public class PeripheralsPlusPlus {
 		ComputerCraftAPI.registerPeripheralProvider(new BlockSpeaker());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockAntenna());
 		ComputerCraftAPI.registerPeripheralProvider(new BlockPeripheralContainer());
-		if (Loader.isModLoaded("appliedenergistics2")) {
+		if (Loader.isModLoaded(ModIds.AppliedEnergistics2)) {
 			LOGGER.info("Applied Energistics is loaded! Registering the ME Bridge...");
 			ComputerCraftAPI.registerPeripheralProvider(new BlockMEBridge());
 		}else
@@ -146,7 +147,7 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtlePlayerSensor());
 		registerUpgrade(new TurtleCompass());
 		registerUpgrade(new TurtleXP());
-		if (Loader.isModLoaded("factorization") || Loader.isModLoaded("JABBA")) {
+		if (Loader.isModLoaded(ModIds.Factorization) || Loader.isModLoaded(ModIds.JABBA)) {
 			LOGGER.info("A mod that adds barrels is loaded! Registering the barrel turtle upgrade...");
 			registerUpgrade(new TurtleBarrel());
 		} else
@@ -157,7 +158,7 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleShear());
 		registerUpgrade(new TurtleSignReader());
 		registerUpgrade(new TurtleGarden());
-		if (Loader.isModLoaded("ProjRed|Exploration") || Loader.isModLoaded("bluepower")) {
+		if (Loader.isModLoaded(ModIds.ProjectRed_Exploration) || Loader.isModLoaded(ModIds.BluePower)) {
 			LOGGER.info("At least one RedPower-like mod is loaded! Registering RedPower-like turtle upgrades...");
 			registerRedPowerLikeUpgrades();
 		} else
@@ -256,7 +257,7 @@ public class PeripheralsPlusPlus {
 //		}
 		
 //		Not as good as the first but better than yours and it keeps the same ids as before
-		if (Loader.isModLoaded("ProjRed|Exploration")) {
+		if (Loader.isModLoaded(ModIds.ProjectRed_Exploration)) {
 			int i = 0;
 			for (final TurtleProjRed.ToolMaterial material : new TurtleProjRed.ToolMaterial[]{TurtleProjRed.ToolMaterial.PERIDOT, TurtleProjRed.ToolMaterial.RUBY, TurtleProjRed.ToolMaterial.SAPPHIRE}) {
 				for (final TurtleProjRed.ToolType type : new TurtleProjRed.ToolType[]{TurtleProjRed.ToolType.AXE, TurtleProjRed.ToolType.HOE, TurtleProjRed.ToolType.PICKAXE, TurtleProjRed.ToolType.SHOVEL, TurtleProjRed.ToolType.SWORD}) {
@@ -283,7 +284,7 @@ public class PeripheralsPlusPlus {
 			}
 		}
 		
-		if (Loader.isModLoaded("bluepower")) {
+		if (Loader.isModLoaded(ModIds.BluePower)) {
 			int j = 0;
 			for (final TurtleBluePower.ToolMaterial material : new TurtleBluePower.ToolMaterial[]{TurtleBluePower.ToolMaterial.AMETHYST, TurtleBluePower.ToolMaterial.RUBY, TurtleBluePower.ToolMaterial.SAPPHIRE}) {
 				for (final TurtleBluePower.ToolType type : new TurtleBluePower.ToolType[]{TurtleBluePower.ToolType.AXE, TurtleBluePower.ToolType.HOE, TurtleBluePower.ToolType.PICKAXE, TurtleBluePower.ToolType.SHOVEL, TurtleBluePower.ToolType.SWORD}) {

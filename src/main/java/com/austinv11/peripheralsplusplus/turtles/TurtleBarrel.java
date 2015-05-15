@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.turtles;
 
+import com.austinv11.collectiveframework.minecraft.reference.ModIds;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.turtles.peripherals.PeripheralBarrel;
@@ -34,10 +35,10 @@ public class TurtleBarrel implements ITurtleUpgrade {
 	public ItemStack getCraftingItem() {
 		if (!Config.enableBarrelTurtle)
 			return null;
-		if (Loader.isModLoaded("JABBA"))
-			return new ItemStack(GameRegistry.findBlock("JABBA", "barrel"));
-		if (Loader.isModLoaded("factorization"))
-			return new ItemStack(GameRegistry.findBlock("factorization", "dayBarrel"));
+		if (Loader.isModLoaded(ModIds.JABBA))
+			return new ItemStack(GameRegistry.findBlock(ModIds.JABBA, "barrel"));
+		if (Loader.isModLoaded(ModIds.Factorization))
+			return new ItemStack(GameRegistry.findBlock(ModIds.Factorization, "dayBarrel"));
 		return null;
 	}
 
