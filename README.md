@@ -1,1 +1,1 @@
-This is a branch purely for documenting Peripherals++
+This is a branch purely for documenting Peripherals++ [![Documentation Status](https://readthedocs.org/projects/peripheralsplusplus/badge/?version=latest)](https://readthedocs.org/projects/peripheralsplusplus/?badge=latest)
