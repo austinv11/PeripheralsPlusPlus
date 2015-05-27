@@ -1,1 +1,1 @@
-mkdocs --upgrade
+mkdocs >= 0.13.0 --upgrade 0.13.0
