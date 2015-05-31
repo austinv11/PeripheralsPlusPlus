@@ -29,7 +29,9 @@ Now, just run these following commands (in order!) before doing anything to star
 * `gradlew setupDecompWorkspace`
 * If you use Intellij: `gradlew idea` or if you use Eclipse: `gradlew eclipse`
 
-Finally, add the follow VM option to your run configuration for Minecraft: `-Dfml.coreMods.load=com.austinv11.collectiveframework.minecraft.asm.CollectiveFrameworkEarlyTransformerPlugin`
+Finally, add the follow VM option to your run configuration for Minecraft:
+
+`-Dfml.coreMods.load=com.austinv11.collectiveframework.minecraft.asm.CollectiveFrameworkEarlyTransformerPlugin`
 
 ### 3. Developing
 
