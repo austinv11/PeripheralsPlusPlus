@@ -144,7 +144,7 @@ public class PeripheralTank extends MountedPeripheral {
 					HashMap<String,Object> map = new HashMap<String,Object>();
 					map.put("amount", tank.getFluidAmount());
 					map.put("name", tank.getFluid().getLocalizedName());
-					map.put("id", tank.getFluid().fluidID);
+					map.put("id", tank.getFluid().getFluidID());
 					return new Object[]{map};
 				}
 				return new Object[0];

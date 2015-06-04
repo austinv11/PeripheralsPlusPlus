@@ -2,8 +2,10 @@ package com.austinv11.peripheralsplusplus.utils;
 
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import cpw.mods.fml.common.registry.GameRegistry;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import dan200.computercraft.api.turtle.TurtleSide;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
@@ -16,6 +18,7 @@ import net.minecraft.util.Vec3;
 import net.minecraftforge.common.IShearable;
 
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.List;
 
 public class TurtleUtil {
@@ -133,5 +136,25 @@ public class TurtleUtil {
 	
 	public static ItemStack getTurtle(boolean isAdvanced) {
 		return getTurtle(isAdvanced, null);
+	}
+	
+	public static <T> T getPeripheral(ITurtleAccess turtle, Class<T> clazz) {
+		for (TurtleSide side : EnumSet.allOf(TurtleSide.class)) {
+			IPeripheral peripheral = turtle.getPeripheral(side);
+			if (peripheral != null && clazz.isAssignableFrom(peripheral.getClass())) 
+				return (T)peripheral;
+		}
+		
+		return null;
+	}
+	
+	public static TurtleSide getPeripheralSide(ITurtleAccess turtle, Class clazz) {
+		for (TurtleSide side : EnumSet.allOf(TurtleSide.class)) {
+			IPeripheral peripheral = turtle.getPeripheral(side);
+			if (peripheral != null && clazz.isAssignableFrom(peripheral.getClass())) 
+				return side;
+		}
+		
+		return null;
 	}
 }

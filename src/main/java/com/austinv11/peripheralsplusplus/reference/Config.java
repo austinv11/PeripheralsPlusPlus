@@ -152,6 +152,15 @@ public class Config {
 	@Description(category = "Time Sensor", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableTimeSensor = true;
 	
+	@Description(category = "Chunky Turtle", comment = ENABLE_CONFIG_MESSAGE)
+	public static boolean enableChunkyTurtle = true;
+	
+	@Description(category = "Chunky Turtle", comment = "Radius of chunks that will be loaded. 0 for 1x1, 1 for 3x3, 2 for 5x5, etc. The maximum allowed by the default chunkloading settings is 5x5, edit config/forgeChunkLoading.cfg to change those")
+	public static int chunkLoadingRadius = 0;
+	
+	@Description(category = "Chunky Turtle", comment = "The amount of extra fuel used by a chunky turtle for movement")
+	public static int chunkyMovementPenalty = 1;
+	
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)
 			dimWhitelist.add(i);

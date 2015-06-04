@@ -27,6 +27,7 @@ item.peripheralsplusplus:iphone.name=Pineapple UPhone
 item.peripheralsplusplus:tank.name=Fluid Tank
 item.peripheralsplusplus:smartHelmet.name=Smart Helmet
 item.peripheralsplusplus:nanoSwarm.name=Nano Bot Swarm
+item.peripheralsplusplus:chunkLoaderUpgrade.name=Chunk Loader
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++
@@ -48,6 +49,7 @@ peripheralsplusplus.turtleUpgrade.signReader=Reading
 peripheralsplusplus.turtleUpgrade.garden=Gardening
 peripheralsplusplus.turtleUpgrade.ridable=Ridable
 peripheralsplusplus.turtleUpgrade.dispenser=Flinging
+peripheralsplusplus.turtleUpgrade.loader=Chunky
 
 #GUIs
 peripheralsplusplus.inv.analyzer=Analyzer

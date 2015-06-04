@@ -26,6 +26,7 @@ import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.turtles.*;
+import com.austinv11.peripheralsplusplus.turtles.peripherals.PeripheralChunkLoader;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -42,6 +43,7 @@ import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraft.block.BlockDispenser;
 import net.minecraft.util.IChatComponent;
 import net.minecraft.util.StatCollector;
+import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
@@ -168,6 +170,7 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleNoteBlock());
 		registerUpgrade(new TurtleRidable());
 		registerUpgrade(new TurtleDispenser());
+		registerUpgrade(new TurtleChunkLoader());
 		LOGGER.info("All peripherals and turtle upgrades registered!");
 //		LOGGER.info("Registering satellite upgrades...");
 //		PeripheralsPlusPlusAPI.registerSatelliteUpgrade(new GPSUpgrade());
@@ -187,6 +190,7 @@ public class PeripheralsPlusPlus {
 		ModItems.init();//Inits satellite upgrades
 		Recipes.init();
 		BlockDispenser.dispenseBehaviorRegistry.putObject(ModItems.nanoSwarm, new ItemNanoSwarm.BehaviorNanoSwarm());
+		ForgeChunkManager.setForcedChunkLoadingCallback(this, new PeripheralChunkLoader.TurtleChunkLoadingCallback());
 	}
 	
 	@Mod.EventHandler

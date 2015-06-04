@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.init;
 
+import com.austinv11.collectiveframework.minecraft.reference.ModIds;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.recipe.ContainerRecipe;
@@ -12,6 +13,9 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Recipes {
 
@@ -79,5 +83,21 @@ public class Recipes {
 		GameRegistry.addShapelessRecipe(new ItemStack(ModBlocks.turtle), GameRegistry.findBlock("ComputerCraft", "CC-TurtleAdvanced"));
 		GameRegistry.addShapelessRecipe(new ItemStack(ModBlocks.turtle), GameRegistry.findBlock("ComputerCraft", "CC-TurtleExpanded"));
 		GameRegistry.addShapelessRecipe(new ItemStack(ModBlocks.turtle), GameRegistry.findBlock("ComputerCraft", "CC-Turtle"));
+		if (Config.enableChunkyTurtle) {
+			List<Object> chunkLoaders = new ArrayList<Object>();
+			if (Loader.isModLoaded(ModIds.ChickenChunks)) {
+				chunkLoaders.add(new ItemStack(GameRegistry.findBlock(ModIds.ChickenChunks, "chickenChunkLoader")));
+				if (Config.chunkLoadingRadius == 0)
+					chunkLoaders.add(new ItemStack(GameRegistry.findBlock(ModIds.ChickenChunks, "chickenChunkLoader"), 1, 1));
+			}
+			if (Loader.isModLoaded(ModIds.DimensionalAnchors))
+				chunkLoaders.add(new ItemStack(GameRegistry.findBlock(ModIds.DimensionalAnchors, "chunkloader")));
+			if (Loader.isModLoaded(ModIds.MineFactoryReloaded))
+				chunkLoaders.add(new ItemStack(GameRegistry.findBlock(ModIds.MineFactoryReloaded, "machine.2"), 1, 10));
+			if (Loader.isModLoaded(ModIds.Railcraft))
+				chunkLoaders.add(GameRegistry.findBlock(ModIds.Railcraft, "machine.alpha"));
+			for (Object o : chunkLoaders)
+				GameRegistry.addShapelessRecipe(new ItemStack(ModItems.chunkLoaderUpgrade), o, new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1));
+		}
 	}
 }

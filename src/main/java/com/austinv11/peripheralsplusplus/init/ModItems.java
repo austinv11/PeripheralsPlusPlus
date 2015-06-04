@@ -17,6 +17,7 @@ public class ModItems {
 	public static final ItemPPP socket = new ItemSocket();
 	public static final ItemPPP positionalUnit = new ItemPositionalUnit();
 	public static final ItemPPP nanoSwarm = new ItemNanoSwarm();
+	public static final ItemPPP chunkLoaderUpgrade = new ItemChunkLoaderUpgrade();
 
 	public static void preInit(){
 		GameRegistry.registerItem(feederUpgrade, "feederUpgrade");
@@ -27,6 +28,7 @@ public class ModItems {
 		GameRegistry.registerItem(socket, "socket");
 		GameRegistry.registerItem(positionalUnit, "positionalUnit");
 		GameRegistry.registerItem(nanoSwarm, "nanoSwarm");
+		GameRegistry.registerItem(chunkLoaderUpgrade, "chunkLoaderUpgrade");
 	}
 
 	public static void init() {

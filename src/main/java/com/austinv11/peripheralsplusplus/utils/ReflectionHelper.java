@@ -15,7 +15,7 @@ public class ReflectionHelper {
 
 	private static ArrayList<Integer> usedIds = new ArrayList<Integer>();
 
-	public static ITurtleAccess getTurtle(TileEntity te) throws Exception{
+	public static ITurtleAccess getTurtle(TileEntity te) throws Exception {
 		if (te instanceof ITurtleAccess)
 			return (ITurtleAccess) te;
 		Class teClass = te.getClass();

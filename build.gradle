@@ -34,7 +34,7 @@ group= "com.austinv11.peripheralsplusplus" // http://maven.apache.org/guides/min
 archivesBaseName = "Peripherals++"
 
 minecraft {
-    version = "1.7.10-10.13.2.1291"
+    version = "1.7.10-10.13.3.1428-1.7.10"
     runDir = "eclipse"
     replace("@VERSION@",project.version)
 }
@@ -52,7 +52,7 @@ dependencies {
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    compile "com.austinv11.collectiveframework:CollectiveFramework:1.0.0-85:deobf"
+    compile "com.austinv11.collectiveframework:CollectiveFramework:1.0.0-103:deobf"
     compile "codechicken:NotEnoughItems:1.7.10-1.0.3.74:dev"
 	compile "codechicken:CodeChickenLib:1.7.10-1.1.1.99:dev"
 	compile "codechicken:CodeChickenCore:1.7.10-1.0.4.29:dev"
