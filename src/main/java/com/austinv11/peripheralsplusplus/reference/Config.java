@@ -161,6 +161,9 @@ public class Config {
 	@Description(category = "Chunky Turtle", comment = "The amount of extra fuel used by a chunky turtle for movement")
 	public static int chunkyMovementPenalty = 1;
 	
+	@Description(category = "Chunky Turtle", comment = "It will only be active if the chunkloading radius is 0. EXPERIMENTAL: This will make turtles load extra chunks when near boundaries to allow for them to traverse between chunk boundaries for 1x1 radius")
+	public static boolean aggressiveChunkLoading = true;
+	
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)
 			dimWhitelist.add(i);

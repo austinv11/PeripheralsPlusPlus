@@ -55,7 +55,8 @@ public class PeripheralChunkLoader implements IPeripheral {
 	
 	@Override
 	public void detach(IComputerAccess computer) {
-		ForgeChunkManager.releaseTicket(ticket);
+		if (ticket != null)
+			ForgeChunkManager.releaseTicket(ticket);
 	}
 	
 	@Override
@@ -78,7 +79,7 @@ public class PeripheralChunkLoader implements IPeripheral {
 					return;
 				}
 				
-				int width = (Config.chunkLoadingRadius*2)+1;
+				int width = (Config.chunkLoadingRadius*2)+1+(Config.aggressiveChunkLoading && Config.chunkLoadingRadius == 0 ? 2 : 0);//The extra 2 is for another possible 2 chunks loaded
 				ticket.setChunkListDepth(width*width);
 				
 			} else if (pos.posX != oldPos.posX || pos.posY != oldPos.posY || pos.posZ != oldPos.posZ) {
@@ -117,6 +118,19 @@ public class PeripheralChunkLoader implements IPeripheral {
 				
 				oldChunkX = chunkX;
 				oldChunkZ = chunkZ;
+			}
+			
+			if (Config.aggressiveChunkLoading && Config.chunkLoadingRadius == 0) {
+				if (chunkX != (pos.posX+1) >> 4) {
+					ForgeChunkManager.forceChunk(ticket, new ChunkCoordIntPair((pos.posX+1) >> 4, chunkZ));
+				} else if (chunkX != (pos.posX-1) >> 4) {
+					ForgeChunkManager.forceChunk(ticket, new ChunkCoordIntPair((pos.posX-1) >> 4, chunkZ));
+				}
+				if (chunkZ != (pos.posZ+1) >> 4) {
+					ForgeChunkManager.forceChunk(ticket, new ChunkCoordIntPair(chunkX, (pos.posZ+1) >> 4));
+				} else if (chunkZ != (pos.posZ-1) >> 4) {
+					ForgeChunkManager.forceChunk(ticket, new ChunkCoordIntPair(chunkX, (pos.posZ-1) >> 4));
+				}
 			}
 		}
 	}
