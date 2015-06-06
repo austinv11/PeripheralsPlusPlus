@@ -18,6 +18,7 @@ public class ModItems {
 	public static final ItemPPP positionalUnit = new ItemPositionalUnit();
 	public static final ItemPPP nanoSwarm = new ItemNanoSwarm();
 	public static final ItemPPP chunkLoaderUpgrade = new ItemChunkLoaderUpgrade();
+    public static final ItemPPP permCard = new ItemPermissionsCard();
 
 	public static void preInit(){
 		GameRegistry.registerItem(feederUpgrade, "feederUpgrade");
@@ -29,7 +30,8 @@ public class ModItems {
 		GameRegistry.registerItem(positionalUnit, "positionalUnit");
 		GameRegistry.registerItem(nanoSwarm, "nanoSwarm");
 		GameRegistry.registerItem(chunkLoaderUpgrade, "chunkLoaderUpgrade");
-	}
+        GameRegistry.registerItem(permCard, "permissionsCard");
+    }
 
 	public static void init() {
 		for (int i = 0; i < PeripheralsPlusPlus.SATELLITE_UPGRADE_REGISTRY.size(); i++)

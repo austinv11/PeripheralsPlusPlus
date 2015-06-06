@@ -101,5 +101,6 @@ public class Recipes {
 		}
 		if (Config.enableInteractiveSorter)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.interactiveSorter), "dpd", "pep", "dpd", 'd', "gemDiamond", 'p', Blocks.piston, 'e', Items.ender_eye));
-	}
+        GameRegistry.addShapelessRecipe(new ItemStack(ModItems.permCard), new ItemStack(ModItems.permCard));
+    }
 }

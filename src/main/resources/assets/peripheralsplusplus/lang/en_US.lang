@@ -17,6 +17,7 @@ tile.peripheralsplusplus:noteBlock.name=Iron Note Block
 tile.peripheralsplusplus:turtle.name=Turtle
 tile.peripheralsplusplus:timeSensor.name=Time Sensor
 tile.peripheralsplusplus:interactiveSorter.name=Interactive Sorter
+tile.peripheralsplusplus:playerInterface.name=Player Interface
 
 #Items
 item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade
@@ -29,6 +30,7 @@ item.peripheralsplusplus:tank.name=Fluid Tank
 item.peripheralsplusplus:smartHelmet.name=Smart Helmet
 item.peripheralsplusplus:nanoSwarm.name=Nano Bot Swarm
 item.peripheralsplusplus:chunkLoaderUpgrade.name=Chunk Loader
+item.peripheralsplusplus:permissionsCard.name=Permissions Card
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++
@@ -62,6 +64,11 @@ peripheralsplusplus.inv.satellite=Satellite
 peripheralsplusplus.inv.satellite.0=Main:
 peripheralsplusplus.inv.satellite.1=Addons:
 peripheralsplusplus.inv.interactiveSorter=Interactive Sorter
+peripheralsplusplus.inv.permCard=Permissions Card
+peripheralsplusplus.inv.permCard.deposit=Deposit Items
+peripheralsplusplus.inv.permCard.withdraw=Withdraw Items
+peripheralsplusplus.inv.permCard.get=Get Stacks
+peripheralsplusplus.inv.permCard.perms=Permissions:
 
 #Chat Messages
 peripheralsplusplus.chat.launchFailure=You cannot launch the rocket!
@@ -73,6 +80,10 @@ peripheralsplusplus.chat.stillUpdating=§cThe mod file is still being updated, p
 peripheralsplusplus.chat.startUpdate=§6Peripherals++ will now start updating
 peripheralsplusplus.chat.updateFailed=§cThere was a problem updating Peripherals++
 peripheralsplusplus.chat.updateSucceeded=§6Peripherals++ has been updated! Please restart Minecraft.
+peripheralsplusplus.chat.permCard.notSet=This card has not yet been linked to a player and cannot be edited.
+peripheralsplusplus.chat.permCard.alreadySet=Already linked.
+peripheralsplusplus.chat.permCard.wrongOwner=You do not have permission to edit this card.
+peripheralsplusplus.chat.permCard.set=Permissions card linked to you.
 
 #Item Descriptions
 peripheralsplusplus.description.turtle.1=This one seems a little broken...

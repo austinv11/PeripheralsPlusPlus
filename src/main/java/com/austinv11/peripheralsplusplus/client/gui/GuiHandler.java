@@ -3,10 +3,7 @@ package com.austinv11.peripheralsplusplus.client.gui;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.items.ItemSatellite;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.tiles.containers.ContainerAnalyzer;
-import com.austinv11.peripheralsplusplus.tiles.containers.ContainerInteractiveSorter;
-import com.austinv11.peripheralsplusplus.tiles.containers.ContainerRocket;
-import com.austinv11.peripheralsplusplus.tiles.containers.ContainerSatellite;
+import com.austinv11.peripheralsplusplus.tiles.containers.*;
 import cpw.mods.fml.common.network.IGuiHandler;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -25,9 +22,17 @@ public class GuiHandler implements IGuiHandler {
 		} else if (id == Reference.GUIs.SATELLITE.ordinal()) {
 			return new ContainerSatellite(player, ((ItemSatellite) player.getCurrentEquippedItem().getItem()).getInventoryFromStack(player), 176, 166);
 		} else if (id == Reference.GUIs.INTERACTIVE_SORTER.ordinal()) {
-			return new ContainerInteractiveSorter(player, (IInventory) world.getTileEntity(x, y, z), 176, 166); 
-		}
-		return null;
+			return new ContainerInteractiveSorter(player, (IInventory) world.getTileEntity(x, y, z), 176, 166);
+        }
+        else if (id == Reference.GUIs.PLAYERINTERFACE.ordinal())
+        {
+            return new ContainerPlayerInterface(player, (IInventory) world.getTileEntity(x, y, z), 176, 133);
+        }
+        else if (id == Reference.GUIs.PERMCARD.ordinal())
+        {
+            return new ContainerEmpty();
+        }
+        return null;
 	}
 
 	@SideOnly(Side.CLIENT)
@@ -43,7 +48,15 @@ public class GuiHandler implements IGuiHandler {
 			return new GuiHelmet();
 		} else if (id == Reference.GUIs.INTERACTIVE_SORTER.ordinal()) {
 			return new GuiInteractiveSorter(player, world, x, y, z);
-		}
-		return null;
+        }
+        else if (id == Reference.GUIs.PLAYERINTERFACE.ordinal())
+        {
+            return new GuiPlayerInterface(player, x, y, z);
+        }
+        else if (id == Reference.GUIs.PERMCARD.ordinal())
+        {
+            return new GuiPermCard(player.getCurrentEquippedItem());
+        }
+        return null;
 	}
 }

@@ -29,6 +29,7 @@ public class ModBlocks {
 	public static final BlockPPP turtle = new BlockTurtle();
 	public static final BlockPPP timeSensor = new BlockTimeSensor();
 	public static final BlockContainer interactiveSorter = new BlockInteractiveSorter();
+    public static final BlockContainer playerInterface = new BlockPlayerInterface();
 
 	public static void init(){
 		GameRegistry.registerBlock(chatBox, "chatBox");
@@ -59,5 +60,6 @@ public class ModBlocks {
 		GameRegistry.registerBlock(turtle, ItemBlockTurtle.class, "turtle");
 		GameRegistry.registerBlock(timeSensor, "timeSensor");
 		GameRegistry.registerBlock(interactiveSorter, "interactiveSorter");
-	}
+        GameRegistry.registerBlock(playerInterface, "playerInterface");
+    }
 }
