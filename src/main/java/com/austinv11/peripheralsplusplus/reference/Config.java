@@ -164,6 +164,9 @@ public class Config {
 	@Description(category = "Chunky Turtle", comment = "It will only be active if the chunkloading radius is 0. EXPERIMENTAL: This will make turtles load extra chunks when near boundaries to allow for them to traverse between chunk boundaries for 1x1 radius")
 	public static boolean aggressiveChunkLoading = true;
 	
+	@Description(category = "Interactive Sorter", comment = ENABLE_CONFIG_MESSAGE)
+	public static boolean enableInteractiveSorter = true;
+	
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)
 			dimWhitelist.add(i);

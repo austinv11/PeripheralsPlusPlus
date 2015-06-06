@@ -24,9 +24,11 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -124,9 +126,9 @@ public class TileEntityMEBridge extends MountedTileEntity implements IActionHost
 					dir = ForgeDirection.valueOf(((String) arguments[2]).toUpperCase());
 				else
 					dir = ForgeDirection.getOrientation((int) (double) (Double) arguments[2]);
-				if (worldObj.isAirBlock(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) || !(worldObj.getBlock(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) instanceof BlockContainer))
+				if (!isInventoryOnSide(dir))
 					throw new LuaException("Block is not a valid inventory");
-				IInventory inventory = (IInventory) worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ);
+				IInventory inventory = getInventoryForSide(dir);
 				long extracted = 0;
 				int meta = ((String) arguments[0]).contains(" ") ? Integer.valueOf(((String)arguments[0]).split(" ")[1]) : 0;
 				IAEItemStack stack = findAEStackFromItemStack(monitor, new ItemStack(item, 1, meta));
@@ -140,23 +142,25 @@ public class TileEntityMEBridge extends MountedTileEntity implements IActionHost
 					IAEItemStack resultant = monitor.extractItems(stackToGet, Actionable.MODULATE, new MachineSource(this));
 					if (resultant != null) {
 						extracted = resultant.getStackSize();
+						int[] slots = inventory instanceof ISidedInventory ? 
+								((ISidedInventory) inventory).getAccessibleSlotsFromSide(dir.getOpposite().flag) : getDefaultSlots(inventory);
 						int currentSlot = 0;
-						while (!(resultant.getStackSize() < 1)) {
-							if (inventory.isItemValidForSlot(currentSlot, new ItemStack(resultant.getItem()))) {
-								if (inventory.getStackInSlot(currentSlot) == null) {
+						while (!(resultant.getStackSize() < 1) && currentSlot < slots.length) {
+							if (inventory.isItemValidForSlot(slots[currentSlot], new ItemStack(resultant.getItem()))) {
+								if (inventory.getStackInSlot(slots[currentSlot]) == null) {
 									ItemStack toAdd = resultant.getItemStack();
 									int stackSize = (int) (resultant.getStackSize() <= inventory.getInventoryStackLimit() ? resultant.getStackSize() : inventory.getInventoryStackLimit());
 									toAdd.stackSize = stackSize;
-									inventory.setInventorySlotContents(currentSlot, toAdd);
+									inventory.setInventorySlotContents(slots[currentSlot], toAdd);
 									resultant.setStackSize(resultant.getStackSize()-stackSize);
 								} else {
-									ItemStack current = inventory.getStackInSlot(currentSlot);
+									ItemStack current = inventory.getStackInSlot(slots[currentSlot]);
 									ItemStack toAdd = resultant.getItemStack();
 									if (current.isItemEqual(toAdd)) {
 										int stackSize = (int) (resultant.getStackSize()+current.stackSize <= inventory.getInventoryStackLimit() ? resultant.getStackSize()+current.stackSize : inventory.getInventoryStackLimit());
 										int change = stackSize - current.stackSize;
 										current.stackSize = stackSize;
-										inventory.setInventorySlotContents(currentSlot, current);
+										inventory.setInventorySlotContents(slots[currentSlot], current);
 										resultant.setStackSize(resultant.getStackSize()-change);
 									}
 								}
@@ -198,6 +202,37 @@ public class TileEntityMEBridge extends MountedTileEntity implements IActionHost
 //			e.printStackTrace();
 //		}
 		return new Object[0];
+	}
+	
+	private int[] getDefaultSlots(IInventory inventory) {
+		int[] array = new int[inventory.getSizeInventory()];
+		for (int i = 0; i < inventory.getSizeInventory(); i++)
+			array[i] = i;
+		return array;
+	}
+	
+	private boolean isInventoryOnSide(ForgeDirection dir) {
+		if (!worldObj.isAirBlock(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ)) {
+			Block block = worldObj.getBlock(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ);
+			if (block instanceof BlockContainer || block instanceof IInventory)
+				return true;
+			if (block.hasTileEntity(worldObj.getBlockMetadata(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ))) {
+				return worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) instanceof IInventory;
+			}
+		}
+		return false;
+	}
+	
+	private IInventory getInventoryForSide(ForgeDirection dir) {
+		if (!worldObj.isAirBlock(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ)) {
+			Block block = worldObj.getBlock(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ);
+			if (block instanceof IInventory) {
+				return (IInventory) block;
+			}
+			if (block instanceof BlockContainer && block.hasTileEntity(worldObj.getBlockMetadata(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ)))
+				return (IInventory)worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ);
+		}
+		return null;
 	}
 
 	private int getRemainingSlots(Item item, IInventory inventory) {

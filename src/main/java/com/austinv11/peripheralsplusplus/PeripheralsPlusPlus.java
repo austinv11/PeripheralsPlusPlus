@@ -144,6 +144,8 @@ public class PeripheralsPlusPlus {
 			ComputerCraftAPI.registerPeripheralProvider(new BlockMEBridge());
 		}else
 			LOGGER.info("Applied Energistics not found, skipping the ME Bridge");
+		ComputerCraftAPI.registerPeripheralProvider(new BlockTimeSensor());
+		ComputerCraftAPI.registerPeripheralProvider(new BlockInteractiveSorter());
 		LOGGER.info("Registering turtle upgrades...");
 		registerUpgrade(new TurtleChatBox());
 		registerUpgrade(new TurtlePlayerSensor());

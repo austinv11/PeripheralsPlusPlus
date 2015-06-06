@@ -16,6 +16,7 @@ tile.peripheralsplusplus:meBridge.name=ME Bridge
 tile.peripheralsplusplus:noteBlock.name=Iron Note Block
 tile.peripheralsplusplus:turtle.name=Turtle
 tile.peripheralsplusplus:timeSensor.name=Time Sensor
+tile.peripheralsplusplus:interactiveSorter.name=Interactive Sorter
 
 #Items
 item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade
@@ -60,6 +61,7 @@ peripheralsplusplus.button.rocket=Launch!
 peripheralsplusplus.inv.satellite=Satellite
 peripheralsplusplus.inv.satellite.0=Main:
 peripheralsplusplus.inv.satellite.1=Addons:
+peripheralsplusplus.inv.interactiveSorter=Interactive Sorter
 
 #Chat Messages
 peripheralsplusplus.chat.launchFailure=You cannot launch the rocket!

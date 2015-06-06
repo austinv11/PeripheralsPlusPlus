@@ -7,7 +7,6 @@ import net.minecraft.creativetab.CreativeTabs;
 
 public class BlockPPP extends BlockBase {
 	
-	
 	@Override
 	public CreativeTabs getTab() {
 		return CreativeTabPPP.PPP_TAB;

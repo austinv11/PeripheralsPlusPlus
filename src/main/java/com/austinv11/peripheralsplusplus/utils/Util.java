@@ -59,6 +59,14 @@ public class Util {
 		}
 		return map;
 	}
+	
+	public static HashMap<Integer,Byte> arrayToMap(byte[] array) {
+		HashMap<Integer,Byte> map = new HashMap<Integer,Byte>();
+		for (int i = 0; i < array.length; i++) {
+			map.put(i+1, array[i]);
+		}
+		return map;
+	}
 
 	public static HashMap<Integer,Object> arrayToMap(Object[] array) {
 		HashMap<Integer,Object> map = new HashMap<Integer,Object>();

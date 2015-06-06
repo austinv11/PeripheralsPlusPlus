@@ -99,5 +99,7 @@ public class Recipes {
 			for (Object o : chunkLoaders)
 				GameRegistry.addShapelessRecipe(new ItemStack(ModItems.chunkLoaderUpgrade), o, new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1));
 		}
+		if (Config.enableInteractiveSorter)
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.interactiveSorter), "dpd", "pep", "dpd", 'd', "gemDiamond", 'p', Blocks.piston, 'e', Items.ender_eye));
 	}
 }
