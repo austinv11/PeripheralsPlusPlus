@@ -3,12 +3,12 @@ package com.austinv11.peripheralsplusplus.entities;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.network.RidableTurtlePacket;
 import com.austinv11.peripheralsplusplus.reference.Config;
+import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleAnimation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -23,6 +23,7 @@ public class EntityRidableTurtle extends Entity {
 	private int queuedActionCode = -1;
 	private int tick = 0;
 	private boolean canPerformAction = true;
+	private int[] turtleLastPos;
 
 	public EntityRidableTurtle(World world) {
 		super(world);
@@ -33,10 +34,16 @@ public class EntityRidableTurtle extends Entity {
 	protected void entityInit() {}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound nbtTagCompound) {}
+	protected void readEntityFromNBT(NBTTagCompound nbtTagCompound) {
+		turtleLastPos = nbtTagCompound.getIntArray("turtleLastPos");
+	}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound nbtTagCompound) {}
+	protected void writeEntityToNBT(NBTTagCompound nbtTagCompound) {
+		if (turtle != null)
+			nbtTagCompound.setIntArray("turtleLastPos", new int[]{turtle.getPosition().posX, turtle.getPosition().posY,
+				turtle.getPosition().posZ});
+	}
 
 	@Override
 	public void setPositionAndRotation2(double x, double y, double z, float pitch, float yaw, int par) {
@@ -83,6 +90,13 @@ public class EntityRidableTurtle extends Entity {
 	}
 
 	private void checkRemove() {
+		if (turtleLastPos != null) {
+			try {
+				TileEntity turtleTile = this.worldObj.getTileEntity(turtleLastPos[0], turtleLastPos[1], turtleLastPos[2]);
+				this.turtle = ReflectionHelper.getTurtle(turtleTile);
+			} catch (Exception ignored) {}
+			turtleLastPos = null;
+		}
 		if (!this.worldObj.isRemote && (turtle == null || !isTurleInWorld())) {
 			this.worldObj.removeEntity(this);
 		}

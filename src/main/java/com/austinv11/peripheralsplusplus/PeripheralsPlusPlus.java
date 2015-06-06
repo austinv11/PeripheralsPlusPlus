@@ -91,8 +91,6 @@ public class PeripheralsPlusPlus {
 			e.printStackTrace();
 		}
 		currentFile = event.getSourceFile();
-		VERSION_CHECKER = new CurseVersionChecker("226687-peripherals", Reference.MOD_NAME+"-"+Reference.VERSION+".jar");
-		doVersionCheck();
 		NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("ppp");
 		NETWORK.registerMessage(AudioPacket.AudioPacketHandler.class, AudioPacket.class, 0, Side.CLIENT);
 		NETWORK.registerMessage(AudioResponsePacket.AudioResponsePacketHandler.class, AudioResponsePacket.class, 1, Side.SERVER);
@@ -119,6 +117,8 @@ public class PeripheralsPlusPlus {
 
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
+		VERSION_CHECKER = new CurseVersionChecker("226687-peripherals", Reference.MOD_NAME+"-"+Reference.VERSION+".jar");
+		doVersionCheck();
 		Config.setWhitelist(Config.dimensionWhitelist);
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 		LOGGER.info("Registering peripherals...");
