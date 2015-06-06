@@ -3,6 +3,7 @@ package com.austinv11.peripheralsplusplus.proxy;
 import com.austinv11.collectiveframework.minecraft.reference.ModIds;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.event.PeripheralContainerHandler;
+import com.austinv11.peripheralsplusplus.event.PocketComputerCraftingHandler;
 import com.austinv11.peripheralsplusplus.event.PropertiesHandler;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteEventHandler;
 import com.austinv11.peripheralsplusplus.satellites.SatelliteTickHandler;
@@ -62,5 +63,6 @@ public class CommonProxy {
 		MinecraftForge.EVENT_BUS.register(new PeripheralContainerHandler());
 		MinecraftForge.EVENT_BUS.register(new TileEntityAntenna());
 		MinecraftForge.EVENT_BUS.register(new PropertiesHandler());
+		MinecraftForge.EVENT_BUS.register(new PocketComputerCraftingHandler());
 	}
 }

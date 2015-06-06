@@ -5,6 +5,7 @@ import dan200.computercraft.api.media.IMediaProvider;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import dan200.computercraft.api.redstone.IBundledRedstoneProvider;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
+import net.minecraft.item.ItemStack;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -17,6 +18,8 @@ import java.util.Map;
  */
 public class ComputerCraftRegistry {
 	
+	public static HashMap<Integer, IPocketComputerUpgrade> pocketUpgrades = new HashMap<Integer, IPocketComputerUpgrade>();
+	public static HashMap<ItemStack, Integer> craftingRecipes = new HashMap<ItemStack, Integer>();
 	private static Field peripheralProviders;
 	private static Field bundledRedstoneProviders;
 	private static Field mediaProviders;
@@ -95,6 +98,20 @@ public class ComputerCraftRegistry {
 			e.printStackTrace();
 		}
 		return new HashMap<Integer, ITurtleUpgrade>();
+	}
+	
+	/**
+	 * Use this to register pocket computer upgrades
+	 * @param upgrade The upgrade
+	 * @throws ComputerCraftNotFoundException
+	 * @throws InvalidUpgradeIDException
+	 */
+	public static void registerPocketUpgrade(IPocketComputerUpgrade upgrade) throws ComputerCraftNotFoundException, InvalidUpgradeIDException {
+		checkCC();
+		if (upgrade.getUpgradeID() == 1 || pocketUpgrades.containsKey(upgrade.getUpgradeID()))
+			throw new InvalidUpgradeIDException(upgrade);
+		pocketUpgrades.put(upgrade.getUpgradeID(), upgrade);
+		craftingRecipes.put(upgrade.getCraftingItem(), upgrade.getUpgradeID());
 	}
 	
 	private static void checkCC() throws ComputerCraftNotFoundException {

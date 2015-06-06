@@ -38,8 +38,43 @@ public class Transformer implements IClassTransformer, Opcodes {
 						InsnList instructions = new InsnList();
 						instructions.add(new VarInsnNode(ALOAD, 7));
 						instructions.add(new VarInsnNode(ALOAD, 3));
-						instructions.add(new MethodInsnNode(INVOKESTATIC, "com/austinv11/peripheralsplusplus/hooks/ComputerCraftHooks", "onPocketComputerCreate", "(Ldan200/computercraft/shared/computer/core/ServerComputer;Lnet/minecraft/item/ItemStack;)V", false));
+						instructions.add(new VarInsnNode(ALOAD, 2));
+						instructions.add(new MethodInsnNode(INVOKESTATIC, "com/austinv11/peripheralsplusplus/hooks/ComputerCraftHooks", "onPocketComputerCreate", "(Ldan200/computercraft/shared/computer/core/ServerComputer;Lnet/minecraft/item/ItemStack;Lnet/minecraft/inventory/IInventory;)V", false));
 						m.instructions.insert(node, instructions);
+						break;
+					}
+				}
+			} else if (m.name.equals("func_77653_i") || m.name.equals("getItemStackDisplayName")) {
+				Iterator<AbstractInsnNode> nodes = m.instructions.iterator();
+				while (nodes.hasNext()) {
+					AbstractInsnNode node = nodes.next();
+					if (node.getOpcode() == ASTORE) {
+						InsnList instructions = new InsnList();
+						instructions.add(new VarInsnNode(ALOAD, 2));
+						instructions.add(new VarInsnNode(ALOAD, 1));
+						instructions.add(new MethodInsnNode(INVOKESTATIC, "com/austinv11/peripheralsplusplus/hooks/ComputerCraftHooks", "getName", "(Ljava/lang/String;Lnet/minecraft/item/ItemStack;)Ljava/lang/String;", false));
+						instructions.add(new InsnNode(ARETURN));
+						m.instructions.insert(node, instructions);
+						break;
+					}
+				}
+			} else if (m.name.equals("func_77663_a") || m.name.equals("onUpdate")) {
+				Iterator<AbstractInsnNode> nodes = m.instructions.iterator();
+				int i = 0;
+				while (nodes.hasNext()) {
+					AbstractInsnNode node = nodes.next();
+					if (node.getOpcode() == ASTORE) {
+						if (i != 1) {
+							i++;
+							continue;
+						}
+						InsnList instructions = new InsnList();
+						instructions.add(new VarInsnNode(ALOAD, 3));
+						instructions.add(new VarInsnNode(ALOAD, 1));
+						instructions.add(new VarInsnNode(ALOAD, 7));
+						instructions.add(new MethodInsnNode(INVOKESTATIC, "com/austinv11/peripheralsplusplus/hooks/ComputerCraftHooks", "update", "(Lnet/minecraft/entity/Entity;Lnet/minecraft/item/ItemStack;Ldan200/computercraft/shared/computer/core/ServerComputer;)V", false));
+						m.instructions.insert(node, instructions);
+						break;
 					}
 				}
 			}
