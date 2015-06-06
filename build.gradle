@@ -80,7 +80,9 @@ processResources
 
 jar {
     manifest {
-        attributes 'FMLAT': 'ppp_at.cfg'
+        attributes 'FMLAT': 'ppp_at.cfg',
+                'FMLCorePlugin': 'com.austinv11.peripheralsplusplus.asm.PeripheralsPlusPlusTransformerPlugin',
+                'FMLCorePluginContainsFMLMod': true
     }
 }
 
