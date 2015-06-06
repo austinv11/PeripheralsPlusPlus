@@ -4,6 +4,7 @@ import com.austinv11.peripheralsplusplus.entities.EntityRidableTurtle;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
+import com.austinv11.peripheralsplusplus.turtles.peripherals.PeripheralRidable;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
@@ -46,7 +47,7 @@ public class TurtleRidable implements ITurtleUpgrade {
 
 	@Override
 	public IPeripheral createPeripheral(ITurtleAccess turtle, TurtleSide side) {
-		return null;
+		return new PeripheralRidable(turtle);
 	}
 
 	@Override
@@ -66,12 +67,9 @@ public class TurtleRidable implements ITurtleUpgrade {
 		}
 		World world = turtle.getWorld();
 		if (!world.isRemote) {
-			AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(
-					turtle.getPosition().posX, turtle.getPosition().posY,
-					turtle.getPosition().posZ, turtle.getPosition().posX + 1,
-					turtle.getPosition().posY + 1, turtle.getPosition().posZ + 1);
-			List entities = world.getEntitiesWithinAABB(EntityRidableTurtle.class, bb);
-			if (entities.size() < 1) {
+			try {
+				getEntity(turtle);
+			} catch (Exception e) {
 				EntityRidableTurtle ridableTurtle = new EntityRidableTurtle(world);
 				ridableTurtle.setPosition(turtle.getPosition().posX + 0.5, turtle.getPosition().posY,
 						turtle.getPosition().posZ + 0.5);
@@ -79,5 +77,21 @@ public class TurtleRidable implements ITurtleUpgrade {
 				world.spawnEntityInWorld(ridableTurtle);
 			}
 		}
+	}
+
+	public static EntityRidableTurtle getEntity(ITurtleAccess turtle) throws Exception {
+		List entities = getNearbyEntities(turtle, 0, 1, EntityRidableTurtle.class);
+		if (entities.size() < 1)
+			throw new Exception("No entity bound to turtle.");
+		return (EntityRidableTurtle) entities.get(0);
+	}
+
+	public static List getNearbyEntities(ITurtleAccess turtle, int radiusStart, int radiusEnd, Class entityType) {
+		World world = turtle.getWorld();
+		AxisAlignedBB bb = AxisAlignedBB.getBoundingBox(
+				turtle.getPosition().posX - radiusStart, turtle.getPosition().posY - radiusStart,
+				turtle.getPosition().posZ - radiusStart, turtle.getPosition().posX + radiusEnd,
+				turtle.getPosition().posY + radiusEnd, turtle.getPosition().posZ + radiusEnd);
+		return world.getEntitiesWithinAABB(entityType, bb);
 	}
 }
