@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
+import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.lua.LuaObjectPlayerInv;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -41,6 +42,7 @@ public class TileEntityPlayerInterface extends MountedTileEntityInventory
             // Check that the specified player has given permission for some sort of editing by putting their permissions card in the player interface
             if (worldObj.getPlayerEntityByName((String) arguments[0]) != null && hasPermissionsCardFor((String) arguments[0]))
             {
+                PeripheralsPlusPlus.LOGGER.info("has permissions card and is not null");
                 return new Object[]{new LuaObjectPlayerInv(worldObj.getPlayerEntityByName((String) arguments[0]), this, getPermCardFor((String) arguments[0]))};
             }
         }
@@ -106,6 +108,7 @@ public class TileEntityPlayerInterface extends MountedTileEntityInventory
                 if (stack.hasTagCompound())
                 {
                     UUID uuid = NBTUtil.func_152459_a(NBTHelper.getCompoundTag(stack, "profile")).getId();
+                    PeripheralsPlusPlus.LOGGER.info(uuid.toString());
                     if (uuid.equals(worldObj.getPlayerEntityByName(name).getGameProfile().getId()))
                     {
                         return stack;

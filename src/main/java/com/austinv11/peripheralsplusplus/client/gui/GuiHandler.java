@@ -23,14 +23,10 @@ public class GuiHandler implements IGuiHandler {
 			return new ContainerSatellite(player, ((ItemSatellite) player.getCurrentEquippedItem().getItem()).getInventoryFromStack(player), 176, 166);
 		} else if (id == Reference.GUIs.INTERACTIVE_SORTER.ordinal()) {
 			return new ContainerInteractiveSorter(player, (IInventory) world.getTileEntity(x, y, z), 176, 166);
-        }
-        else if (id == Reference.GUIs.PLAYERINTERFACE.ordinal())
-        {
+        }else if (id == Reference.GUIs.PLAYERINTERFACE.ordinal()) {
             return new ContainerPlayerInterface(player, (IInventory) world.getTileEntity(x, y, z), 176, 133);
-        }
-        else if (id == Reference.GUIs.PERMCARD.ordinal())
-        {
-            return new ContainerEmpty();
+        }else if (id == Reference.GUIs.PERMCARD.ordinal()) {
+            return null;
         }
         return null;
 	}
@@ -48,13 +44,9 @@ public class GuiHandler implements IGuiHandler {
 			return new GuiHelmet();
 		} else if (id == Reference.GUIs.INTERACTIVE_SORTER.ordinal()) {
 			return new GuiInteractiveSorter(player, world, x, y, z);
-        }
-        else if (id == Reference.GUIs.PLAYERINTERFACE.ordinal())
-        {
+        }else if (id == Reference.GUIs.PLAYERINTERFACE.ordinal()) {
             return new GuiPlayerInterface(player, x, y, z);
-        }
-        else if (id == Reference.GUIs.PERMCARD.ordinal())
-        {
+        }else if (id == Reference.GUIs.PERMCARD.ordinal()) {
             return new GuiPermCard(player.getCurrentEquippedItem());
         }
         return null;

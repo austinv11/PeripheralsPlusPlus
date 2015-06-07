@@ -106,6 +106,7 @@ public class PeripheralsPlusPlus {
 		NETWORK.registerMessage(TextFieldInputEventPacket.TextFieldInputEventPacketHandler.class, TextFieldInputEventPacket.class, 11, Side.SERVER);
 		NETWORK.registerMessage(RidableTurtlePacket.RidableTurtlePacketHandler.class, RidableTurtlePacket.class, 12, Side.SERVER);
 		NETWORK.registerMessage(RobotEventPacket.RobotEventPacketHandler.class, RobotEventPacket.class, 13, Side.CLIENT);
+        NETWORK.registerMessage(PermCardChangePacket.PermCardChangePacketHandler.class, PermCardChangePacket.class, 14, Side.SERVER);
 		proxy.iconManagerInit();
 		proxy.prepareGuis();
 		proxy.registerEvents();

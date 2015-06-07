@@ -22,7 +22,7 @@ public class ContainerPlayerInterface extends Container
     protected void layout(int xSize, int ySize)
     {
         addSlotToContainer(new Slot(inv, 0, 16, 35));
-        addSlotToContainer(new Slot(inv, 1, 34, 35));
+        //addSlotToContainer(new Slot(inv, 1, 34, 35));
 
         int leftCol = (xSize - 162) / 2 + 1;
         for (int playerInvRow = 0; playerInvRow < 3; playerInvRow++)

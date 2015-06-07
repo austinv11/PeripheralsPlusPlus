@@ -67,7 +67,7 @@ public class ItemPermissionsCard extends ItemPPP
             }
 
             player.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.PERMCARD.ordinal(), world, player.serverPosX, player.serverPosY, player.serverPosZ);
-        }
+            }
         return stack;
     }
 
