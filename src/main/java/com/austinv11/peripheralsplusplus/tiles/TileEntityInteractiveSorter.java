@@ -34,6 +34,11 @@ public class TileEntityInteractiveSorter extends MountedTileEntityInventory {
 		super();
 	}
 	
+	@Override
+	public int getSize() {
+		return 1;
+	}
+	
 	public String getName() {
 		return name;
 	}

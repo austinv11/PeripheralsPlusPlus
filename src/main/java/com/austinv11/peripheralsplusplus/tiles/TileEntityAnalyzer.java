@@ -20,10 +20,14 @@ public abstract class TileEntityAnalyzer extends MountedTileEntityInventory {
 
 	public TileEntityAnalyzer() {
 		super();
-		this.size = 1;
 		this.invName = "Analyzer";
 	}
-
+	
+	@Override
+	public int getSize() {
+		return 1;
+	}
+	
 	public String getName() {
 		return name;
 	}
