@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.hooks;
 
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
+import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.computer.core.ServerComputer;
 import net.minecraft.entity.Entity;
@@ -19,6 +20,10 @@ public class ComputerCraftHooks {
 		if (NBTHelper.hasTag(stack, "upgrade")) {
 			int upgrade = (int)NBTHelper.getShort(stack, "upgrade");
 			if (upgrade != 1) { //1 is reserved for wireless modems
+				if (!ComputerCraftRegistry.pocketUpgrades.containsKey(upgrade)) {
+					PeripheralsPlusPlus.LOGGER.warn("A pocket computer upgrade with an ID of "+upgrade+" cannot be found! Removing it...");
+					NBTHelper.removeTag(stack, "upgrade");
+				}
 				IPeripheral peripheral = cachedPeripherals.containsKey(computer.getID()) ?
 						cachedPeripherals.get(computer.getID()) : 
 						ComputerCraftRegistry.pocketUpgrades.get(upgrade).createPeripheral(inventory == null ?
