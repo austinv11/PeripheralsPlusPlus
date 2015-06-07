@@ -21,9 +21,13 @@ public class TileEntityPlayerInterface extends MountedTileEntityInventory {
     public TileEntityPlayerInterface() {
         super();
         this.invName = "PlayerInterface";
-        this.size = 8;
     }
-
+    
+    @Override
+    public int getSize() {
+        return 8;
+    }
+    
     @Override
     public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
         if (method == 0) {
