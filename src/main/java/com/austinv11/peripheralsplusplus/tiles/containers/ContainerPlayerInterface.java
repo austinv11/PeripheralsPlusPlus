@@ -1,10 +1,16 @@
 package com.austinv11.peripheralsplusplus.tiles.containers;
 
+import com.austinv11.collectiveframework.minecraft.inventory.ExclusiveSlot;
+import com.austinv11.peripheralsplusplus.init.ModItems;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class ContainerPlayerInterface extends Container
 {
@@ -22,7 +28,12 @@ public class ContainerPlayerInterface extends Container
     protected void layout(int xSize, int ySize)
     {
         for (int invSlot = 0; invSlot < 8; invSlot++) {
-            addSlotToContainer(new Slot(inv, invSlot, invSlot * 18 + 16, 35));
+            ExclusiveSlot slot = new ExclusiveSlot(inv, invSlot, invSlot * 18 + 16, 35);
+            slot.setWhitelist(true);
+            Set<Item> items = new HashSet<Item>();
+            items.add(ModItems.permCard);
+            slot.setExclusive(items);
+            addSlotToContainer(slot);
         }
 
         int leftCol = (xSize - 162) / 2 + 1;
