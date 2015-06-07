@@ -19,6 +19,7 @@ public class ModItems {
 	public static final ItemPPP nanoSwarm = new ItemNanoSwarm();
 	public static final ItemPPP chunkLoaderUpgrade = new ItemChunkLoaderUpgrade();
     public static final ItemPPP permCard = new ItemPermissionsCard();
+	public static final ItemPPP resupplyUpgrade = new ItemResupplyUpgrade();
 
 	public static void preInit(){
 		GameRegistry.registerItem(feederUpgrade, "feederUpgrade");
@@ -31,6 +32,7 @@ public class ModItems {
 		GameRegistry.registerItem(nanoSwarm, "nanoSwarm");
 		GameRegistry.registerItem(chunkLoaderUpgrade, "chunkLoaderUpgrade");
         GameRegistry.registerItem(permCard, "permissionsCard");
+		GameRegistry.registerItem(resupplyUpgrade, "resupplyUpgrade");
     }
 
 	public static void init() {

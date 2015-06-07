@@ -18,6 +18,7 @@ tile.peripheralsplusplus:turtle.name=Turtle
 tile.peripheralsplusplus:timeSensor.name=Time Sensor
 tile.peripheralsplusplus:interactiveSorter.name=Interactive Sorter
 tile.peripheralsplusplus:playerInterface.name=Player Interface
+tile.peripheralsplusplus:resupplyStation.name=Resupply Station
 
 #Items
 item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade
@@ -31,6 +32,7 @@ item.peripheralsplusplus:smartHelmet.name=Smart Helmet
 item.peripheralsplusplus:nanoSwarm.name=Nano Bot Swarm
 item.peripheralsplusplus:chunkLoaderUpgrade.name=Chunk Loader
 item.peripheralsplusplus:permissionsCard.name=Permissions Card
+item.peripheralsplusplus:resupplyUpgrade.name=Resupply Upgrade
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++
@@ -53,6 +55,7 @@ peripheralsplusplus.turtleUpgrade.garden=Gardening
 peripheralsplusplus.turtleUpgrade.ridable=Ridable
 peripheralsplusplus.turtleUpgrade.dispenser=Flinging
 peripheralsplusplus.turtleUpgrade.loader=Chunky
+peripheralsplusplus.turtleUpgrade.resupply=Supplied
 
 #GUIs
 peripheralsplusplus.inv.analyzer=Analyzer

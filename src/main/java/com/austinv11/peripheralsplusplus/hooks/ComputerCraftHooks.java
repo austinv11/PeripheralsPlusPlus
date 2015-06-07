@@ -23,6 +23,7 @@ public class ComputerCraftHooks {
 				if (!ComputerCraftRegistry.pocketUpgrades.containsKey(upgrade)) {
 					PeripheralsPlusPlus.LOGGER.warn("A pocket computer upgrade with an ID of "+upgrade+" cannot be found! Removing it...");
 					NBTHelper.removeTag(stack, "upgrade");
+					return;
 				}
 				IPeripheral peripheral = cachedPeripherals.containsKey(computer.getID()) ?
 						cachedPeripherals.get(computer.getID()) : 

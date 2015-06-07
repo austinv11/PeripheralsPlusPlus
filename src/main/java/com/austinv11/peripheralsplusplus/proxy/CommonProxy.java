@@ -48,6 +48,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEntityTimeSensor.class, TileEntityTimeSensor.publicName);
 		GameRegistry.registerTileEntity(TileEntityInteractiveSorter.class, TileEntityInteractiveSorter.publicName);
         GameRegistry.registerTileEntity(TileEntityPlayerInterface.class, TileEntityPlayerInterface.publicName);
+		GameRegistry.registerTileEntity(TileEntityResupplyStation.class, TileEntityResupplyStation.publicName);
     }
 
 	public void iconManagerInit() {}

@@ -102,5 +102,9 @@ public class Recipes {
 		if (Config.enableInteractiveSorter)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.interactiveSorter), "dpd", "pep", "dpd", 'd', "gemDiamond", 'p', Blocks.piston, 'e', Items.ender_eye));
         GameRegistry.addShapelessRecipe(new ItemStack(ModItems.permCard), new ItemStack(ModItems.permCard));
+		if (Config.enableResupplyStation) {
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.resupplyUpgrade), "grg", "rer", "grg", 'g', "ingotGold", 'r', "dustRedstone", 'e', Blocks.ender_chest));
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.resupplyStation), "iri", "cuc", "iri", 'i', "ingotIron", 'r', "dustRedstone", 'c', Blocks.chest, 'u', ModItems.resupplyUpgrade));
+		}
     }
 }

@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PeripheralRidable implements IPeripheral {
+public class PeripheralRidable extends MountedPeripheral {
 
 	private final ITurtleAccess turtle;
 
@@ -96,16 +96,6 @@ public class PeripheralRidable implements IPeripheral {
 					((EntityPlayer) ridingEntity).getGameProfile().getId().toString() : ridingEntity.getUniqueID().toString());
 		}
 		return new Object[]{map};
-	}
-
-	@Override
-	public void attach(IComputerAccess computer) {
-
-	}
-
-	@Override
-	public void detach(IComputerAccess computer) {
-
 	}
 
 	@Override

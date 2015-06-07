@@ -81,7 +81,7 @@ public class BlockPlayerInterface extends BlockContainer implements IPeripheralP
         {
             if (te != null)
             {
-                player.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.PLAYERINTERFACE.ordinal(), world, x, y, z);
+                player.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.PLAYER_INTERFACE.ordinal(), world, x, y, z);
             }
         }
         return true;

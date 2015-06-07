@@ -23,11 +23,13 @@ public class GuiHandler implements IGuiHandler {
 			return new ContainerSatellite(player, ((ItemSatellite) player.getCurrentEquippedItem().getItem()).getInventoryFromStack(player), 176, 166);
 		} else if (id == Reference.GUIs.INTERACTIVE_SORTER.ordinal()) {
 			return new ContainerInteractiveSorter(player, (IInventory) world.getTileEntity(x, y, z), 176, 166);
-        }else if (id == Reference.GUIs.PLAYERINTERFACE.ordinal()) {
+        } else if (id == Reference.GUIs.PLAYER_INTERFACE.ordinal()) {
             return new ContainerPlayerInterface(player, (IInventory) world.getTileEntity(x, y, z), 176, 133);
-        }else if (id == Reference.GUIs.PERMCARD.ordinal()) {
+        } else if (id == Reference.GUIs.PERMCARD.ordinal()) {
             return null;
-        }
+        } else if (id == Reference.GUIs.RESUPPLY_STATION.ordinal()) {
+			return new ContainerResupplyStation(player.inventory, (IInventory)world.getTileEntity(x, y, z));
+		}
         return null;
 	}
 
@@ -44,11 +46,13 @@ public class GuiHandler implements IGuiHandler {
 			return new GuiHelmet();
 		} else if (id == Reference.GUIs.INTERACTIVE_SORTER.ordinal()) {
 			return new GuiInteractiveSorter(player, world, x, y, z);
-        }else if (id == Reference.GUIs.PLAYERINTERFACE.ordinal()) {
+        } else if (id == Reference.GUIs.PLAYER_INTERFACE.ordinal()) {
             return new GuiPlayerInterface(player, x, y, z);
-        }else if (id == Reference.GUIs.PERMCARD.ordinal()) {
+        } else if (id == Reference.GUIs.PERMCARD.ordinal()) {
             return new GuiPermCard(player.getCurrentEquippedItem());
-        }
+        } else if (id == Reference.GUIs.RESUPPLY_STATION.ordinal()) {
+			return new GuiResupplyStation(player.inventory, (IInventory)world.getTileEntity(x, y, z));
+		}
         return null;
 	}
 }

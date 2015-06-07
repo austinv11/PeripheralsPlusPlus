@@ -30,6 +30,7 @@ public class ModBlocks {
 	public static final BlockPPP timeSensor = new BlockTimeSensor();
 	public static final BlockContainer interactiveSorter = new BlockInteractiveSorter();
     public static final BlockContainer playerInterface = new BlockPlayerInterface();
+	public static final BlockContainer resupplyStation = new BlockResupplyStation();
 
 	public static void init(){
 		GameRegistry.registerBlock(chatBox, "chatBox");
@@ -61,5 +62,6 @@ public class ModBlocks {
 		GameRegistry.registerBlock(timeSensor, "timeSensor");
 		GameRegistry.registerBlock(interactiveSorter, "interactiveSorter");
         GameRegistry.registerBlock(playerInterface, "playerInterface");
+		GameRegistry.registerBlock(resupplyStation, "resupplyStation");
     }
 }

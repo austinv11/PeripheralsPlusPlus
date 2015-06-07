@@ -19,7 +19,7 @@ import net.minecraftforge.common.ForgeChunkManager;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PeripheralChunkLoader implements IPeripheral {
+public class PeripheralChunkLoader extends MountedPeripheral {
 	
 	private ITurtleAccess turtle;
 	private boolean ticketCreated = false;

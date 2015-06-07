@@ -167,6 +167,9 @@ public class Config {
 	@Description(category = "Interactive Sorter", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableInteractiveSorter = true;
 	
+	@Description(category = "Resupply Station", comment = ENABLE_CONFIG_MESSAGE)
+	public static boolean enableResupplyStation = true;
+	
 	public static void setWhitelist(int[] dims) {
 		for (int i : dims)
 			dimWhitelist.add(i);
