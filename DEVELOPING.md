@@ -31,7 +31,7 @@ Now, just run these following commands (in order!) before doing anything to star
 
 Finally, add the follow VM option to your run configuration for Minecraft:
 
-`-Dfml.coreMods.load=com.austinv11.collectiveframework.minecraft.asm.CollectiveFrameworkEarlyTransformerPlugin`
+`-Dfml.coreMods.load=com.austinv11.collectiveframework.minecraft.asm.CollectiveFrameworkEarlyTransformerPlugin,com.austinv11.peripheralsplusplus.asm.PeripheralsPlusPlusTransformerPlugin`
 
 ### 3. Developing
 
