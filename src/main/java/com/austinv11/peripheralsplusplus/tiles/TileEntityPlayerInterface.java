@@ -3,6 +3,7 @@ package com.austinv11.peripheralsplusplus.tiles;
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.lua.LuaObjectPlayerInv;
+import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -30,34 +31,56 @@ public class TileEntityPlayerInterface extends MountedTileEntityInventory {
     
     @Override
     public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-        if (method == 0) {
-            if (arguments.length != 1) {
-                throw new LuaException("Wrong number of arguments. 1 expected.");
+        if (Config.enablePlayerInterface)
+        {
+            if (method == 0)
+            {
+                if (arguments.length != 1)
+                {
+                    throw new LuaException("Wrong number of arguments. 1 expected.");
+                }
+                if (!(arguments[0] instanceof String))
+                {
+                    throw new LuaException("Bad argument #1 (expected string)");
+                }
+                // Check that the specified player has given permission for some sort of editing by putting their permissions card in the player interface
+                if (worldObj.getPlayerEntityByName((String) arguments[0]) != null && hasPermissionsCardFor((String) arguments[0]))
+                {
+                    PeripheralsPlusPlus.LOGGER.info("has permissions card and is not null");
+                    return new Object[]{new LuaObjectPlayerInv(worldObj.getPlayerEntityByName((String) arguments[0]), this, getPermCardFor((String) arguments[0]))};
+                }
             }
-            if (!(arguments[0] instanceof String)) {
-                throw new LuaException("Bad argument #1 (expected string)");
+            else if (method == 1 || method == 2)
+            {
+                if (arguments.length != 1)
+                {
+                    throw new LuaException("Wrong number of arguments. 1 expected.");
+                }
+                if (!(arguments[0] instanceof String))
+                {
+                    throw new LuaException("Bad argument #1 (expected string)");
+                }
+                if (method == 1)
+                {
+                    outputSide = ForgeDirection.valueOf(((String) arguments[0]).toUpperCase());
+                }
+                else
+                {
+                    inputSide = ForgeDirection.valueOf(((String) arguments[0]).toUpperCase());
+                }
             }
-            // Check that the specified player has given permission for some sort of editing by putting their permissions card in the player interface
-            if (worldObj.getPlayerEntityByName((String) arguments[0]) != null && hasPermissionsCardFor((String) arguments[0])) {
-                PeripheralsPlusPlus.LOGGER.info("has permissions card and is not null");
-                return new Object[]{new LuaObjectPlayerInv(worldObj.getPlayerEntityByName((String) arguments[0]), this, getPermCardFor((String) arguments[0]))};
+            else if (method == 3)
+            {
+                return new Object[]{outputSide.toString()};
             }
-        } else if (method == 1 || method == 2) {
-            if (arguments.length != 1) {
-                throw new LuaException("Wrong number of arguments. 1 expected.");
+            else if (method == 4)
+            {
+                return new Object[]{inputSide.toString()};
             }
-            if (!(arguments[0] instanceof String)) {
-                throw new LuaException("Bad argument #1 (expected string)");
-            }
-            if (method == 1) {
-                outputSide = ForgeDirection.valueOf(((String) arguments[0]).toUpperCase());
-            } else {
-                inputSide = ForgeDirection.valueOf(((String) arguments[0]).toUpperCase());
-            }
-        } else if (method == 3) {
-            return new Object[]{outputSide.toString()};
-        } else if (method == 4) {
-            return new Object[]{inputSide.toString()};
+        }
+        else
+        {
+            throw new LuaException("Player Interfaces have been disabled");
         }
         return new Object[0];
     }

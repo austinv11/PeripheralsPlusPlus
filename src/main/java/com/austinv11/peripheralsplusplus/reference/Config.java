@@ -169,8 +169,11 @@ public class Config {
 	
 	@Description(category = "Resupply Station", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableResupplyStation = true;
-	
-	public static void setWhitelist(int[] dims) {
+
+    @Description(category = "Player Interface", comment = ENABLE_CONFIG_MESSAGE)
+    public static boolean enablePlayerInterface = true;
+
+    public static void setWhitelist(int[] dims) {
 		for (int i : dims)
 			dimWhitelist.add(i);
 	}
