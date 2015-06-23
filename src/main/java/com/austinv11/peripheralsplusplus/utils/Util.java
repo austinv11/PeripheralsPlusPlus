@@ -135,7 +135,7 @@ public class Util {
 		Gson gson = new Gson();
 		String localJson = StringUtils.stringFromList(FileUtils.readAll(file));
 		JSONFileList localFile = gson.fromJson(localJson, JSONFileList.class);
-		return !localFile.ver.equals(json.ver);
+		return localFile != null && !localFile.ver.equals(json.ver);
 	}
 
 	public static Object keyFromVal(HashMap map, Object val) {

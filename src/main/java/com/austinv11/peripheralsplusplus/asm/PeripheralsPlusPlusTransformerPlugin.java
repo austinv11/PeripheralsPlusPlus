@@ -4,6 +4,8 @@ import cpw.mods.fml.relauncher.IFMLLoadingPlugin;
 
 import java.util.Map;
 
+@IFMLLoadingPlugin.TransformerExclusions(value = {"com.austinv11.peripheralsplusplus.asm", "java"})
+@IFMLLoadingPlugin.SortingIndex(value = Integer.MAX_VALUE)
 public class PeripheralsPlusPlusTransformerPlugin implements IFMLLoadingPlugin {
 	
 	@Override
