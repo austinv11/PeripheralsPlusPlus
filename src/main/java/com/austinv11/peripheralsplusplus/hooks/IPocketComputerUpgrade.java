@@ -3,7 +3,9 @@ package com.austinv11.peripheralsplusplus.hooks;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
 
 /**
  * This is like {@link dan200.computercraft.api.turtle.ITurtleUpgrade} but for Pocket Computers
@@ -41,4 +43,14 @@ public interface IPocketComputerUpgrade {
 	 * @param peripheral The peripheral on the pocket computer
 	 */
 	public void update(Entity entity, ItemStack stack, IPeripheral peripheral);
+	
+	/**
+	 * Called when the pocket computer is right clicked on something
+	 * @param world The world the computer is in
+	 * @param player The player right clicking
+	 * @param stack The stack representing the computer
+	 * @param peripheral The peripheral on the computer
+	 * @return True to stop the gui from opening or vice versa
+	 */
+	public boolean onRightClick(World world, EntityPlayer player, ItemStack stack, IPeripheral peripheral);
 }

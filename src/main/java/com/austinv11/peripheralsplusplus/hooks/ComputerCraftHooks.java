@@ -2,13 +2,19 @@ package com.austinv11.peripheralsplusplus.hooks;
 
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
+import cpw.mods.fml.common.eventhandler.Event;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.computer.core.ServerComputer;
+import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.StatCollector;
+import net.minecraft.world.World;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.HashMap;
 
@@ -57,5 +63,25 @@ public class ComputerCraftHooks {
 				ComputerCraftRegistry.pocketUpgrades.get(upgrade).update(entity, stack, cachedPeripherals.get(upgrade));
 			}
 		}
+	}
+	
+	@SubscribeEvent
+	public void onPlayerInteract(PlayerInteractEvent event) {
+		if (!event.isCanceled())
+			if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR || event.action == PlayerInteractEvent.Action.RIGHT_CLICK_BLOCK)
+				if (event.useItem != Event.Result.DENY)
+					if (event.entityPlayer.getCurrentEquippedItem() != null)
+						if (event.entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemPocketComputer)
+							event.setCanceled(rightClick(event.world, event.entityPlayer, event.entityPlayer.getCurrentEquippedItem()));
+	}
+	
+	public static boolean rightClick(World world, EntityPlayer player, ItemStack stack) {
+		if (NBTHelper.hasTag(stack, "upgrade")) {
+			int upgrade = (int)NBTHelper.getShort(stack, "upgrade");
+			if (upgrade != 1) { //1 is reserved for wireless modems
+				return ComputerCraftRegistry.pocketUpgrades.get(upgrade).onRightClick(world, player, stack, cachedPeripherals.get(upgrade));
+			}
+		}
+		return false;
 	}
 }
