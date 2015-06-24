@@ -84,6 +84,12 @@ jar {
                 'FMLCorePlugin': 'com.austinv11.peripheralsplusplus.asm.PeripheralsPlusPlusTransformerPlugin',
                 'FMLCorePluginContainsFMLMod': true
     }
+    from zipTree("libs/cmulex.jar")
+    from zipTree("libs/en_us.jar")
+    from zipTree("libs/freetts.jar")
+    from zipTree("libs/freetts-jsapi10.jar")
+    from zipTree("libs/mbrola.jar")
+    from zipTree("libs/cmu_us_kal.jar")
 }
 
 idea { 

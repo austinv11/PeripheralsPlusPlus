@@ -20,7 +20,6 @@ public class AudioPacket implements IMessage {
 	public String lang;
 	public String text;
 	public int x,y,z;
-	//public World world;
 	public TurtleSide side;
 
 	public AudioPacket() {}
@@ -31,7 +30,6 @@ public class AudioPacket implements IMessage {
 		this.x = x;
 		this.y = y;
 		this.z = z;
-		//this.world = MinecraftServer.getServer().worldServerForDimension(world);
 		this.side = side;
 	}
 
@@ -43,7 +41,6 @@ public class AudioPacket implements IMessage {
 		x = tag.getInteger("x");
 		y = tag.getInteger("y");
 		z = tag.getInteger("z");
-		//world  = Minecraft.getMinecraft().theWorld;
 		side = tag.getString("side").equals("null") ? null : TurtleSide.valueOf(tag.getString("side"));
 	}
 

@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.network.AudioPacket;
+import com.austinv11.peripheralsplusplus.network.SynthPacket;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
 import com.austinv11.peripheralsplusplus.utils.TranslateUtils;
@@ -83,7 +84,7 @@ public class TileEntitySpeaker extends MountedTileEntity {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[]{"speak"/*text, [range, [lang]]*/};
+		return new String[]{"speak", "synthesize" /*text, [range, [voice, [pitch, [pitchRange, [pitchShift, [rate, [volume, [wait]]]]]]]]*/};
 	}
 
 	@Override
@@ -91,15 +92,15 @@ public class TileEntitySpeaker extends MountedTileEntity {
 		if (!Config.enableSpeaker)
 			throw new LuaException("Speakers have been disabled");
 		if (method == 0) {
-//			try {
 			if (!(arguments.length > 0) || !(arguments[0] instanceof String))
 				throw new LuaException("Bad argument #1 (expected string)");
 			if (arguments.length > 1 && !(arguments[1] instanceof Double))
-				throw new LuaException("Bad argument #2 (expected string)");
+				throw new LuaException("Bad argument #2 (expected number)");
 			if (arguments.length > 2 && !(arguments[2] instanceof String))
-				throw new LuaException("Bad argument #3 (expected boolean)");
+				throw new LuaException("Bad argument #3 (expected string)");
 			if (arguments.length > 3 && !(arguments[3] instanceof Boolean))
 				throw new LuaException("Bad argument #4 (expected boolean");
+			
 			String lang = null;
 			if (arguments.length > 2)
 				if (TranslateUtils.isPrefix((String) arguments[2]))
@@ -130,9 +131,46 @@ public class TileEntitySpeaker extends MountedTileEntity {
 			if (arguments.length > 3 && (Boolean) arguments[3])
 				context.pullEvent("speechComplete");
 			return new Object[]{lastMessage, lang};
-//			}catch (Exception e) {
-//				e.printStackTrace();
-//			}
+		} else if (method == 1) {
+			if (!(arguments.length > 0) || !(arguments[0] instanceof String))
+				throw new LuaException("Bad argument #1 (expected string)");
+			if (arguments.length > 1 && !(arguments[1] instanceof Double))
+				throw new LuaException("Bad argument #2 (expected number)");
+			if (arguments.length > 2 && !(arguments[2] instanceof String))
+				throw new LuaException("Bad argument #3 (expected string)");
+			if (arguments.length > 3 && !(arguments[3] instanceof Double))
+				throw new LuaException("Bad argument #4 (expected number)");
+			if (arguments.length > 4 && !(arguments[4] instanceof Double))
+				throw new LuaException("Bad argument #5 (expected number)");
+			if (arguments.length > 5 && !(arguments[5] instanceof Double))
+				throw new LuaException("Bad argument #6 (expected number)");
+			if (arguments.length > 6 && !(arguments[6] instanceof Double))
+				throw new LuaException("Bad argument #7 (expected number)");
+			if (arguments.length > 7 && !(arguments[7] instanceof Double))
+				throw new LuaException("Bad argument #8 (expected number)");
+			if (arguments.length > 8 && !(arguments[8] instanceof Boolean))
+				throw new LuaException("Bad argument #9 (expected boolean");
+			
+			String text = (String) arguments[0];
+			double range;
+			if (Config.speechRange < 0)
+				range = Double.MAX_VALUE;
+			else
+				range = Config.speechRange;
+			if (arguments.length > 1)
+				range = (Double) arguments[1];
+			String voice = arguments.length > 2 ? (String) arguments[2] : "kevin16";
+			Float pitch = arguments.length > 3 ? ((Double)arguments[3]).floatValue() : null;
+			Float pitchRange = arguments.length > 4 ? ((Double)arguments[4]).floatValue() : null;
+			Float pitchShift = arguments.length > 5 ? ((Double)arguments[5]).floatValue() : null;
+			Float rate = arguments.length > 6 ? ((Double)arguments[6]).floatValue() : null;
+			Float volume = arguments.length > 7 ? ((Double)arguments[7]).floatValue() : null;
+			
+			PeripheralsPlusPlus.NETWORK.sendToAllAround(new SynthPacket(text, voice, pitch, pitchRange, pitchShift, rate, volume, xCoord, yCoord, zCoord, id, side), new NetworkRegistry.TargetPoint(id, xCoord, yCoord, zCoord, range));
+			
+			if (arguments.length > 8 && (Boolean) arguments[8])
+				context.pullEvent("synthComplete");
+			return new Object[]{text};
 		}
 		return new Object[0];
 	}
@@ -157,7 +195,10 @@ public class TileEntitySpeaker extends MountedTileEntity {
 	public void onSpeechCompletion(String text, String lang) {
 		for (IComputerAccess computer : computers.keySet())
 			if (eventTicker == 0 || !lastMessage.equals(text)) {
-				computer.queueEvent("speechComplete", new Object[]{text, lang});
+				if (lang != null)
+					computer.queueEvent("speechComplete", new Object[]{text, lang});
+				else
+					computer.queueEvent("synthComplete", new Object[]{text});
 				eventSubticker = TICKER_INTERVAL;
 				eventTicker++;
 			}
