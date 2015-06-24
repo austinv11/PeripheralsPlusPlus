@@ -20,6 +20,7 @@ public class ModItems {
 	public static final ItemPPP chunkLoaderUpgrade = new ItemChunkLoaderUpgrade();
     public static final ItemPPP permCard = new ItemPermissionsCard();
 	public static final ItemPPP resupplyUpgrade = new ItemResupplyUpgrade();
+	public static final ItemPPP motionDetector = new ItemMotionDetector();
 
 	public static void preInit(){
 		GameRegistry.registerItem(feederUpgrade, "feederUpgrade");
@@ -31,8 +32,9 @@ public class ModItems {
 		GameRegistry.registerItem(positionalUnit, "positionalUnit");
 		GameRegistry.registerItem(nanoSwarm, "nanoSwarm");
 		GameRegistry.registerItem(chunkLoaderUpgrade, "chunkLoaderUpgrade");
-        GameRegistry.registerItem(permCard, "permissionsCard");
+        GameRegistry.registerItem(permCard, "permCard");
 		GameRegistry.registerItem(resupplyUpgrade, "resupplyUpgrade");
+		GameRegistry.registerItem(motionDetector, "motionDetector");
     }
 
 	public static void init() {

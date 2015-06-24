@@ -110,5 +110,7 @@ public class Recipes {
             GameRegistry.addShapedRecipe(new ItemStack(ModBlocks.playerInterface), "ipi", "ini", "imi", 'i', new ItemStack(Items.iron_ingot), 'p', new ItemStack(ModItems.permCard), 'n', new ItemStack(Items.nether_star), 'm', new ItemStack(GameRegistry.findBlock("ComputerCraft", "CC-Peripheral"), 1, 1));
         if (Config.enablePlayerInterface)
             GameRegistry.addShapelessRecipe(new ItemStack(ModItems.permCard), new ItemStack(Items.emerald), new ItemStack(Items.iron_ingot), new ItemStack(Items.redstone));
-    }
+		if (Config.enableMotionDetector)
+			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.motionDetector), "srs", "rer", "srs", 's', "stone", 'r', "dustRedstone", 'e', Items.ender_pearl));
+	}
 }

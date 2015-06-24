@@ -15,6 +15,7 @@ import com.austinv11.peripheralsplusplus.entities.EntityNanoBotSwarm;
 import com.austinv11.peripheralsplusplus.entities.EntityRidableTurtle;
 import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.hooks.ComputerCraftNotFoundException;
+import com.austinv11.peripheralsplusplus.hooks.ComputerCraftRegistry;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
@@ -22,6 +23,7 @@ import com.austinv11.peripheralsplusplus.items.ItemNanoSwarm;
 import com.austinv11.peripheralsplusplus.items.SatelliteUpgradeBase;
 import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.network.*;
+import com.austinv11.peripheralsplusplus.pocket.PocketMotionDetector;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
@@ -177,6 +179,12 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleDispenser());
 		registerUpgrade(new TurtleChunkLoader());
 		registerUpgrade(new TurtleResupply());
+		LOGGER.info("Registering pocket computer upgrades...");
+		try {
+			ComputerCraftRegistry.registerPocketUpgrade(new PocketMotionDetector());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		LOGGER.info("All peripherals and turtle upgrades registered!");
 //		LOGGER.info("Registering satellite upgrades...");
 //		PeripheralsPlusPlusAPI.registerSatelliteUpgrade(new GPSUpgrade());

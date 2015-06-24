@@ -59,8 +59,10 @@ public class ComputerCraftHooks {
 	public static void update(Entity entity, ItemStack stack, ServerComputer computer) {
 		if (NBTHelper.hasTag(stack, "upgrade")) {
 			int upgrade = (int)NBTHelper.getShort(stack, "upgrade");
+			if (cachedPeripherals.get(computer.getID()) == null)
+				return;
 			if (upgrade != 1) { //1 is reserved for wireless modems
-				ComputerCraftRegistry.pocketUpgrades.get(upgrade).update(entity, stack, cachedPeripherals.get(upgrade));
+				ComputerCraftRegistry.pocketUpgrades.get(upgrade).update(entity, stack, cachedPeripherals.get(computer.getID()));
 			}
 		}
 	}
@@ -79,7 +81,7 @@ public class ComputerCraftHooks {
 		if (NBTHelper.hasTag(stack, "upgrade")) {
 			int upgrade = (int)NBTHelper.getShort(stack, "upgrade");
 			if (upgrade != 1) { //1 is reserved for wireless modems
-				return ComputerCraftRegistry.pocketUpgrades.get(upgrade).onRightClick(world, player, stack, cachedPeripherals.get(upgrade));
+				return ComputerCraftRegistry.pocketUpgrades.get(upgrade).onRightClick(world, player, stack, cachedPeripherals.get(NBTHelper.getInt(stack, "computerID")));
 			}
 		}
 		return false;

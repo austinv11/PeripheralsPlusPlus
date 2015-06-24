@@ -172,6 +172,9 @@ public class Config {
 
     @Description(category = "Player Interface", comment = ENABLE_CONFIG_MESSAGE)
     public static boolean enablePlayerInterface = true;
+	
+	@Description(category = "Motion Detector", comment = ENABLE_CONFIG_MESSAGE)
+	public static boolean enableMotionDetector = true;
 
     public static void setWhitelist(int[] dims) {
 		for (int i : dims)

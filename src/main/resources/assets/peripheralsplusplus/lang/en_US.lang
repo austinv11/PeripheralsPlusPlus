@@ -33,6 +33,7 @@ item.peripheralsplusplus:nanoSwarm.name=Nano Bot Swarm
 item.peripheralsplusplus:chunkLoaderUpgrade.name=Chunk Loader
 item.peripheralsplusplus:permissionsCard.name=Permissions Card
 item.peripheralsplusplus:resupplyUpgrade.name=Resupply Upgrade
+item.peripheralsplusplus:motionDetector.name=Motion Detector
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++
@@ -126,3 +127,6 @@ death.attack.peripheralsplusplus.nanobot=%1$s was destroyed from the inside out 
 
 #NEI
 peripheralsplusplus.nei.turtleRecipeHandler.name=Turtles
+
+#Pocket Computer Upgrades
+peripheralsplusplus.pocketUpgrade.motionDetector=Motion Sensing
