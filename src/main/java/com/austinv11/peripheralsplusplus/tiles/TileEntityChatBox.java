@@ -167,8 +167,8 @@ public class TileEntityChatBox extends MountedTileEntity {
 				String message;
 				if (Config.logCoords) {
 					message = ChatUtil.getCoordsPrefix(this) + (String) arguments[1];
-				}else if (!Config.logCoords && arguments.length > 3) {
-					message = "[" + (String) arguments[3] + "] " + (String) arguments[1];
+				}else if (!Config.logCoords && arguments.length > 4) {
+					message = "[" + (String) arguments[4] + "] " + (String) arguments[1];
 				}else {
 					message = "[@] " + (String) arguments[1];
 				}
