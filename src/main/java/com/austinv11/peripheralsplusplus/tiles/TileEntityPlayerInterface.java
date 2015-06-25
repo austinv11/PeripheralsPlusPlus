@@ -15,7 +15,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 import java.util.UUID;
 
 public class TileEntityPlayerInterface extends MountedTileEntityInventory {
-    public static final String publicName = "playerInterface";
+    public static final String publicName = "playerInterfacePPP";
     public ForgeDirection outputSide;
     public ForgeDirection inputSide;
 
