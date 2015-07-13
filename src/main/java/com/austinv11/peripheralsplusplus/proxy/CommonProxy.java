@@ -2,9 +2,9 @@ package com.austinv11.peripheralsplusplus.proxy;
 
 import com.austinv11.collectiveframework.minecraft.reference.ModIds;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
-import com.austinv11.peripheralsplusplus.event.PeripheralContainerHandler;
-import com.austinv11.peripheralsplusplus.event.PocketComputerCraftingHandler;
-import com.austinv11.peripheralsplusplus.event.PropertiesHandler;
+import com.austinv11.peripheralsplusplus.event.handler.PeripheralContainerHandler;
+import com.austinv11.peripheralsplusplus.event.handler.PocketComputerCraftingHandler;
+import com.austinv11.peripheralsplusplus.event.handler.PropertiesHandler;
 import com.austinv11.peripheralsplusplus.hooks.ComputerCraftHooks;
 import com.austinv11.peripheralsplusplus.tiles.*;
 import com.austinv11.peripheralsplusplus.villagers.TradeHandler;

@@ -1,4 +1,4 @@
-package com.austinv11.peripheralsplusplus.event;
+package com.austinv11.peripheralsplusplus.event.handler;
 
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;

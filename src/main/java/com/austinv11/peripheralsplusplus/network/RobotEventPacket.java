@@ -1,6 +1,6 @@
 package com.austinv11.peripheralsplusplus.network;
 
-import com.austinv11.peripheralsplusplus.event.RobotHandler;
+import com.austinv11.peripheralsplusplus.event.handler.RobotHandler;
 import cpw.mods.fml.common.network.ByteBufUtils;
 import cpw.mods.fml.common.network.simpleimpl.IMessage;
 import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;

@@ -1,4 +1,4 @@
-package com.austinv11.peripheralsplusplus.event;
+package com.austinv11.peripheralsplusplus.event.handler;
 
 import com.austinv11.peripheralsplusplus.network.RobotEventPacket;
 import com.austinv11.peripheralsplusplus.reference.Config;
