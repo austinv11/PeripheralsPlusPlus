@@ -6,21 +6,18 @@ import com.austinv11.collectiveframework.minecraft.logging.Logger;
 import com.austinv11.collectiveframework.minecraft.reference.ModIds;
 import com.austinv11.collectiveframework.minecraft.utils.CurseVersionChecker;
 import com.austinv11.collectiveframework.multithreading.SimpleRunnable;
-import com.austinv11.peripheralsplusplus.api.satellites.upgrades.ISatelliteUpgrade;
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
 import com.austinv11.peripheralsplusplus.commands.CommandUpdate;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.entities.EntityNanoBotSwarm;
 import com.austinv11.peripheralsplusplus.entities.EntityRidableTurtle;
-import com.austinv11.peripheralsplusplus.entities.EntityRocket;
 import com.austinv11.peripheralsplusplus.hooks.ComputerCraftNotFoundException;
 import com.austinv11.peripheralsplusplus.hooks.ComputerCraftRegistry;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
 import com.austinv11.peripheralsplusplus.items.ItemNanoSwarm;
-import com.austinv11.peripheralsplusplus.items.SatelliteUpgradeBase;
 import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.network.*;
 import com.austinv11.peripheralsplusplus.pocket.PocketMotionDetector;
@@ -49,23 +46,12 @@ import net.minecraftforge.common.ForgeChunkManager;
 import net.minecraftforge.common.MinecraftForge;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 @Mod(modid= Reference.MOD_ID,name = Reference.MOD_NAME,version = Reference.VERSION/*, guiFactory = Reference.GUI_FACTORY_CLASS*/, dependencies = "after:CollectiveFramework")
 public class PeripheralsPlusPlus {
 
 	public static int VILLAGER_ID = 1337; //:P
-
-	public static final List<SatelliteUpgradeBase> SATELLITE_UPGRADE_REGISTRY = new ArrayList<SatelliteUpgradeBase>();
-	public static final List<Integer> SATELLITE_UPGRADE_ID_REGISTRY = new ArrayList<Integer>();
-
-	/**
-	 * Object containing all registered upgrades, the key is the upgrade id
-	 */
-	public static final HashMap<Integer, ISatelliteUpgrade> UPGRADE_REGISTRY = new HashMap<Integer, ISatelliteUpgrade>();
-
+	
 	public static SimpleNetworkWrapper NETWORK;
 
 	@Mod.Instance(Reference.MOD_ID)
@@ -96,8 +82,6 @@ public class PeripheralsPlusPlus {
 		NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("ppp");
 		NETWORK.registerMessage(AudioPacket.AudioPacketHandler.class, AudioPacket.class, 0, Side.CLIENT);
 		NETWORK.registerMessage(AudioResponsePacket.AudioResponsePacketHandler.class, AudioResponsePacket.class, 1, Side.SERVER);
-		NETWORK.registerMessage(RocketCountdownPacket.RocketCountdownPacketHandler.class, RocketCountdownPacket.class, 2, Side.CLIENT);
-		NETWORK.registerMessage(RocketLaunchPacket.RocketLaunchPacketHandler.class, RocketLaunchPacket.class, 3, Side.SERVER);
 		NETWORK.registerMessage(ChatPacket.ChatPacketHandler.class, ChatPacket.class, 4, Side.CLIENT);
 		NETWORK.registerMessage(ScaleRequestPacket.ScaleRequestPacketHandler.class, ScaleRequestPacket.class, 5, Side.CLIENT);
 		NETWORK.registerMessage(ScaleRequestResponsePacket.ScaleRequestResponsePacketHandler.class, ScaleRequestResponsePacket.class, 6, Side.SERVER);
@@ -124,7 +108,6 @@ public class PeripheralsPlusPlus {
 	public void init(FMLInitializationEvent event) {
 		VERSION_CHECKER = new CurseVersionChecker("226687-peripherals", Reference.MOD_NAME+"-"+Reference.VERSION+".jar");
 		doVersionCheck();
-		Config.setWhitelist(Config.dimensionWhitelist);
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 		LOGGER.info("Registering peripherals...");
 		proxy.registerTileEntities();
@@ -186,22 +169,15 @@ public class PeripheralsPlusPlus {
 			e.printStackTrace();
 		}
 		LOGGER.info("All peripherals and turtle upgrades registered!");
-//		LOGGER.info("Registering satellite upgrades...");
-//		PeripheralsPlusPlusAPI.registerSatelliteUpgrade(new GPSUpgrade());
-//		LOGGER.info("All satellite upgrades registered!");
 		proxy.registerRenderers();
-//		EntityRegistry.registerGlobalEntityID(EntityRocket.class, "Rocket", EntityRegistry.findGlobalUniqueEntityId());
-		EntityRegistry.registerModEntity(EntityRocket.class, "Rocket", 0, instance, 64, 20, true);
 		if (Config.enableVillagers)
 			proxy.setupVillagers();
-//		EntityRegistry.registerGlobalEntityID(EntityRidableTurtle.class, "Ridable Turtle", EntityRegistry.findGlobalUniqueEntityId());
 		EntityRegistry.registerModEntity(EntityRidableTurtle.class, "Ridable Turtle", 1, instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntityNanoBotSwarm.class, "NanoBotSwarm", 2, instance, 64, 20, true);
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) throws ComputerCraftNotFoundException {
-		ModItems.init();//Inits satellite upgrades
 		Recipes.init();
 		BlockDispenser.dispenseBehaviorRegistry.putObject(ModItems.nanoSwarm, new ItemNanoSwarm.BehaviorNanoSwarm());
 		ForgeChunkManager.setForcedChunkLoadingCallback(this, new PeripheralChunkLoader.TurtleChunkLoadingCallback());

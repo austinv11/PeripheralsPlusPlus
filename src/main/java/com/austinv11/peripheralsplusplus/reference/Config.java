@@ -2,10 +2,7 @@ package com.austinv11.peripheralsplusplus.reference;
 
 import com.austinv11.collectiveframework.minecraft.config.Description;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@com.austinv11.collectiveframework.minecraft.config.Config(fileName = "PeripheralsPlusPlus.cfg", exclude = {"dimWhitelist", "enableAPIs", "ENABLE_CONFIG_MESSAGE"})
+@com.austinv11.collectiveframework.minecraft.config.Config(fileName = "PeripheralsPlusPlus.cfg", exclude = {"enableAPIs", "ENABLE_CONFIG_MESSAGE"})
 public class Config {
 	
 	private static final String ENABLE_CONFIG_MESSAGE = "If disabled, the recipe will be disabled and the current peripherals would cease to work";
@@ -75,13 +72,6 @@ public class Config {
 	
 	@Description(category = "Navigational Turtle", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableFeederTurtle = true;
-	
-	@Description(category = "Satellites", comment = ENABLE_CONFIG_MESSAGE)
-	public static boolean enableSatellites = false;
-	
-	@Description(category = "Satellites", comment = "Whitelist for dimensions that could have a satellite launch in, input dimension ids (e.g. 0 is the overworld)")
-	public static int[] dimensionWhitelist = new int[]{0};
-	public static List<Integer> dimWhitelist = new ArrayList<Integer>();
 	
 	@Description(category = "Villagers", comment = "Whether to enable villagers from this mod")
 	public static boolean enableVillagers = true;
@@ -175,9 +165,4 @@ public class Config {
 	
 	@Description(category = "Motion Detector", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableMotionDetector = true;
-
-    public static void setWhitelist(int[] dims) {
-		for (int i : dims)
-			dimWhitelist.add(i);
-	}
 }
