@@ -21,6 +21,7 @@ import com.austinv11.peripheralsplusplus.items.ItemNanoSwarm;
 import com.austinv11.peripheralsplusplus.mount.DynamicMount;
 import com.austinv11.peripheralsplusplus.network.*;
 import com.austinv11.peripheralsplusplus.pocket.PocketMotionDetector;
+import com.austinv11.peripheralsplusplus.pocket.PocketPeripheralContainer;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
@@ -165,6 +166,7 @@ public class PeripheralsPlusPlus {
 		LOGGER.info("Registering pocket computer upgrades...");
 		try {
 			ComputerCraftRegistry.registerPocketUpgrade(new PocketMotionDetector());
+			ComputerCraftRegistry.registerPocketUpgrade(new PocketPeripheralContainer());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

@@ -10,6 +10,7 @@ public class Reference {
 	
 	//Pocket Computer Upgrades
 	public static final int MOTION_DETECTOR = 2;
+	public static final int PERIPHERAL_CONTAINER = 3;
 	
 	//Turtle Upgrades
 	public static final int CHAT_BOX_UPGRADE = 101;

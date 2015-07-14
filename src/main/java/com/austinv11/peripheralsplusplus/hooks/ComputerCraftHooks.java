@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.hooks;
 
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
+import com.austinv11.peripheralsplusplus.pocket.PocketPeripheralContainer;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import dan200.computercraft.api.peripheral.IPeripheral;
@@ -12,8 +13,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.StatCollector;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 import java.util.HashMap;
@@ -21,6 +24,7 @@ import java.util.HashMap;
 public class ComputerCraftHooks {
 	
 	public static HashMap<Integer, IPeripheral> cachedPeripherals = new HashMap<Integer, IPeripheral>();
+	public static HashMap<Integer,  HashMap<Integer, IPeripheral>> cachedExtraPeripherals = new HashMap<Integer,  HashMap<Integer, IPeripheral>>();
 	
 	public static void onPocketComputerCreate(ServerComputer computer, ItemStack stack, IInventory inventory) {
 		if (NBTHelper.hasTag(stack, "upgrade")) {
@@ -37,6 +41,20 @@ public class ComputerCraftHooks {
 						null : ((InventoryPlayer)inventory).player, stack);
 				cachedPeripherals.put(computer.getID(), peripheral);
 				computer.setPeripheral(2, peripheral);
+				if (ComputerCraftRegistry.pocketUpgrades.get(upgrade) instanceof PocketPeripheralContainer && 
+						NBTHelper.hasTag(stack, "upgrades")) {
+					if (!cachedExtraPeripherals.containsKey(computer.getID()))
+						cachedExtraPeripherals.put(computer.getID(), new  HashMap<Integer, IPeripheral>());
+					NBTTagList list = NBTHelper.getList(stack, "upgrades", Constants.NBT.TAG_FLOAT);
+					HashMap<Integer, IPeripheral> peripherals = cachedExtraPeripherals.get(computer.getID());
+					for (int i = 0; i < list.tagCount(); i++) {
+						int id = (int)list.func_150308_e(i);
+						if (!peripherals.containsKey(id)) {
+							peripherals.put(id,ComputerCraftRegistry.pocketUpgrades.get(id).createPeripheral(
+									inventory == null ? null : ((InventoryPlayer)inventory).player, stack));
+						}
+					}
+				}
 			}
 		}
 	}
