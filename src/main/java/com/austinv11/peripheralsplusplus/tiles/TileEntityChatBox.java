@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ChatUtil;
+import com.austinv11.peripheralsplusplus.utils.Util;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -10,6 +11,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
@@ -86,6 +88,11 @@ public class TileEntityChatBox extends MountedTileEntity {
 		}
 		for (IComputerAccess computer : computers.keySet())
 			computer.queueEvent("death", new Object[] {player.getDisplayName(), killer, source.damageType});
+	}
+	
+	public void onCommand(EntityPlayerMP player, String message) {
+		for (IComputerAccess computer : computers.keySet())
+			computer.queueEvent("command", new Object[] {player.getDisplayName(), Util.arrayToMap(message.split(" "))});
 	}
 
 	@Override
@@ -197,7 +204,7 @@ public class TileEntityChatBox extends MountedTileEntity {
 	public void attach(IComputerAccess computer) {
 		//Logger.info("yay!");
 		if (computers.size() == 0)
-			ChatListener.chatBoxMap.put(this,true);
+			ChatListener.chatBoxMap.put(this, true);
 		computers.put(computer, true);
 		super.attach(computer);
 	}
@@ -221,6 +228,14 @@ public class TileEntityChatBox extends MountedTileEntity {
 		@SubscribeEvent
 		public void onChat(ServerChatEvent event) {
 			if (Config.enableChatBox) {
+				String commandPrefix = Config.chatboxCommandPrefix.trim();
+				if (!commandPrefix.equals("") && !commandPrefix.equals(" ")) {
+					event.setCanceled(true);
+					for (TileEntityChatBox box : chatBoxMap.keySet()) {
+						if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord, box.yCoord, box.zCoord).distanceTo(event.player.getPosition(1.0f)) <= Config.readRange)
+							box.onCommand(event.player, event.message);
+					}
+				}
 				for (TileEntityChatBox box : chatBoxMap.keySet()) {
 					if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord,box.yCoord,box.zCoord).distanceTo(event.player.getPosition(1.0f)) <= Config.readRange)
 						box.onChat(event.player, event.message);

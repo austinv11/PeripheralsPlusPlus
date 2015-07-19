@@ -25,6 +25,9 @@ public class Config {
 	@Description(category = "Chatbox", comment = "Allow the Chat Box peripheral to send messages with unlimited vertical distance, but only if so the program chooses")
 	public static boolean allowUnlimitedVertical = true;
 	
+	@Description(category = "Chatbox", comment = "If the character combination is detected at the beginning of a chat message, it will not be shown in chat-like a command and it'll only be accessible by chatboxes, disable it with a space")
+	public static String chatboxCommandPrefix = "\\";
+	
 	@Description(category = "Player Sensor", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enablePlayerSensor = true;
 	
