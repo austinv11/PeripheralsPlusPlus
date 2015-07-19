@@ -12,7 +12,9 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.shared.pocket.items.ItemPocketComputer;
 import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public class PeripheralMotionDetector extends MountedPeripheral {
@@ -98,7 +100,17 @@ public class PeripheralMotionDetector extends MountedPeripheral {
 			if (event.entityPlayer.getCurrentEquippedItem() != null)
 				if (event.entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemPocketComputer)
 					if (NBTHelper.hasTag(event.entityPlayer.getCurrentEquippedItem(), "upgrade")) {
-						int upgrade = (int)NBTHelper.getShort(event.entityPlayer.getCurrentEquippedItem(), "upgrade");
+						int upgrade = -1;
+						if (NBTHelper.hasTag(event.entityPlayer.getCurrentEquippedItem(), "upgrades")) {
+							NBTTagList list = NBTHelper.getList(event.entityPlayer.getCurrentEquippedItem(), "upgrades", Constants.NBT.TAG_FLOAT);
+							for (int i = 0; i < list.tagCount(); i++)
+								if ((int)list.func_150308_e(i) == Reference.MOTION_DETECTOR) {
+									upgrade = (int) list.func_150308_e(i);
+									break;
+								}
+						} else {
+							upgrade = (int)NBTHelper.getShort(event.entityPlayer.getCurrentEquippedItem(), "upgrade");
+						}
 						if (upgrade == Reference.MOTION_DETECTOR) {
 							if (event.action == PlayerInteractEvent.Action.LEFT_CLICK_BLOCK)
 								computer.queueEvent("blockHit", new Object[0]);
