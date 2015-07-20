@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.recipe;
 
 import com.austinv11.collectiveframework.minecraft.utils.Colors;
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
+import com.austinv11.collectiveframework.utils.ArrayUtils;
 import com.austinv11.peripheralsplusplus.blocks.BlockPeripheralContainer;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Config;
@@ -23,24 +24,28 @@ import java.util.Set;
 
 public class ContainerRecipe implements IRecipe {
 	
+	private static Block[] blacklist = new Block[]{ModBlocks.antenna};
+	
 	@Override
-	public boolean matches(InventoryCrafting p_77569_1_, World p_77569_2_) {
+	public boolean matches(InventoryCrafting craftingInventory, World world) {
 		boolean hasContainer = false;
 		boolean hasPeripheral = false;
 		int numOfPeripherals = 0;
 		int numOfContained = 0;
 		ItemStack container = new ItemStack(ModBlocks.peripheralContainer);
-		for (int i = 0; i < p_77569_1_.getSizeInventory(); i++)
-			if (p_77569_1_.getStackInSlot(i) != null) {
-				if (!(p_77569_1_.getStackInSlot(i).getItem() instanceof ItemBlock))
+		for (int i = 0; i < craftingInventory.getSizeInventory(); i++)
+			if (craftingInventory.getStackInSlot(i) != null) {
+				if (!(craftingInventory.getStackInSlot(i).getItem() instanceof ItemBlock))
 					return false;
 				else {
-					Block block = Block.getBlockFromItem(p_77569_1_.getStackInSlot(i).getItem());
+					Block block = Block.getBlockFromItem(craftingInventory.getStackInSlot(i).getItem());
 					if (block instanceof BlockPeripheralContainer && hasContainer)
 						return false;
 					else if (block instanceof BlockPeripheralContainer) {
 						hasContainer = true;
-						container = p_77569_1_.getStackInSlot(i);
+						container = craftingInventory.getStackInSlot(i);
+					} else if (ArrayUtils.indexOf(blacklist, block) == -1) {
+						return false;
 					} else if (block instanceof IPeripheralProvider) {
 						hasPeripheral = true;
 						numOfPeripherals++;
@@ -52,17 +57,17 @@ public class ContainerRecipe implements IRecipe {
 	}
 
 	@Override
-	public ItemStack getCraftingResult(InventoryCrafting p_77572_1_) {
+	public ItemStack getCraftingResult(InventoryCrafting craftingInventory) {
 		HashMap<Integer,IPeripheral> map = new HashMap<Integer,IPeripheral>();
 		ItemStack base = new ItemStack(ModBlocks.peripheralContainer);
-		for (int i = 0; i < p_77572_1_.getSizeInventory(); i++)
-			if (p_77572_1_.getStackInSlot(i) != null)
-				if (Block.getBlockFromItem(p_77572_1_.getStackInSlot(i).getItem()) instanceof IPeripheralProvider && !(Block.getBlockFromItem(p_77572_1_.getStackInSlot(i).getItem()) instanceof BlockPeripheralContainer)) {
-					TileEntity ent = Block.getBlockFromItem(p_77572_1_.getStackInSlot(i).getItem()).createTileEntity(null, 0);
+		for (int i = 0; i < craftingInventory.getSizeInventory(); i++)
+			if (craftingInventory.getStackInSlot(i) != null)
+				if (Block.getBlockFromItem(craftingInventory.getStackInSlot(i).getItem()) instanceof IPeripheralProvider && !(Block.getBlockFromItem(craftingInventory.getStackInSlot(i).getItem()) instanceof BlockPeripheralContainer)) {
+					TileEntity ent = Block.getBlockFromItem(craftingInventory.getStackInSlot(i).getItem()).createTileEntity(null, 0);
 					if (ent != null && ent instanceof IPeripheral)
-						map.put(Block.getIdFromBlock(Block.getBlockFromItem(p_77572_1_.getStackInSlot(i).getItem())), (IPeripheral)ent);
-				}else if (Block.getBlockFromItem(p_77572_1_.getStackInSlot(i).getItem()) instanceof BlockPeripheralContainer)
-					base.stackTagCompound = p_77572_1_.getStackInSlot(i).stackTagCompound == null ? null : (NBTTagCompound) p_77572_1_.getStackInSlot(i).stackTagCompound.copy();
+						map.put(Block.getIdFromBlock(Block.getBlockFromItem(craftingInventory.getStackInSlot(i).getItem())), (IPeripheral)ent);
+				}else if (Block.getBlockFromItem(craftingInventory.getStackInSlot(i).getItem()) instanceof BlockPeripheralContainer)
+					base.stackTagCompound = craftingInventory.getStackInSlot(i).stackTagCompound == null ? null : (NBTTagCompound) craftingInventory.getStackInSlot(i).stackTagCompound.copy();
 		List<String> text = new ArrayList<String>();
 		if (base.stackTagCompound == null || base.stackTagCompound.hasNoTags() || !base.stackTagCompound.hasKey("ids")) {
 			NBTHelper.setIntArray(base, "ids", setToArray(map.keySet()));
