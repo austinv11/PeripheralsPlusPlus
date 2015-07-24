@@ -9,6 +9,7 @@ The chatbox is a peripheral which allows for Computers to interface with Minecra
 |-------|-------------|-------------|-------------|-------------|-------------|
 |chat|"chat"|_string_ playerName|_string_ message||This event is fired when someone speaks in chat|
 |death|"death"|_string_ player|_string_ killer|_string_ damageType|This event is fired when someone dies|
+|command|"command"|_string_ player|_table_ arguments||This event is fired when someone types a command prefixed with '\' (by default). When a command is done like this, it will not appear in chat|
 
 ## Functions
 | Function | Returns | Description |
