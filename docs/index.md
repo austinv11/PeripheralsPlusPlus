@@ -12,4 +12,4 @@ Regarding Modpacks: Go ahead! Put this mod in ALL the modpacks! You just need to
 
 1. Credit me, austinv11, as the creator of the mod. You CANNOT take credit where credit is not due.
 
-2. Let me know that you're putting it in you're modpack (as long as it is a public one)! And no, you don't need to wait for a response from me, I already said yes! I just have a thing for statistics ;)
+2. Ensure that ALL mods in your modpack are redistributed with permission from their respective authors.
