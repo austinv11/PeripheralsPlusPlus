@@ -31,9 +31,9 @@ apply plugin: 'forge'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
-//ext.buildNumber = System.getenv("BUILD_ID") ?: "dev"
-//version = "1.3.0-$buildNumber"
-version = "1.3.0"
+ext.buildNumber = System.getenv("BUILD_ID") ?: "dev"
+version = "1.3.0-$buildNumber"
+//version = "1.3.0"
 group= "com.austinv11.peripheralsplusplus" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Peripherals++"
 
@@ -142,6 +142,11 @@ task sourceJar(type: Jar) {
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'deobf'
+    manifest {
+        attributes 'FMLAT': 'ppp_at.cfg',
+                'FMLCorePlugin': 'com.austinv11.peripheralsplusplus.asm.PeripheralsPlusPlusTransformerPlugin',
+                'FMLCorePluginContainsFMLMod': true
+    }
 }
 
 build.dependsOn sourceJar, deobfJar
