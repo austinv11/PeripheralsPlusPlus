@@ -172,7 +172,7 @@ public class TileEntityMEBridge extends MountedTileEntity implements IActionHost
 				}
 				return new Object[]{extracted};
 			case 4:
-				if (arguments.length < 3)
+				if (arguments.length < 2)
 					throw new LuaException("Too few arguments");
 				if (!(arguments[0] instanceof String))
 					throw new LuaException("Bad argument #1 (expected string)");
