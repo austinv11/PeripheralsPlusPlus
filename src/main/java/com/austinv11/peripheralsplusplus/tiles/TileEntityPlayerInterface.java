@@ -46,7 +46,6 @@ public class TileEntityPlayerInterface extends MountedTileEntityInventory {
                 // Check that the specified player has given permission for some sort of editing by putting their permissions card in the player interface
                 if (worldObj.getPlayerEntityByName((String) arguments[0]) != null && hasPermissionsCardFor((String) arguments[0]))
                 {
-                    PeripheralsPlusPlus.LOGGER.info("has permissions card and is not null");
                     return new Object[]{new LuaObjectPlayerInv(worldObj.getPlayerEntityByName((String) arguments[0]), this, getPermCardFor((String) arguments[0]))};
                 }
             }
