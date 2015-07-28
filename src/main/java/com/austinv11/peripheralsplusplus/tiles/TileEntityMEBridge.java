@@ -17,7 +17,6 @@ import appeng.api.util.DimensionalCoord;
 import appeng.core.WorldSettings;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Config;
-import com.austinv11.peripheralsplusplus.utils.Util;
 import cpw.mods.fml.common.Optional;
 import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -34,12 +33,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 @Optional.InterfaceList(value = {@Optional.Interface(modid="appliedenergistics2",iface="appeng.api.networking.security.IActionHost", striprefs=true), @Optional.Interface(modid="appliedenergistics2",iface="appeng.api.networking.IGridBlock", striprefs=true)})
 public class TileEntityMEBridge extends MountedTileEntity implements IActionHost, IGridBlock {
@@ -298,12 +292,15 @@ public class TileEntityMEBridge extends MountedTileEntity implements IActionHost
 	}
 
 	private Object getObjectFromStack(IAEItemStack stack, int flag) {
+		HashMap<String, Object> map = new HashMap<String, Object>();
 		String itemName = Item.itemRegistry.getNameForObject(stack.getItem());
 		int meta = stack.getItemDamage();
 		long amount = stack.getStackSize();
 		String displayName = stack.getItemStack().getDisplayName();
-		List<Object> list = new ArrayList<Object>(Arrays.asList(itemName, meta, amount, displayName));
-		HashMap<Integer, Object> map = Util.arrayToMap(list.toArray());
+		map.put("name", itemName);
+		map.put("meta", meta);
+		map.put("amount", amount);
+		map.put("displayName", displayName);
 		if (flag == 0) {
 			return map;
 		} else if (flag == 1) {
