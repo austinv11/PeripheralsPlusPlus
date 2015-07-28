@@ -1,13 +1,16 @@
 package com.austinv11.peripheralsplusplus.init;
 
 import com.austinv11.collectiveframework.minecraft.reference.ModIds;
+import com.austinv11.peripheralsplusplus.event.handler.PocketComputerCraftingHandler;
 import com.austinv11.peripheralsplusplus.recipe.ContainerRecipe;
 import com.austinv11.peripheralsplusplus.reference.Config;
+import com.austinv11.peripheralsplusplus.reference.Reference;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 
@@ -52,6 +55,8 @@ public class Recipes {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.speaker), "gng", "nrn", "gng", 'g', "ingotGold", 'n', Blocks.noteblock, 'r', "blockRedstone"));
 		if (Config.enablePeripheralContainer) {
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.peripheralContainer), "iii", "ici", "imi", 'i', "ingotIron", 'c', Blocks.chest, 'm', new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Cable"), 1, 1)));
+			RecipeSorter.register(Reference.MOD_ID.toLowerCase()+":containerRecipe", ContainerRecipe.class, 
+					RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
 			GameRegistry.addRecipe(new ContainerRecipe());
 		}
 		if (Config.enableMEBridge && Loader.isModLoaded("appliedenergistics2"))
@@ -83,7 +88,8 @@ public class Recipes {
 			if (Loader.isModLoaded(ModIds.Railcraft))
 				chunkLoaders.add(GameRegistry.findBlock(ModIds.Railcraft, "machine.alpha"));
 			for (Object o : chunkLoaders)
-				GameRegistry.addShapelessRecipe(new ItemStack(ModItems.chunkLoaderUpgrade), o, new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1));
+				if (o != null)
+					GameRegistry.addShapelessRecipe(new ItemStack(ModItems.chunkLoaderUpgrade), o, new ItemStack(GameRegistry.findItem("ComputerCraft", "CC-Peripheral"), 1, 1));
 		}
 		if (Config.enableInteractiveSorter)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModBlocks.interactiveSorter), "dpd", "pep", "dpd", 'd', "gemDiamond", 'p', Blocks.piston, 'e', Items.ender_eye));
@@ -98,5 +104,8 @@ public class Recipes {
             GameRegistry.addShapelessRecipe(new ItemStack(ModItems.permCard), new ItemStack(Items.emerald), new ItemStack(Items.iron_ingot), new ItemStack(Items.redstone));
 		if (Config.enableMotionDetector)
 			GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(ModItems.motionDetector), "srs", "rer", "srs", 's', "stone", 'r', "dustRedstone", 'e', Items.ender_pearl));
+		RecipeSorter.register(Reference.MOD_ID.toLowerCase()+":pocketComputerUpgradeRecipe", 
+				PocketComputerCraftingHandler.class, RecipeSorter.Category.SHAPELESS, "after:minecraft:shapeless");
+		GameRegistry.addRecipe(new PocketComputerCraftingHandler());
 	}
 }
