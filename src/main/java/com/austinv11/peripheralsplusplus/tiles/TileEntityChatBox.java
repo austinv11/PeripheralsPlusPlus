@@ -229,16 +229,17 @@ public class TileEntityChatBox extends MountedTileEntity {
 		public void onChat(ServerChatEvent event) {
 			if (Config.enableChatBox) {
 				String commandPrefix = Config.chatboxCommandPrefix.trim();
-				if (!commandPrefix.equals("") && !commandPrefix.equals(" ")) {
+				if (!commandPrefix.equals("") && !commandPrefix.equals(" ") && event.message.startsWith(commandPrefix)) {
 					event.setCanceled(true);
 					for (TileEntityChatBox box : chatBoxMap.keySet()) {
 						if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord, box.yCoord, box.zCoord).distanceTo(event.player.getPosition(1.0f)) <= Config.readRange)
 							box.onCommand(event.player, event.message);
 					}
-				}
-				for (TileEntityChatBox box : chatBoxMap.keySet()) {
-					if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord,box.yCoord,box.zCoord).distanceTo(event.player.getPosition(1.0f)) <= Config.readRange)
-						box.onChat(event.player, event.message);
+				} else {
+					for (TileEntityChatBox box : chatBoxMap.keySet()) {
+						if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord, box.yCoord, box.zCoord).distanceTo(event.player.getPosition(1.0f)) <= Config.readRange)
+							box.onChat(event.player, event.message);
+					}
 				}
 			}
 		}
