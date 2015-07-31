@@ -19,7 +19,7 @@ public class TranslateUtils {
 	}
 
 	public static boolean isPrefix(String lang) {
-		return lang.length() == 2 || lang.toLowerCase().contains("zh-");
+		return lang.length() == 2 || lang.toLowerCase().contains("-");
 	}
 
 	public static String detectLangName(String text) {
