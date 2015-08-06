@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.turtles.peripherals;
 
 import com.austinv11.peripheralsplusplus.entities.EntityRidableTurtle;
+import com.austinv11.peripheralsplusplus.network.RidableTurtlePacket;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.turtles.TurtleRidable;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -31,7 +32,7 @@ public class PeripheralRidable extends MountedPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[]{"getEntity", "mountNearbyEntity", "unmount"};
+		return new String[]{"getEntity", "mountNearbyEntity", "unmount", "up"};
 	}
 
 	@Override
@@ -45,8 +46,22 @@ public class PeripheralRidable extends MountedPeripheral {
 				return mountNearbyEntity();
 			case 2:
 				return unmount();
+			case 3:
+				return up();
 		}
 		return new Object[0];
+	}
+
+	private Object[] up() {
+		boolean success;
+		try {
+			EntityRidableTurtle ridableTurtleEntity = TurtleRidable.getEntity(turtle);
+			success = ridableTurtleEntity.canMoveUp();
+			ridableTurtleEntity.queueAction(RidableTurtlePacket.MovementCode.ASCEND.code);
+		} catch (Exception ignore) {
+			return new Object[]{false};
+		}
+		return new Object[]{success};
 	}
 
 	private Object[] unmount() {
