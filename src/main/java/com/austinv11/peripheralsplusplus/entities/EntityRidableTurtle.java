@@ -252,4 +252,10 @@ public class EntityRidableTurtle extends Entity {
 			this.queuedActionCode = movementCode;
 		}
 	}
+
+	public boolean canMoveUp() {
+		return (this.worldObj.isAirBlock(turtle.getPosition().posX, turtle.getPosition().posY + 1,
+				turtle.getPosition().posZ) && (turtle.getFuelLevel() >= Config.fuelPerTurtleMovement
+				|| !turtle.isFuelNeeded()));
+	}
 }
