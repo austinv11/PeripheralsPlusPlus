@@ -7,7 +7,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockEnvironmentScanner extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
+public class BlockEnvironmentScanner extends BlockPPP implements ITileEntityProvider {
 
 	public BlockEnvironmentScanner() {
 		super();
@@ -24,8 +24,4 @@ public class BlockEnvironmentScanner extends BlockPPP implements ITileEntityProv
 		return true;
 	}
 
-	@Override
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
-		return (IPeripheral) world.getTileEntity(x,y,z);
-	}
 }

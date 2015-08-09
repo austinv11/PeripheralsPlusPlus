@@ -19,8 +19,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-public class BlockPlayerInterface extends BlockContainer implements IPeripheralProvider
-{
+public class BlockPlayerInterface extends BlockContainer {
 
     public BlockPlayerInterface()
     {
@@ -34,12 +33,6 @@ public class BlockPlayerInterface extends BlockContainer implements IPeripheralP
     public TileEntity createNewTileEntity(World world, int p_149915_2_)
     {
         return new TileEntityPlayerInterface();
-    }
-
-    @Override
-    public IPeripheral getPeripheral(World world, int x, int y, int z, int side)
-    {
-        return (IPeripheral) world.getTileEntity(x, y, z);
     }
 
     @Override

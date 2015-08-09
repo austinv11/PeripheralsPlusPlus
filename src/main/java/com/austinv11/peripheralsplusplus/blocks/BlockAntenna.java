@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class BlockAntenna extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
+public class BlockAntenna extends BlockPPP implements ITileEntityProvider {
 
 	public BlockAntenna() {
 		super();
@@ -55,11 +55,6 @@ public class BlockAntenna extends BlockPPP implements ITileEntityProvider, IPeri
 	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack) {
 		int direction = BlockPistonBase.determineOrientation(world, x, y, z, entity);
 		world.setBlockMetadataWithNotify(x, y, z, direction, 2);
-	}
-
-	@Override
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
-		return (IPeripheral) world.getTileEntity(x,y,z);
 	}
 
 	@Override

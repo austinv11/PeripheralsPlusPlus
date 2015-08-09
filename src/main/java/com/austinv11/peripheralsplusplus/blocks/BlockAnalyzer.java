@@ -20,7 +20,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-public abstract class BlockAnalyzer extends BlockContainer implements IPeripheralProvider {
+public abstract class BlockAnalyzer extends BlockContainer {
 
 	public BlockAnalyzer() {
 		super(Material.rock);
@@ -74,8 +74,4 @@ public abstract class BlockAnalyzer extends BlockContainer implements IPeriphera
 		return true;
 	}
 
-	@Override
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side ) {
-		return (IPeripheral) world.getTileEntity(x,y,z);
-	}
 }

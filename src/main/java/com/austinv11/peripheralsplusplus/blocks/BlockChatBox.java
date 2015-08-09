@@ -7,7 +7,7 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockChatBox extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
+public class BlockChatBox extends BlockPPP implements ITileEntityProvider {
 
 	public BlockChatBox() {
 		super();
@@ -25,8 +25,4 @@ public class BlockChatBox extends BlockPPP implements ITileEntityProvider, IPeri
 		return true;
 	}
 
-	@Override
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side ) {
-		return (IPeripheral) world.getTileEntity(x,y,z);
-	}
 }

@@ -2,14 +2,12 @@ package com.austinv11.peripheralsplusplus.blocks;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityPlayerSensor;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockPlayerSensor extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
+public class BlockPlayerSensor extends BlockPPP implements ITileEntityProvider {
 
 	public BlockPlayerSensor() {
 		super();
@@ -24,11 +22,6 @@ public class BlockPlayerSensor extends BlockPPP implements ITileEntityProvider, 
 	@Override
 	public boolean hasTileEntity(int metadata) {
 		return true;
-	}
-
-	@Override
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side ) {
-		return (IPeripheral) world.getTileEntity(x,y,z);
 	}
 
 	@Override

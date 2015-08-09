@@ -27,6 +27,7 @@ import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.turtles.*;
 import com.austinv11.peripheralsplusplus.turtles.peripherals.PeripheralChunkLoader;
+import com.austinv11.peripheralsplusplus.utils.IPlusPlusPeripheral;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
@@ -112,29 +113,7 @@ public class PeripheralsPlusPlus {
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
 		LOGGER.info("Registering peripherals...");
 		proxy.registerTileEntities();
-		ComputerCraftAPI.registerPeripheralProvider(new BlockChatBox());
-		ComputerCraftAPI.registerPeripheralProvider(new BlockPlayerSensor());
-		ComputerCraftAPI.registerPeripheralProvider(new BlockOreDictionary());
-		if (Loader.isModLoaded(ModIds.Forestry)) {
-			LOGGER.info("Forestry is loaded! Registering analyzer peripherals...");
-			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerBee());
-			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerTree());
-			ComputerCraftAPI.registerPeripheralProvider(new BlockAnalyzerButterfly());
-		} else
-			LOGGER.info("Forestry not found, skipping analyzer peripherals");
-		ComputerCraftAPI.registerPeripheralProvider(new BlockTeleporter());
-		ComputerCraftAPI.registerPeripheralProvider(new BlockTeleporterT2());
-		ComputerCraftAPI.registerPeripheralProvider(new BlockEnvironmentScanner());
-		ComputerCraftAPI.registerPeripheralProvider(new BlockSpeaker());
-		ComputerCraftAPI.registerPeripheralProvider(new BlockAntenna());
-		ComputerCraftAPI.registerPeripheralProvider(new BlockPeripheralContainer());
-		if (Loader.isModLoaded(ModIds.AppliedEnergistics2)) {
-			LOGGER.info("Applied Energistics is loaded! Registering the ME Bridge...");
-			ComputerCraftAPI.registerPeripheralProvider(new BlockMEBridge());
-		}else
-			LOGGER.info("Applied Energistics not found, skipping the ME Bridge");
-		ComputerCraftAPI.registerPeripheralProvider(new BlockTimeSensor());
-		ComputerCraftAPI.registerPeripheralProvider(new BlockInteractiveSorter());
+		ComputerCraftAPI.registerPeripheralProvider(new IPlusPlusPeripheral.Provider());
 		LOGGER.info("Registering turtle upgrades...");
 		registerUpgrade(new TurtleChatBox());
 		registerUpgrade(new TurtlePlayerSensor());

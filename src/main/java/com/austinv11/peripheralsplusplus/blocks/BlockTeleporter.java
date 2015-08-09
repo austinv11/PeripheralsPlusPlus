@@ -18,7 +18,7 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-public class BlockTeleporter extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
+public class BlockTeleporter extends BlockPPP implements ITileEntityProvider {
 
 	public IIcon frontIcon;
 
@@ -35,11 +35,6 @@ public class BlockTeleporter extends BlockPPP implements ITileEntityProvider, IP
 	@Override
 	public boolean hasTileEntity(int metadata) {
 		return true;
-	}
-
-	@Override
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side ) {
-		return (IPeripheral) world.getTileEntity(x,y,z);
 	}
 
 	@Override

@@ -5,8 +5,6 @@ import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntitySpeaker;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.tileentity.TileEntity;
@@ -15,7 +13,7 @@ import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-public class BlockSpeaker extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
+public class BlockSpeaker extends BlockPPP implements ITileEntityProvider {
 
 	public IIcon frontIcon;
 
@@ -32,11 +30,6 @@ public class BlockSpeaker extends BlockPPP implements ITileEntityProvider, IPeri
 	@Override
 	public boolean hasTileEntity(int metadata) {
 		return true;
-	}
-
-	@Override
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side ) {
-		return (IPeripheral) world.getTileEntity(x,y,z);
 	}
 
 	@Override

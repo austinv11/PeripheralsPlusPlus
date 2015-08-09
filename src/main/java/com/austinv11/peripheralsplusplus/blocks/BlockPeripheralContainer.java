@@ -18,18 +18,13 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BlockPeripheralContainer extends BlockPPP implements ITileEntityProvider, IPeripheralProvider{
+public class BlockPeripheralContainer extends BlockPPP implements ITileEntityProvider {
 
 //	BlockSnapshot blockSnapshot;
 
 	public BlockPeripheralContainer() {
 		super();
 		this.setBlockName("peripheralContainer");
-	}
-
-	@Override
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
-		return (IPeripheral)world.getTileEntity(x,y,z);
 	}
 
 	@Override
