@@ -3,9 +3,11 @@ package com.austinv11.peripheralsplusplus.entities;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.network.RidableTurtlePacket;
 import com.austinv11.peripheralsplusplus.reference.Config;
+import com.austinv11.peripheralsplusplus.turtles.TurtleRidable;
 import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleAnimation;
+import dan200.computercraft.api.turtle.TurtleSide;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
@@ -97,10 +99,15 @@ public class EntityRidableTurtle extends Entity {
 			} catch (Exception ignored) {}
 			turtleLastPos = null;
 		}
-		if (!this.worldObj.isRemote && (turtle == null || !isTurleInWorld())) {
+		if (!this.worldObj.isRemote && ((turtle == null || !isTurleInWorld()) || !turtleHasUpgrade())) {
 			this.worldObj.removeEntity(this);
 		}
 	}
+
+    private boolean turtleHasUpgrade()
+    {
+        return this.turtle.getUpgrade(TurtleSide.Left) instanceof TurtleRidable || this.turtle.getUpgrade(TurtleSide.Right) instanceof TurtleRidable;
+    }
 
 	private boolean isTurleInWorld() {
 		TileEntity turtleTile = this.worldObj.getTileEntity(turtle.getPosition().posX, turtle.getPosition().posY, turtle.getPosition().posZ);
