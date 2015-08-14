@@ -7,16 +7,11 @@ import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockTimeSensor extends BlockPPP implements ITileEntityProvider, IPeripheralProvider {
+public class BlockTimeSensor extends BlockPPP implements ITileEntityProvider {
 
 	public BlockTimeSensor() {
 		super();
 		this.setBlockName("timeSensor");
-	}
-
-	@Override
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
-		return (IPeripheral) world.getTileEntity(x, y, z);
 	}
 
 	@Override

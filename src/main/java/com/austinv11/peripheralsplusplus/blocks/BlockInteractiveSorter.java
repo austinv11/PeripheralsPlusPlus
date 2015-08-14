@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-public class BlockInteractiveSorter extends BlockContainer implements IPeripheralProvider {
+public class BlockInteractiveSorter extends BlockContainer {
 	
 	public BlockInteractiveSorter() {
 		super(Material.rock);
@@ -27,12 +27,7 @@ public class BlockInteractiveSorter extends BlockContainer implements IPeriphera
 		this.setCreativeTab(CreativeTabPPP.PPP_TAB);
 		this.setHardness(4f);
 	}
-	
-	@Override
-	public IPeripheral getPeripheral(World world, int x, int y, int z, int side) {
-		return (IPeripheral) world.getTileEntity(x,y,z);
-	}
-	
+
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		return new TileEntityInteractiveSorter();

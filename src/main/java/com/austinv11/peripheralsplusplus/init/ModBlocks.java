@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.init;
 
+import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.items.ItemBlockPeripheralContainer;
 import com.austinv11.peripheralsplusplus.items.ItemBlockTurtle;
@@ -41,21 +42,26 @@ public class ModBlocks {
 		}
 		GameRegistry.registerBlock(oreDictionary, "oreDictionary");
 		if (Loader.isModLoaded("Forestry")) {
+			PeripheralsPlusPlus.LOGGER.info("Forestry is loaded! Registering analyzer peripherals...");
 			beeAnalyzer = new BlockAnalyzerBee();
 			GameRegistry.registerBlock(beeAnalyzer, "beeAnalyzer");
 			treeAnalyzer = new BlockAnalyzerTree();
 			GameRegistry.registerBlock(treeAnalyzer, "treeAnalyzer");
 			butterflyAnalyzer = new BlockAnalyzerButterfly();
 			GameRegistry.registerBlock(butterflyAnalyzer, "butterflyAnalyzer");
-		}
+		} else
+			PeripheralsPlusPlus.LOGGER.info("Forestry not found, skipping analyzer peripherals");
 		GameRegistry.registerBlock(teleporter, "teleporter");
 		GameRegistry.registerBlock(teleporterT2, "teleporterT2");
 		GameRegistry.registerBlock(environmentScanner, "environmentScanner");
 		GameRegistry.registerBlock(speaker, "speaker");
 		GameRegistry.registerBlock(antenna, "antenna");
 		GameRegistry.registerBlock(peripheralContainer, ItemBlockPeripheralContainer.class, "peripheralContainer");
-		if (Loader.isModLoaded("appliedenergistics2"))
+		if (Loader.isModLoaded("appliedenergistics2")) {
+			PeripheralsPlusPlus.LOGGER.info("Applied Energistics is loaded! Registering the ME Bridge...");
 			GameRegistry.registerBlock(meBridge, "meBridge");
+		} else
+			PeripheralsPlusPlus.LOGGER.info("Applied Energistics not found, skipping the ME Bridge");
 		GameRegistry.registerBlock(dummyBlock, "dummyBlock");
 		GameRegistry.registerBlock(noteBlock, "noteBlock");
 		GameRegistry.registerBlock(turtle, ItemBlockTurtle.class, "turtle");

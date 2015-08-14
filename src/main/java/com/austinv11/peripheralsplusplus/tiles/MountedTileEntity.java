@@ -1,11 +1,11 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.mount.DynamicMount;
+import com.austinv11.peripheralsplusplus.utils.IPlusPlusPeripheral;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.tileentity.TileEntity;
 
-public abstract class MountedTileEntity extends TileEntity implements IPeripheral {
+public abstract class MountedTileEntity extends TileEntity implements IPlusPlusPeripheral {
 
 	public MountedTileEntity() {
 		super();
