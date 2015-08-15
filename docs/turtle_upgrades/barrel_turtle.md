@@ -2,7 +2,7 @@
 
 ---
 
-The Barrel Turtle Upgrade is an upgrade which allows turtles to get barrel storage (storing 64 stacks of any one item). **Note:** This will only be enabled with either [JABBA](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1292942) or [Factorization](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1284592) installed. It is crafted wit ha barrel from either of the mods.
+The Barrel Turtle Upgrade is an upgrade which allows turtles to get barrel storage (storing 64 stacks of any one item). **Note:** This will only be enabled with either [JABBA](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1292942) or [Factorization](http://www.minecraftforum.net/forums/mapping-and-modding/minecraft-mods/1284592) installed. It is crafted with a barrel from either of the mods.
 
 ## Functions
 | Function | Returns | Description |
