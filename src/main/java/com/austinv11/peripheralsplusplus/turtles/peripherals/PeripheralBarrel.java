@@ -19,6 +19,7 @@ public class PeripheralBarrel extends MountedPeripheral {
 	private int MAX_SIZE = 4096;
 	private int STACK_SIZE = 64;
 	private Item ITEM_TYPE_STORED;
+    private int ITEM_META_STORED = 0;
 	private int CURRENT_USAGE = 0;
 	private ITurtleAccess turtle;
 	private TurtleSide side;
@@ -34,7 +35,10 @@ public class PeripheralBarrel extends MountedPeripheral {
 			STACK_SIZE = tag.getInteger("stackSize");
 		CURRENT_USAGE = tag.getInteger("currentUsage");
 		if (tag.getBoolean("isKnown"))
-			ITEM_TYPE_STORED = Item.getItemById(tag.getInteger("itemID"));
+        {
+            ITEM_TYPE_STORED = Item.getItemById(tag.getInteger("itemID"));
+            ITEM_META_STORED = tag.getInteger("stackMeta");
+        }
 		checkUsageStats();
 	}
 
@@ -44,6 +48,7 @@ public class PeripheralBarrel extends MountedPeripheral {
 			STACK_SIZE = 64;
 			MAX_SIZE = 64 * STACK_SIZE;
 			ITEM_TYPE_STORED = null;
+            ITEM_META_STORED = 0;
 		}
 	}
 
@@ -70,8 +75,7 @@ public class PeripheralBarrel extends MountedPeripheral {
 			if (arguments.length > 0) {
 				if (!(arguments[0] instanceof Double))
 					throw new LuaException("Bad argument #1 (expected number)");
-				double temp = (Double) arguments[0];
-				amount = (int) temp;
+                amount = (int) (double) (Double) arguments[0];
 			}
 			if (CURRENT_USAGE < amount)
 				amount = CURRENT_USAGE;
@@ -81,14 +85,13 @@ public class PeripheralBarrel extends MountedPeripheral {
 			Item itemStored = ITEM_TYPE_STORED;
 			int stackCount = amount;
 			if (slot != null) {
-				if (!slot.isItemEqual(new ItemStack(itemStored)))
+				if (!slot.isItemEqual(new ItemStack(itemStored, stackCount, ITEM_META_STORED)))
 					throw new LuaException("Item mismatch");
 				if (amount + slot.stackSize > STACK_SIZE)
 					amount = STACK_SIZE - slot.stackSize;
 				stackCount = amount + slot.stackSize;
 			}
-			ItemStack stack = new ItemStack(itemStored);
-			stack.stackSize = stackCount;
+			ItemStack stack = new ItemStack(itemStored, stackCount, ITEM_META_STORED);
 			CURRENT_USAGE = CURRENT_USAGE - amount;
 			checkUsageStats();
 			turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), stack.copy());
@@ -99,8 +102,7 @@ public class PeripheralBarrel extends MountedPeripheral {
 			if (arguments.length > 0) {
 				if (!(arguments[0] instanceof Double))
 					throw new LuaException("Bad argument #1 (expected number)");
-				double temp = (Double) arguments[0];
-				amount = (int) temp;
+                amount = (int) (double) (Double) arguments[0];
 			}
 			if (turtle.getInventory().getStackInSlot(turtle.getSelectedSlot()) == null)
 				return new Object[]{0};
@@ -116,11 +118,13 @@ public class PeripheralBarrel extends MountedPeripheral {
 			} else {
 				Item type = items.getItem();
 				ITEM_TYPE_STORED = type;
+                ITEM_META_STORED = items.getItemDamage();
 				STACK_SIZE = type.getItemStackLimit(items);
 				MAX_SIZE = 64 * STACK_SIZE;
 			}
 			CURRENT_USAGE = CURRENT_USAGE + amount;
 			ItemStack newStack = new ItemStack(items.getItem());
+            newStack.setItemDamage(ITEM_META_STORED);
 			if (items.stackSize - amount <= 0) {
 				newStack = null;
 			} else {
@@ -169,6 +173,7 @@ public class PeripheralBarrel extends MountedPeripheral {
 		}else {
 			tag.setBoolean("isKnown", true);
 			tag.setInteger("itemID", Item.getIdFromItem(ITEM_TYPE_STORED));
+            tag.setInteger("stackMeta", ITEM_META_STORED);
 		}
 		turtle.updateUpgradeNBTData(side);
 		changed = false;
