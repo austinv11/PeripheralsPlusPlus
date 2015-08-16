@@ -20,5 +20,5 @@ The ME Bridge is peripheral which is added when Applied Energistics 2 is install
 |listAll()|_table_ items|Lists all referenced items in the network|
 |listItems()|_table_ items|Lists all stored items in the network|
 |listCraft()|_table_ items|Lists all craftable items in the network|
-|retrieve(_string_ itemId, _number_ amount, _string or number_ directionToDeposit)|_number_ extracted|Retrieves the given items and attempts to place it in an inventory in the direction given (either the number or a string like "north" or "up", returns the amount extracted. **Note**: The item id can include metadata value by using the form "<id> <meta>"|
-|craft(_string_ itemId, _number_ amount)|_nil_|Attempts to craft the given items **Note**: The item id can include metadata value by using the form "<id> <meta>"|
+|retrieve(_string_ itemId, _number_ amount, _string or number_ directionToDeposit)|_number_ extracted|Retrieves the given items and attempts to place it in an inventory in the direction given (either the number or a string like "north" or "up", returns the amount extracted. **Note**: The item id can include metadata value by using the form "[id] [meta]"|
+|craft(_string_ itemId, _number_ amount)|_nil_|Attempts to craft the given items **Note**: The item id can include metadata value by using the form "[id] [meta]"|
