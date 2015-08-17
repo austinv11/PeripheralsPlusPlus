@@ -107,8 +107,9 @@ public class TurtleRecipeHandler extends TemplateRecipeHandler {
 	private ITurtleUpgrade getUpgradeForIngredient(ItemStack ingredient) throws ComputerCraftNotFoundException {
 		Map<Integer, ITurtleUpgrade> upgrades = ComputerCraftRegistry.getTurtleUpgrades();
 		for (ITurtleUpgrade upgrade : upgrades.values())
-			if (upgrade.getCraftingItem().isItemEqual(ingredient))
-				return upgrade;
+			if (upgrade.getCraftingItem() != null)
+				if (upgrade.getCraftingItem().isItemEqual(ingredient))
+					return upgrade;
 		return null;
 	}
 	
