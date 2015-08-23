@@ -3,21 +3,20 @@ package com.austinv11.peripheralsplusplus.tiles;
 import com.austinv11.peripheralsplusplus.AIChatRequest;
 import com.sun.istack.internal.NotNull;
 import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import com.google.code.chatterbotapi.*;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 public class TileEntityAIChatBox extends MountedTileEntity {
 
 	public static String publicName = "aiChatBox";
 	private String name = "tileEntityAIChatBox";
-	private HashMap<UUID,ChatterBotSession> sessions = new HashMap<UUID, ChatterBotSession>();
+	private List<BotSessionLuaObject> sessions = new ArrayList<BotSessionLuaObject>();
 	private ChatterBotFactory factory = new ChatterBotFactory();
 
 	public TileEntityAIChatBox() {
@@ -46,29 +45,7 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 			ChatterBotType botType = ArgumentHelper.getBotType(arguments, 0, ChatterBotType.CLEVERBOT);
 
 			// Run method
-			return Methods.newSession(computer,context,this,botType);
-		}
-
-		// think
-		if (method == 1) {
-			// Get arguments
-			UUID uuid = ArgumentHelper.getSessionUUID(arguments, 0, sessions.keySet());
-			ChatterBotSession session = sessions.get(uuid);
-			String message = ArgumentHelper.getString(arguments, 1);
-
-			// Run method
-			return Methods.think(computer, context, uuid, session, message);
-		}
-
-		// thinkAsync
-		if (method == 1) {
-			// Get arguments
-			UUID uuid = ArgumentHelper.getSessionUUID(arguments, 0, sessions.keySet());
-			ChatterBotSession session = sessions.get(uuid);
-			String message = ArgumentHelper.getString(arguments,1);
-
-			// Run method
-			return Methods.thinkAsync(computer, context, uuid, session, message);
+			return Methods.newSession(computer, context, this, botType);
 		}
 
 		return new Object[0];
@@ -83,7 +60,7 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 		return factory;
 	}
 
-	public HashMap<UUID, ChatterBotSession> getSessions() {
+	public List<BotSessionLuaObject> getSessions() {
 		return sessions;
 	}
 
@@ -95,46 +72,27 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 
 			// Get the factory and sessions from the tile entity
 			ChatterBotFactory factory = tileEntity.getFactory();
-			HashMap<UUID, ChatterBotSession> sessions = tileEntity.getSessions();
-
-			// Generate an UUID
-			UUID uuid = ArgumentHelper.randomUUID(sessions.keySet());
+			List<BotSessionLuaObject> sessions = tileEntity.getSessions();
 
 			try	{
+				// Generate an UUID
+				UUID uuid = ArgumentHelper.randomUUID(sessions);
+
 				// Create the session
 				ChatterBot bot = factory.create(botType);
 				ChatterBotSession botSession = bot.createSession();
 
+				BotSessionLuaObject luaSession = new BotSessionLuaObject(uuid,bot,botSession,computer);
 				// Add the session to the tile entity's list
-				sessions.put(uuid, botSession);
+				sessions.add(luaSession);
 
 				// Return corresponding UUID
-				return new Object[] { uuid.toString() };
+				return new Object[] { luaSession };
 
 			} catch (Exception e) {
 				e.printStackTrace();
 				throw new LuaException("Error creating session, make sure the server has internet access!");
 			}
-		}
-
-		// bool success, string response = think(string uuid, string msg)
-		public static Object[] think(IComputerAccess computer, ILuaContext context, UUID uuid, ChatterBotSession session, String message) throws LuaException, InterruptedException {
-
-			thinkAsync(computer, context, uuid, session, message);
-			Object[] event = context.pullEvent(AIChatRequest.EVENT);
-
-			// ai_response: string uuid, bool success, string response
-			//   event[0]     event[1]     event[2]       event[3]
-
-			return new Object[] { event[2],event[3] };
-		}
-
-		// nil = thinkAsync(string uuid, string msg)
-		public static Object[] thinkAsync(IComputerAccess computer, ILuaContext context, UUID uuid, ChatterBotSession session, String message) throws LuaException, InterruptedException {
-
-			AIChatRequest request = new AIChatRequest(computer,uuid,session,message);
-
-			return new Object[0];
 		}
 	}
 
@@ -142,7 +100,7 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 
 		// Get a ChatterBotType, if there's no valid BotType at that index then it will throw a LuaException.
 		public static ChatterBotType getBotType(Object[] arguments, int index) throws LuaException, InterruptedException {
-			return getBotType(arguments,index,null);
+			return getBotType(arguments, index, null);
 		}
 
 		public static ChatterBotType getBotType(Object[] arguments, int index, @Nullable ChatterBotType defaultValue) throws LuaException, InterruptedException {
@@ -190,22 +148,6 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 			return uuid;
 		}
 
-
-		// Get an UUID that has a corresponding session.
-		public static UUID getSessionUUID(Object[] arguments, int index, Set<UUID> existing) throws LuaException, InterruptedException {
-			return getSessionUUID(arguments,index,existing,null);
-		}
-
-		public static UUID getSessionUUID(Object[] arguments, int index, Set<UUID> existing, @Nullable UUID defaultValue) throws LuaException, InterruptedException {
-			UUID uuid = getUUID(arguments,index,defaultValue);
-
-			if (!existing.contains(uuid)) {
-				throw new LuaException("Bad argument #"+(index+1)+" (no session with that uuid)");
-			}
-
-			return uuid;
-		}
-
 		// Get a string, if there's no string at that index then it will throw a LuaException.
 		public static String getString(Object[] arguments, int index) throws LuaException, InterruptedException {
 			return getString(arguments,index,null);
@@ -245,12 +187,12 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 
 
 		// Get a randomly generated UUID, that's guaranteed to be unique (among its comrades).
-		public static UUID randomUUID(Set<UUID> existing) {
+		public static UUID randomUUID(List<BotSessionLuaObject> existing) {
 			// Randomize an UUID
 			UUID uuid = UUID.randomUUID();
 
 			// Make sure it's 100% unique (in this set)
-			while (existing.contains(uuid)) {
+			while (BotSessionLuaObject.containsUUID(existing,uuid)) {
 				// Regenerate the UUID
 				uuid = UUID.randomUUID();
 			}
@@ -278,6 +220,89 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 				return null;
 
 			return UUID.fromString(string);
+		}
+	}
+
+	public static class BotSessionLuaObject implements ILuaObject {
+		private final UUID uuid;
+		private final ChatterBot bot;
+		private final ChatterBotSession session;
+		private final IComputerAccess computer;
+
+		public BotSessionLuaObject(final UUID uuid,final ChatterBot bot, final ChatterBotSession session,final IComputerAccess computer) {
+			this.uuid = uuid;
+			this.bot = bot;
+			this.session = session;
+			this.computer = computer;
+		}
+
+		public String[] getMethodNames() {
+			return new String[] { "think","thinkAsync","getUUID" };
+		}
+
+		public Object[] callMethod(ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+			// boolean success, string response = think(string message)
+			if (method == 0) {
+				// Get arguments
+				String message = ArgumentHelper.getString(arguments, 0);
+
+				// Run method
+				thinkAsync(computer, context, uuid, session, message);
+
+				// Wait for message
+				Object[] event = context.pullEvent(AIChatRequest.EVENT);
+
+				// Make sure you get the right message and not someone else's
+				while (!uuid.toString().equals(event[3])) {
+					event = context.pullEvent(AIChatRequest.EVENT);
+				}
+
+				// ai_response: bool success, string response, string uuid
+				//   event[0]     event[1]       event[2]       event[3]
+
+				return new Object[] { event[1],event[2] };
+			}
+
+			// nil = think(string message)
+			if (method == 1) {
+				// Get arguments
+				String message = ArgumentHelper.getString(arguments,0);
+
+				// Run method
+				thinkAsync(computer,context,uuid,session,message);
+			}
+
+			// getUUID
+			if (method == 2) {
+				// Run method
+				return new Object[] { getUUID().toString() };
+			}
+
+			return new Object[0];
+		}
+
+		public UUID getUUID() {
+			return uuid;
+		}
+
+		// Makes a new thread and "thinks" in that one.
+		// When finished it sends an event to the designated computer.
+		public void thinkAsync(IComputerAccess computer, ILuaContext context, UUID uuid, ChatterBotSession session, String message) throws LuaException, InterruptedException {
+			AIChatRequest request = new AIChatRequest(computer,this,message);
+		}
+
+		// Just a normal thinking process. Haults the computer until it gets a reply (or errors out)
+		public String think(String message) throws Exception {
+			return session.think(message);
+		}
+
+		// Check the entire list if there's a matching UUID inside it
+		public static boolean containsUUID(List<BotSessionLuaObject> list, UUID uuid) {
+			for (BotSessionLuaObject botSession : list) {
+				if (botSession.getUUID() == uuid)
+					return true;
+			}
+			return false;
 		}
 	}
 }

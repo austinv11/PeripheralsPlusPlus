@@ -1,5 +1,6 @@
 #Blocks
 tile.peripheralsplusplus:chatBox.name=Chat Box
+tile.peripheralsplusplus:aiChatBox.name=AI Chat Box
 tile.peripheralsplusplus:playerSensor.name=Player Sensor
 tile.peripheralsplusplus:rfCharger.name=Turtle Charger (RF)
 tile.peripheralsplusplus:oreDictionary.name=Ore Dictionary
