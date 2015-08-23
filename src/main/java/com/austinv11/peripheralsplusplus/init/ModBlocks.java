@@ -12,6 +12,7 @@ import net.minecraft.block.BlockContainer;
 @GameRegistry.ObjectHolder(Reference.MOD_ID)
 public class ModBlocks {
 	public static final BlockPPP chatBox = new BlockChatBox();
+	public static final BlockPPP aiChatBox = new BlockAIChatBox();
 	public static final BlockPPP playerSensor = new BlockPlayerSensor();
 	public static BlockPPP rfCharger;
 	public static final BlockPPP oreDictionary = new BlockOreDictionary();
@@ -35,6 +36,7 @@ public class ModBlocks {
 
 	public static void init(){
 		GameRegistry.registerBlock(chatBox, "chatBox");
+		GameRegistry.registerBlock(aiChatBox, "aiChatBox");
 		GameRegistry.registerBlock(playerSensor, "playerSensor");
 		if (Loader.isModLoaded("ThermalExpansion")) {
 			rfCharger = new BlockRFCharger();
