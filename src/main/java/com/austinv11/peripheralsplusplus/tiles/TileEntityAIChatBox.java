@@ -1,7 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
-import com.austinv11.peripheralsplusplus.AIChatRequest;
-import com.sun.istack.internal.NotNull;
+import com.austinv11.peripheralsplusplus.cleverbot.AIChatRequest;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
@@ -9,7 +8,6 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import com.google.code.chatterbotapi.*;
 
-import javax.annotation.Nullable;
 import java.util.*;
 
 public class TileEntityAIChatBox extends MountedTileEntity {
@@ -34,18 +32,30 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[] { "newSession","think","thinkAsync" };
+		return new String[] { "newSession","getSession","getAllSessions" };
 	}
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 		// newSession
 		if (method == 0) {
+			// Run method
+			return Methods.newSession(computer, context, this);
+		}
+
+		// getSession
+		if (method == 1) {
 			// Get arguments
-			ChatterBotType botType = ArgumentHelper.getBotType(arguments, 0, ChatterBotType.CLEVERBOT);
+			UUID uuid = ArgumentHelper.getUUID(arguments,0);
 
 			// Run method
-			return Methods.newSession(computer, context, this, botType);
+			return Methods.getSession(computer, context, this, uuid);
+		}
+
+		// getAllSessions
+		if (method == 2) {
+			// Run method
+			return Methods.getAllSessions(computer, context, this);
 		}
 
 		return new Object[0];
@@ -67,8 +77,9 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 	// Peripheral methods
 	public static class Methods {
 
-		// string uuid = newSession([string botType="CLEVERBOT"])
-		public static Object[] newSession(IComputerAccess computer, ILuaContext context, TileEntityAIChatBox tileEntity, ChatterBotType botType) throws LuaException, InterruptedException {
+		// Lua arguments:
+		// string uuid = newSession()
+		public static Object[] newSession(IComputerAccess computer, ILuaContext context, TileEntityAIChatBox tileEntity) throws LuaException, InterruptedException {
 
 			// Get the factory and sessions from the tile entity
 			ChatterBotFactory factory = tileEntity.getFactory();
@@ -79,10 +90,10 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 				UUID uuid = ArgumentHelper.randomUUID(sessions);
 
 				// Create the session
-				ChatterBot bot = factory.create(botType);
+				ChatterBot bot = factory.create(ChatterBotType.CLEVERBOT);
 				ChatterBotSession botSession = bot.createSession();
 
-				BotSessionLuaObject luaSession = new BotSessionLuaObject(uuid,bot,botSession,computer);
+				BotSessionLuaObject luaSession = new BotSessionLuaObject(uuid,bot,botSession,computer,tileEntity);
 				// Add the session to the tile entity's list
 				sessions.add(luaSession);
 
@@ -94,6 +105,31 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 				throw new LuaException("Error creating session, make sure the server has internet access!");
 			}
 		}
+
+		// Lua arguments:
+		// BotSessionLuaObject session = getSession(string uuid)
+		public static Object[] getSession(IComputerAccess computer, ILuaContext context, TileEntityAIChatBox tileEntity, UUID uuid) throws LuaException, InterruptedException {
+
+			// Try to find a match
+			for (BotSessionLuaObject session : tileEntity.getSessions()) {
+				if (session.getUUID().equals(uuid))
+					return new Object[] { session };
+			}
+
+			return new Object[0];
+		}
+
+		// Lua arguments:
+		// table{[string uuid]=BotSessionLuaObject, [string uuid]=BotSessionLuaObject, ...} = getAllSessions()
+		public static Object[] getAllSessions(IComputerAccess computer, ILuaContext context, TileEntityAIChatBox tileEntity) throws LuaException, InterruptedException {
+			HashMap<String, BotSessionLuaObject> table = new HashMap<String, BotSessionLuaObject>();
+			for (BotSessionLuaObject sessionLuaObject : tileEntity.getSessions()) {
+				table.put(sessionLuaObject.getUUID().toString(), sessionLuaObject);
+			}
+
+			return new Object[] { table };
+			//return new Object[] { tileEntity.getSessions().toArray() };
+		}
 	}
 
 	public static class ArgumentHelper {
@@ -103,24 +139,8 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 			return getBotType(arguments, index, null);
 		}
 
-		public static ChatterBotType getBotType(Object[] arguments, int index, @Nullable ChatterBotType defaultValue) throws LuaException, InterruptedException {
-			if (arguments == null || arguments.length <= index) {
-				if (defaultValue == null)
-					ErrorOut(index,"string","nil");
-				else
-					return defaultValue;
-			}
-
-			ChatterBotType botType = stringToType((String) arguments[index]);
-
-			if (botType == null) {
-				if (defaultValue == null)
-					ErrorOut(index,"string");
-				else
-					return defaultValue;
-			}
-
-			return botType;
+		public static ChatterBotType getBotType(Object[] arguments, int index, ChatterBotType defaultValue) throws LuaException, InterruptedException {
+			return stringToType(getString(arguments,index,defaultValue==null ? null : defaultValue.toString()));
 		}
 
 		// Get an UUID, if there's no valid uuid at that index then it will throw a LuaException.
@@ -128,24 +148,8 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 			return getUUID(arguments, index, null);
 		}
 
-		public static UUID getUUID(Object[] arguments, int index, @Nullable UUID defaultValue) throws LuaException, InterruptedException{
-			if (arguments == null || arguments.length <= index) {
-				if (defaultValue == null)
-					ErrorOut(index,"string","nil");
-				else
-					return defaultValue;
-			}
-
-			UUID uuid = stringToUUID((String) arguments[index]);
-
-			if (uuid == null) {
-				if (defaultValue == null)
-					ErrorOut(index,"string");
-				else
-					return defaultValue;
-			}
-
-			return uuid;
+		public static UUID getUUID(Object[] arguments, int index, UUID defaultValue) throws LuaException, InterruptedException{
+			return stringToUUID(getString(arguments,index,defaultValue==null ? null : defaultValue.toString()));
 		}
 
 		// Get a string, if there's no string at that index then it will throw a LuaException.
@@ -153,7 +157,7 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 			return getString(arguments,index,null);
 		}
 
-		public static String getString(Object[] arguments, int index, @Nullable String defaultValue) throws LuaException, InterruptedException{
+		public static String getString(Object[] arguments, int index, String defaultValue) throws LuaException, InterruptedException{
 			if (arguments == null || arguments.length <= index) {
 				if (defaultValue == null)
 					ErrorOut(index,"string","nil");
@@ -161,26 +165,25 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 					return defaultValue;
 			}
 
-			String string = (String) arguments[index];
-
-			if (string == null) {
+			if (!(arguments[index] instanceof String)) {
+				// Not string...
 				if (defaultValue == null)
 					ErrorOut(index,"string");
 				else
 					return defaultValue;
 			}
 
-			return string;
+			return (String) arguments[index];
 		}
 
 
 		// Simplifies the LuaException
-		static void ErrorOut(int index, @NotNull String expected) throws LuaException, InterruptedException {
+		static void ErrorOut(int index, String expected) throws LuaException, InterruptedException {
 			// index+1 because lua...
 			throw new LuaException("Bad argument #"+(index+1)+" ("+expected+" expected)");
 		}
 
-		static void ErrorOut(int index, @NotNull String expected, @NotNull String got) throws LuaException, InterruptedException {
+		static void ErrorOut(int index, String expected, String got) throws LuaException, InterruptedException {
 			// index+1 because lua...
 			throw new LuaException("Bad argument #"+(index+1)+" ("+expected+" expected, got "+got+")");
 		}
@@ -228,19 +231,26 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 		private final ChatterBot bot;
 		private final ChatterBotSession session;
 		private final IComputerAccess computer;
+		private final TileEntityAIChatBox source;
+		private boolean removed = false;
 
-		public BotSessionLuaObject(final UUID uuid,final ChatterBot bot, final ChatterBotSession session,final IComputerAccess computer) {
+		public BotSessionLuaObject(final UUID uuid,final ChatterBot bot, final ChatterBotSession session,final IComputerAccess computer, TileEntityAIChatBox source) {
 			this.uuid = uuid;
 			this.bot = bot;
 			this.session = session;
 			this.computer = computer;
+			this.source = source;
 		}
 
 		public String[] getMethodNames() {
-			return new String[] { "think","thinkAsync","getUUID" };
+			return new String[] { "think","thinkAsync","getUUID","remove" };
 		}
 
 		public Object[] callMethod(ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+			if (removed) {
+				throw new LuaException("ERROR accessing removed session!");
+			}
+
 			// boolean success, string response = think(string message)
 			if (method == 0) {
 				// Get arguments
@@ -276,6 +286,13 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 			if (method == 2) {
 				// Run method
 				return new Object[] { getUUID().toString() };
+			}
+
+			// remove
+			if (method == 3) {
+				// Run method
+				this.removed = true;
+				return new Object[] { source.getSessions().remove(this) };
 			}
 
 			return new Object[0];

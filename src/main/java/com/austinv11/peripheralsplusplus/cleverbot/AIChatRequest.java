@@ -1,11 +1,11 @@
-package com.austinv11.peripheralsplusplus;
+package com.austinv11.peripheralsplusplus.cleverbot;
 
-import com.austinv11.peripheralsplusplus.tiles.TileEntityAIChatBox;
+import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAIChatBox.BotSessionLuaObject;
-import com.google.code.chatterbotapi.*;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 
-import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AIChatRequest {
 	public static final String EVENT = "ai_response";
@@ -33,13 +33,16 @@ public class AIChatRequest {
 					success = false;
 				}
 
-				if (AIChatRequest.this.computer == null) {
-					System.out.println("WHAT? COMPUTER IS NULL NOOOOOOOOOOOO");
+				try {
+					// Queue event
+					// ai_response: bool success, string response, string uuid
+					AIChatRequest.this.computer.queueEvent(AIChatRequest.EVENT, new Object[]{success, response, session.getUUID().toString()});
+				} catch (Exception e) {
+					// Main reason for this exception is
+					// "You are not attached to this computer"
+					// Dunno how to prevent it but this will do
+					Logger.getLogger(Reference.MOD_NAME).log(Level.WARNING, "Tried queuing event to non-existing computer");
 				}
-
-				// Queue event
-				// ai_response: bool success, string response, string uuid
-				AIChatRequest.this.computer.queueEvent(AIChatRequest.EVENT, new Object[]{ success, response, session.getUUID().toString() });
 			}
 		});
 		thread.start();
