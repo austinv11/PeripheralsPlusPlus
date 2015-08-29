@@ -16,6 +16,7 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 	private String name = "tileEntityAIChatBox";
 	private List<BotSessionLuaObject> sessions = new ArrayList<BotSessionLuaObject>();
 	private ChatterBotFactory factory = new ChatterBotFactory();
+	private List<IComputerAccess> computers = new ArrayList<IComputerAccess>();
 
 	public TileEntityAIChatBox() {
 		super();
@@ -37,6 +38,10 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+		if (isInvalid()) {
+			throw new LuaException("ERROR invalid tile entity");
+		}
+
 		// newSession
 		if (method == 0) {
 			// Run method
@@ -59,6 +64,32 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 		}
 
 		return new Object[0];
+	}
+
+	public void sendEvent(Object[] params) {
+		// Base arguments
+		List<Object> arguments = new ArrayList<Object>(Arrays.asList(params));
+		arguments.add(0,"SIDE");
+
+		for (IComputerAccess computer : computers) {
+			// Add the computer side
+			arguments.set(0,computer.getAttachmentName());
+
+			// Queue event
+			computer.queueEvent(AIChatRequest.EVENT,arguments.toArray());
+		}
+	}
+
+	@Override
+	public void attach(IComputerAccess computer) {
+		computers.add(computer);
+		super.attach(computer);
+	}
+
+	@Override
+	public void detach(IComputerAccess computer) {
+		computers.remove(computer);
+		super.detach(computer);
 	}
 
 	@Override
@@ -102,7 +133,7 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 
 			} catch (Exception e) {
 				e.printStackTrace();
-				throw new LuaException("Error creating session, make sure the server has internet access!");
+				throw new LuaException("ERROR creating session, make sure the server has internet access!");
 			}
 		}
 
@@ -251,35 +282,39 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 				throw new LuaException("ERROR accessing removed session!");
 			}
 
+			if (source.isInvalid()) {
+				throw new LuaException("ERROR invalid tile entity!");
+			}
+
 			// boolean success, string response = think(string message)
 			if (method == 0) {
 				// Get arguments
 				String message = ArgumentHelper.getString(arguments, 0);
 
 				// Run method
-				thinkAsync(computer, context, uuid, session, message);
+				thinkAsync(message);
 
 				// Wait for message
 				Object[] event = context.pullEvent(AIChatRequest.EVENT);
 
+				// ai_response: string side, bool success, string response, string uuid
+				//   event[0]     event[1]      event[2]      event[3]       event[4]
+
 				// Make sure you get the right message and not someone else's
-				while (!uuid.toString().equals(event[3])) {
+				while (!uuid.toString().equals(event[4])) {
 					event = context.pullEvent(AIChatRequest.EVENT);
 				}
 
-				// ai_response: bool success, string response, string uuid
-				//   event[0]     event[1]       event[2]       event[3]
-
-				return new Object[] { event[1],event[2] };
+				return new Object[] { event[2],event[3] };
 			}
 
-			// nil = think(string message)
+			// nil = thinkAsync(string message)
 			if (method == 1) {
 				// Get arguments
 				String message = ArgumentHelper.getString(arguments,0);
 
 				// Run method
-				thinkAsync(computer,context,uuid,session,message);
+				thinkAsync(message);
 			}
 
 			// getUUID
@@ -304,11 +339,12 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 
 		// Makes a new thread and "thinks" in that one.
 		// When finished it sends an event to the designated computer.
-		public void thinkAsync(IComputerAccess computer, ILuaContext context, UUID uuid, ChatterBotSession session, String message) throws LuaException, InterruptedException {
-			AIChatRequest request = new AIChatRequest(computer,this,message);
+		public void thinkAsync(String message) throws LuaException, InterruptedException {
+			AIChatRequest request = new AIChatRequest(source,this,message);
 		}
 
 		// Just a normal thinking process. Haults the computer until it gets a reply (or errors out)
+		// Called from AIChatRequest
 		public String think(String message) throws Exception {
 			return session.think(message);
 		}
