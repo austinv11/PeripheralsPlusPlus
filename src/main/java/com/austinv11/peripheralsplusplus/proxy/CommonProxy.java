@@ -23,6 +23,7 @@ public class CommonProxy {
 
 	public void registerTileEntities() {
 		GameRegistry.registerTileEntity(TileEntityChatBox.class, TileEntityChatBox.publicName);
+		GameRegistry.registerTileEntity(TileEntityAIChatBox.class, TileEntityAIChatBox.publicName);
 		GameRegistry.registerTileEntity(TileEntityPlayerSensor.class, TileEntityPlayerSensor.publicName);
 		if (Loader.isModLoaded(ModIds.ThermalExpansion) || Loader.isModLoaded(ModIds.BuildCraft_Core))
 			GameRegistry.registerTileEntity(TileEntityRFCharger.class, TileEntityRFCharger.publicName);
