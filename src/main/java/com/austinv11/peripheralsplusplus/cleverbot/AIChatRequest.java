@@ -1,12 +1,8 @@
 package com.austinv11.peripheralsplusplus.cleverbot;
 
-import com.austinv11.peripheralsplusplus.reference.Reference;
+import com.austinv11.collectiveframework.multithreading.SimpleRunnable;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAIChatBox;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAIChatBox.BotSessionLuaObject;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class AIChatRequest {
 	public static final String EVENT = "ai_response";
@@ -24,7 +20,9 @@ public class AIChatRequest {
 		this.session = session;
 		this.message = message;
 
-		Thread thread = new Thread(new Runnable() {
+		new SimpleRunnable() {
+			
+			@Override
 			public void run() {
 				try {
 					response = session.think(message);
@@ -38,7 +36,6 @@ public class AIChatRequest {
 				// ai_response: string side, bool success, string response, string uuid
 				tileEntity.sendEvent(new Object[]{ success, response, session.getUUID().toString() });
 			}
-		});
-		thread.start();
+		}.start();
 	}
 }
