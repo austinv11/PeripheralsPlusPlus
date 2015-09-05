@@ -6,12 +6,12 @@ import com.austinv11.collectiveframework.minecraft.logging.Logger;
 import com.austinv11.collectiveframework.minecraft.reference.ModIds;
 import com.austinv11.collectiveframework.minecraft.utils.CurseVersionChecker;
 import com.austinv11.collectiveframework.multithreading.SimpleRunnable;
-import com.austinv11.peripheralsplusplus.blocks.*;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
 import com.austinv11.peripheralsplusplus.commands.CommandUpdate;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.entities.EntityNanoBotSwarm;
 import com.austinv11.peripheralsplusplus.entities.EntityRidableTurtle;
+import com.austinv11.peripheralsplusplus.hooks.ComputerCraftHooks;
 import com.austinv11.peripheralsplusplus.hooks.ComputerCraftNotFoundException;
 import com.austinv11.peripheralsplusplus.hooks.ComputerCraftRegistry;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
@@ -31,10 +31,7 @@ import com.austinv11.peripheralsplusplus.utils.IPlusPlusPeripheral;
 import cpw.mods.fml.common.Loader;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.SidedProxy;
-import cpw.mods.fml.common.event.FMLInitializationEvent;
-import cpw.mods.fml.common.event.FMLPostInitializationEvent;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.event.FMLServerStartingEvent;
+import cpw.mods.fml.common.event.*;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.common.registry.EntityRegistry;
@@ -165,8 +162,15 @@ public class PeripheralsPlusPlus {
 	}
 	
 	@Mod.EventHandler
-	public void onServerStart(FMLServerStartingEvent event) {
+	public void onServerStarting(FMLServerStartingEvent event) {
 		event.registerServerCommand(new CommandUpdate());
+		
+	}
+	
+	@Mod.EventHandler
+	public void onServerStop(FMLServerStoppedEvent event) {
+		ComputerCraftHooks.cachedPeripherals.clear();
+		ComputerCraftHooks.cachedExtraPeripherals.clear();
 	}
 	
 	private void doVersionCheck() {
