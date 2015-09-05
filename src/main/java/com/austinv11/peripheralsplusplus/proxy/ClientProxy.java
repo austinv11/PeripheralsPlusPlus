@@ -8,7 +8,6 @@ import com.austinv11.peripheralsplusplus.entities.EntityNanoBotSwarm;
 import com.austinv11.peripheralsplusplus.entities.EntityRidableTurtle;
 import com.austinv11.peripheralsplusplus.event.handler.RobotHandler;
 import com.austinv11.peripheralsplusplus.event.handler.SmartHelmetHandler;
-import com.austinv11.peripheralsplusplus.event.handler.VersionCheckHandler;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
@@ -64,7 +63,6 @@ public class ClientProxy extends CommonProxy {
 		super.registerEvents();
 		FMLCommonHandler.instance().bus().register(new SmartHelmetHandler());
 		MinecraftForge.EVENT_BUS.register(new SmartHelmetHandler());
-		FMLCommonHandler.instance().bus().register(new VersionCheckHandler());
 		FMLCommonHandler.instance().bus().register(new RobotHandler());
 	}
 }
