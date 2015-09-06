@@ -32,8 +32,8 @@ apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
 ext.buildNumber = System.getenv("BUILD_ID") ?: "dev"
-version = "1.3.2-$buildNumber"
-//version = "1.3.2"
+//version = "1.3.3-$buildNumber"
+version = "1.3.3"
 group= "com.austinv11.peripheralsplusplus" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "Peripherals++"
 
