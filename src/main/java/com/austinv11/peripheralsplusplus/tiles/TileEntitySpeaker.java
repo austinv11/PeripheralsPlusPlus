@@ -194,7 +194,7 @@ public class TileEntitySpeaker extends MountedTileEntity {
 
 	public void onSpeechCompletion(String text, String lang) {
 		for (IComputerAccess computer : computers.keySet())
-			if (eventTicker == 0 || !lastMessage.equals(text)) {
+			if (eventTicker == 0 || (lastMessage != null && !lastMessage.equals(text))) {
 				if (lang != null)
 					computer.queueEvent("speechComplete", new Object[]{text, lang});
 				else
