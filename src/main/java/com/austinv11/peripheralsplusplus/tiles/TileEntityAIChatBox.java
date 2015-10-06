@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.cleverbot.AIChatRequest;
+import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
@@ -38,7 +39,10 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		if (isInvalid()) {
+        if (!Config.enableAIChatBox)
+            throw new LuaException("AI Chat Boxes have been disabled");
+
+        if (isInvalid()) {
 			throw new LuaException("ERROR invalid tile entity");
 		}
 

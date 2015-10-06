@@ -168,4 +168,7 @@ public class Config {
 	
 	@Description(category = "Motion Detector", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableMotionDetector = true;
+
+    @Description(category = "AI Chat Box", comment = ENABLE_CONFIG_MESSAGE)
+    public static boolean enableAIChatBox = true;
 }
