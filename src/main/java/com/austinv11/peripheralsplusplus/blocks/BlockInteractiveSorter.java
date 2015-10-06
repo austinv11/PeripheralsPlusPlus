@@ -19,7 +19,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-public class BlockInteractiveSorter extends BlockContainer {
+public class BlockInteractiveSorter extends BlockContainerPPP {
 	
 	public BlockInteractiveSorter() {
 		super(Material.rock);
@@ -31,32 +31,6 @@ public class BlockInteractiveSorter extends BlockContainer {
 	@Override
 	public TileEntity createNewTileEntity(World world, int meta) {
 		return new TileEntityInteractiveSorter();
-	}
-	
-	@Override
-	public String getUnlocalizedName(){//Formats the name
-		return String.format("tile.%s%s", Reference.MOD_ID.toLowerCase()+":", getUnwrappedUnlocalizedName(getUnwrappedUnlocalizedName(super.getUnlocalizedName())));
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister iconRegister){//Registers the block icon(s)
-		blockIcon = iconRegister.registerIcon(String.format("%s", getUnwrappedUnlocalizedName(this.getUnlocalizedName())));
-	}
-	
-	protected String getUnwrappedUnlocalizedName(String unlocalizedName){//Removes the "item." from the item name
-		return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
-	}
-	
-	@Override
-	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
-		ArrayList<ItemStack> items = Lists.newArrayList();
-		ItemStack stack = new ItemStack(this,1,metadata);
-		items.add(stack);
-		TileEntityInteractiveSorter sorter = (TileEntityInteractiveSorter)world.getTileEntity(x,y,z);;
-		if (sorter.getStackInSlot(0) != null)
-			items.add(sorter.getStackInSlot(0));
-		return items;
 	}
 	
 	@Override

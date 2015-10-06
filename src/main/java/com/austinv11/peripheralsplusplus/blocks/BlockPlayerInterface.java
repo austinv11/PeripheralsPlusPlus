@@ -9,6 +9,7 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.peripheral.IPeripheralProvider;
+import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
@@ -19,7 +20,7 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-public class BlockPlayerInterface extends BlockContainer {
+public class BlockPlayerInterface extends BlockContainerPPP {
 
     public BlockPlayerInterface()
     {
@@ -33,37 +34,6 @@ public class BlockPlayerInterface extends BlockContainer {
     public TileEntity createNewTileEntity(World world, int p_149915_2_)
     {
         return new TileEntityPlayerInterface();
-    }
-
-    @Override
-    public String getUnlocalizedName()
-    {//Formats the name
-        return String.format("tile.%s%s", Reference.MOD_ID.toLowerCase() + ":", getUnwrappedUnlocalizedName(getUnwrappedUnlocalizedName(super.getUnlocalizedName())));
-    }
-
-    @Override
-    @SideOnly(Side.CLIENT)
-    public void registerBlockIcons(IIconRegister iconRegister)
-    {//Registers the block icon(s)
-        blockIcon = iconRegister.registerIcon(String.format("%s", getUnwrappedUnlocalizedName(this.getUnlocalizedName())));
-    }
-
-    protected String getUnwrappedUnlocalizedName(String unlocalizedName)
-    {//Removes the "item." from the item name
-        return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
-    }
-
-    @Override
-    public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
-    {
-        ArrayList<ItemStack> items = Lists.newArrayList();
-        ItemStack stack = new ItemStack(this, 1, metadata);
-        items.add(stack);
-        TileEntityPlayerInterface playerInterface = (TileEntityPlayerInterface) world.getTileEntity(x, y, z);
-        ;
-        if (playerInterface.getStackInSlot(0) != null)
-            items.add(playerInterface.getStackInSlot(0));
-        return items;
     }
 
     @Override

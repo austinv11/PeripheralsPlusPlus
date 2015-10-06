@@ -18,24 +18,13 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 
-public class BlockResupplyStation extends BlockContainer {
+public class BlockResupplyStation extends BlockContainerPPP {
 	
 	public BlockResupplyStation() {
 		super(Material.rock);
 		this.setBlockName("resupplyStation");
 		this.setCreativeTab(CreativeTabPPP.PPP_TAB);
 		this.setHardness(4f);
-	}
-	
-	@Override
-	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
-		ArrayList<ItemStack> items = Lists.newArrayList();
-		ItemStack stack = new ItemStack(this,1,metadata);
-		items.add(stack);
-		TileEntityAnalyzer analyzer = (TileEntityAnalyzer)world.getTileEntity(x,y,z);;
-		if (analyzer.getStackInSlot(0) != null)
-			items.add(analyzer.getStackInSlot(0));
-		return items;
 	}
 	
 	@Override
@@ -46,21 +35,6 @@ public class BlockResupplyStation extends BlockContainer {
 				player.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.RESUPPLY_STATION.ordinal(), world, x, y, z);
 		}
 		return true;
-	}
-	
-	@Override
-	public String getUnlocalizedName(){//Formats the name
-		return String.format("tile.%s%s", Reference.MOD_ID.toLowerCase()+":", getUnwrappedUnlocalizedName(getUnwrappedUnlocalizedName(super.getUnlocalizedName())));
-	}
-	
-	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister iconRegister){//Registers the block icon(s)
-		blockIcon = iconRegister.registerIcon(String.format("%s", getUnwrappedUnlocalizedName(this.getUnlocalizedName())));
-	}
-	
-	protected String getUnwrappedUnlocalizedName(String unlocalizedName){//Removes the "item." from the item name
-		return unlocalizedName.substring(unlocalizedName.indexOf(".") + 1);
 	}
 	
 	@Override
