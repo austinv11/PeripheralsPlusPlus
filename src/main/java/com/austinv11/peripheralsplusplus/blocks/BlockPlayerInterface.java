@@ -60,9 +60,8 @@ public class BlockPlayerInterface extends BlockContainer {
         ItemStack stack = new ItemStack(this, 1, metadata);
         items.add(stack);
         TileEntityPlayerInterface playerInterface = (TileEntityPlayerInterface) world.getTileEntity(x, y, z);
-        ;
-        if (playerInterface.getStackInSlot(0) != null)
-            items.add(playerInterface.getStackInSlot(0));
+        //if (playerInterface.getStackInSlot(0) != null)
+            //items.add(playerInterface.getStackInSlot(0));
         return items;
     }
 
