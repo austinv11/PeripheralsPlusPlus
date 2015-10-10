@@ -69,6 +69,12 @@ public class ContainerPlayerInterface extends Container
         {
             // Get the stack in the slot that was shift-clicked. This stack will act as a base for our return itemstack.
             ItemStack itemstack1 = slot.getStack();
+
+            if (!itemstack1.getItem().equals(ModItems.permCard))
+            {
+                return null;
+            }
+
             // Copy that stack to our return itemstack.
             itemstack = itemstack1.copy();
 
