@@ -46,24 +46,21 @@ public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
 				case 3://Normal turtle + emerald = advanced turtle
 					recipe = new MerchantRecipe(new ItemStack(GameRegistry.findBlock("ComputerCraft", "CC-Turtle")), emerald, new ItemStack(GameRegistry.findBlock("ComputerCraft", "CC-TurtleAdvanced")));
 					break;
-				case 4://Normal portable comp + emerald = advanced portable comp
-					recipe = new MerchantRecipe(new ItemStack(GameRegistry.findItem("ComputerCraft", "pocketComputer")), emerald, new ItemStack(GameRegistry.findItem("ComputerCraft", "pocketComputer"), 1, 1));
-					break;
-				case 5://Normal comp + 2 emeralds = normal turtle
+				case 4://Normal comp + 2 emeralds = normal turtle
 					emerald.stackSize = 2;
 					recipe = new MerchantRecipe(new ItemStack(GameRegistry.findBlock("ComputerCraft", "CC-Computer")), emerald, new ItemStack(GameRegistry.findBlock("ComputerCraft", "CC-Turtle")));
 					break;
-				case 6://Advanced comp + 2 emeralds = advanced turtle
+				case 5://Advanced comp + 2 emeralds = advanced turtle
 					emerald.stackSize = 2;
 					recipe = new MerchantRecipe(new ItemStack(GameRegistry.findBlock("ComputerCraft", "CC-Computer"), 1, 16384), emerald, new ItemStack(GameRegistry.findBlock("ComputerCraft", "CC-TurtleAdvanced")));
 					break;
-				case 7://64 emeralds = portable computer (an IPhone basically)
+				case 6://64 emeralds = portable computer (an IPhone basically)
 					emerald.stackSize = 64;
 					ItemStack iPhone = new ItemStack(GameRegistry.findItem("ComputerCraft", "pocketComputer"), 1, 1);
 					iPhone.setStackDisplayName(StatCollector.translateToLocal("item.peripheralsplusplus:iphone.name"));
 					recipe = new MerchantRecipe(emerald, iPhone);
 					break;
-				case 8://Paper + emerald = book w/ lore TODO:More than 3 books
+				case 7://Paper + emerald = book w/ lore TODO:More than 3 books
 					recipe = new MerchantRecipe(new ItemStack(Items.book), emerald, getBookFromInt(MathHelper.getRandomIntegerInRange(random, 0, 2)));
 					break;
 			}
