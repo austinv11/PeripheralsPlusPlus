@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.lua;
 
+import appeng.api.storage.data.IAEItemStack;
 import com.austinv11.collectiveframework.minecraft.utils.Location;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.reference.Config;
@@ -19,6 +20,7 @@ import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class LuaObjectPlayerInv implements ILuaObject {
@@ -140,16 +142,22 @@ public class LuaObjectPlayerInv implements ILuaObject {
     }
 
     private Object getObjectFromStack(ItemStack stack) {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+
         if (stack == null)
         {
             return null;
         }
+
         String itemName = Item.itemRegistry.getNameForObject(stack.getItem());
         int meta = stack.getItemDamage();
         long amount = stack.stackSize;
         String displayName = stack.getDisplayName();
-        List<Object> list = new ArrayList<Object>(Arrays.asList(itemName, meta, amount, displayName));
-        return Util.arrayToMap(list.toArray());
+        map.put("name", itemName);
+        map.put("meta", meta);
+        map.put("amount", amount);
+        map.put("displayName", displayName);
+        return map;
     }
 
     private IInventory getOutputInventory() throws LuaException {
