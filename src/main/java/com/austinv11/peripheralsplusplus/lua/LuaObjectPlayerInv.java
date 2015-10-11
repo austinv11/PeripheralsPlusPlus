@@ -1,6 +1,8 @@
 package com.austinv11.peripheralsplusplus.lua;
 
 import com.austinv11.collectiveframework.minecraft.utils.Location;
+import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
+import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityPlayerInterface;
 import com.austinv11.peripheralsplusplus.utils.Util;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -44,10 +46,7 @@ public class LuaObjectPlayerInv implements ILuaObject {
                 }
 
                 if (hasGetStacksPermission()) {
-                    origStack = inv.getStackInSlot(((Double) arguments[0]).intValue());
-                    if (origStack != null) {
-                        return new Object[]{getObjectFromStack(origStack)};
-                    }
+                    return new Object[] {getObjectFromStack(inv.getStackInSlot(((Double) arguments[0]).intValue()))};
                 }
                 break;
             case 1:
@@ -124,6 +123,12 @@ public class LuaObjectPlayerInv implements ILuaObject {
                     }
                 }
                 break;
+            case 4:
+                if (hasGetStacksPermission())
+                {
+                    return new Object[]{inv.getSizeInventory()};
+                }
+                break;
         }
         inv.markDirty();
         return new Object[0];
@@ -131,10 +136,14 @@ public class LuaObjectPlayerInv implements ILuaObject {
 
     @Override
     public String[] getMethodNames() {
-        return new String[]{"getStackInSlot", "retrieveFromSlot", "pushToSlot", "push"};
+        return new String[]{"getStackInSlot", "retrieveFromSlot", "pushToSlot", "push", "getSize"};
     }
 
     private Object getObjectFromStack(ItemStack stack) {
+        if (stack == null)
+        {
+            return null;
+        }
         String itemName = Item.itemRegistry.getNameForObject(stack.getItem());
         int meta = stack.getItemDamage();
         long amount = stack.stackSize;
@@ -226,14 +235,14 @@ public class LuaObjectPlayerInv implements ILuaObject {
     }
 
     private boolean hasDepositPermission() {
-        return permCard.getTagCompound().getBoolean("deposit");
+        return !Config.enableInterfacePermissions || permCard.getTagCompound().getBoolean("deposit");
     }
 
     private boolean hasWithdrawPermission() {
-        return permCard.getTagCompound().getBoolean("withdraw");
+        return !Config.enableInterfacePermissions || permCard.getTagCompound().getBoolean("withdraw");
     }
 
     private boolean hasGetStacksPermission() {
-        return permCard.getTagCompound().getBoolean("getStacks");
+        return !Config.enableInterfacePermissions || permCard.getTagCompound().getBoolean("getStacks");
     }
 }

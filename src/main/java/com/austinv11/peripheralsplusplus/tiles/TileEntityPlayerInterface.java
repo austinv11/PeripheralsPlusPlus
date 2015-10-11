@@ -44,7 +44,7 @@ public class TileEntityPlayerInterface extends MountedTileEntityInventory {
                     throw new LuaException("Bad argument #1 (expected string)");
                 }
                 // Check that the specified player has given permission for some sort of editing by putting their permissions card in the player interface
-                if (worldObj.getPlayerEntityByName((String) arguments[0]) != null && hasPermissionsCardFor((String) arguments[0]))
+                if (worldObj.getPlayerEntityByName((String) arguments[0]) != null && (hasPermissionsCardFor((String) arguments[0]) || !Config.enableInterfacePermissions))
                 {
                     return new Object[]{new LuaObjectPlayerInv(worldObj.getPlayerEntityByName((String) arguments[0]), this, getPermCardFor((String) arguments[0]))};
                 }
