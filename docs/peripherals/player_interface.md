@@ -25,3 +25,4 @@ An object used to interact with a player's inventory. Can be accessed with the g
 |retrieveFromSlot(_num_ retrieveSlot, _num_ amount)|_boolean_ success|Retrieves a stack of size amount from slot retrieveSlot and attemtps to place it in the output inventory.|
 |pushToSlot(_num_ sourceSlot, _num_ amount, _num_ destSlot)|_boolean_ success|Pushes amount of items from stack from slot sourceSlot in the input inventory to slot destSlot in the player's inventory.|
 |push()|_num_ sourceSlot, _num_ destSlot|Pushes entire stack from slot sourceSlot in the input inventory to slot destSlot of the player's inventory.|
+|getSize()|_number_ size|Returns the size of the player's inventory.|
