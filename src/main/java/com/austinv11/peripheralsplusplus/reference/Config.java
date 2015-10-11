@@ -127,9 +127,6 @@ public class Config {
 	@Description(category = "Ridable Turtle", comment = "The amount of fuel used after each turtle movement")
 	public static int fuelPerTurtleMovement = 1;
 	
-	@Description(category = "Version Update Notification", comment = "Setting this to false disables version update checking")
-	public static boolean doVersionUpdateChecks = true;
-	
 	@Description(category = "Nano Bots", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableNanoBots = true;
 	
