@@ -1,0 +1,2 @@
+The permissions card is used with the [player interface](https://github.com/austinv11/PeripheralsPlusPlus/wiki/Player-Interface) and tells the interface what it is allowed to do to different player's inventories. Before editing the card, you have to link it to yourself by right clicking with it in your hand. After it is linked, you can edit the permissions of that card by sneaking and right clicking. After editing the permissions to how you'd like them, you can place the card in a player interface.
+![](http://i.imgur.com/uj8HJLy.png)
