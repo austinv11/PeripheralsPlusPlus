@@ -4,6 +4,7 @@ import com.austinv11.collectiveframework.minecraft.config.ConfigException;
 import com.austinv11.collectiveframework.minecraft.config.ConfigRegistry;
 import com.austinv11.collectiveframework.minecraft.logging.Logger;
 import com.austinv11.collectiveframework.minecraft.reference.ModIds;
+import com.austinv11.collectiveframework.multithreading.SimpleRunnable;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.entities.EntityNanoBotSwarm;
@@ -143,6 +144,7 @@ public class PeripheralsPlusPlus {
 		Recipes.init();
 		BlockDispenser.dispenseBehaviorRegistry.putObject(ModItems.nanoSwarm, new ItemNanoSwarm.BehaviorNanoSwarm());
 		ForgeChunkManager.setForcedChunkLoadingCallback(this, new PeripheralChunkLoader.TurtleChunkLoadingCallback());
+		SimpleRunnable.RESTRICT_THREAD_USAGE = false;
 	}
 	
 	@Mod.EventHandler
