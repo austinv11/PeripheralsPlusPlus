@@ -38,7 +38,7 @@ group= "com.austinv11.peripheralsplusplus" // http://maven.apache.org/guides/min
 archivesBaseName = "Peripherals++"
 
 minecraft {
-    version = "1.7.10-10.13.3.1428-1.7.10"
+    version = "1.7.10-10.13.4.1558-1.7.10"
     runDir = "eclipse"
     replace("@VERSION@",project.version)
 }
