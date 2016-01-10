@@ -58,7 +58,7 @@ public class Config {
 	@Description(category = "Ore Dictionary", comment = "If enabled, the Ore Dictionary peripheral will display a chat message with the Ore Dictionary entries - useful for debugging")
 	public static boolean oreDictionaryMessage = false;
 	
-	@Description(category = "Navigational Turtle", comment = ENABLE_CONFIG_MESSAGE)
+	@Description(category = "Shearing Turtle", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableShearTurtle = true;
 	
 	@Description(category = "Forestry Analyzers", comment = ENABLE_CONFIG_MESSAGE)
@@ -73,7 +73,7 @@ public class Config {
 	@Description(category = "Environment Scanner", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableEnvironmentScanner = true;
 	
-	@Description(category = "Navigational Turtle", comment = ENABLE_CONFIG_MESSAGE)
+	@Description(category = "Feeder Turtle", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableFeederTurtle = true;
 	
 	@Description(category = "Villagers", comment = "Whether to enable villagers from this mod")
