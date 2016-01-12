@@ -69,8 +69,10 @@ public class TurtleRecipeHandler extends TemplateRecipeHandler {
 				if (NBTHelper.hasTag(result, "leftUpgrade") && NBTHelper.hasTag(result, "rightUpgrade")) {
 					ITurtleUpgrade upgrade1 = upgrades.get((int)NBTHelper.getShort(result, "leftUpgrade"));
 					ITurtleUpgrade upgrade2 = upgrades.get((int)NBTHelper.getShort(result, "rightUpgrade"));
-					if (upgrade1.getCraftingItem() != null && upgrade2.getCraftingItem() != null)
-						this.arecipes.add(new CachedTurtleRecipe(upgrade1, upgrade2, isAdvanced(result)));
+					if (upgrade1 != null && upgrade2 != null) {
+						if (upgrade1.getCraftingItem() != null && upgrade2.getCraftingItem() != null)
+							this.arecipes.add(new CachedTurtleRecipe(upgrade1, upgrade2, isAdvanced(result)));
+					}
 				} else {
 					boolean isLeft = NBTHelper.hasTag(result, "leftUpgrade");
 					ITurtleUpgrade upgrade = upgrades.get((int)NBTHelper.getShort(result, isLeft ? "leftUpgrade" : "rightUpgrade"));
