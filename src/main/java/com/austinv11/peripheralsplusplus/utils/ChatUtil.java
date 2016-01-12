@@ -19,12 +19,10 @@ public class ChatUtil {
 	public static void sendMessage(TileEntity te, String text, double range, boolean unlimitedY) {
 		PeripheralsPlusPlus.LOGGER.info(range);
 		if (range == Double.MAX_VALUE) {
-			PeripheralsPlusPlus.LOGGER.info("Range is maximum");
 			for (EntityPlayer player : (Iterable<EntityPlayer>)MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
 				PeripheralsPlusPlus.NETWORK.sendTo(new ChatPacket(text), (EntityPlayerMP) player);
 			}
 		} else if (unlimitedY) {
-			PeripheralsPlusPlus.LOGGER.info("Unlimited Y");
 			for (EntityPlayer player : (Iterable<EntityPlayer>) te.getWorldObj().playerEntities) {
 				Vec3 playerPos = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
 				playerPos.yCoord = te.yCoord;
@@ -33,13 +31,12 @@ public class ChatUtil {
 				PeripheralsPlusPlus.NETWORK.sendTo(new ChatPacket(text), (EntityPlayerMP) player);
 			}
 		} else {
-			PeripheralsPlusPlus.LOGGER.info("Neither max range nor unlimited y");
 			PeripheralsPlusPlus.NETWORK.sendToAllAround(new ChatPacket(text), new NetworkRegistry.TargetPoint(te.getWorldObj().provider.dimensionId, te.xCoord, te.yCoord, te.zCoord, range));
 		}
 	}
 
 	public static boolean sendMessage(String ign, TileEntity te, String text, double range, boolean unlimitedY) {
-		EntityPlayer player = getPlayer(ign, te.getWorldObj());
+		EntityPlayer player = getPlayer(ign, range == Double.MAX_VALUE ? null : te.getWorldObj());
 		if (player != null) {
 			Vec3 playerPos = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
 			if (unlimitedY)
@@ -53,7 +50,7 @@ public class ChatUtil {
 	}
 
 	private static EntityPlayer getPlayer(String ign, World w) {
-		List<EntityPlayer> players = w.playerEntities;
+		List<EntityPlayer> players = w == null ? MinecraftServer.getServer().getConfigurationManager().playerEntityList : w.playerEntities;
 		for (EntityPlayer p : players) {
 			if (p.getDisplayName().equalsIgnoreCase(ign))
 				return p;

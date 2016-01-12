@@ -169,22 +169,21 @@ public class TileEntityChatBox extends MountedTileEntity {
 				String message;
 				if (Config.logCoords) {
 					message = ChatUtil.getCoordsPrefix(this) + arguments[1];
-				}else if (!Config.logCoords && arguments.length > 4) {
+				} else if (!Config.logCoords && arguments.length > 4) {
 					message = "[" + arguments[4] + "] " + arguments[1];
-				}else {
+				} else {
 					message = "[@] " + arguments[1];
 				}
-				double range;
-				if (Config.sayRange < 0) {
-					range = Double.MAX_VALUE;
-				}else {
-					range = Config.sayRange;
-				}
+				double range = Config.sayRange < 0 ? Double.MAX_VALUE : Config.sayRange;
 				if (arguments.length > 2)
 					range = (Double) arguments[2];
-				subticker = TICKER_INTERVAL;
-				ticker++;
-				return new Object[]{ChatUtil.sendMessage((String) arguments[0], this, message, range, (arguments.length > 3 && (Boolean) arguments[3] && Config.allowUnlimitedVertical))};
+
+				synchronized (this) {
+					subticker = TICKER_INTERVAL;
+					ticker++;
+					ChatUtil.sendMessage((String) arguments[0], this, message, range, (arguments.length > 3 && (Boolean) arguments[3] && Config.allowUnlimitedVertical));
+				}
+				return new Object[]{true};
 			}
 		}else {
 			throw new LuaException("Chat boxes have been disabled");
