@@ -6,16 +6,25 @@ import cpw.mods.fml.common.network.NetworkRegistry;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class ChatUtil {
 
 	public static void sendMessage(TileEntity te, String text, double range, boolean unlimitedY) {
-		if (unlimitedY) {
+		PeripheralsPlusPlus.LOGGER.info(range);
+		if (range == Double.MAX_VALUE) {
+			PeripheralsPlusPlus.LOGGER.info("Range is maximum");
+			for (EntityPlayer player : (Iterable<EntityPlayer>)MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+				PeripheralsPlusPlus.NETWORK.sendTo(new ChatPacket(text), (EntityPlayerMP) player);
+			}
+		} else if (unlimitedY) {
+			PeripheralsPlusPlus.LOGGER.info("Unlimited Y");
 			for (EntityPlayer player : (Iterable<EntityPlayer>) te.getWorldObj().playerEntities) {
 				Vec3 playerPos = Vec3.createVectorHelper(player.posX, player.posY, player.posZ);
 				playerPos.yCoord = te.yCoord;
@@ -24,6 +33,7 @@ public class ChatUtil {
 				PeripheralsPlusPlus.NETWORK.sendTo(new ChatPacket(text), (EntityPlayerMP) player);
 			}
 		} else {
+			PeripheralsPlusPlus.LOGGER.info("Neither max range nor unlimited y");
 			PeripheralsPlusPlus.NETWORK.sendToAllAround(new ChatPacket(text), new NetworkRegistry.TargetPoint(te.getWorldObj().provider.dimensionId, te.xCoord, te.yCoord, te.zCoord, range));
 		}
 	}

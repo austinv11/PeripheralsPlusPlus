@@ -76,13 +76,13 @@ public class TileEntityChatBox extends MountedTileEntity {
 
 	public void onChat(EntityPlayer player, String message) {
 		for (IComputerAccess computer : computers.keySet())
-			computer.queueEvent("chat", new Object[] {player.getDisplayName(), message});
+			computer.queueEvent("chat", new Object[]{player.getDisplayName(), message});
 	}
 
 	public void onDeath(EntityPlayer player, DamageSource source) {
 		String killer = null;
 		if (source instanceof EntityDamageSource) {
-			Entity ent = ((EntityDamageSource)source).getEntity();
+			Entity ent = source.getEntity();
 			if (ent != null)
 				killer = ent.getCommandSenderName();
 		}
@@ -130,18 +130,13 @@ public class TileEntityChatBox extends MountedTileEntity {
 				}
 				String message;
 				if (Config.logCoords) {
-					message = ChatUtil.getCoordsPrefix(this) + (String) arguments[0];
+					message = ChatUtil.getCoordsPrefix(this) + arguments[0];
 				}else if (!Config.logCoords && arguments.length > 3) {
-					message = "[" + (String) arguments[3] + "] " + (String) arguments[0];
+					message = "[" + arguments[3] + "] " + arguments[0];
 				}else {
-					message ="[@] " + (String) arguments[0];
+					message ="[@] " + arguments[0];
 				}
-				double range;
-				if (Config.sayRange < 0) {
-					range = Double.MAX_VALUE;
-				}else {
-					range = Config.sayRange;
-				}
+				double range = Config.sayRange < 0 ? Double.MAX_VALUE : Config.sayRange;
 				if (arguments.length > 1)
 					range = (Double) arguments[1];
 				synchronized (this) {
@@ -173,11 +168,11 @@ public class TileEntityChatBox extends MountedTileEntity {
 				}
 				String message;
 				if (Config.logCoords) {
-					message = ChatUtil.getCoordsPrefix(this) + (String) arguments[1];
+					message = ChatUtil.getCoordsPrefix(this) + arguments[1];
 				}else if (!Config.logCoords && arguments.length > 4) {
-					message = "[" + (String) arguments[4] + "] " + (String) arguments[1];
+					message = "[" + arguments[4] + "] " + arguments[1];
 				}else {
-					message = "[@] " + (String) arguments[1];
+					message = "[@] " + arguments[1];
 				}
 				double range;
 				if (Config.sayRange < 0) {
@@ -218,7 +213,7 @@ public class TileEntityChatBox extends MountedTileEntity {
 	}
 
 	@Override
-	public boolean equals(IPeripheral other) {//FIXME idk what I'm doing
+	public boolean equals(IPeripheral other) {
 		return (other == this);
 	}
 
@@ -231,14 +226,16 @@ public class TileEntityChatBox extends MountedTileEntity {
 				String commandPrefix = Config.chatboxCommandPrefix.trim();
 				if (!commandPrefix.equals("") && !commandPrefix.equals(" ") && event.message.startsWith(commandPrefix)) {
 					event.setCanceled(true);
+
 					for (TileEntityChatBox box : chatBoxMap.keySet()) {
 						if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord, box.yCoord, box.zCoord).distanceTo(event.player.getPosition(1.0f)) <= Config.readRange)
 							box.onCommand(event.player, event.message);
 					}
 				} else {
 					for (TileEntityChatBox box : chatBoxMap.keySet()) {
-						if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord, box.yCoord, box.zCoord).distanceTo(event.player.getPosition(1.0f)) <= Config.readRange)
+						if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord, box.yCoord, box.zCoord).distanceTo(event.player.getPosition(1.0f)) <= Config.readRange) {
 							box.onChat(event.player, event.message);
+						}
 					}
 				}
 			}
@@ -249,7 +246,7 @@ public class TileEntityChatBox extends MountedTileEntity {
 			if (Config.enableChatBox) {
 				if (event.entity instanceof EntityPlayer) {
 					for (TileEntityChatBox box : chatBoxMap.keySet()) {
-						if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord,box.yCoord,box.zCoord).distanceTo(((EntityPlayer) event.entity).getPosition(1.0f)) <= Config.readRange)
+						if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord, box.yCoord, box.zCoord).distanceTo(((EntityPlayer) event.entity).getPosition(1.0f)) <= Config.readRange)
 							box.onDeath((EntityPlayer) event.entity, event.source);
 					}
 				}
