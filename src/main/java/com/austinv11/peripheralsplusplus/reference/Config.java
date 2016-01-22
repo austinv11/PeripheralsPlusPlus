@@ -146,13 +146,7 @@ public class Config {
 	public static boolean enableChunkyTurtle = true;
 	
 	@Description(category = "Chunky Turtle", comment = "Radius of chunks that will be loaded. 0 for 1x1, 1 for 3x3, 2 for 5x5, etc. The maximum allowed by the default chunkloading settings is 5x5, edit config/forgeChunkLoading.cfg to change those")
-	public static int chunkLoadingRadius = 0;
-	
-	@Description(category = "Chunky Turtle", comment = "The amount of extra fuel used by a chunky turtle for movement")
-	public static int chunkyMovementPenalty = 1;
-	
-	@Description(category = "Chunky Turtle", comment = "It will only be active if the chunkloading radius is 0. EXPERIMENTAL: This will make turtles load extra chunks when near boundaries to allow for them to traverse between chunk boundaries for 1x1 radius")
-	public static boolean aggressiveChunkLoading = true;
+	public static int chunkLoadingRadius = 1;
 	
 	@Description(category = "Interactive Sorter", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableInteractiveSorter = true;

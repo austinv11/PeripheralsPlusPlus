@@ -122,8 +122,8 @@ public class PeripheralsPlusPlus {
 		registerUpgrade(new TurtleNoteBlock());
 		registerUpgrade(new TurtleRidable());
 		registerUpgrade(new TurtleDispenser());
-		registerUpgrade(new TurtleChunkLoader());
 		registerUpgrade(new TurtleResupply());
+		registerUpgrade(new TurtleChunkLoader());
 		LOGGER.info("Registering pocket computer upgrades...");
 		try {
 			ComputerCraftRegistry.registerPocketUpgrade(new PocketMotionDetector());
@@ -137,13 +137,14 @@ public class PeripheralsPlusPlus {
 			proxy.setupVillagers();
 		EntityRegistry.registerModEntity(EntityRidableTurtle.class, "Ridable Turtle", 1, instance, 64, 1, true);
 		EntityRegistry.registerModEntity(EntityNanoBotSwarm.class, "NanoBotSwarm", 2, instance, 64, 20, true);
+
+		ForgeChunkManager.setForcedChunkLoadingCallback(PeripheralsPlusPlus.instance, new PeripheralChunkLoader.LoaderHandler());
 	}
 
 	@Mod.EventHandler
 	public void postInit(FMLPostInitializationEvent event) throws ComputerCraftNotFoundException {
 		Recipes.init();
 		BlockDispenser.dispenseBehaviorRegistry.putObject(ModItems.nanoSwarm, new ItemNanoSwarm.BehaviorNanoSwarm());
-		ForgeChunkManager.setForcedChunkLoadingCallback(this, new PeripheralChunkLoader.TurtleChunkLoadingCallback());
 		SimpleRunnable.RESTRICT_THREAD_USAGE = false;
 	}
 	
