@@ -31,7 +31,6 @@ public class PeripheralChunkLoader extends MountedPeripheral {
 	@Override
 	public void attach(IComputerAccess computer) {
 		super.attach(computer);
-		PeripheralsPlusPlus.LOGGER.info("Peripheral Attached");
 		attached = true;
 	}
 
@@ -47,7 +46,6 @@ public class PeripheralChunkLoader extends MountedPeripheral {
 	@Override
 	public void detach(IComputerAccess computer) {
 		super.detach(computer);
-		PeripheralsPlusPlus.LOGGER.info("Peripheral Detached");
 		ForgeChunkManager.releaseTicket(ticket);
 		ticket = null;
 	}
@@ -58,7 +56,6 @@ public class PeripheralChunkLoader extends MountedPeripheral {
 		for (ChunkCoordIntPair coordIntPair : getChunksInRadius(Config.chunkLoadingRadius)) {
 			ForgeChunkManager.forceChunk(ticket, coordIntPair);
 		}
-		PeripheralsPlusPlus.LOGGER.info("Ticked Updated");
 	}
 
 	public ArrayList<ChunkCoordIntPair> getChunksInRadius(int radius) {
