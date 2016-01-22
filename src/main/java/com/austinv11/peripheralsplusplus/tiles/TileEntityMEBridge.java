@@ -283,10 +283,8 @@ public class TileEntityMEBridge extends MountedTileEntity implements IActionHost
 		int i = 1;
 		while (iterator.hasNext()) {
 			Object o = getObjectFromStack(iterator.next(), flag);
-			if (o != null) {
-				map.put(i, o);
-				i++;
-			}
+			if (o != null)
+				map.put(i++, o);
 		}
 		return map;
 	}
@@ -304,7 +302,7 @@ public class TileEntityMEBridge extends MountedTileEntity implements IActionHost
 		if (flag == 0) {
 			return map;
 		} else if (flag == 1) {
-			if (stack.getCountRequestable() > 0)
+			if (stack.getStackSize() > 0)
 				return map;
 		} else if (flag == 2) {
 			if (stack.isCraftable())
