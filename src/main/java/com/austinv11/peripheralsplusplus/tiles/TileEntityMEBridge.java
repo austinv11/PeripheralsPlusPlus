@@ -14,7 +14,7 @@ import appeng.api.storage.data.IAEItemStack;
 import appeng.api.util.AECableType;
 import appeng.api.util.AEColor;
 import appeng.api.util.DimensionalCoord;
-import appeng.core.WorldSettings;
+import appeng.core.worlddata.WorldData;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import cpw.mods.fml.common.Optional;
@@ -75,7 +75,7 @@ public class TileEntityMEBridge extends MountedTileEntity implements IActionHost
 		if (!worldObj.isRemote)
 			if (!initialized) {
 				if (placed != null)
-					getNode().setPlayerID(WorldSettings.getInstance().getPlayerID(placed.getGameProfile()));
+					getNode().setPlayerID(WorldData.instance().playerData().getPlayerID(placed.getGameProfile()));
 				getNode().updateState();
 				initialized = true;
 			}
