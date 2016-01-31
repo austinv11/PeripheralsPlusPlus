@@ -29,12 +29,6 @@ public class BlockOreDictionary extends BlockPPP implements ITileEntityProvider 
 		if (Config.enableOreDictionary) {
 			if (!world.isRemote)
 				((TileEntityOreDictionary) world.getTileEntity(x, y, z)).blockActivated(player);
-//			NBTTagCompound tag =player.getHeldItem().stackTagCompound;
-//			try {
-//				Logger.info(tag.toString());FIXME DEBUG
-//			} catch (Exception e) {
-//				//e.printStackTrace();
-//			}
 		}
 		return true;
 	}

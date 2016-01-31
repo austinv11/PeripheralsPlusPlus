@@ -28,11 +28,9 @@ public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
 		MerchantRecipe recipe = new MerchantRecipe(new ItemStack(Blocks.dirt), error);
 		do {
 			int trade = MathHelper.getRandomIntegerInRange(random, 0, 8);
-			//Logger.info(trade);
 			switch (trade) {
 				case 0://Empty floppy disk + 3 emeralds = dungeon disk FIXME, must use colored disks
 					int type = MathHelper.getRandomIntegerInRange(random, 0, 9);
-					//Logger.info(type);
 					ItemStack floppy = getFloppyFromInt(type);
 					emerald.stackSize = 3;
 					recipe = new MerchantRecipe(new ItemStack(GameRegistry.findItem("ComputerCraft", "diskExpanded")), emerald, floppy);

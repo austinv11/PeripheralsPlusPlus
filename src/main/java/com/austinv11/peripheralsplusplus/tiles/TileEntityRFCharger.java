@@ -56,7 +56,6 @@ public class TileEntityRFCharger extends NetworkedTileEntity implements IEnergyR
 						ITurtleAccess turtle = ReflectionHelper.getTurtle(te);
 						if (turtle != null) {
 							turtles.add(turtle);
-							//Logger.info(":D");
 						}
 					} catch (Exception e) {
 						e.printStackTrace();

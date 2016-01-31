@@ -47,13 +47,11 @@ public class ItemNanoSwarm extends ItemPPP {
 		if (TileEntityAntenna.antenna_registry.containsKey(swarm.antennaIdentifier)) {
 			TileEntityAntenna antenna = TileEntityAntenna.antenna_registry.get(swarm.antennaIdentifier);
 			if (!antenna.associatedEntities.contains(hit)) {
-				PeripheralsPlusPlus.LOGGER.info("Entity added by hit");
 				antenna.associatedEntities.add(hit);
 			}
 			NanoProperties properties = (NanoProperties)hit.getExtendedProperties(NanoProperties.IDENTIFIER);
 			properties.numOfBots += Config.numberOfInstructions;
 			properties.antennaID = swarm.antennaIdentifier;
-			PeripheralsPlusPlus.LOGGER.info("Properties: " + properties.antennaID);
 		}
 	}
 	

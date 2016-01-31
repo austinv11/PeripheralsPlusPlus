@@ -196,7 +196,6 @@ public class TileEntityChatBox extends MountedTileEntity {
 
 	@Override
 	public void attach(IComputerAccess computer) {
-		//Logger.info("yay!");
 		if (computers.size() == 0)
 			ChatListener.chatBoxMap.put(this, true);
 		computers.put(computer, true);

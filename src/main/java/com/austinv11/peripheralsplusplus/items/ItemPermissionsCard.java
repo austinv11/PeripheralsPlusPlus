@@ -34,7 +34,6 @@ public class ItemPermissionsCard extends ItemPPP
                 {
                     if (NBTHelper.getTag(stack, "profile") == null)
                     {
-                        PeripheralsPlusPlus.LOGGER.info("setting");
                         NBTTagCompound nbt = new NBTTagCompound();
                         NBTUtil.func_152460_a(nbt, player.getGameProfile());
                         NBTHelper.setTag(stack, "profile", nbt);

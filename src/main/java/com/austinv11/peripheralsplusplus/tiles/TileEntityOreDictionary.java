@@ -160,7 +160,6 @@ public class TileEntityOreDictionary extends MountedTileEntity {
 
 	@Override
 	public void attach(IComputerAccess computer) {
-		//Logger.info(":D");
 		if (!isTurtle())
 			computers.put(computer, true);
 		super.attach(computer);

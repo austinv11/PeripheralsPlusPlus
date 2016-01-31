@@ -17,7 +17,6 @@ import java.util.List;
 public class ChatUtil {
 
 	public static void sendMessage(TileEntity te, String text, double range, boolean unlimitedY) {
-		PeripheralsPlusPlus.LOGGER.info(range);
 		if (range == Double.MAX_VALUE) {
 			for (EntityPlayer player : (Iterable<EntityPlayer>)MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
 				PeripheralsPlusPlus.NETWORK.sendTo(new ChatPacket(text), (EntityPlayerMP) player);

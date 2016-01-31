@@ -16,7 +16,6 @@ public class BlockChatBox extends BlockPPP implements ITileEntityProvider {
 
 	@Override
 	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
-		//Logger.info("test");
 		return new TileEntityChatBox();
 	}
 

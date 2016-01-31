@@ -82,7 +82,6 @@ public class GuiPermCard extends GuiScreen
     @Override
     public void onGuiClosed()
     {
-        PeripheralsPlusPlus.LOGGER.info("sending packet");
         PeripheralsPlusPlus.NETWORK.sendToServer(new PermCardChangePacket(canGetStacks, canWithdraw, canDeposit));
     }
 }
