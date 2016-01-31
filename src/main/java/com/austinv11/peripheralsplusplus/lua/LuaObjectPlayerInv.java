@@ -1,11 +1,8 @@
 package com.austinv11.peripheralsplusplus.lua;
 
-import appeng.api.storage.data.IAEItemStack;
 import com.austinv11.collectiveframework.minecraft.utils.Location;
-import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityPlayerInterface;
-import com.austinv11.peripheralsplusplus.utils.Util;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
@@ -19,9 +16,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 public class LuaObjectPlayerInv implements ILuaObject {
     private InventoryPlayer inv;

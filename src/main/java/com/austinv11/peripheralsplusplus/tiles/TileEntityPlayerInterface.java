@@ -8,8 +8,10 @@ import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTUtil;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.UUID;
@@ -43,10 +45,16 @@ public class TileEntityPlayerInterface extends MountedTileEntityInventory {
                 {
                     throw new LuaException("Bad argument #1 (expected string)");
                 }
-                // Check that the specified player has given permission for some sort of editing by putting their permissions card in the player interface
-                if (worldObj.getPlayerEntityByName((String) arguments[0]) != null && (hasPermissionsCardFor((String) arguments[0]) || !Config.enableInterfacePermissions))
-                {
-                    return new Object[]{new LuaObjectPlayerInv(worldObj.getPlayerEntityByName((String) arguments[0]), this, getPermCardFor((String) arguments[0]))};
+                // Check that the specified player exists
+                for (EntityPlayer player :  (Iterable<EntityPlayer>)MinecraftServer.getServer().getConfigurationManager().playerEntityList) {
+                    if (player.getDisplayName().equals(arguments[0])) {
+                        // Check that the specified player has given permission for some sort of editing by putting their permissions card in the player interface
+                        if (hasPermissionsCardFor(player) || !Config.enableInterfacePermissions) {
+                            return new Object[]{new LuaObjectPlayerInv(player, this, getPermCardFor(player))};
+                        } else {
+                            throw new LuaException("Missing permissions for player " + arguments[0]);
+                        }
+                    }
                 }
             }
             else if (method == 1 || method == 2)
@@ -99,16 +107,16 @@ public class TileEntityPlayerInterface extends MountedTileEntityInventory {
         return publicName;
     }
 
-    private boolean hasPermissionsCardFor(String name) {
-        return getPermCardFor(name) != null;
+    private boolean hasPermissionsCardFor(EntityPlayer player) {
+        return getPermCardFor(player) != null;
     }
 
-    private ItemStack getPermCardFor(String name) {
+    private ItemStack getPermCardFor(EntityPlayer player) {
         for (ItemStack stack : items) {
             if (stack != null) {
                 if (stack.hasTagCompound()) {
                     UUID uuid = NBTUtil.func_152459_a(NBTHelper.getCompoundTag(stack, "profile")).getId();
-                    if (uuid.equals(worldObj.getPlayerEntityByName(name).getGameProfile().getId())) {
+                    if (uuid.equals(player.getGameProfile().getId())) {
                         return stack;
                     }
                 }
