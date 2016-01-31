@@ -3,6 +3,7 @@ package com.austinv11.peripheralsplusplus.tiles;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ChatUtil;
 import com.austinv11.peripheralsplusplus.utils.Util;
+import cpw.mods.fml.common.eventhandler.EventPriority;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -218,7 +219,7 @@ public class TileEntityChatBox extends MountedTileEntity {
 	public static class ChatListener {
 		private static HashMap<TileEntityChatBox,Boolean> chatBoxMap = new HashMap<TileEntityChatBox, Boolean>();
 
-		@SubscribeEvent
+		@SubscribeEvent(priority = EventPriority.LOWEST)
 		public void onChat(ServerChatEvent event) {
 			if (Config.enableChatBox) {
 				String commandPrefix = Config.chatboxCommandPrefix.trim();
@@ -239,7 +240,7 @@ public class TileEntityChatBox extends MountedTileEntity {
 			}
 		}
 
-		@SubscribeEvent
+		@SubscribeEvent(priority = EventPriority.LOWEST)
 		public void onDeath(LivingDeathEvent event) {
 			if (Config.enableChatBox) {
 				if (event.entity instanceof EntityPlayer) {
