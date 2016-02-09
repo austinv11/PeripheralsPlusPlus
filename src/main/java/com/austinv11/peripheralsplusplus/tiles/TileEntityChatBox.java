@@ -120,9 +120,7 @@ public class TileEntityChatBox extends MountedTileEntity {
 				if (arguments.length > 2 && !(arguments[2] instanceof Boolean))
 					throw new LuaException("Bad argument #3 (expected boolean)");
 				if (arguments.length > 3) {
-					if (Config.logCoords) {
-						throw new LuaException("Coordinate logging is enabled, disable this to enable naming");
-					} else if(!(arguments[3] instanceof String)) {
+					if(!(arguments[3] instanceof String)) {
 						throw new LuaException("Bad argument #4 (expected string)");
 					}
 				}
