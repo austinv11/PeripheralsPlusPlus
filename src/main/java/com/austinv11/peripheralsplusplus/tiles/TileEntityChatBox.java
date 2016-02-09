@@ -229,7 +229,7 @@ public class TileEntityChatBox extends MountedTileEntity {
 
 						for (TileEntityChatBox box : chatBoxMap.keySet()) {
 							if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord, box.yCoord, box.zCoord).distanceTo(event.player.getPosition(1.0f)) <= Config.readRange)
-								box.onCommand(event.player, event.message);
+								box.onCommand(event.player, event.message.replace(commandPrefix, ""));
 						}
 					} else {
 						for (TileEntityChatBox box : chatBoxMap.keySet()) {
