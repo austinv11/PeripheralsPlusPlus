@@ -57,14 +57,23 @@ public class LuaObjectPlayerInv implements ILuaObject {
                     throw new LuaException("Bad argument #2 (expected number)");
                 }
 
+                if (getOutputInventory() == null) {
+                    throw new LuaException("No output side set.");
+                }
+
                 if (hasWithdrawPermission()) {
                     origStack = inv.getStackInSlot(((Double) arguments[0]).intValue());
                     if (origStack == null) {
                         return new Object[0];
                     }
 
+
                     newStack = inv.decrStackSize(((Double) arguments[0]).intValue(), ((Double) arguments[1]).intValue());
-                    return new Object[]{addStackToInv(getOutputInventory(), newStack, -1)};
+                    if (!addStackToInv(getOutputInventory(), newStack, -1)) {
+                        inv.addItemStackToInventory(newStack);
+                        return new Object[]{false};
+                    }
+                    return new Object[]{true};
                 }
                 break;
             case 2:
@@ -164,8 +173,9 @@ public class LuaObjectPlayerInv implements ILuaObject {
         Block block = playerInterface.getWorldObj().getBlock(blockLoc.getRoundedX(), blockLoc.getRoundedY(), blockLoc.getRoundedZ());
         if (block instanceof BlockContainer) {
             return (IInventory) playerInterface.getWorldObj().getTileEntity(blockLoc.getRoundedX(), blockLoc.getRoundedY(), blockLoc.getRoundedZ());
+        } else {
+            throw new LuaException("Invalid Output Inventory.");
         }
-        return null;
     }
 
     private IInventory getInputInventory() throws LuaException {
@@ -177,8 +187,9 @@ public class LuaObjectPlayerInv implements ILuaObject {
         Block block = playerInterface.getWorldObj().getBlock(blockLoc.getRoundedX(), blockLoc.getRoundedY(), blockLoc.getRoundedZ());
         if (block instanceof BlockContainer) {
             return (IInventory) playerInterface.getWorldObj().getTileEntity(blockLoc.getRoundedX(), blockLoc.getRoundedY(), blockLoc.getRoundedZ());
+        } else {
+            throw new LuaException("Invalid Input Inventory.");
         }
-        return null;
     }
 
     /**
