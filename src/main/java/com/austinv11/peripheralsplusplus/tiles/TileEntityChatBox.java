@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ChatUtil;
 import com.austinv11.peripheralsplusplus.utils.Util;
@@ -135,9 +136,20 @@ public class TileEntityChatBox extends MountedTileEntity {
 				}else {
 					message ="[@] " + arguments[0];
 				}
-				double range = Config.sayRange < 0 ? Double.MAX_VALUE : Config.sayRange;
-				if (arguments.length > 1)
-					range = (Double) arguments[1];
+
+				double range = Config.sayRange;
+				if (Config.sayRange < 0) {
+					range = Double.MAX_VALUE;
+				} else if (arguments.length > 1) {
+					if ((Double) arguments[1] < 0) {
+						if (Config.sayRange < 0) {
+							range = Double.MAX_VALUE;
+						}
+					} else if ((Double) arguments[1] < Config.sayRange) {
+						range = (Double) arguments[1];
+					}
+				}
+
 				synchronized (this) {
 					ChatUtil.sendMessage(this, message, range, (arguments.length > 2 && (Boolean) arguments[2] && Config.allowUnlimitedVertical));
 					subticker = TICKER_INTERVAL;
