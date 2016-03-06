@@ -27,7 +27,7 @@ public class TradeHandler implements VillagerRegistry.IVillageTradeHandler {
 		error.setStackDisplayName(Colors.RED+"THIS IS A BUG, REPORT TO THE P++ AUTHOR ASAP");
 		MerchantRecipe recipe = new MerchantRecipe(new ItemStack(Blocks.dirt), error);
 		do {
-			int trade = MathHelper.getRandomIntegerInRange(random, 0, 8);
+			int trade = MathHelper.getRandomIntegerInRange(random, 0, 7);
 			switch (trade) {
 				case 0://Empty floppy disk + 3 emeralds = dungeon disk FIXME, must use colored disks
 					int type = MathHelper.getRandomIntegerInRange(random, 0, 9);
