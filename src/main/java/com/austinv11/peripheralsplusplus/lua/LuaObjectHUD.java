@@ -144,9 +144,9 @@ public class LuaObjectHUD implements ILuaObject{
 				c.y1 = (int)(double)(Double)arguments[1];
 				c.x2 = (int)(double)(Double)arguments[2];
 				c.y2 = (int)(double)(Double)arguments[3];
-				c.color = new Color((int)(double)(Double)arguments[4]);
+				c.color = new Color((int)(double)(Double)arguments[4], true);
 				if (arguments.length > 5)
-					c.color2 = new Color((int)(double)(Double)arguments[5]);
+					c.color2 = new Color((int)(double)(Double)arguments[5], true);
 				renderStack.add(c);
 				break;
 			case 5:
@@ -165,7 +165,7 @@ public class LuaObjectHUD implements ILuaObject{
 				c_.y1 = (int)(double)(Double)arguments[1];
 				c_.x2 = (int)(double)(Double)arguments[2] + 1;
 				c_.y2 = c_.y1+1;
-				c_.color = new Color((int)(double)(Double)arguments[3]);
+				c_.color = new Color((int)(double)(Double)arguments[3], true);
 				renderStack.add(c_);
 				break;
 			case 6:
@@ -184,7 +184,7 @@ public class LuaObjectHUD implements ILuaObject{
 				c1.y1 = (int)(double)(Double)arguments[1] + 1;
 				c1.x2 = c1.x1 + 1;
 				c1.y2 = (int)(double)(Double)arguments[2];
-				c1.color = new Color((int)(double)(Double)arguments[3]);
+				c1.color = new Color((int)(double)(Double)arguments[3], true);
 				renderStack.add(c1);
 				break;
 			case 7:

@@ -33,9 +33,9 @@ public class DrawRectangleCommand extends HelmetCommand {
 		x2 = tagCompound.getInteger("x2");
 		y1 = tagCompound.getInteger("y1");
 		y2 = tagCompound.getInteger("y2");
-		color = new Color(tagCompound.getInteger("rgb"));
+		color = new Color(tagCompound.getInteger("rgb"), true);
 		if (tagCompound.hasKey("rgb2"))
-			color2 = new Color(tagCompound.getInteger("rgb2"));
+			color2 = new Color(tagCompound.getInteger("rgb2"), true);
 	}
 
 	@Override
