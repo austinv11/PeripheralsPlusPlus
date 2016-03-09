@@ -11,9 +11,9 @@
 
 **Actual behavior:** [What actually happened]
 
-**Stacktrace (if applicable):** [PASTEBIN or HASTEBIN link to the stacktrace]
+**Stacktrace (if applicable):** [PASTEBIN or HASTEBIN link to the stacktrace. Do NOT copy and paste the log into the issue post itself.]
 
-**Version affected:** [The version of Peripherals++]
+**Version affected:** [The version of Peripherals++ *and* Forge]
 
 ### Additional Information
 [Any other information that may be able to help me with the problem]
