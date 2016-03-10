@@ -1,4 +1,0 @@
-{
-  "ver" : "1.0",
-  "files" : ["index.json","checkClick.lua","onlinePlayers.lua","nearbyPlayers.lua"]
-}
