@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.handler;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
+import com.austinv11.peripheralsplusplus.util.Logger;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -32,7 +33,7 @@ public class ConfigHandler {
 			config.addCustomCategoryComment("Items", "");
 			config.addCustomCategoryComment("Misc", "");
 		} catch (Exception e) {
-			e.printStackTrace();
+			Logger.error(e);
 		} finally {
 			if (config.hasChanged()) {
 				config.save();
