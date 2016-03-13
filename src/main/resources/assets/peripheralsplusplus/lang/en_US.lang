@@ -1,0 +1,5 @@
+#Blocks
+tile.peripheralsplusplus:blockTest.name=Test Block
+
+#Misc
+itemGroup.peripheralsplusplus=Peripherals++
