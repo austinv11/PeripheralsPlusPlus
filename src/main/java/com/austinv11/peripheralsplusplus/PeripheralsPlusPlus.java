@@ -4,6 +4,8 @@ import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Reference;
+import com.austinv11.peripheralsplusplus.util.IPlusPlusPeripheral;
+import dan200.computercraft.api.ComputerCraftAPI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.item.Item;
@@ -31,5 +33,6 @@ public class PeripheralsPlusPlus {
 	@Mod.EventHandler
 	public void init(FMLInitializationEvent event) {
 		proxy.setupItemRenderer();
+		ComputerCraftAPI.registerPeripheralProvider(new IPlusPlusPeripheral.Provider());
 	}
 }
