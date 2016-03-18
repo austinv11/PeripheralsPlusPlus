@@ -1,12 +1,11 @@
 package com.austinv11.peripheralsplusplus.util;
 
-import com.austinv11.peripheralsplusplus.reference.Reference;
 import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.Level;
 
 public class Logger {
 	private static void log(Level level, Object object) {
-		FMLLog.log(level, Reference.MOD_ID, object);
+		FMLLog.log(level, String.valueOf(object));
 	}
 
 	public static void all(Object object) {

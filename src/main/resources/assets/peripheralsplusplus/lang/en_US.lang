@@ -1,5 +1,6 @@
 #Blocks
 tile.peripheralsplusplus:blockTest.name=Test Block
+tile.peripheralsplusplus:blockOreDict.name=Ore Dictionary
 
 #Misc
 itemGroup.peripheralsplusplus=Peripherals++

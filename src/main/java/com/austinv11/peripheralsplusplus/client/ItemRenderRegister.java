@@ -1,13 +1,14 @@
 package com.austinv11.peripheralsplusplus.client;
 
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
-import net.minecraft.item.Item;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.Item;
 
 public class ItemRenderRegister {
 	public static void init() {
 		register(Item.getItemFromBlock(ModBlocks.blockTest));
+		register(Item.getItemFromBlock(ModBlocks.blockOreDict));
 	}
 
 	private static void register(Item item) {

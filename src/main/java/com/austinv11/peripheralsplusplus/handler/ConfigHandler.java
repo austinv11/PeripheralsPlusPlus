@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus.handler;
 
-import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.util.Logger;
 import net.minecraftforge.common.config.Configuration;
