@@ -11,7 +11,7 @@ public abstract class ContainerPPP extends Container {
 	IInventory inventory;
 	EntityPlayer player;
 
-	public ContainerPPP (IInventory inventory, EntityPlayer player) {
+	public ContainerPPP(IInventory inventory, EntityPlayer player) {
 		this.inventory = inventory;
 		this.player = player;
 		inventory.openInventory(player);
@@ -43,8 +43,7 @@ public abstract class ContainerPPP extends Container {
 		Slot slot = this.inventorySlots.get(index);
 
 		// Check that the slot exists and has an itemstack in it
-		if (slot != null && slot.getHasStack())
-		{
+		if (slot != null && slot.getHasStack()) {
 			// Get the stack in the slot that was shift-clicked. This stack will act as a base for our return itemstack.
 			ItemStack itemstack1 = slot.getStack();
 
@@ -57,19 +56,15 @@ public abstract class ContainerPPP extends Container {
 				{
 					return null;
 				}
-			}
-			else if (!this.mergeItemStack(itemstack1, 0, inventory.getSizeInventory(), false)) // If the itemstack can't merge with any stacks in the container, return.
+			} else if (!this.mergeItemStack(itemstack1, 0, inventory.getSizeInventory(), false)) // If the itemstack can't merge with any stacks in the container, return.
 			{                                                       // Implies that the stack being transferred is from a slot in the player's main inv
 				return null;
 			}
 
 			// After the merging has completed, if the itemstack has a size of 0, replace it with an empty slot.
-			if (itemstack1.stackSize == 0)
-			{
+			if (itemstack1.stackSize == 0) {
 				slot.putStack(null);
-			}
-			else
-			{
+			} else {
 				// Inform the game that the slot was changed.
 				slot.onSlotChanged();
 			}

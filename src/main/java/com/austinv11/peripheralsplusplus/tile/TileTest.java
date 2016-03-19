@@ -17,14 +17,14 @@ public class TileTest extends TileEntity implements IPlusPlusPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[]{"test"};
+		return new String[] {"test"};
 	}
 
 	@Override
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 		switch (method) {
 			case 0:
-				return new Object[]{"Test"};
+				return new Object[] {"Test"};
 		}
 		return new Object[0];
 	}

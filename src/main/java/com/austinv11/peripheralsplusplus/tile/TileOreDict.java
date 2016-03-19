@@ -15,7 +15,7 @@ public class TileOreDict extends TileEntityInventory implements IPlusPlusPeriphe
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[]{"transmute"};
+		return new String[] {"transmute"};
 	}
 
 	@Override
