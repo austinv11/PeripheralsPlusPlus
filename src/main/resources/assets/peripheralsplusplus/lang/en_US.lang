@@ -1,6 +1,7 @@
 #Blocks
 tile.peripheralsplusplus:blockTest.name=Test Block
 tile.peripheralsplusplus:blockOreDict.name=Ore Dictionary
+tile.peripheralsplusplus:blockEnvScanner.name=Environment Scanner
 
 #Misc
 itemGroup.peripheralsplusplus=Peripherals++

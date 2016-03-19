@@ -9,6 +9,7 @@ public class ItemRenderRegister {
 	public static void init() {
 		register(Item.getItemFromBlock(ModBlocks.blockTest));
 		register(Item.getItemFromBlock(ModBlocks.blockOreDict));
+		register(Item.getItemFromBlock(ModBlocks.blockEnvScanner));
 	}
 
 	private static void register(Item item) {
