@@ -8,11 +8,13 @@ public class ModBlocks {
 	public static final BlockPPP blockOreDict = new BlockOreDict();
 	public static final BlockPPP blockEnvScanner = new BlockEnvScanner();
 	public static final BlockPPP blockPlayerSensor = new BlockPlayerSensor();
+	public static final BlockPPP blockChatBox = new BlockChatBox();
 
 	public static void init() {
 		GameRegistry.registerBlock(blockTest, blockTest.getName());
 		GameRegistry.registerBlock(blockOreDict, blockOreDict.getName());
 		GameRegistry.registerBlock(blockEnvScanner, blockEnvScanner.getName());
 		GameRegistry.registerBlock(blockPlayerSensor, blockPlayerSensor.getName());
+		GameRegistry.registerBlock(blockChatBox, blockChatBox.getName());
 	}
 }

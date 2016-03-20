@@ -11,6 +11,7 @@ public class ItemRenderRegister {
 		register(Item.getItemFromBlock(ModBlocks.blockOreDict));
 		register(Item.getItemFromBlock(ModBlocks.blockEnvScanner));
 		register(Item.getItemFromBlock(ModBlocks.blockPlayerSensor));
+		register(Item.getItemFromBlock(ModBlocks.blockChatBox));
 	}
 
 	private static void register(Item item) {

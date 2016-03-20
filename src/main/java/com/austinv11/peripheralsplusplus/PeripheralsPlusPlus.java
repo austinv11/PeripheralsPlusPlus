@@ -6,6 +6,7 @@ import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Reference;
+import com.austinv11.peripheralsplusplus.tile.TileChatBox;
 import com.austinv11.peripheralsplusplus.util.IPlusPlusPeripheral;
 import dan200.computercraft.api.ComputerCraftAPI;
 import net.minecraftforge.common.MinecraftForge;
@@ -28,6 +29,7 @@ public class PeripheralsPlusPlus {
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
 		MinecraftForge.EVENT_BUS.register(new ConfigHandler());
+		MinecraftForge.EVENT_BUS.register(new TileChatBox.ChatListener());
 
 		ModBlocks.init();
 		ModItems.init();
