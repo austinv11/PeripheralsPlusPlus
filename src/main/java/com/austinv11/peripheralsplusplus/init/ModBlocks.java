@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.init;
 
 import com.austinv11.peripheralsplusplus.blocks.*;
+import com.austinv11.peripheralsplusplus.reference.Config;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ModBlocks {
@@ -12,9 +13,9 @@ public class ModBlocks {
 
 	public static void init() {
 		GameRegistry.registerBlock(blockTest, blockTest.getName());
-		GameRegistry.registerBlock(blockOreDict, blockOreDict.getName());
-		GameRegistry.registerBlock(blockEnvScanner, blockEnvScanner.getName());
-		GameRegistry.registerBlock(blockPlayerSensor, blockPlayerSensor.getName());
-		GameRegistry.registerBlock(blockChatBox, blockChatBox.getName());
+		if (Config.enableOreDict) GameRegistry.registerBlock(blockOreDict, blockOreDict.getName());
+		if (Config.enableEnvScanner) GameRegistry.registerBlock(blockEnvScanner, blockEnvScanner.getName());
+		if (Config.enablePlayerSensor) GameRegistry.registerBlock(blockPlayerSensor, blockPlayerSensor.getName());
+		if (Config.enableChatBox) GameRegistry.registerBlock(blockChatBox, blockChatBox.getName());
 	}
 }

@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tile;
 
+import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.util.Util;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -31,6 +32,8 @@ public class TilePlayerSensor extends TilePeripheral {
 					throw new LuaException("Bad argument #1. Expected number.");
 
 				int range = (int) (double) (Double) arguments[0];
+				if (range > Config.playerSensorMaxRange) range = Config.playerSensorMaxRange;
+				
 				AxisAlignedBB bb = AxisAlignedBB.fromBounds(pos.getX() - range, pos.getY() - range, pos.getZ() - range, pos.getX() + range, pos.getY() + range, pos.getZ() + range);
 				players = worldObj.getEntitiesWithinAABB(EntityPlayer.class, bb);
 

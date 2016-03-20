@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tile;
 
+import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.util.Util;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -54,7 +55,7 @@ public class TileChatBox extends TilePeripheral {
 					}
 					label = (String) arguments[2];
 				}
-				sendChatMessageInRange(message, range, label);
+				sendChatMessageInRange(message, range > Config.chatBoxMaxRange ? Config.chatBoxMaxRange : range, label);
 				return new Object[] {true};
 			case 1: // tell
 				if (arguments.length < 2)
@@ -109,7 +110,7 @@ public class TileChatBox extends TilePeripheral {
 	public static class ChatListener {
 		@SubscribeEvent
 		public void onChat(ServerChatEvent event) {
-			if (event.message.startsWith("\\")) { // TODO: Configurable
+			if (event.message.startsWith(Config.commandDiscriminator)) { // TODO: Configurable
 				String commandName = event.message.substring(1);
 				if (commandName.contains(" ")) {
 					commandName = commandName.substring(0, commandName.indexOf(" "));
