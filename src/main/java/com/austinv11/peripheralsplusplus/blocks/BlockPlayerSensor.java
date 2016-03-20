@@ -29,7 +29,7 @@ public class BlockPlayerSensor extends BlockPPP implements ITileEntityProvider {
 	@Override
 	public boolean onBlockActivated(World worldIn, BlockPos pos, IBlockState state, EntityPlayer playerIn, EnumFacing side, float hitX, float hitY, float hitZ) {
 		if (worldIn.getTileEntity(pos) != null) {
-			((TilePlayerSensor)worldIn.getTileEntity(pos)).onBlockActivated(playerIn.getName());
+			((TilePlayerSensor) worldIn.getTileEntity(pos)).onBlockActivated(playerIn.getName());
 			return true;
 		}
 		return false;

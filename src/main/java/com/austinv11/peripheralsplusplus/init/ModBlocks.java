@@ -5,9 +5,9 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public class ModBlocks {
 	public static final BlockPPP blockTest = new BlockTest();
-	public static final BlockOreDict blockOreDict = new BlockOreDict();
-	public static final BlockEnvScanner blockEnvScanner = new BlockEnvScanner();
-	public static final BlockPlayerSensor blockPlayerSensor = new BlockPlayerSensor();
+	public static final BlockPPP blockOreDict = new BlockOreDict();
+	public static final BlockPPP blockEnvScanner = new BlockEnvScanner();
+	public static final BlockPPP blockPlayerSensor = new BlockPlayerSensor();
 
 	public static void init() {
 		GameRegistry.registerBlock(blockTest, blockTest.getName());

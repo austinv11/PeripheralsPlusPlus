@@ -64,12 +64,12 @@ public class TileOreDict extends TileEntityInventory implements IPlusPlusPeriphe
 
 	@Override
 	public String getType() {
-		return null;
+		return "oreDict";
 	}
 
 	@Override
 	public boolean equals(IPeripheral other) {
-		return false;
+		return other == this;
 	}
 
 	@Override
