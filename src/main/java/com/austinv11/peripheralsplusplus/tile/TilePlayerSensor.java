@@ -1,29 +1,19 @@
 package com.austinv11.peripheralsplusplus.tile;
 
-import com.austinv11.peripheralsplusplus.util.IPlusPlusPeripheral;
 import com.austinv11.peripheralsplusplus.util.Util;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TilePlayerSensor extends TileEntity implements IPlusPlusPeripheral {
+public class TilePlayerSensor extends TilePeripheral {
 	public static final String name = "tilePlayerSensor";
-	ArrayList<IComputerAccess> computers = new ArrayList<IComputerAccess>();
-
-	public void onBlockActivated(String playerName) {
-		for (IComputerAccess computer : computers) {
-			computer.queueEvent("player", new Object[] {playerName});
-		}
-	}
 
 	@Override
 	public String[] getMethodNames() {
@@ -69,20 +59,5 @@ public class TilePlayerSensor extends TileEntity implements IPlusPlusPeripheral 
 	@Override
 	public String getType() {
 		return "playerSensor";
-	}
-
-	@Override
-	public boolean equals(IPeripheral other) {
-		return other == this;
-	}
-
-	@Override
-	public void attach(IComputerAccess computer) {
-		computers.add(computer);
-	}
-
-	@Override
-	public void detach(IComputerAccess computer) {
-		computers.remove(computer);
 	}
 }

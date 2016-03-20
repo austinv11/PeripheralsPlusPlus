@@ -1,13 +1,10 @@
 package com.austinv11.peripheralsplusplus.tile;
 
-import com.austinv11.peripheralsplusplus.util.IPlusPlusPeripheral;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraft.tileentity.TileEntity;
 
-public class TileEnvScanner extends TileEntity implements IPlusPlusPeripheral {
+public class TileEnvScanner extends TilePeripheral {
 	public static final String name = "tileEnvScanner";
 
 	@Override
@@ -31,22 +28,7 @@ public class TileEnvScanner extends TileEntity implements IPlusPlusPeripheral {
 	}
 
 	@Override
-	public boolean equals(IPeripheral other) {
-		return other == this;
-	}
-
-	@Override
 	public String getType() {
 		return "envScanner";
-	}
-
-	@Override
-	public void attach(IComputerAccess computer) {
-
-	}
-
-	@Override
-	public void detach(IComputerAccess computer) {
-
 	}
 }

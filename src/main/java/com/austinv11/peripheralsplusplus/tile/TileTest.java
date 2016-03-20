@@ -1,14 +1,11 @@
 package com.austinv11.peripheralsplusplus.tile;
 
-import com.austinv11.peripheralsplusplus.util.IPlusPlusPeripheral;
 import com.austinv11.peripheralsplusplus.util.Logger;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraft.tileentity.TileEntity;
 
-public class TileTest extends TileEntity implements IPlusPlusPeripheral {
+public class TileTest extends TilePeripheral {
 	public static final String name = "tileTest";
 
 	public TileTest() {
@@ -30,22 +27,7 @@ public class TileTest extends TileEntity implements IPlusPlusPeripheral {
 	}
 
 	@Override
-	public boolean equals(IPeripheral other) {
-		return other == this;
-	}
-
-	@Override
 	public String getType() {
 		return "test";
-	}
-
-	@Override
-	public void attach(IComputerAccess computer) {
-
-	}
-
-	@Override
-	public void detach(IComputerAccess computer) {
-
 	}
 }
