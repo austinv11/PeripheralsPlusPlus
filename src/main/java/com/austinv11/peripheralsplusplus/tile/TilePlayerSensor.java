@@ -33,7 +33,7 @@ public class TilePlayerSensor extends TilePeripheral {
 
 				int range = (int) (double) (Double) arguments[0];
 				if (range > Config.playerSensorMaxRange) range = Config.playerSensorMaxRange;
-				
+
 				AxisAlignedBB bb = AxisAlignedBB.fromBounds(pos.getX() - range, pos.getY() - range, pos.getZ() - range, pos.getX() + range, pos.getY() + range, pos.getZ() + range);
 				players = worldObj.getEntitiesWithinAABB(EntityPlayer.class, bb);
 

@@ -4,6 +4,7 @@ import com.austinv11.peripheralsplusplus.client.gui.GuiHandler;
 import com.austinv11.peripheralsplusplus.handler.ConfigHandler;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
+import com.austinv11.peripheralsplusplus.init.Recipes;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tile.TileChatBox;
@@ -41,5 +42,6 @@ public class PeripheralsPlusPlus {
 		proxy.setupItemRenderer();
 		ComputerCraftAPI.registerPeripheralProvider(new IPlusPlusPeripheral.Provider());
 		NetworkRegistry.INSTANCE.registerGuiHandler(instance, new GuiHandler());
+		Recipes.init();
 	}
 }
