@@ -10,6 +10,7 @@ public class ItemRenderRegister {
 		register(Item.getItemFromBlock(ModBlocks.blockTest));
 		register(Item.getItemFromBlock(ModBlocks.blockOreDict));
 		register(Item.getItemFromBlock(ModBlocks.blockEnvScanner));
+		register(Item.getItemFromBlock(ModBlocks.blockPlayerSensor));
 	}
 
 	private static void register(Item item) {

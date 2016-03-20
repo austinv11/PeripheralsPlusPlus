@@ -2,6 +2,7 @@
 tile.peripheralsplusplus:blockTest.name=Test Block
 tile.peripheralsplusplus:blockOreDict.name=Ore Dictionary
 tile.peripheralsplusplus:blockEnvScanner.name=Environment Scanner
+tile.peripheralsplusplus:blockPlayerSensor.name=Player Sensor
 
 #Misc
 itemGroup.peripheralsplusplus=Peripherals++
