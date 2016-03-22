@@ -38,6 +38,7 @@ public class ConfigHandler {
 			Config.enableEnvScanner = config.getBoolean("enableEnvScanner", "Blocks", true, ENABLE_COMMENT);
 			Config.enableOreDict = config.getBoolean("enableOreDict", "Blocks", true, ENABLE_COMMENT);
 			Config.enablePlayerSensor = config.getBoolean("enablePlayerSensor", "Blocks", true, ENABLE_COMMENT);
+			Config.enableSorter = config.getBoolean("enableSensor", "Blocks", true, ENABLE_COMMENT);
 
 			Config.commandDiscriminator = config.getString("commandDiscriminator", "Misc", "\\", "The character the chat messages must start with the determine if it is a command for Chat Boxes.");
 			Config.chatBoxMaxRange = config.get("Misc", "chatBoxMaxRange", 256, "Max say/tell range for the Chat Box.").getInt();

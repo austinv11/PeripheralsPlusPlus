@@ -15,6 +15,7 @@ public abstract class ContainerPPP extends Container {
 		this.inventory = inventory;
 		this.player = player;
 		inventory.openInventory(player);
+		layout();
 	}
 
 	public abstract void layout();

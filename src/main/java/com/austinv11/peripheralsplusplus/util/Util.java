@@ -1,5 +1,8 @@
 package com.austinv11.peripheralsplusplus.util;
 
+import net.minecraft.item.ItemStack;
+import net.minecraftforge.oredict.OreDictionary;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,5 +18,14 @@ public class Util {
 			indexedMap.put(list.indexOf(obj) + 1, obj);
 		}
 		return indexedMap;
+	}
+
+	public static String[] getOreDictEntries(ItemStack stack) {
+		int[] ids = OreDictionary.getOreIDs(stack);
+		String[] names = new String[ids.length];
+		for (int i = 0; i < ids.length; i++) {
+			names[i] = OreDictionary.getOreName(ids[i]);
+		}
+		return names;
 	}
 }

@@ -10,6 +10,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TileEnvScanner.class, TileEnvScanner.name);
 		GameRegistry.registerTileEntity(TilePlayerSensor.class, TilePlayerSensor.name);
 		GameRegistry.registerTileEntity(TileChatBox.class, TileChatBox.name);
+		GameRegistry.registerTileEntity(TileSorter.class, TileSorter.name);
 	}
 
 	public void setupItemRenderer() {

@@ -4,9 +4,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 
-public class ContainerOreDict extends ContainerPPP {
+public class ContainerSorter extends ContainerPPP {
 
-	public ContainerOreDict(IInventory inventory, EntityPlayer player) {
+	public ContainerSorter(IInventory inventory, EntityPlayer player) {
 		super(inventory, player);
 	}
 

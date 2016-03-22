@@ -13,6 +13,7 @@ public class ItemRenderRegister {
 		if (Config.enableEnvScanner) register(Item.getItemFromBlock(ModBlocks.blockEnvScanner));
 		if (Config.enablePlayerSensor) register(Item.getItemFromBlock(ModBlocks.blockPlayerSensor));
 		if (Config.enableChatBox) register(Item.getItemFromBlock(ModBlocks.blockChatBox));
+		if (Config.enableSorter) register(Item.getItemFromBlock(ModBlocks.blockSorter));
 	}
 
 	private static void register(Item item) {

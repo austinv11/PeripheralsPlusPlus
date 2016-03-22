@@ -8,6 +8,7 @@ public class Reference {
 	public static final String COMMON_PROXY = "com.austinv11.peripheralsplusplus.proxy.CommonProxy";
 
 	public enum GUIs {
-		ORE_DICT
+		ORE_DICT,
+		SORTER
 	}
 }

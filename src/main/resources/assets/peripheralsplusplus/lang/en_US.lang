@@ -4,6 +4,7 @@ tile.peripheralsplusplus:blockOreDict.name=Ore Dictionary
 tile.peripheralsplusplus:blockEnvScanner.name=Environment Scanner
 tile.peripheralsplusplus:blockPlayerSensor.name=Player Sensor
 tile.peripheralsplusplus:blockChatBox.name=Chat Box
+tile.peripheralsplusplus:blockSorter.name=Interactive Sorter
 
 #Misc
 itemGroup.peripheralsplusplus=Peripherals++

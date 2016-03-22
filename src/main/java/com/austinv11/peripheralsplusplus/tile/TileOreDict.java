@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.tile;
 
 import com.austinv11.peripheralsplusplus.util.IPlusPlusPeripheral;
+import com.austinv11.peripheralsplusplus.util.Util;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -32,7 +33,7 @@ public class TileOreDict extends TileEntityInventory implements IPlusPlusPeriphe
 	}
 
 	private ItemStack transmute(ItemStack stack) {
-		String[] entries = getOreDictEntires(stack);
+		String[] entries = Util.getOreDictEntries(stack);
 		entries:
 		for (String entry : entries) {
 			List<ItemStack> ores = OreDictionary.getOres(entry);
@@ -51,15 +52,6 @@ public class TileOreDict extends TileEntityInventory implements IPlusPlusPeriphe
 			}
 		}
 		return stack;
-	}
-
-	private String[] getOreDictEntires(ItemStack stack) {
-		int[] ids = OreDictionary.getOreIDs(stack);
-		String[] names = new String[ids.length];
-		for (int i = 0; i < ids.length; i++) {
-			names[i] = OreDictionary.getOreName(ids[i]);
-		}
-		return names;
 	}
 
 	@Override
