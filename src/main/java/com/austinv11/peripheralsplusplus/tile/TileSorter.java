@@ -39,7 +39,7 @@ public class TileSorter extends TileEntityInventory implements IPlusPlusPeripher
 				if (!(arguments[2] instanceof Double))
 					throw new LuaException("Bad argument #3. Expected number.");
 
-				direction = EnumFacing.byName((String)arguments[0]);
+				direction = EnumFacing.byName((String) arguments[0]);
 				tile = getWorld().getTileEntity(new BlockPos(getPos().getX() + direction.getFrontOffsetX(), getPos().getY() + direction.getFrontOffsetY(), getPos().getZ() + direction.getFrontOffsetZ()));
 				if (!(tile instanceof IInventory))
 					return new Object[] {false};
@@ -81,7 +81,7 @@ public class TileSorter extends TileEntityInventory implements IPlusPlusPeripher
 				if (!(arguments[2] instanceof Double))
 					throw new LuaException("Bad argument #3. Expected number.");
 
-				direction = EnumFacing.byName((String)arguments[0]);
+				direction = EnumFacing.byName((String) arguments[0]);
 				tile = getWorld().getTileEntity(new BlockPos(getPos().getX() + direction.getFrontOffsetX(), getPos().getY() + direction.getFrontOffsetY(), getPos().getZ() + direction.getFrontOffsetZ()));
 				if (!(tile instanceof IInventory))
 					return new Object[] {false};
@@ -134,7 +134,7 @@ public class TileSorter extends TileEntityInventory implements IPlusPlusPeripher
 				if (!(arguments[0] instanceof String))
 					throw new LuaException("Bad argument #1. Expected string.");
 
-				direction = EnumFacing.byName((String)arguments[0]);
+				direction = EnumFacing.byName((String) arguments[0]);
 				tile = getWorld().getTileEntity(new BlockPos(getPos().getX() + direction.getFrontOffsetX(), getPos().getY() + direction.getFrontOffsetY(), getPos().getZ() + direction.getFrontOffsetZ()));
 
 				return new Object[] {tile != null && tile instanceof IInventory};
