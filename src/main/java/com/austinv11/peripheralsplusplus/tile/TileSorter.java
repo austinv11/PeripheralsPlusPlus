@@ -164,7 +164,12 @@ public class TileSorter extends TileEntityInventory implements IPlusPlusPeripher
 	}
 
 	@Override
-	public int getSize() {
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public int getSizeInventory() {
 		return 1;
 	}
 }

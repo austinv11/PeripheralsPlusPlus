@@ -5,6 +5,7 @@ import com.austinv11.peripheralsplusplus.handler.ConfigHandler;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
+import com.austinv11.peripheralsplusplus.network.PacketPermCardChanged;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tile.TileChatBox;
@@ -16,6 +17,8 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = Reference.MOD_ID, name = Reference.MOD_NAME, version = Reference.VERSION)
 public class PeripheralsPlusPlus {
@@ -26,6 +29,8 @@ public class PeripheralsPlusPlus {
 	@SidedProxy(clientSide = Reference.CLIENT_PROXY, serverSide = Reference.COMMON_PROXY)
 	public static CommonProxy proxy;
 
+	public static SimpleNetworkWrapper NETWORK;
+
 	@Mod.EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		ConfigHandler.init(event.getSuggestedConfigurationFile());
@@ -35,6 +40,9 @@ public class PeripheralsPlusPlus {
 		ModBlocks.init();
 		ModItems.init();
 		proxy.registerTileEntities();
+
+		NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("ppp");
+		NETWORK.registerMessage(PacketPermCardChanged.PermCardChangePacketHandler.class, PacketPermCardChanged.class, 0, Side.SERVER);
 	}
 
 	@Mod.EventHandler

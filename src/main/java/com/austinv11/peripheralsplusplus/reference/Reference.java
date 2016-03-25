@@ -9,6 +9,8 @@ public class Reference {
 
 	public enum GUIs {
 		ORE_DICT,
-		SORTER
+		SORTER,
+		PLAYER_INTERFACE,
+		PERM_CARD
 	}
 }

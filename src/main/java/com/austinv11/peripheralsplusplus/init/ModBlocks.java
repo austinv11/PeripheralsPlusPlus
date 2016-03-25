@@ -11,6 +11,7 @@ public class ModBlocks {
 	public static final BlockPPP blockPlayerSensor = new BlockPlayerSensor();
 	public static final BlockPPP blockChatBox = new BlockChatBox();
 	public static final BlockPPP blockSorter = new BlockSorter();
+	public static final BlockPPP blockPlayerInterface = new BlockPlayerInterface();
 
 	public static void init() {
 		GameRegistry.registerBlock(blockTest, blockTest.getName());
@@ -19,5 +20,7 @@ public class ModBlocks {
 		if (Config.enablePlayerSensor) GameRegistry.registerBlock(blockPlayerSensor, blockPlayerSensor.getName());
 		if (Config.enableChatBox) GameRegistry.registerBlock(blockChatBox, blockChatBox.getName());
 		if (Config.enableSorter) GameRegistry.registerBlock(blockSorter, blockSorter.getName());
+		if (Config.enablePlayerInterface)
+			GameRegistry.registerBlock(blockPlayerInterface, blockPlayerInterface.getName());
 	}
 }

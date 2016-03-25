@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.client;
 
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
+import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -14,6 +15,8 @@ public class ItemRenderRegister {
 		if (Config.enablePlayerSensor) register(Item.getItemFromBlock(ModBlocks.blockPlayerSensor));
 		if (Config.enableChatBox) register(Item.getItemFromBlock(ModBlocks.blockChatBox));
 		if (Config.enableSorter) register(Item.getItemFromBlock(ModBlocks.blockSorter));
+		if (Config.enablePlayerInterface) register(Item.getItemFromBlock(ModBlocks.blockPlayerInterface));
+		if (Config.enablePlayerInterface) register(ModItems.itemPermCard);
 	}
 
 	private static void register(Item item) {

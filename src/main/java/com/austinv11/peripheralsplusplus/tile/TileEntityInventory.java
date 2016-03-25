@@ -7,90 +7,93 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IChatComponent;
-import net.minecraftforge.common.util.Constants;
 
-// TODO This class is a mess. Half copied from CF half just... bleh. REWRITE IT
 public abstract class TileEntityInventory extends TileEntity implements IInventory {
-	public ItemStack[] items;
-	public String invName = "null";
-
-	public TileEntityInventory() {
-		items = new ItemStack[getSize()];
-	}
-
-	public abstract int getSize();
+	public ItemStack[] inventory = new ItemStack[getSizeInventory()];
 
 	@Override
-	public void readFromNBT(NBTTagCompound nbttagcompound) {
-		super.readFromNBT(nbttagcompound);
-		NBTTagList nbttaglist = nbttagcompound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-		items = new ItemStack[getSize()];
-		for (int i = 0; i < nbttaglist.tagCount(); i++) {
-			NBTTagCompound nbttagcompound1 = nbttaglist.getCompoundTagAt(i);
-			int j = nbttagcompound1.getByte("Slot") & 0xff;
-			if (j >= 0 && j < items.length) {
-				items[j] = ItemStack.loadItemStackFromNBT(nbttagcompound1);
+	public void writeToNBT(NBTTagCompound nbt) {
+		super.writeToNBT(nbt);
+
+		NBTTagList list = new NBTTagList();
+		for (int i = 0; i < this.getSizeInventory(); ++i) {
+			if (this.getStackInSlot(i) != null) {
+				NBTTagCompound stackTag = new NBTTagCompound();
+				stackTag.setByte("Slot", (byte) i);
+				this.getStackInSlot(i).writeToNBT(stackTag);
+				list.appendTag(stackTag);
 			}
+		}
+		nbt.setTag("Items", list);
+	}
+
+
+	@Override
+	public void readFromNBT(NBTTagCompound nbt) {
+		super.readFromNBT(nbt);
+
+		NBTTagList list = nbt.getTagList("Items", 10);
+		for (int i = 0; i < list.tagCount(); ++i) {
+			NBTTagCompound stackTag = list.getCompoundTagAt(i);
+			int slot = stackTag.getByte("Slot") & 255;
+			this.setInventorySlotContents(slot, ItemStack.loadItemStackFromNBT(stackTag));
 		}
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
-		super.writeToNBT(nbttagcompound);
-		NBTTagList nbttaglist = new NBTTagList();
-		for (int i = 0; i < items.length; i++) {
-			if (items[i] != null) {
-				NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-				nbttagcompound1.setByte("Slot", (byte) i);
-				items[i].writeToNBT(nbttagcompound1);
-				nbttaglist.appendTag(nbttagcompound1);
-			}
-		}
-		nbttagcompound.setTag("Items", nbttaglist);
+	public ItemStack getStackInSlot(int index) {
+		if (index < 0 || index >= this.getSizeInventory())
+			return null;
+		return this.inventory[index];
 	}
 
 	@Override
-	public int getSizeInventory() {
-		return getSize();
-	}
+	public ItemStack decrStackSize(int index, int count) {
+		if (this.getStackInSlot(index) != null) {
+			ItemStack itemstack;
 
-	@Override
-	public ItemStack getStackInSlot(int slot) {
-		if (items.length > slot)
-			return items[slot];
-		return null;
-	}
+			if (this.getStackInSlot(index).stackSize <= count) {
+				itemstack = this.getStackInSlot(index);
+				this.setInventorySlotContents(index, null);
+				this.markDirty();
+				return itemstack;
+			} else {
+				itemstack = this.getStackInSlot(index).splitStack(count);
 
-	@Override
-	public ItemStack decrStackSize(int slot, int amount) {
-		if (items.length > slot) {
-			if (items[slot] != null) {
-				if (items[slot].stackSize <= amount) {
-					ItemStack item = items[slot];
-					items[slot] = null;
-					markDirty();
-					return item;
+				if (this.getStackInSlot(index).stackSize <= 0) {
+					this.setInventorySlotContents(index, null);
+				} else {
+					this.setInventorySlotContents(index, this.getStackInSlot(index));
 				}
-				ItemStack item = items[slot].splitStack(amount);
-				if (items[slot].stackSize == 0) {
-					items[slot] = null;
-				}
-				markDirty();
-				return item;
+
+				this.markDirty();
+				return itemstack;
 			}
+		} else {
+			return null;
 		}
-		return null;
 	}
 
 	@Override
-	public void setInventorySlotContents(int slot, ItemStack stack) {
-		if (items.length > slot) {
-			items[slot] = stack;
-			if (stack != null && stack.stackSize > getInventoryStackLimit()) {
-				stack.stackSize = getInventoryStackLimit();
-			}
-			markDirty();
-		}
+	public ItemStack removeStackFromSlot(int index) {
+		ItemStack stack = this.getStackInSlot(index);
+		this.setInventorySlotContents(index, null);
+		return stack;
+	}
+
+	@Override
+	public void setInventorySlotContents(int index, ItemStack stack) {
+		if (index < 0 || index >= this.getSizeInventory())
+			return;
+
+		if (stack != null && stack.stackSize > this.getInventoryStackLimit())
+			stack.stackSize = this.getInventoryStackLimit();
+
+		if (stack != null && stack.stackSize == 0)
+			stack = null;
+
+		this.inventory[index] = stack;
+		this.markDirty();
 	}
 
 	@Override
@@ -100,46 +103,26 @@ public abstract class TileEntityInventory extends TileEntity implements IInvento
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
-		if (worldObj == null) {
-			return true;
-		}
-		if (worldObj.getTileEntity(pos) != this) {
-			return false;
-		}
-		return player.getDistanceSq((double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D) <= 64D;
+		return this.worldObj.getTileEntity(this.getPos()) == this && player.getDistanceSq(this.pos.add(0.5, 0.5, 0.5)) <= 64;
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int slot, ItemStack stack) {
+	public void openInventory(EntityPlayer player) {
+	}
+
+	@Override
+	public void closeInventory(EntityPlayer player) {
+	}
+
+	@Override
+	public boolean isItemValidForSlot(int index, ItemStack stack) {
 		return true;
 	}
 
 	@Override
-	public void markDirty() {
-		for (int i = 0; i < items.length; i++)
-			if (items[i] != null && items[i].stackSize < 1)
-				items[i] = null;
-		super.markDirty();
-	}
-
-	@Override
-	public int getFieldCount() {
-		return 0;
-	}
-
-	@Override
-	public ItemStack removeStackFromSlot(int index) {
-		return items[index] = null;
-	}
-
-	@Override
-	public IChatComponent getDisplayName() {
-		return null;
-	}
-
-	@Override
-	public String getName() {
-		return invName;
+	public void clear() {
+		for (int i = 0; i < this.getSizeInventory(); i++)
+			this.setInventorySlotContents(i, null);
 	}
 
 	@Override
@@ -148,27 +131,21 @@ public abstract class TileEntityInventory extends TileEntity implements IInvento
 	}
 
 	@Override
-	public void clear() {
-
-	}
-
-	@Override
-	public void setField(int id, int value) {
-
-	}
-
-	@Override
-	public void openInventory(EntityPlayer player) {
-
-	}
-
-	@Override
-	public void closeInventory(EntityPlayer player) {
-
+	public IChatComponent getDisplayName() {
+		return null;
 	}
 
 	@Override
 	public int getField(int id) {
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) {
+	}
+
+	@Override
+	public int getFieldCount() {
 		return 0;
 	}
 }

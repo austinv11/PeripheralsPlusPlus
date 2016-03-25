@@ -5,6 +5,23 @@ tile.peripheralsplusplus:blockEnvScanner.name=Environment Scanner
 tile.peripheralsplusplus:blockPlayerSensor.name=Player Sensor
 tile.peripheralsplusplus:blockChatBox.name=Chat Box
 tile.peripheralsplusplus:blockSorter.name=Interactive Sorter
+tile.peripheralsplusplus:blockPlayerInterface.name=Player Interface
+
+#Items
+item.peripheralsplusplus:itemPermCard.name=Permissions Card
 
 #Misc
 itemGroup.peripheralsplusplus=Peripherals++
+
+#GUIs
+peripheralsplusplus.inv.permCard=Permissions Card
+peripheralsplusplus.inv.permCard.deposit=Deposit Items
+peripheralsplusplus.inv.permCard.withdraw=Withdraw Items
+peripheralsplusplus.inv.permCard.get=Get Stacks
+peripheralsplusplus.inv.permCard.perms=Permissions:
+
+#Chat
+peripheralsplusplus.chat.permCard.notSet=This card has not yet been linked to a player and cannot be edited.
+peripheralsplusplus.chat.permCard.alreadySet=Already linked.
+peripheralsplusplus.chat.permCard.wrongOwner=You do not have permission to edit this card.
+peripheralsplusplus.chat.permCard.set=Permissions card linked to you.

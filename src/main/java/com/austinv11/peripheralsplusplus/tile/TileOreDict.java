@@ -75,7 +75,12 @@ public class TileOreDict extends TileEntityInventory implements IPlusPlusPeriphe
 	}
 
 	@Override
-	public int getSize() {
+	public String getName() {
+		return name;
+	}
+
+	@Override
+	public int getSizeInventory() {
 		return 1;
 	}
 }

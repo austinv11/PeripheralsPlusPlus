@@ -2,6 +2,7 @@ package com.austinv11.peripheralsplusplus.client.gui;
 
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tile.container.ContainerOreDict;
+import com.austinv11.peripheralsplusplus.tile.container.ContainerPlayerInterface;
 import com.austinv11.peripheralsplusplus.tile.container.ContainerSorter;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -16,6 +17,10 @@ public class GuiHandler implements IGuiHandler {
 			return new ContainerOreDict((IInventory) world.getTileEntity(new BlockPos(x, y, z)), player);
 		} else if (ID == Reference.GUIs.SORTER.ordinal()) {
 			return new ContainerSorter((IInventory) world.getTileEntity(new BlockPos(x, y, z)), player);
+		} else if (ID == Reference.GUIs.PLAYER_INTERFACE.ordinal()) {
+			return new ContainerPlayerInterface((IInventory) world.getTileEntity(new BlockPos(x, y, z)), player);
+		} else if (ID == Reference.GUIs.PERM_CARD.ordinal()) {
+			return null;
 		}
 		return null;
 	}
@@ -26,6 +31,10 @@ public class GuiHandler implements IGuiHandler {
 			return new GuiOreDict(player, world, new BlockPos(x, y, z));
 		} else if (ID == Reference.GUIs.SORTER.ordinal()) {
 			return new GuiSorter(player, world, new BlockPos(x, y, z));
+		} else if (ID == Reference.GUIs.PLAYER_INTERFACE.ordinal()) {
+			return new GuiPlayerInterface(player, world, new BlockPos(x, y, z));
+		} else if (ID == Reference.GUIs.PERM_CARD.ordinal()) {
+			return new GuiPermCard(player.getCurrentEquippedItem());
 		}
 		return null;
 	}

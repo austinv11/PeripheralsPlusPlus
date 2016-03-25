@@ -36,5 +36,7 @@ public class Recipes {
 					"SBS",
 					"ISI",
 					'I', "ingotIron", 'S', "stone", 'B', new ItemStack(Items.book)));
+
+		GameRegistry.addShapelessRecipe(new ItemStack(ModItems.itemPermCard), new ItemStack(ModItems.itemPermCard));
 	}
 }

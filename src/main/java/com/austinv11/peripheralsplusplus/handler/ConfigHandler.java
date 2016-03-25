@@ -44,6 +44,8 @@ public class ConfigHandler {
 			Config.chatBoxMaxRange = config.get("Misc", "chatBoxMaxRange", 256, "Max say/tell range for the Chat Box.").getInt();
 
 			Config.playerSensorMaxRange = config.get("Misc", "playerSensorMaxRange", "Max searching range for the Player Sensor").getInt();
+
+			Config.enableInterfacePermissions = config.getBoolean("Misc", "enableInterfacePermissions", true, "Enable the requirement of permissions for the player interface.");
 		} catch (Exception e) {
 			Logger.error(e);
 		} finally {

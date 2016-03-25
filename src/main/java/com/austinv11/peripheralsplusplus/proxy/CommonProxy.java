@@ -11,6 +11,7 @@ public class CommonProxy {
 		GameRegistry.registerTileEntity(TilePlayerSensor.class, TilePlayerSensor.name);
 		GameRegistry.registerTileEntity(TileChatBox.class, TileChatBox.name);
 		GameRegistry.registerTileEntity(TileSorter.class, TileSorter.name);
+		GameRegistry.registerTileEntity(TilePlayerInterface.class, TilePlayerInterface.name);
 	}
 
 	public void setupItemRenderer() {
