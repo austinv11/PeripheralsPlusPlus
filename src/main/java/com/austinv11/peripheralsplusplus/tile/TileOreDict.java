@@ -1,12 +1,8 @@
 package com.austinv11.peripheralsplusplus.tile;
 
 import com.austinv11.peripheralsplusplus.util.CCMethod;
-import com.austinv11.peripheralsplusplus.util.IPlusPlusPeripheral;
 import com.austinv11.peripheralsplusplus.util.Util;
-import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
-import dan200.computercraft.api.peripheral.IComputerAccess;
-import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 

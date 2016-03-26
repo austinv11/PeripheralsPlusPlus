@@ -4,6 +4,7 @@ import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.network.PacketPermCardChanged;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
@@ -11,7 +12,7 @@ import org.lwjgl.opengl.GL11;
 
 public class GuiPermCard extends GuiScreen {
 	private ItemStack permCard;
-	private ResourceLocation backgroundimage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" + "textures/gui/guiPermCard.png");
+	private ResourceLocation backgroundImage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" + "textures/gui/guiPermCard.png");
 	private int sizeX, sizeY;
 	private boolean canGetStacks, canWithdraw, canDeposit;
 
@@ -27,8 +28,9 @@ public class GuiPermCard extends GuiScreen {
 
 	@Override
 	public void drawScreen(int par1, int par2, float par3) {
-		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		this.mc.getTextureManager().bindTexture(backgroundimage);
+		this.drawDefaultBackground();
+		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
+		this.mc.getTextureManager().bindTexture(backgroundImage);
 		int x = (width - sizeX) / 2;
 		int y = (height - sizeY) / 2;
 		drawTexturedModalRect(x, y, 0, 0, sizeX, sizeY);

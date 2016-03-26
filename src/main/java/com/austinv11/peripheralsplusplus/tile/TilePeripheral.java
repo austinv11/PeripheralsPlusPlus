@@ -40,7 +40,7 @@ public abstract class TilePeripheral extends TileEntity implements IPlusPlusPeri
 			if (method.isAnnotationPresent(CCMethod.class)) {
 				if (method.getName().equals(getMethodNames()[methodIndex])) {
 					try {
-						return new Object[] {method.invoke(peripheral, (Object)arguments)};
+						return new Object[] {method.invoke(peripheral, (Object) arguments)};
 					} catch (Exception e) {
 						if (e instanceof InvocationTargetException) {
 							if (((InvocationTargetException) e).getTargetException() instanceof LuaException) {
