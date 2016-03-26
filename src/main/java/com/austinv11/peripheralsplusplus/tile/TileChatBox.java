@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.tile;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
+import com.austinv11.peripheralsplusplus.util.CCMethod;
 import com.austinv11.peripheralsplusplus.util.Util;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -26,64 +27,56 @@ public class TileChatBox extends TilePeripheral {
 		chatBoxes.add(this);
 	}
 
-	@Override
-	public String[] getMethodNames() {
-		return new String[] {"say", "tell"};
-	}
+	@CCMethod
+	public boolean say(Object[] arguments) throws LuaException {
+		if (arguments.length < 2)
+			throw new LuaException("Wrong number of arguments. 2 expected.");
+		if (!(arguments[0] instanceof String))
+			throw new LuaException("Bad argument #1. Expected string.");
+		if (!(arguments[1] instanceof Double))
+			throw new LuaException("Bad argument #2. Expected number.");
 
-	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		String message;
-		int range;
+		String message = (String) arguments[0];
+		int range = (int) (double) (Double) arguments[1];
 		String label = String.format("[%d,%d,%d]", getPos().getX(), getPos().getY(), getPos().getZ());
 
-		switch (method) {
-			case 0: // say
-				if (arguments.length < 2)
-					throw new LuaException("Wrong number of arguments. 2 expected.");
-				if (!(arguments[0] instanceof String))
-					throw new LuaException("Bad argument #1. Expected string.");
-				if (!(arguments[1] instanceof Double))
-					throw new LuaException("Bad argument #2. Expected number.");
-
-				message = (String) arguments[0];
-				range = (int) (double) (Double) arguments[1];
-
-				if (arguments.length > 2) {
-					if (!(arguments[2] instanceof String)) {
-						throw new LuaException("Bad argument #3. Expected string.");
-					}
-					label = (String) arguments[2];
-				}
-				sendChatMessageInRange(message, range > Config.chatBoxMaxRange ? Config.chatBoxMaxRange : range, label);
-				return new Object[] {true};
-			case 1: // tell
-				if (arguments.length < 2)
-					throw new LuaException("Wrong number of arguments. 2 expected");
-				if (!(arguments[0] instanceof String))
-					throw new LuaException("Bad argument #1. Expected string.");
-				if (!(arguments[1] instanceof String))
-					throw new LuaException("Bad argument #2. Expected string.");
-
-				String recipientName = (String) arguments[0];
-				message = (String) arguments[1];
-
-				if (arguments.length > 2) {
-					if (!(arguments[2] instanceof String)) {
-						throw new LuaException("Bad argument #3. Expected string.");
-					}
-					label = (String) arguments[2];
-				}
-
-				String messageWithLabel = label + " " + message;
-				EntityPlayer recipient = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(recipientName);
-				if (recipient != null) {
-					recipient.addChatMessage(new ChatComponentText(messageWithLabel));
-					return new Object[] {true};
-				}
-				return new Object[] {false};
+		if (arguments.length > 2) {
+			if (!(arguments[2] instanceof String)) {
+				throw new LuaException("Bad argument #3. Expected string.");
+			}
+			label = (String) arguments[2];
 		}
-		return new Object[0];
+		sendChatMessageInRange(message, range > Config.chatBoxMaxRange ? Config.chatBoxMaxRange : range, label);
+		return true;
+	}
+
+	@CCMethod
+	public boolean tell(Object[] arguments) throws LuaException {
+		if (arguments.length < 2)
+			throw new LuaException("Wrong number of arguments. 2 expected");
+		if (!(arguments[0] instanceof String))
+			throw new LuaException("Bad argument #1. Expected string.");
+		if (!(arguments[1] instanceof String))
+			throw new LuaException("Bad argument #2. Expected string.");
+
+		String recipientName = (String) arguments[0];
+		String message = (String) arguments[1];
+		String label = String.format("[%d,%d,%d]", getPos().getX(), getPos().getY(), getPos().getZ());
+
+		if (arguments.length > 2) {
+			if (!(arguments[2] instanceof String)) {
+				throw new LuaException("Bad argument #3. Expected string.");
+			}
+			label = (String) arguments[2];
+		}
+
+		String messageWithLabel = label + " " + message;
+		EntityPlayer recipient = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(recipientName);
+		if (recipient != null) {
+			recipient.addChatMessage(new ChatComponentText(messageWithLabel));
+			return true;
+		}
+		return false;
 	}
 
 	private void sendChatMessageInRange(String message, int range, String label) {

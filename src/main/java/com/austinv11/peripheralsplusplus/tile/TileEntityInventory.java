@@ -8,7 +8,7 @@ import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.IChatComponent;
 
-public abstract class TileEntityInventory extends TileEntity implements IInventory {
+public abstract class TileEntityInventory extends TilePeripheral implements IInventory {
 	public ItemStack[] inventory = new ItemStack[getSizeInventory()];
 
 	@Override

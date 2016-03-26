@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tile;
 
+import com.austinv11.peripheralsplusplus.util.CCMethod;
 import com.austinv11.peripheralsplusplus.util.IPlusPlusPeripheral;
 import com.austinv11.peripheralsplusplus.util.Util;
 import dan200.computercraft.api.lua.ILuaContext;
@@ -11,28 +12,18 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.List;
 
-public class TileOreDict extends TileEntityInventory implements IPlusPlusPeripheral {
+public class TileOreDict extends TileEntityInventory {
 	public static final String name = "tileOreDict";
 
-	@Override
-	public String[] getMethodNames() {
-		return new String[] {"transmute"};
-	}
-
-	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		switch (method) {
-			case 0:
-				ItemStack stack = this.getStackInSlot(0);
-				if (stack != null) {
-					this.setInventorySlotContents(0, transmute(stack));
-				}
-				break;
+	@CCMethod
+	public void transmute(Object[] arguments) throws LuaException {
+		ItemStack stack = this.getStackInSlot(0);
+		if (stack != null) {
+			this.setInventorySlotContents(0, transmuteStack(stack));
 		}
-		return new Object[0];
 	}
 
-	private ItemStack transmute(ItemStack stack) {
+	private ItemStack transmuteStack(ItemStack stack) {
 		String[] entries = Util.getOreDictEntries(stack);
 		entries:
 		for (String entry : entries) {
@@ -57,21 +48,6 @@ public class TileOreDict extends TileEntityInventory implements IPlusPlusPeriphe
 	@Override
 	public String getType() {
 		return "oreDict";
-	}
-
-	@Override
-	public boolean equals(IPeripheral other) {
-		return other == this;
-	}
-
-	@Override
-	public void attach(IComputerAccess computer) {
-
-	}
-
-	@Override
-	public void detach(IComputerAccess computer) {
-
 	}
 
 	@Override

@@ -11,7 +11,6 @@ import net.minecraft.world.World;
  * Implement this on any TileEntity in Peripherals++ instead of {@code IPeripheral} to have a way of detecting if a peripheral is from this mod.
  */
 public interface IPlusPlusPeripheral extends IPeripheral {
-
 	/**
 	 * This is the common provider for all Peripherals++ TileEntities
 	 */

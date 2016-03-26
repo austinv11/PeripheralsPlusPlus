@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tile;
 
+import com.austinv11.peripheralsplusplus.util.CCMethod;
 import com.austinv11.peripheralsplusplus.util.Logger;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -12,18 +13,9 @@ public class TileTest extends TilePeripheral {
 		Logger.info("Tile Test");
 	}
 
-	@Override
-	public String[] getMethodNames() {
-		return new String[] {"test"};
-	}
-
-	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		switch (method) {
-			case 0:
-				return new Object[] {"Test"};
-		}
-		return new Object[0];
+	@CCMethod
+	public String test(Object[] arguments) {
+		return "Test";
 	}
 
 	@Override

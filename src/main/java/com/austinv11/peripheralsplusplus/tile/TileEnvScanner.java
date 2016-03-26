@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tile;
 
+import com.austinv11.peripheralsplusplus.util.CCMethod;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -7,24 +8,24 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 public class TileEnvScanner extends TilePeripheral {
 	public static final String name = "tileEnvScanner";
 
-	@Override
-	public String[] getMethodNames() {
-		return new String[] {"isRaining", "getBiome", "getTemperature", "isSnow"};
+	@CCMethod
+	public boolean isRaining() {
+		return worldObj.isRaining();
 	}
 
-	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		switch (method) {
-			case 0: // isRaining
-				return new Object[] {worldObj.isRaining()};
-			case 1: // getBiome
-				return new Object[] {worldObj.getBiomeGenForCoords(getPos()).biomeName};
-			case 2: // getTemperature
-				return new Object[] {worldObj.getBiomeGenForCoords(getPos()).getTempCategory().name()};
-			case 3: // isSnow
-				return new Object[] {worldObj.getBiomeGenForCoords(getPos()).getEnableSnow()};
-		}
-		return new Object[0];
+	@CCMethod
+	public String getBiome() {
+		return worldObj.getBiomeGenForCoords(getPos()).biomeName;
+	}
+
+	@CCMethod
+	public String getTemperature() {
+		return worldObj.getBiomeGenForCoords(getPos()).getTempCategory().name();
+	}
+
+	@CCMethod
+	public boolean getSnow() {
+		return worldObj.getBiomeGenForCoords(getPos()).getEnableSnow();
 	}
 
 	@Override
