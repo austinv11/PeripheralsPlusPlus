@@ -17,6 +17,7 @@ public class ItemRenderRegister {
 		if (Config.enableSorter) register(Item.getItemFromBlock(ModBlocks.blockSorter));
 		if (Config.enablePlayerInterface) register(Item.getItemFromBlock(ModBlocks.blockPlayerInterface));
 		if (Config.enablePlayerInterface) register(ModItems.itemPermCard);
+		if (Config.enableIronNoteBlock) register(Item.getItemFromBlock(ModBlocks.blockIronNote));
 	}
 
 	private static void register(Item item) {

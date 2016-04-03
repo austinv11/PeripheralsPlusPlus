@@ -6,6 +6,7 @@ import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.init.ModItems;
 import com.austinv11.peripheralsplusplus.init.Recipes;
 import com.austinv11.peripheralsplusplus.network.PacketPermCardChanged;
+import com.austinv11.peripheralsplusplus.network.ParticlePacket;
 import com.austinv11.peripheralsplusplus.proxy.CommonProxy;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tile.TileChatBox;
@@ -43,6 +44,7 @@ public class PeripheralsPlusPlus {
 
 		NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("ppp");
 		NETWORK.registerMessage(PacketPermCardChanged.PermCardChangePacketHandler.class, PacketPermCardChanged.class, 0, Side.SERVER);
+		NETWORK.registerMessage(ParticlePacket.ParticlePacketHandler.class, ParticlePacket.class, 1, Side.CLIENT);
 	}
 
 	@Mod.EventHandler

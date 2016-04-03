@@ -6,6 +6,7 @@ tile.peripheralsplusplus:blockPlayerSensor.name=Player Sensor
 tile.peripheralsplusplus:blockChatBox.name=Chat Box
 tile.peripheralsplusplus:blockSorter.name=Interactive Sorter
 tile.peripheralsplusplus:blockPlayerInterface.name=Player Interface
+tile.peripheralsplusplus:blockIronNote.name=Iron Note Block
 
 #Items
 item.peripheralsplusplus:itemPermCard.name=Permissions Card

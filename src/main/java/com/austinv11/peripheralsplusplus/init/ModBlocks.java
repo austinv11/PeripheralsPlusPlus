@@ -12,6 +12,7 @@ public class ModBlocks {
 	public static final BlockPPP blockChatBox = new BlockChatBox();
 	public static final BlockPPP blockSorter = new BlockSorter();
 	public static final BlockPPP blockPlayerInterface = new BlockPlayerInterface();
+	public static final BlockPPP blockIronNote = new BlockIronNote();
 
 	public static void init() {
 		GameRegistry.registerBlock(blockTest, blockTest.getName());
@@ -22,5 +23,6 @@ public class ModBlocks {
 		if (Config.enableSorter) GameRegistry.registerBlock(blockSorter, blockSorter.getName());
 		if (Config.enablePlayerInterface)
 			GameRegistry.registerBlock(blockPlayerInterface, blockPlayerInterface.getName());
+		if (Config.enableIronNoteBlock) GameRegistry.registerBlock(blockIronNote, blockIronNote.getName());
 	}
 }

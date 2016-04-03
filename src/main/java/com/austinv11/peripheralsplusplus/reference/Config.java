@@ -7,6 +7,7 @@ public class Config {
 	public static boolean enablePlayerSensor = true;
 	public static boolean enableSorter = true;
 	public static boolean enablePlayerInterface = true;
+	public static boolean enableIronNoteBlock = true;
 
 	public static String commandDiscriminator = "\\";
 	public static int chatBoxMaxRange = 256;
