@@ -241,7 +241,9 @@ public class LuaObjectPlayerInv implements ILuaObject {
             slots.add(slot);
         }
         for (int i = 0; i < inv.getSizeInventory(); i++) {
-            if ((inv.getStackInSlot(i) == null || (inv.getStackInSlot(i).getItem().equals(stack.getItem()) && inv.getStackInSlot(i).stackSize != inv.getStackInSlot(i).getMaxStackSize())) && i != slot) {
+            if ((inv.getStackInSlot(i) == null || (inv.getStackInSlot(i).getItem().equals(stack.getItem()) &&
+                    inv.getStackInSlot(i).stackSize != inv.getStackInSlot(i).getMaxStackSize() &&
+                    inv.getStackInSlot(i).getItemDamage() == stack.getItemDamage())) && i != slot) {
                 slots.add(i);
             }
         }
