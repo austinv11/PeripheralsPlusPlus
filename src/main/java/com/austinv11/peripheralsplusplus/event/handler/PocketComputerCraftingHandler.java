@@ -88,11 +88,12 @@ public class PocketComputerCraftingHandler implements IRecipe {
 				if (list.tagCount() > Config.maxNumberOfPeripherals)
 					return null;
 				list.appendTag(new NBTTagFloat(upgrade));
-				return computerStack;
-			}
-			return null;
-		}
-		NBTHelper.setShort(computerStack, "upgrade", (short)upgrade);
+			} else
+				return null;
+		} else
+			NBTHelper.setShort(computerStack, "upgrade", (short)upgrade);
+		NBTHelper.removeTag(computerStack, "instanceID");
+		NBTHelper.removeTag(computerStack, "sessionID");
 		return computerStack;
 	}
 	

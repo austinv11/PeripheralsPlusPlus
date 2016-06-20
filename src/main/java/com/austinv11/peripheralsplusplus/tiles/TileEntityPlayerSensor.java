@@ -8,6 +8,7 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.HashMap;
@@ -82,7 +83,11 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
                     if (arguments.length > 0)
                         range = (Double) arguments[0];
 
-                    HashMap<String,Double> map = location.getPlayers(range);
+                    HashMap<String,Double> map = new HashMap<String, Double>();
+					for (Object entity : this.worldObj.playerEntities) {
+						EntityPlayer player = (EntityPlayer) entity;
+						map.put(player.getDisplayName(), Math.abs(location.getX() - player.posX + (location.getZ() - player.posZ)));
+					}
                     HashMap<Integer,HashMap<String,Object>> returnVal = new HashMap<Integer,HashMap<String,Object>>();
                     int i = 1;
                     for (String player : map.keySet()) {
