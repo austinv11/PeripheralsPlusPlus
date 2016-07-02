@@ -11,6 +11,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EntityDamageSource;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
@@ -36,7 +37,8 @@ public class TileChatBox extends TilePeripheral {
 
 		String message = (String) arguments[0];
 		int range = (int) (double) (Double) arguments[1];
-		String label = String.format("[%d,%d,%d]", getPos().getX(), getPos().getY(), getPos().getZ());
+		String coords = String.format("[%d,%d,%d]", getPos().getX(), getPos().getY(), getPos().getZ());
+		String label = "ChatBox";
 
 		if (arguments.length > 2) {
 			if (!(arguments[2] instanceof String)) {
@@ -44,7 +46,7 @@ public class TileChatBox extends TilePeripheral {
 			}
 			label = (String) arguments[2];
 		}
-		sendChatMessageInRange(message, range > Config.chatBoxMaxRange ? Config.chatBoxMaxRange : range, label);
+		sendChatMessageInRange(message, range > Config.chatBoxMaxRange ? Config.chatBoxMaxRange : range, label, coords);
 		return true;
 	}
 
@@ -59,7 +61,8 @@ public class TileChatBox extends TilePeripheral {
 
 		String recipientName = (String) arguments[0];
 		String message = (String) arguments[1];
-		String label = String.format("[%d,%d,%d]", getPos().getX(), getPos().getY(), getPos().getZ());
+		String coords = String.format("[%d,%d,%d]", getPos().getX(), getPos().getY(), getPos().getZ());
+		String label = "ChatBox";
 
 		if (arguments.length > 2) {
 			if (!(arguments[2] instanceof String)) {
@@ -68,7 +71,7 @@ public class TileChatBox extends TilePeripheral {
 			label = (String) arguments[2];
 		}
 
-		String messageWithLabel = label + " " + message;
+		String messageWithLabel = coords + "[PM] " + label + ": " + message;
 		EntityPlayer recipient = MinecraftServer.getServer().getConfigurationManager().getPlayerByUsername(recipientName);
 		if (recipient != null) {
 			recipient.addChatMessage(new ChatComponentText(messageWithLabel));
@@ -77,8 +80,8 @@ public class TileChatBox extends TilePeripheral {
 		return false;
 	}
 
-	private void sendChatMessageInRange(String message, int range, String label) {
-		String messageWithLabel = label + " " + message;
+	private void sendChatMessageInRange(String message, int range, String label, String coords) {
+		String messageWithLabel = coords + " " + label + ": " + message;
 		List<? extends EntityPlayer> players;
 
 		if (range >= 0) {

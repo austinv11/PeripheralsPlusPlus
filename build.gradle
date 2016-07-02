@@ -25,7 +25,7 @@ group= "com.austinv11.peripheralsplusplus" // http://maven.apache.org/guides/min
 archivesBaseName = "Peripherals++"
 
 minecraft {
-    version = "1.8.9-11.15.1.1755"
+    version = "1.8.9-11.15.1.1902-1.8.9"
     runDir = "run"
     
     // the mappings can be changed at any time, and must be in the following format.
@@ -33,7 +33,7 @@ minecraft {
     // stable_#            stables are built at the discretion of the MCP team.
     // Use non-default mappings at your own risk. they may not allways work.
     // simply re-run your setup task after changing the mappings to update your workspace.
-    mappings = "stable_20"
+    mappings = "stable_22"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 
