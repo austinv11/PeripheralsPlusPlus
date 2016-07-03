@@ -22,7 +22,7 @@ plugins {
 */
 version = "1.4.0"
 group= "com.austinv11.peripheralsplusplus" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "Peripherals++"
+archivesBaseName = "Peripherals++" + mcversion
 
 minecraft {
     version = "1.8.9-11.15.1.1902-1.8.9"
