@@ -1,59 +1,69 @@
 package com.austinv11.peripheralsplusplus.utils;
 
+import com.austinv11.collectiveframework.minecraft.reference.ModIds;
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
-import cpw.mods.fml.common.registry.GameRegistry;
 import dan200.computercraft.api.peripheral.IPeripheral;
+import dan200.computercraft.api.pocket.IPocketAccess;
+import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import dan200.computercraft.api.turtle.TurtleSide;
-import net.minecraft.block.Block;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChunkCoordinates;
-import net.minecraft.util.Facing;
-import net.minecraft.util.Vec3;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.common.IShearable;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
 public class TurtleUtil {
 
-	public static List<ItemStack> harvestBlock(ITurtleAccess turtle, FakeTurtlePlayer player, int dir, ItemStack itemToUse) {
-		int x = turtle.getPosition().posX+Facing.offsetsXForSide[dir];
-		int y = turtle.getPosition().posY+Facing.offsetsYForSide[dir];
-		int z = turtle.getPosition().posZ+Facing.offsetsZForSide[dir];
-		if (!turtle.getWorld().isAirBlock(x,y,z)) {
-			Block block = turtle.getWorld().getBlock(x,y,z);
-			player.setCurrentItemOrArmor(0, itemToUse);
-			if (block.getBlockHardness(turtle.getWorld(), x,y,z) >= 0 && block.canHarvestBlock(player, block.getDamageValue(turtle.getWorld(),x,y,z))) {
-				List<ItemStack> items = block.getDrops(turtle.getWorld(),x,y,z, block.getDamageValue(turtle.getWorld(),x,y,z), 0);
-				turtle.getWorld().setBlockToAir(x,y,z);
+	public static List<ItemStack> harvestBlock(ITurtleAccess turtle, FakeTurtlePlayer player, EnumFacing dir,
+											   ItemStack itemToUse) {
+		int x = turtle.getPosition().getX()+dir.getFrontOffsetX();
+		int y = turtle.getPosition().getY()+dir.getFrontOffsetY();
+		int z = turtle.getPosition().getZ()+dir.getFrontOffsetZ();
+		if (!turtle.getWorld().isAirBlock(new BlockPos(x,y,z))) {
+			IBlockState blockState = turtle.getWorld().getBlockState(new BlockPos(x,y,z));
+			player.setHeldItem(EnumHand.MAIN_HAND, itemToUse);
+			if (blockState.getBlockHardness(turtle.getWorld(), new BlockPos(x,y,z)) >= 0 &&
+					blockState.getBlock().canHarvestBlock(turtle.getWorld(), new BlockPos(x,y,z), player)) {
+				NonNullList<ItemStack> items = NonNullList.create();
+				blockState.getBlock().getDrops(items, turtle.getWorld(), new BlockPos(x,y,z), blockState, 0);;
+				turtle.getWorld().setBlockToAir(new BlockPos(x,y,z));
 				return items;
 			}
 		}
 		return null;
 	}
 
-	public static List<Entity> getEntitiesNearTurtle(ITurtleAccess turtle, FakeTurtlePlayer player, int dir) {
-		int x = turtle.getPosition().posX+Facing.offsetsXForSide[dir];
-		int y = turtle.getPosition().posY+Facing.offsetsYForSide[dir];
-		int z = turtle.getPosition().posZ+Facing.offsetsZForSide[dir];
-		AxisAlignedBB box = AxisAlignedBB.getBoundingBox(x, y, z, x+1.0D, y+1.0D, z+1.0D);
+	public static List<Entity> getEntitiesNearTurtle(ITurtleAccess turtle, FakeTurtlePlayer player, EnumFacing dir) {
+		int x = turtle.getPosition().getX()+dir.getFrontOffsetX();
+		int y = turtle.getPosition().getY()+dir.getFrontOffsetY();
+		int z = turtle.getPosition().getZ()+dir.getFrontOffsetZ();
+		AxisAlignedBB box = new AxisAlignedBB(x, y, z, x+1.0D, y+1.0D, z+1.0D);
 		return turtle.getWorld().getEntitiesWithinAABBExcludingEntity(player, box);
 	}
 
 	public static Entity getClosestShearableEntity(List<Entity> list, Entity ent) {
-		Vec3 from = Vec3.createVectorHelper(ent.posX, ent.posY, ent.posZ);
+		Vec3d from = new Vec3d(ent.posX, ent.posY, ent.posZ);
 		Entity returnVal = null;
 		double lastDistance = Double.MAX_VALUE;
 		for (Entity entity : list)
 			if (entity instanceof IShearable) {
-				Vec3 to = Vec3.createVectorHelper(entity.posX, entity.posY, entity.posZ);
+				Vec3d to = new Vec3d(entity.posX, entity.posY, entity.posZ);
 				if (to.distanceTo(from) < lastDistance)
 					returnVal = entity;
 			}
@@ -61,11 +71,11 @@ public class TurtleUtil {
 	}
 
 	public static Entity getClosestEntity(List<Entity> list, Entity ent) {
-		Vec3 from = Vec3.createVectorHelper(ent.posX, ent.posY, ent.posZ);
+		Vec3d from = new Vec3d(ent.posX, ent.posY, ent.posZ);
 		Entity returnVal = null;
 		double lastDistance = Double.MAX_VALUE;
 		for (Entity entity : list) {
-			Vec3 to = Vec3.createVectorHelper(entity.posX, entity.posY, entity.posZ);
+			Vec3d to = new Vec3d(entity.posX, entity.posY, entity.posZ);
 			if (to.distanceTo(from) < lastDistance)
 				returnVal = entity;
 		}
@@ -81,7 +91,7 @@ public class TurtleUtil {
 	public static ArrayList<ItemStack> entityItemsToItemStack(ArrayList<EntityItem> entities) {
 		ArrayList<ItemStack> stacks = new ArrayList<ItemStack>();
 		for (EntityItem e : entities) {
-			stacks.add(e.getEntityItem());
+			stacks.add(e.getItem());
 		}
 		return stacks;
 	}
@@ -89,43 +99,46 @@ public class TurtleUtil {
 	public static void addToInv(ITurtleAccess turtle, ItemStack stack) {
 		boolean drop = true;
 		IInventory inv = turtle.getInventory();
-		ChunkCoordinates coords = turtle.getPosition();
+		BlockPos coords = turtle.getPosition();
 		for (int i = 0; i < inv.getSizeInventory(); i++) {
 			ItemStack currentStack = inv.getStackInSlot(i);
-			if (currentStack == null) {
+			if (currentStack.isEmpty()) {
 				inv.setInventorySlotContents(i, stack);
 				drop = false;
 				break;
 			}
 			if (currentStack.isStackable() && currentStack.isItemEqual(stack)) {
-				int space = currentStack.getMaxStackSize() - currentStack.stackSize;
-				if (stack.stackSize > space) {
-					currentStack.stackSize = currentStack.getMaxStackSize();
-					stack.stackSize -= space;
+				int space = currentStack.getMaxStackSize() - currentStack.getCount();
+				if (stack.getCount() > space) {
+					currentStack.setCount(currentStack.getMaxStackSize());
+					stack.setCount(stack.getCount() - space);
 					drop = true;
 				} else {
-					currentStack.stackSize += stack.stackSize;
-					stack.stackSize = 0;
+					currentStack.setCount(currentStack.getCount() + stack.getCount());
+					stack.setCount(0);
 					drop = false;
 					break;
 				}
 			}
 		}
 		if (drop) {
-			int dir = turtle.getDirection();
-			turtle.getWorld().spawnEntityInWorld(new EntityItem(turtle.getWorld(), coords.posX+Facing.offsetsXForSide[dir], coords.posY+Facing.offsetsYForSide[dir]+1, coords.posZ+Facing.offsetsZForSide[dir], stack.copy()));
+			EnumFacing dir = turtle.getDirection();
+			turtle.getWorld().spawnEntity(new EntityItem(turtle.getWorld(), coords.getX()+dir.getFrontOffsetX(),
+					coords.getY()+dir.getFrontOffsetY()+1, coords.getZ()+dir.getFrontOffsetZ(), stack.copy()));
 		}
 	}
 	
 	public static ItemStack getTurtle(boolean isAdvanced, ITurtleUpgrade upgradeLeft, ITurtleUpgrade upgradeRight) {
 		if (upgradeLeft == null && upgradeRight == null) {
-			return new ItemStack(GameRegistry.findBlock("ComputerCraft", isAdvanced ? "CC-TurtleAdvanced" : "CC-Turtle"));
+			return GameRegistry.makeItemStack(String.format("%s:%s",
+					"computercraft", isAdvanced ? "turtle_advanced" : "turtle"), 0, 1, "");
 		} else {
-			ItemStack turtle = new ItemStack(GameRegistry.findBlock("ComputerCraft", isAdvanced ? "CC-TurtleAdvanced" : "CC-TurtleExpanded"));
+			ItemStack turtle = GameRegistry.makeItemStack(String.format("%s:%s",
+					"computercraft", isAdvanced ? "turtle_advanced" : "turtle_expanded"), 0, 1, "");
 			if (upgradeLeft != null)
-				NBTHelper.setShort(turtle, "leftUpgrade", (short)upgradeLeft.getUpgradeID());
+				NBTHelper.setString(turtle, "leftUpgrade", upgradeLeft.getUpgradeID().toString());
 			if (upgradeRight != null)
-				NBTHelper.setShort(turtle, "rightUpgrade", (short)upgradeRight.getUpgradeID());
+				NBTHelper.setString(turtle, "rightUpgrade", upgradeRight.getUpgradeID().toString());
 			return turtle;
 		}
 	}
@@ -156,5 +169,36 @@ public class TurtleUtil {
 		}
 		
 		return null;
+	}
+
+	public static ItemStack getPocket(boolean advanced) {
+		return getPocket(advanced, null);
+	}
+
+	public static ItemStack getPocketServerItemStack(IPocketAccess access) {
+		try {
+			Class pocketServer = Class.forName("dan200.computercraft.shared.pocket.core.PocketServerComputer");
+			if (!pocketServer.isInstance(access))
+				return ItemStack.EMPTY;
+			Field stack = pocketServer.getDeclaredField("m_stack");
+			stack.setAccessible(true);
+			ItemStack itemStack = (ItemStack) stack.get(access);
+			if (itemStack == null)
+				return ItemStack.EMPTY;
+			return itemStack;
+		} catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
+			return ItemStack.EMPTY;
+		}
+	}
+
+	public static ItemStack getPocket(boolean advanced, IPocketUpgrade pocketUpgrade) {
+		ItemStack pocket = GameRegistry.makeItemStack(ModIds.COMPUTERCRAFT + ":pocket_computer", advanced ? 1 : 0,
+				1, "");
+		if (pocketUpgrade != null) {
+			NBTTagCompound tag = new NBTTagCompound();
+			tag.setString("upgrade", pocketUpgrade.getUpgradeID().toString());
+			pocket.setTagCompound(tag);
+		}
+		return pocket;
 	}
 }

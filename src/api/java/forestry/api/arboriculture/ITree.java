@@ -1,62 +1,67 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.arboriculture;
 
-import java.util.EnumSet;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Map;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.WorldGenerator;
-
-import net.minecraftforge.common.EnumPlantType;
-
+import com.mojang.authlib.GameProfile;
 import forestry.api.genetics.IEffectData;
 import forestry.api.genetics.IIndividual;
+import forestry.api.world.ITreeGenData;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
+import net.minecraft.world.World;
+import net.minecraft.world.gen.feature.WorldGenerator;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-public interface ITree extends IIndividual {
+public interface ITree extends IIndividual, ITreeGenData {
 
 	void mate(ITree other);
 
-	IEffectData[] doEffect(IEffectData[] storedData, World world, int biomeid, int x, int y, int z);
+	IEffectData[] doEffect(IEffectData[] storedData, World world, BlockPos pos);
 
-	IEffectData[] doFX(IEffectData[] storedData, World world, int biomeid, int x, int y, int z);
+	@SideOnly(Side.CLIENT)
+	IEffectData[] doFX(IEffectData[] storedData, World world, BlockPos pos);
 
+	@Override
 	ITreeGenome getGenome();
 
+	@Nullable
 	ITreeGenome getMate();
 
-	EnumSet<EnumPlantType> getPlantTypes();
+	/**
+	 * @since Forestry 4.0
+	 */
+	List<ITree> getSaplings(World world, @Nullable GameProfile playerProfile, BlockPos pos, float modifier);
 
-	ITree[] getSaplings(World world, int x, int y, int z, float modifier);
+	// Products, Chance
+	Map<ItemStack, Float> getProducts();
 
-	ItemStack[] getProduceList();
+	// Specialties, Chance
+	Map<ItemStack, Float> getSpecialties();
 
-	ItemStack[] getSpecialtyList();
-
-	ItemStack[] produceStacks(World world, int x, int y, int z, int ripeningTime);
+	NonNullList<ItemStack> produceStacks(World world, BlockPos pos, int ripeningTime);
 
 	/**
-	 * 
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
 	 * @return Boolean indicating whether a sapling can stay planted at the given position.
 	 */
-	boolean canStay(World world, int x, int y, int z);
+	boolean canStay(IBlockAccess world, BlockPos pos);
 
 	/**
-	 * 
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @return Boolean indicating whether a sapling at the given position can grow into a tree.
+	 * @return Position that this tree can grow. May be different from pos if there are multiple saplings.
+	 * Returns null if a sapling at the given position can not grow into a tree.
 	 */
-	boolean canGrow(World world, int x, int y, int z, int expectedGirth, int expectedHeight);
+	@Override
+	@Nullable
+	BlockPos canGrow(World world, BlockPos pos, int expectedGirth, int expectedHeight);
 
 	/**
 	 * @return Integer denoting the maturity (block ticks) required for a sapling to attempt to grow into a tree.
@@ -64,33 +69,19 @@ public interface ITree extends IIndividual {
 	int getRequiredMaturity();
 
 	/**
-	 * @return Integer denoting how resilient leaf blocks are against adverse influences (i.e. caterpillars).
+	 * @return Integer denoting how resilient leaf block are against adverse influences (i.e. caterpillars).
 	 */
 	int getResilience();
-	
+
 	/**
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
 	 * @return Integer denoting the size of the tree trunk.
 	 */
-	int getGirth(World world, int x, int y, int z);
+	@Override
+	int getGirth();
 
-	
-	
-	/**
-	 * 
-	 * @param world
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @return Growth conditions at the given position.
-	 */
-	EnumGrowthConditions getGrowthCondition(World world, int x, int y, int z);
+	WorldGenerator getTreeGenerator(World world, BlockPos pos, boolean wasBonemealed);
 
-	WorldGenerator getTreeGenerator(World world, int x, int y, int z, boolean wasBonemealed);
-
+	@Override
 	ITree copy();
 
 	boolean isPureBred(EnumTreeChromosome chromosome);

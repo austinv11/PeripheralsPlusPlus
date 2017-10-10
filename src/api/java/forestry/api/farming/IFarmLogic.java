@@ -1,20 +1,20 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.farming;
 
 import java.util.Collection;
 
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public interface IFarmLogic {
 
@@ -26,16 +26,23 @@ public interface IFarmLogic {
 
 	boolean isAcceptedGermling(ItemStack itemstack);
 
-	Collection<ItemStack> collect();
+	NonNullList<ItemStack> collect(World world, IFarmHousing farmHousing);
 
-	boolean cultivate(int x, int y, int z, ForgeDirection direction, int extent);
+	boolean cultivate(World world, IFarmHousing farmHousing, BlockPos pos, FarmDirection direction, int extent);
 
-	Collection<ICrop> harvest(int x, int y, int z, ForgeDirection direction, int extent);
+	Collection<ICrop> harvest(World world, BlockPos pos, FarmDirection direction, int extent);
 
-	@SideOnly(Side.CLIENT)
-	IIcon getIcon();
+	IFarmLogic setManual(boolean manual);
 
-	ResourceLocation getSpriteSheet();
+	void addSoil(ItemStack resource, IBlockState soilState, boolean hasMetaData);
 	
+	@SideOnly(Side.CLIENT)
+	ResourceLocation getTextureMap();
+
 	String getName();
+
+	/**
+	 * @return the itemStack that represents this farm logic. Used as an icon for the farm logic.
+	 */
+	ItemStack getIconItemStack();
 }

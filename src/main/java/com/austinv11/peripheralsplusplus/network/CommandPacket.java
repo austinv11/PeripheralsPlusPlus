@@ -3,12 +3,12 @@ package com.austinv11.peripheralsplusplus.network;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHelmet;
 import com.austinv11.peripheralsplusplus.client.gui.GuiSmartHelmetOverlay;
 import com.austinv11.peripheralsplusplus.smarthelmet.HelmetCommand;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.util.ArrayDeque;
 import java.util.UUID;

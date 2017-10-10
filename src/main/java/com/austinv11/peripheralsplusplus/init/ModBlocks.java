@@ -1,75 +1,53 @@
 package com.austinv11.peripheralsplusplus.init;
 
-import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.blocks.*;
-import com.austinv11.peripheralsplusplus.items.ItemBlockPeripheralContainer;
-import com.austinv11.peripheralsplusplus.items.ItemBlockTurtle;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import cpw.mods.fml.common.Loader;
-import cpw.mods.fml.common.registry.GameRegistry;
 import net.minecraft.block.BlockContainer;
+import net.minecraftforge.fml.common.registry.GameRegistry;
+
+import static net.minecraftforge.fml.common.registry.ForgeRegistries.BLOCKS;
 
 @GameRegistry.ObjectHolder(Reference.MOD_ID)
 public class ModBlocks {
-	public static final BlockPPP chatBox = new BlockChatBox();
-	public static final BlockPPP aiChatBox = new BlockAIChatBox();
-	public static final BlockPPP playerSensor = new BlockPlayerSensor();
-	public static BlockPPP rfCharger;
-	public static final BlockPPP oreDictionary = new BlockOreDictionary();
-	public static BlockContainer beeAnalyzer;
-	public static BlockContainer treeAnalyzer;
-	public static BlockContainer butterflyAnalyzer;
-	public static final BlockPPP teleporter = new BlockTeleporter();
-	public static final BlockPPP teleporterT2 = new BlockTeleporterT2();
-	public static final BlockPPP environmentScanner = new BlockEnvironmentScanner();
-	public static final BlockPPP speaker = new BlockSpeaker();
-	public static final BlockPPP antenna = new BlockAntenna();
-	public static final BlockPPP peripheralContainer = new BlockPeripheralContainer();
-	public static final BlockPPP meBridge = new BlockMEBridge();
-	public static final BlockPPP dummyBlock = new BlockDummyBlock();
-	public static final BlockPPP noteBlock = new BlockNote();
-	public static final BlockPPP turtle = new BlockTurtle();
-	public static final BlockPPP timeSensor = new BlockTimeSensor();
-	public static final BlockContainer interactiveSorter = new BlockInteractiveSorter();
-    public static final BlockContainer playerInterface = new BlockPlayerInterface();
-	public static final BlockContainer resupplyStation = new BlockResupplyStation();
+	public static final BlockPppBase CHAT_BOX = new BlockChatBox();
+	public static final BlockPppBase AI_CHAT_BOX = new BlockAIChatBox();
+	public static final BlockPppBase PLAYER_SENSOR = new BlockPlayerSensor();
+	public static final BlockPppBase RF_CHARGER = new BlockRFCharger();
+	public static final BlockPppBase ORE_DICTIONARY = new BlockOreDictionary();
+	public static final BlockContainer ANALYZER_BEE = new BlockAnalyzerBee();
+	public static final BlockContainer ANALYZER_TREE = new BlockAnalyzerTree();
+	public static final BlockContainer ANALYZER_BUTTERFLY = new BlockAnalyzerButterfly();
+	public static final BlockTeleporter TELEPORTER = new BlockTeleporter();
+	public static final BlockPppBase ENVIRONMENT_SCANNER = new BlockEnvironmentScanner();
+	public static final BlockSpeaker SPEAKER = new BlockSpeaker();
+	public static final BlockAntenna ANTENNA = new BlockAntenna();
+	public static final BlockPppBase PERIPHERAL_CONTAINER = new BlockPeripheralContainer();
+	public static final BlockPppBase ME_BRIDGE = new BlockMEBridge();
+	public static final BlockTurtle TURTLE = new BlockTurtle();
+	public static final BlockPppBase TIME_SENSOR = new BlockTimeSensor();
+	public static final BlockContainer INTERACTIVE_SORTER = new BlockInteractiveSorter();
+    public static final BlockContainer PLAYER_INTERFACE = new BlockPlayerInterface();
+	public static final BlockContainer RESUPPLY_STATION = new BlockResupplyStation();
 
-	public static void init(){
-		GameRegistry.registerBlock(chatBox, "chatBox");
-		GameRegistry.registerBlock(aiChatBox, "aiChatBox");
-		GameRegistry.registerBlock(playerSensor, "playerSensor");
-		if (Loader.isModLoaded("ThermalExpansion")) {
-			rfCharger = new BlockRFCharger();
-			GameRegistry.registerBlock(rfCharger, "rfCharger");
-		}
-		GameRegistry.registerBlock(oreDictionary, "oreDictionary");
-		if (Loader.isModLoaded("Forestry")) {
-			PeripheralsPlusPlus.LOGGER.info("Forestry is loaded! Registering analyzer peripherals...");
-			beeAnalyzer = new BlockAnalyzerBee();
-			GameRegistry.registerBlock(beeAnalyzer, "beeAnalyzer");
-			treeAnalyzer = new BlockAnalyzerTree();
-			GameRegistry.registerBlock(treeAnalyzer, "treeAnalyzer");
-			butterflyAnalyzer = new BlockAnalyzerButterfly();
-			GameRegistry.registerBlock(butterflyAnalyzer, "butterflyAnalyzer");
-		} else
-			PeripheralsPlusPlus.LOGGER.info("Forestry not found, skipping analyzer peripherals");
-		GameRegistry.registerBlock(teleporter, "teleporter");
-		GameRegistry.registerBlock(teleporterT2, "teleporterT2");
-		GameRegistry.registerBlock(environmentScanner, "environmentScanner");
-		GameRegistry.registerBlock(speaker, "speaker");
-		GameRegistry.registerBlock(antenna, "antenna");
-		GameRegistry.registerBlock(peripheralContainer, ItemBlockPeripheralContainer.class, "peripheralContainer");
-		if (Loader.isModLoaded("appliedenergistics2")) {
-			PeripheralsPlusPlus.LOGGER.info("Applied Energistics is loaded! Registering the ME Bridge...");
-			GameRegistry.registerBlock(meBridge, "meBridge");
-		} else
-			PeripheralsPlusPlus.LOGGER.info("Applied Energistics not found, skipping the ME Bridge");
-		GameRegistry.registerBlock(dummyBlock, "dummyBlock");
-		GameRegistry.registerBlock(noteBlock, "noteBlock");
-		GameRegistry.registerBlock(turtle, ItemBlockTurtle.class, "turtle");
-		GameRegistry.registerBlock(timeSensor, "timeSensor");
-		GameRegistry.registerBlock(interactiveSorter, "interactiveSorter");
-        GameRegistry.registerBlock(playerInterface, "playerInterface");
-		GameRegistry.registerBlock(resupplyStation, "resupplyStation");
+	public static void register(){
+		BLOCKS.register(CHAT_BOX);
+		BLOCKS.register(AI_CHAT_BOX);
+		BLOCKS.register(PLAYER_SENSOR);
+		BLOCKS.register(RF_CHARGER);
+		BLOCKS.register(ORE_DICTIONARY);
+		BLOCKS.register(ANALYZER_BEE);
+		BLOCKS.register(ANALYZER_TREE);
+		BLOCKS.register(ANALYZER_BUTTERFLY);
+		BLOCKS.register(TELEPORTER);
+		BLOCKS.register(ENVIRONMENT_SCANNER);
+		BLOCKS.register(SPEAKER);
+		BLOCKS.register(ANTENNA);
+		BLOCKS.register(PERIPHERAL_CONTAINER);
+		BLOCKS.register(ME_BRIDGE);
+		BLOCKS.register(TURTLE);
+		BLOCKS.register(TIME_SENSOR);
+		BLOCKS.register(INTERACTIVE_SORTER);
+        BLOCKS.register(PLAYER_INTERFACE);
+		BLOCKS.register(RESUPPLY_STATION);
     }
 }

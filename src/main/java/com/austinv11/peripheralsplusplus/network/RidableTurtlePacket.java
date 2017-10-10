@@ -1,23 +1,24 @@
 package com.austinv11.peripheralsplusplus.network;
 
 import com.austinv11.peripheralsplusplus.entities.EntityRidableTurtle;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+
+import java.util.UUID;
 
 public class RidableTurtlePacket implements IMessage {
-
-	private int entityId;
-	private int movementCode;
+	private UUID entityId;
+	private EntityRidableTurtle.MovementCode movementCode;
 	private int dimension;
 
 	public RidableTurtlePacket() {}
 
-	public RidableTurtlePacket(int entityId, int movementCode, int dimension) {
+	public RidableTurtlePacket(UUID entityId, EntityRidableTurtle.MovementCode movementCode, int dimension) {
 		this.entityId = entityId;
 		this.movementCode = movementCode;
 		this.dimension = dimension;
@@ -26,36 +27,28 @@ public class RidableTurtlePacket implements IMessage {
 	@Override
 	public void fromBytes(ByteBuf byteBuf) {
 		NBTTagCompound tag = ByteBufUtils.readTag(byteBuf);
-		this.entityId = tag.getInteger("entityId");
-		this.movementCode = tag.getInteger("movementCode");
+		this.entityId = tag.getUniqueId("entityId");
+		this.movementCode = EntityRidableTurtle.MovementCode.values()[tag.getInteger("movementCode")];
 		this.dimension = tag.getInteger("dimension");
 	}
 
 	@Override
 	public void toBytes(ByteBuf byteBuf) {
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("entityId", entityId);
-		tag.setInteger("movementCode", movementCode);
+		tag.setUniqueId("entityId", entityId);
+		tag.setInteger("movementCode", movementCode.ordinal());
 		tag.setInteger("dimension", dimension);
 		ByteBufUtils.writeTag(byteBuf, tag);
-	}
-
-	public enum MovementCode {
-		FORWARD(0),
-		TURN_LEFT(1),
-		TURN_RIGHT(2),
-		ASCEND(3),
-		DESCEND(4);
-		public int code;
-		MovementCode(int code) {this.code = code;}
 	}
 
 	public static class RidableTurtlePacketHandler implements IMessageHandler<RidableTurtlePacket, IMessage> {
 		@Override
 		public IMessage onMessage(RidableTurtlePacket ridableTurtlePacket, MessageContext messageContext) {
-			EntityRidableTurtle ridableTurtle = (EntityRidableTurtle)MinecraftServer.getServer().worldServerForDimension(ridableTurtlePacket.dimension).
-					getEntityByID(ridableTurtlePacket.entityId);
-			ridableTurtle.queueAction(ridableTurtlePacket.movementCode);
+			EntityRidableTurtle ridableTurtle =
+					(EntityRidableTurtle) DimensionManager.getWorld(ridableTurtlePacket.dimension)
+							.getEntityFromUuid(ridableTurtlePacket.entityId);
+			if (ridableTurtle != null)
+				ridableTurtle.tryMove(ridableTurtlePacket.movementCode);
 			return null;
 		}
 	}

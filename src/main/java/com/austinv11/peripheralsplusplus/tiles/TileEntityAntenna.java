@@ -15,31 +15,34 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.ITickable;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
-public class TileEntityAntenna extends MountedTileEntity {
+public class TileEntityAntenna extends MountedTileEntity implements ITickable {
 
 	public static String publicName = "antenna";
 	private  String name = "tileEntityAntenna";
-	private int world = 0;
+	private int dimension = 0;
 	public HashMap<IComputerAccess, Boolean> computers = new HashMap<IComputerAccess,Boolean>();
 	private HashMap<Integer, LuaObjectHUD> huds = new HashMap<Integer,LuaObjectHUD>();
-	public static HashMap<UUID, TileEntityAntenna> antenna_registry = new HashMap<UUID,TileEntityAntenna>();
+	public static final HashMap<UUID, TileEntityAntenna> ANTENNA_REGISTRY = new HashMap<>();
 	public UUID identifier;
 	public String label;
-	public volatile List<Entity> associatedEntities = new ArrayList<Entity>();
+	private volatile List<Entity> associatedEntities = new ArrayList<Entity>();
 
 	public TileEntityAntenna() {
 		super();
 		identifier = UUID.randomUUID();
-		while (antenna_registry.containsKey(identifier)) {
-			if (antenna_registry.get(identifier).equals(this))
+		while (ANTENNA_REGISTRY.containsKey(identifier)) {
+			if (ANTENNA_REGISTRY.get(identifier).equals(this))
 				break;
 			identifier = UUID.randomUUID();
 		}
@@ -59,11 +62,12 @@ public class TileEntityAntenna extends MountedTileEntity {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
 		nbttagcompound.setString("identifier", identifier.toString());
 		if (label != null)
 			nbttagcompound.setString("label", label);
+		return nbttagcompound;
 	}
 
 	@Override
@@ -92,13 +96,19 @@ public class TileEntityAntenna extends MountedTileEntity {
 		switch (method) {
 			case 0://getPlayers
 				synchronized (this) {
-					List<String> players = new ArrayList<String>();
-					for (Object player : MinecraftServer.getServer().getConfigurationManager().playerEntityList)
-						if (player instanceof EntityPlayer)
-							if (((EntityPlayer) player).getCurrentArmor(3) != null && ((EntityPlayer) player).getCurrentArmor(3).getItem() instanceof ItemSmartHelmet && NBTHelper.hasTag(((EntityPlayer) player).getCurrentArmor(3), "identifier"))
-								if (identifier.equals(UUID.fromString(NBTHelper.getString(((EntityPlayer) player).getCurrentArmor(3), "identifier"))))
-									players.add(((EntityPlayer) player).getCommandSenderName());
-					return new Object[]{Util.arrayToMap(players.toArray())};
+					List<String> playerNames = new ArrayList<>();
+					List<EntityPlayer> players = getPlayersWearingSmartHelmets();
+					for (EntityPlayer player : players) {
+						Iterable<ItemStack> armor = player.getArmorInventoryList();
+						for (ItemStack itemStack : armor) {
+							if (itemStack.getItem() instanceof ItemSmartHelmet &&
+									NBTHelper.hasTag(itemStack, "identifier") &&
+									identifier.equals(UUID.fromString(NBTHelper.getString(itemStack,
+											"identifier"))))
+								playerNames.add(player.getDisplayNameString());
+						}
+					}
+					return new Object[]{Util.arrayToMap(playerNames.toArray())};
 				}
 			case 1:
 				synchronized (this) {
@@ -110,7 +120,8 @@ public class TileEntityAntenna extends MountedTileEntity {
 						return new Object[]{null};
 					LuaObjectHUD obj = new LuaObjectHUD((String) arguments[0], identifier);
 					huds.put(computer.getID(), obj);
-					PeripheralsPlusPlus.NETWORK.sendTo(new ScaleRequestPacket(this, computer.getID(), world), (EntityPlayerMP) Util.getPlayer((String)arguments[0]));
+					PeripheralsPlusPlus.NETWORK.sendTo(new ScaleRequestPacket(this, computer.getID(), dimension),
+							(EntityPlayerMP) Util.getPlayer((String)arguments[0]));
 					context.pullEvent("resolution");
 					return new Object[]{obj};
 				}
@@ -146,6 +157,22 @@ public class TileEntityAntenna extends MountedTileEntity {
 //		}
 		return new Object[0];
 	}
+
+	public static List<EntityPlayer> getPlayersWearingSmartHelmets() {
+		List<EntityPlayer> players = new ArrayList<>();
+		for (WorldServer worldServer : DimensionManager.getWorlds()) {
+			if (worldServer.getMinecraftServer() != null) {
+				for (EntityPlayer player : worldServer.playerEntities) {
+					Iterable<ItemStack> armor = player.getArmorInventoryList();
+					for (ItemStack itemStack : armor) {
+						if (itemStack.getItem() instanceof ItemSmartHelmet)
+							players.add(player);
+					}
+				}
+			}
+		}
+		return players;
+	}
 	
 	private Entity entityFromId(int id) {
 		for (Entity entity : associatedEntities)
@@ -155,24 +182,24 @@ public class TileEntityAntenna extends MountedTileEntity {
 	}
 
 	@Override
-	public void updateEntity() {
-		if (worldObj != null) {
-			world = worldObj.provider.dimensionId;
-			if (!antenna_registry.containsKey(identifier))
-				antenna_registry.put(identifier, this);
+	public void update() {
+		if (world != null) {
+			dimension = world.provider.getDimension();
+			if (!ANTENNA_REGISTRY.containsKey(identifier))
+				ANTENNA_REGISTRY.put(identifier, this);
 		}
 	}
 	
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		antenna_registry.remove(identifier);
+		ANTENNA_REGISTRY.remove(identifier);
 	}
 	
 	@Override
 	public void validate() {
 		super.validate();
-		antenna_registry.put(identifier, this);
+		ANTENNA_REGISTRY.put(identifier, this);
 	}
 
 	@Override
@@ -210,5 +237,31 @@ public class TileEntityAntenna extends MountedTileEntity {
 	public String getLabel()
 	{
 		return this.label;
+	}
+
+	/**
+	 * Register an entity with this antenna only if it is not already registered
+	 * @param entity entity to register
+	 */
+	public void registerEntity(Entity entity) {
+		if (!associatedEntities.contains(entity))
+			associatedEntities.add(entity);
+	}
+
+	/**
+	 * Check if an entity is registered with this antenna
+	 * @param entity entity to check for
+	 * @return is registered
+	 */
+	public boolean isEntityRegistered(Entity entity) {
+		return associatedEntities.contains(entity);
+	}
+
+	/**
+	 * Remove a registered entity
+	 * @param entity entity to remove
+	 */
+	public void removeEntity(Entity entity) {
+		associatedEntities.remove(entity);
 	}
 }

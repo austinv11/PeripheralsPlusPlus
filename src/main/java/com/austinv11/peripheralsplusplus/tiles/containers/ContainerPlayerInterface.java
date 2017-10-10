@@ -21,7 +21,7 @@ public class ContainerPlayerInterface extends Container
     {
         this.inv = inv;
         this.player = player;
-        inv.openInventory();
+        inv.openInventory(player);
         layout(xSize, ySize);
     }
 
@@ -31,7 +31,7 @@ public class ContainerPlayerInterface extends Container
             ExclusiveSlot slot = new ExclusiveSlot(inv, invSlot, invSlot * 18 + 16, 35);
             slot.setWhitelist(true);
             Set<Item> items = new HashSet<Item>();
-            items.add(ModItems.permCard);
+            items.add(ModItems.PERM_CARD);
             slot.setExclusive(items);
             addSlotToContainer(slot);
         }
@@ -53,16 +53,16 @@ public class ContainerPlayerInterface extends Container
     @Override
     public boolean canInteractWith(EntityPlayer player)
     {
-        return inv.isUseableByPlayer(player);
+        return inv.isUsableByPlayer(player);
     }
 
     @Override
     public ItemStack transferStackInSlot(EntityPlayer entityPlayer, int slotIndex)
     {
         // Create a new itemstack. This is the stack that will be manipulated and returned.
-        ItemStack itemstack = null;
+        ItemStack itemstack = ItemStack.EMPTY;
         // Get the slot that was just shift clicked. This is the slot that the itemstack will be transferring from.
-        Slot slot = (Slot) this.inventorySlots.get(slotIndex);
+        Slot slot = this.inventorySlots.get(slotIndex);
 
         // Check that the slot exists and has an itemstack in it
         if (slot != null && slot.getHasStack())
@@ -70,9 +70,9 @@ public class ContainerPlayerInterface extends Container
             // Get the stack in the slot that was shift-clicked. This stack will act as a base for our return itemstack.
             ItemStack itemstack1 = slot.getStack();
 
-            if (!itemstack1.getItem().equals(ModItems.permCard))
+            if (!itemstack1.getItem().equals(ModItems.PERM_CARD))
             {
-                return null;
+                return ItemStack.EMPTY;
             }
 
             // Copy that stack to our return itemstack.
@@ -82,18 +82,18 @@ public class ContainerPlayerInterface extends Container
             {
                 if (!this.mergeItemStack(itemstack1, inv.getSizeInventory(), 36 + inv.getSizeInventory(), true)) // Tries to merge itemstack with any in the player's main inv. (slots 8-44) 36 is the player's main inv size (excludes armor slots)
                 {
-                    return null;
+                    return ItemStack.EMPTY;
                 }
             }
             else if (!this.mergeItemStack(itemstack1, 0, inv.getSizeInventory(), false)) // If the itemstack can't merge with any stacks in the force belt container, return.
             {                                                       // Implies that the stack being transferred is from a slot in the player's main inv
-                return null;
+                return ItemStack.EMPTY;
             }
 
             // After the merging has completed, if the itemstack has a size of 0, replace it with an empty slot.
-            if (itemstack1.stackSize == 0)
+            if (itemstack1.getCount() == 0)
             {
-                slot.putStack(null);
+                slot.putStack(ItemStack.EMPTY);
             }
             else
             {

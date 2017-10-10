@@ -8,7 +8,6 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 import java.util.HashMap;
@@ -26,19 +25,18 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 	}
 
 	public TileEntityPlayerSensor(ITurtleAccess turtle) {
-		location = new Location(turtle.getPosition().posX,turtle.getPosition().posY, turtle.getPosition().posZ, turtle.getWorld());
+		location = new Location(turtle.getPosition().getX(),turtle.getPosition().getY(), turtle.getPosition().getZ(),
+                turtle.getWorld());
 		this.turtle = turtle;
-		this.xCoord = turtle.getPosition().posX;
-		this.yCoord = turtle.getPosition().posY;
-		this.zCoord = turtle.getPosition().posZ;
-		this.setWorldObj(turtle.getWorld());
+		this.setPos(turtle.getPosition());
+		this.setWorld(turtle.getWorld());
 	}
 
     @Override
     public void validate() {
         super.validate();
 
-        if(worldObj != null)
+        if(world != null)
             location = new Location(this);
     }
 
@@ -52,8 +50,9 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
+		return nbttagcompound;
 	}
 
 	@Override
@@ -83,11 +82,7 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
                     if (arguments.length > 0)
                         range = (Double) arguments[0];
 
-                    HashMap<String,Double> map = new HashMap<String, Double>();
-					for (Object entity : this.worldObj.playerEntities) {
-						EntityPlayer player = (EntityPlayer) entity;
-						map.put(player.getDisplayName(), Math.abs(location.getX() - player.posX + (location.getZ() - player.posZ)));
-					}
+					HashMap<String,Double> map = new Location(this).getPlayers(range);
                     HashMap<Integer,HashMap<String,Object>> returnVal = new HashMap<Integer,HashMap<String,Object>>();
                     int i = 1;
                     for (String player : map.keySet()) {
@@ -111,7 +106,7 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 			synchronized (this) {
 				HashMap<Integer,String> map = new HashMap<Integer,String>();
 				int i = 1;
-				for (String p : Util.getPlayers(inWorld ? getWorldObj() : null)) {
+				for (String p : Util.getPlayers(inWorld ? getWorld() : null)) {
 					map.put(i, p);
 					i++;
 				}
@@ -139,9 +134,7 @@ public class TileEntityPlayerSensor extends MountedTileEntity {
 	}
 
 	public void update() {
-		this.xCoord = turtle.getPosition().posX;
-		this.yCoord = turtle.getPosition().posY;
-		this.zCoord = turtle.getPosition().posZ;
+	    setPos(turtle.getPosition());
 	}
 
 	public void blockActivated(String player) {

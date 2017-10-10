@@ -2,13 +2,13 @@ package com.austinv11.peripheralsplusplus.network;
 
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class GuiPacket implements IMessage {
 
@@ -38,9 +38,11 @@ public class GuiPacket implements IMessage {
 		@Override
 		public IMessage onMessage(GuiPacket message, MessageContext ctx) {
 			if (message.close)
-				Minecraft.getMinecraft().thePlayer.closeScreen();
+				Minecraft.getMinecraft().player.closeScreen();
 			else
-				Minecraft.getMinecraft().thePlayer.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.HELMET.ordinal(), Minecraft.getMinecraft().thePlayer.worldObj, (int) Minecraft.getMinecraft().thePlayer.posX, (int) Minecraft.getMinecraft().thePlayer.posY, (int) Minecraft.getMinecraft().thePlayer.posZ);
+				Minecraft.getMinecraft().player.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.HELMET.ordinal(),
+						Minecraft.getMinecraft().player.world, (int) Minecraft.getMinecraft().player.posX,
+						(int) Minecraft.getMinecraft().player.posY, (int) Minecraft.getMinecraft().player.posZ);
 			return null;
 		}
 	}

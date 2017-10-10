@@ -53,6 +53,7 @@ public class TileEntityAnalyzerButterfly extends TileEntityAnalyzer {
 		ret.put("toleranceTemperature", genome.getToleranceTemp().toString());
 		ret.put("humidity", genome.getPrimary().getHumidity().toString());
 		ret.put("toleranceHumidity", genome.getToleranceHumid().toString());
+		ret.put("cocoon", genome.getCocoon().toString());
 	}
 
 	@Override

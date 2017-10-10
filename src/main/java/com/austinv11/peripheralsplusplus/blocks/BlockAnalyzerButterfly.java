@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
+import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzerButterfly;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
@@ -10,7 +11,8 @@ public class BlockAnalyzerButterfly extends BlockAnalyzer {
 	
 	public BlockAnalyzerButterfly() {
 		super();
-		this.setBlockName("butterflyAnalyzer");
+		this.setRegistryName(Reference.MOD_ID, "analyzer_butterfly");
+		this.setUnlocalizedName("analyzer_butterfly");
 	}
 
 	@Override
@@ -19,6 +21,6 @@ public class BlockAnalyzerButterfly extends BlockAnalyzer {
 	}
 
 	public Block getBlock(){
-		return ModBlocks.butterflyAnalyzer;
+		return ModBlocks.ANALYZER_BUTTERFLY;
 	}
 }

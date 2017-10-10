@@ -1,23 +1,23 @@
 package com.austinv11.peripheralsplusplus.network;
 
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class ScaleRequestResponsePacket implements IMessage {
 
-	public ChunkCoordinates coords;
+	public BlockPos coords;
 	public int id, width, height, dim;
 
 	public ScaleRequestResponsePacket() {}
 
-	public ScaleRequestResponsePacket(ChunkCoordinates coords, int id, int width, int height, int dim) {
+	public ScaleRequestResponsePacket(BlockPos coords, int id, int width, int height, int dim) {
 		this.coords = coords;
 		this.id = id;
 		this.width = width;
@@ -28,7 +28,7 @@ public class ScaleRequestResponsePacket implements IMessage {
 	@Override
 	public void fromBytes(ByteBuf buf) {
 		NBTTagCompound tag = ByteBufUtils.readTag(buf);
-		coords = new ChunkCoordinates(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
+		coords = new BlockPos(tag.getInteger("x"), tag.getInteger("y"), tag.getInteger("z"));
 		id = tag.getInteger("id");
 		width = tag.getInteger("width");
 		height = tag.getInteger("height");
@@ -38,9 +38,9 @@ public class ScaleRequestResponsePacket implements IMessage {
 	@Override
 	public void toBytes(ByteBuf buf) {
 		NBTTagCompound tag = new NBTTagCompound();
-		tag.setInteger("x", coords.posX);
-		tag.setInteger("y", coords.posY);
-		tag.setInteger("z", coords.posZ);
+		tag.setInteger("x", coords.getX());
+		tag.setInteger("y", coords.getY());
+		tag.setInteger("z", coords.getZ());
 		tag.setInteger("id", id);
 		tag.setInteger("width", width);
 		tag.setInteger("height", height);
@@ -52,7 +52,8 @@ public class ScaleRequestResponsePacket implements IMessage {
 
 		@Override
 		public IMessage onMessage(ScaleRequestResponsePacket message, MessageContext ctx) {
-			TileEntityAntenna antenna = (TileEntityAntenna) MinecraftServer.getServer().worldServerForDimension(message.dim).getTileEntity(message.coords.posX, message.coords.posY, message.coords.posZ);
+			TileEntityAntenna antenna = (TileEntityAntenna) DimensionManager.getWorld(message.dim)
+					.getTileEntity(new BlockPos(message.coords.getX(), message.coords.getY(), message.coords.getZ()));
 			antenna.onResponse(message.id, message.width, message.height);
 			return null;
 		}

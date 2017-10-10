@@ -1,11 +1,8 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
-import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ChatUtil;
 import com.austinv11.peripheralsplusplus.utils.Util;
-import cpw.mods.fml.common.eventhandler.EventPriority;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -17,13 +14,16 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EntityDamageSource;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.Vec3d;
 import net.minecraftforge.event.ServerChatEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.HashMap;
 
-public class TileEntityChatBox extends MountedTileEntity {
+public class TileEntityChatBox extends MountedTileEntity implements ITickable {
 
 	public static String publicName = "chatBox";
 	private  String name = "tileEntityChatBox";
@@ -38,10 +38,8 @@ public class TileEntityChatBox extends MountedTileEntity {
 	}
 
 	public TileEntityChatBox(ITurtleAccess turtle) {
-		this.xCoord = turtle.getPosition().posX;
-		this.yCoord = turtle.getPosition().posY;
-		this.zCoord = turtle.getPosition().posZ;
-		this.setWorldObj(turtle.getWorld());
+	    this.setPos(turtle.getPosition());
+	    this.setWorld(turtle.getWorld());
 		this.turtle = turtle;
 	}
 
@@ -55,25 +53,23 @@ public class TileEntityChatBox extends MountedTileEntity {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
+		return nbttagcompound;
 	}
 
 	@Override
-	public void updateEntity() {
+	public void update() {
 		if (subticker > 0)
 			subticker--;
 		if (subticker == 0 && ticker != 0)
 			ticker = 0;
 	}
 
-	public void updateEntity(boolean turtle) {
-		if (turtle) {
-			this.xCoord = this.turtle.getPosition().posX;
-			this.yCoord = this.turtle.getPosition().posY;
-			this.zCoord = this.turtle.getPosition().posZ;
-		}
-		updateEntity();
+	public void update(boolean turtle) {
+		if (turtle)
+		    this.setPos(this.turtle.getPosition());
+		update();
 	}
 
 	public void onChat(EntityPlayer player, String message) {
@@ -84,9 +80,9 @@ public class TileEntityChatBox extends MountedTileEntity {
 	public void onDeath(EntityPlayer player, DamageSource source) {
 		String killer = null;
 		if (source instanceof EntityDamageSource) {
-			Entity ent = source.getEntity();
+			Entity ent = source.getTrueSource();
 			if (ent != null)
-				killer = ent.getCommandSenderName();
+				killer = ent.getName();
 		}
 		for (IComputerAccess computer : computers.keySet())
 			computer.queueEvent("death", new Object[] {player.getDisplayName(), killer, source.damageType});
@@ -234,17 +230,20 @@ public class TileEntityChatBox extends MountedTileEntity {
 			if (!event.isCanceled()) {
 				if (Config.enableChatBox) {
 					String commandPrefix = Config.chatboxCommandPrefix.trim();
-					if (!commandPrefix.equals("") && !commandPrefix.equals(" ") && event.message.startsWith(commandPrefix)) {
+					if (!commandPrefix.equals("") && !commandPrefix.equals(" ") && event.getMessage().startsWith(commandPrefix)) {
 						event.setCanceled(true);
 
 						for (TileEntityChatBox box : chatBoxMap.keySet()) {
-							if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord, box.yCoord, box.zCoord).distanceTo(event.player.getPosition(1.0f)) <= Config.readRange)
-								box.onCommand(event.player, event.message.replace(commandPrefix, ""));
+							if (Config.readRange < 0 || new Vec3d(box.getPos().getX(), box.getPos().getY(),
+                                    box.getPos().getZ())
+                                    .distanceTo(event.getPlayer().getPositionVector()) <= Config.readRange)
+								box.onCommand(event.getPlayer(), event.getMessage().replace(commandPrefix, ""));
 						}
 					} else {
 						for (TileEntityChatBox box : chatBoxMap.keySet()) {
-							if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord, box.yCoord, box.zCoord).distanceTo(event.player.getPosition(1.0f)) <= Config.readRange) {
-								box.onChat(event.player, event.message);
+							if (Config.readRange < 0 || new Vec3d(box.getPos())
+                                    .distanceTo(event.getPlayer().getPositionVector()) <= Config.readRange) {
+								box.onChat(event.getPlayer(), event.getMessage());
 							}
 						}
 					}
@@ -256,10 +255,11 @@ public class TileEntityChatBox extends MountedTileEntity {
 		public void onDeath(LivingDeathEvent event) {
 			if (!event.isCanceled()) {
 				if (Config.enableChatBox) {
-					if (event.entity instanceof EntityPlayer) {
+					if (event.getEntity() instanceof EntityPlayer) {
 						for (TileEntityChatBox box : chatBoxMap.keySet()) {
-							if (Config.readRange < 0 || Vec3.createVectorHelper(box.xCoord, box.yCoord, box.zCoord).distanceTo(((EntityPlayer) event.entity).getPosition(1.0f)) <= Config.readRange)
-								box.onDeath((EntityPlayer) event.entity, event.source);
+							if (Config.readRange < 0 || new Vec3d(box.getPos())
+                                    .distanceTo(event.getEntity().getPositionVector()) <= Config.readRange)
+								box.onDeath((EntityPlayer) event.getEntity(), event.getSource());
 						}
 					}
 				}

@@ -4,7 +4,7 @@ import com.austinv11.collectiveframework.minecraft.utils.Location;
 import com.austinv11.collectiveframework.minecraft.utils.WorldUtils;
 import com.austinv11.collectiveframework.utils.math.MathUtils;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
-import com.austinv11.peripheralsplusplus.entities.NanoProperties;
+import com.austinv11.peripheralsplusplus.capabilities.nano.CapabilityNanoBot;
 import com.austinv11.peripheralsplusplus.items.ItemNanoSwarm;
 import com.austinv11.peripheralsplusplus.network.RobotEventPacket;
 import com.austinv11.peripheralsplusplus.reference.Reference;
@@ -16,8 +16,8 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.text.TextComponentString;
 
 import java.util.UUID;
 
@@ -56,7 +56,6 @@ public class LuaObjectEntityControl implements ILuaObject {
 			switch (method) {
 				case 0:
 					return new Object[]{isPlayer};
-				
 				case 1:
 					if (isPlayer) {
 						if (!ItemNanoSwarm.doInstruction(id, player)) 
@@ -77,7 +76,7 @@ public class LuaObjectEntityControl implements ILuaObject {
 					} else {
 						if (!ItemNanoSwarm.doInstruction(id, entity))
 							return new Object[]{false};
-						player.heal(1.0F);
+						entity.heal(1.0F);
 					}
 					break;
 					
@@ -115,10 +114,13 @@ public class LuaObjectEntityControl implements ILuaObject {
 					}
 					
 				case 6:
+                    //noinspection ConstantConditions
+                    if (CapabilityNanoBot.INSTANCE == null)
+				        throw new LuaException("Cannot get bots from entity");
 					if (isPlayer) {
-						return new Object[]{((NanoProperties)player.getExtendedProperties(NanoProperties.IDENTIFIER)).numOfBots};
+						return new Object[]{player.getCapability(CapabilityNanoBot.INSTANCE, null).getBots()};
 					} else {
-						return new Object[]{((NanoProperties)entity.getExtendedProperties(NanoProperties.IDENTIFIER)).numOfBots};
+						return new Object[]{entity.getCapability(CapabilityNanoBot.INSTANCE, null).getBots()};
 					}
 					
 				case 7:
@@ -181,7 +183,7 @@ public class LuaObjectEntityControl implements ILuaObject {
 						if (!ItemNanoSwarm.doInstruction(id, player))
 							return new Object[]{false};
 						String sender = arguments.length > 1 ? "<"+arguments[1]+"> " : "";
-						player.addChatComponentMessage(new ChatComponentText(sender+arguments[0]));
+						player.sendMessage(new TextComponentString(sender+arguments[0]));
 						break;
 				}
 				
@@ -205,12 +207,14 @@ public class LuaObjectEntityControl implements ILuaObject {
 							throw new LuaException("Entity with id "+id+" cannot be interacted with");
 						Entity target;
 						if (arguments[0] instanceof String)
-							target = WorldUtils.getPlayerForWorld((String)arguments[0], entity.worldObj);
+							target = WorldUtils.getPlayerForWorld((String)arguments[0], entity.world);
 						else
 							target = WorldUtils.getNearestEntityToLocation(new Location((Double)arguments[0],
-									(Double)arguments[1], (Double)arguments[2], entity.worldObj));
-						entity.currentTarget = target;
-						return new Object[]{target != null};
+									(Double)arguments[1], (Double)arguments[2], entity.world));
+						if (!(target instanceof EntityLivingBase))
+						    throw new LuaException("Target must be living");
+						entity.setAttackTarget((EntityLivingBase) target);
+						return new Object[]{true};
 					
 					case 10:
 						if (arguments.length < 1)
@@ -225,10 +229,10 @@ public class LuaObjectEntityControl implements ILuaObject {
 							throw new LuaException("Entity with id "+id+" cannot be interacted with");
 						Entity attackTarget;
 						if (arguments[0] instanceof String)
-							attackTarget = WorldUtils.getPlayerForWorld((String)arguments[0], entity.worldObj);
+							attackTarget = WorldUtils.getPlayerForWorld((String)arguments[0], entity.world);
 						else
 							attackTarget = WorldUtils.getNearestEntityToLocation(new Location((Double)arguments[0],
-									(Double)arguments[1], (Double)arguments[2], entity.worldObj));
+									(Double)arguments[1], (Double)arguments[2], entity.world));
 						entity.setAttackTarget((EntityLivingBase) attackTarget);
 						return new Object[]{attackTarget != null};
 					
@@ -243,7 +247,7 @@ public class LuaObjectEntityControl implements ILuaObject {
 							throw new LuaException("Bad argument #3 (expected number)");
 						if (!ItemNanoSwarm.doInstruction(id, entity))
 							return new Object[]{false};
-						entity.navigator.setPath(entity.navigator.getPathToXYZ((Double)arguments[0], (Double)arguments[1],
+						entity.getNavigator().setPath(entity.getNavigator().getPathToXYZ((Double)arguments[0], (Double)arguments[1],
 								(Double)arguments[2]), entity.getAIMoveSpeed());
 						break;
 						

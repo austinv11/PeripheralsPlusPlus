@@ -1,25 +1,38 @@
 package com.austinv11.peripheralsplusplus.turtles;
 
+import com.austinv11.collectiveframework.minecraft.utils.ModelManager;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntitySpeaker;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.austinv11.peripheralsplusplus.utils.ModelUtil;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
+import org.apache.commons.lang3.tuple.Pair;
 
-public class TurtleSpeaker implements ITurtleUpgrade{
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
+
+public class TurtleSpeaker implements ITurtleUpgrade, ModelManager.ModelRegistrar{
 	@Override
-	public int getUpgradeID() {
-		return Reference.SPEAKER_UPGRADE;
+	public ResourceLocation getUpgradeID() {
+		return new ResourceLocation(Reference.SPEAKER_UPGRADE);
 	}
 
-	@Override
+    @Override
+    public int getLegacyUpgradeID() {
+        return Reference.SPEAKER_UPGRADE_LEGACY;
+    }
+
+    @Override
 	public String getUnlocalisedAdjective() {
-		return Reference.MOD_ID.toLowerCase()+".turtleUpgrade.speaker";
+		return Reference.MOD_ID + ".turtle_upgrade.speaker";
 	}
 
 	@Override
@@ -29,7 +42,7 @@ public class TurtleSpeaker implements ITurtleUpgrade{
 
 	@Override
 	public ItemStack getCraftingItem() {
-		return new ItemStack(ModBlocks.speaker);
+		return new ItemStack(ModBlocks.SPEAKER);
 	}
 
 	@Override
@@ -37,21 +50,27 @@ public class TurtleSpeaker implements ITurtleUpgrade{
 		return new TileEntitySpeaker(turtle, side);
 	}
 
-	@Override
-	public TurtleCommandResult useTool(ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, int direction) {
-		return null;
-	}
+    @Nonnull
+    @Override
+    public TurtleCommandResult useTool(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side, @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction) {
+        return TurtleCommandResult.failure();
+    }
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
-		return ModBlocks.speaker.getIcon(ForgeDirection.EAST.ordinal(), 0);
-	}
+    @Nonnull
+    @Override
+    public Pair<IBakedModel, Matrix4f> getModel(@Nullable ITurtleAccess turtle, @Nonnull TurtleSide side) {
+        return ModelUtil.getTurtleUpgradeModel("turtle_speaker", side);
+    }
 
 	@Override
 	public void update(ITurtleAccess turtle, TurtleSide side) {
 		IPeripheral peripheral = turtle.getPeripheral(side);
 		if (peripheral instanceof TileEntitySpeaker)
-			((TileEntitySpeaker)peripheral).updateEntity();
+			((TileEntitySpeaker)peripheral).update();
 	}
+
+    @Override
+    public void registerModels(IRegistry<ModelResourceLocation, IBakedModel> iRegistry) {
+        ModelUtil.registerTurtleUpgradeModels(iRegistry, "turtle_speaker");
+    }
 }

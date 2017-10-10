@@ -2,12 +2,12 @@ package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.cleverbot.AIChatRequest;
 import com.austinv11.peripheralsplusplus.reference.Config;
+import com.michaelwflaherty.cleverbotapi.CleverBotQuery;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import com.google.code.chatterbotapi.*;
 
 import java.util.*;
 
@@ -16,7 +16,6 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 	public static String publicName = "aiChatBox";
 	private String name = "tileEntityAIChatBox";
 	private List<BotSessionLuaObject> sessions = new ArrayList<BotSessionLuaObject>();
-	private ChatterBotFactory factory = new ChatterBotFactory();
 	private List<IComputerAccess> computers = new ArrayList<IComputerAccess>();
 
 	public TileEntityAIChatBox() {
@@ -48,8 +47,16 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 
 		// newSession
 		if (method == 0) {
+        	String apiKey = Config.cleverbotApiKey;
+        	if (arguments.length == 1) {
+        		if (!(arguments[0] instanceof String))
+        			throw new LuaException("First object is expected to be an API key string");
+        		apiKey = (String) arguments[0];
+			}
+			if (apiKey.isEmpty())
+				throw new LuaException("No API key registered in the mod config or passed as an argument");
 			// Run method
-			return Methods.newSession(computer, context, this);
+			return Methods.newSession(computer, context, this, apiKey);
 		}
 
 		// getSession
@@ -101,10 +108,6 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 		return this == other;
 	}
 
-	public ChatterBotFactory getFactory() {
-		return factory;
-	}
-
 	public List<BotSessionLuaObject> getSessions() {
 		return sessions;
 	}
@@ -114,10 +117,9 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 
 		// Lua arguments:
 		// string uuid = newSession()
-		public static Object[] newSession(IComputerAccess computer, ILuaContext context, TileEntityAIChatBox tileEntity) throws LuaException, InterruptedException {
-
+		public static Object[] newSession(IComputerAccess computer, ILuaContext context, TileEntityAIChatBox tileEntity,
+										  String apiKey) throws LuaException, InterruptedException {
 			// Get the factory and sessions from the tile entity
-			ChatterBotFactory factory = tileEntity.getFactory();
 			List<BotSessionLuaObject> sessions = tileEntity.getSessions();
 
 			try	{
@@ -125,10 +127,9 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 				UUID uuid = ArgumentHelper.randomUUID(sessions);
 
 				// Create the session
-				ChatterBot bot = factory.create(ChatterBotType.CLEVERBOT);
-				ChatterBotSession botSession = bot.createSession();
+				CleverBotQuery botSession = new CleverBotQuery(apiKey, "");
 
-				BotSessionLuaObject luaSession = new BotSessionLuaObject(uuid,bot,botSession,computer,tileEntity);
+				BotSessionLuaObject luaSession = new BotSessionLuaObject(uuid,botSession,computer,tileEntity);
 				// Add the session to the tile entity's list
 				sessions.add(luaSession);
 
@@ -168,15 +169,6 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 	}
 
 	public static class ArgumentHelper {
-
-		// Get a ChatterBotType, if there's no valid BotType at that index then it will throw a LuaException.
-		public static ChatterBotType getBotType(Object[] arguments, int index) throws LuaException, InterruptedException {
-			return getBotType(arguments, index, null);
-		}
-
-		public static ChatterBotType getBotType(Object[] arguments, int index, ChatterBotType defaultValue) throws LuaException, InterruptedException {
-			return stringToType(getString(arguments,index,defaultValue==null ? null : defaultValue.toString()));
-		}
 
 		// Get an UUID, if there's no valid uuid at that index then it will throw a LuaException.
 		public static UUID getUUID(Object[] arguments, int index) throws LuaException, InterruptedException {
@@ -237,21 +229,6 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 			return uuid;
 		}
 
-		// Try to convert a string variable to a ChatterBotType. If no match then return null.
-		static ChatterBotType stringToType(String string) throws LuaException, InterruptedException {
-			if (string != null)
-				string = string.toUpperCase();
-
-			// Loop through each type, find a match
-			for (ChatterBotType type : ChatterBotType.values() ) {
-				if (type.toString().equals(string))
-					return type;
-			}
-
-			// No match!
-			return null;
-		}
-
 		// Try to convert a string variable to an UUID. If the string is invalid then return null.
 		static UUID stringToUUID(String string) throws LuaException, InterruptedException {
 			if (string == null)
@@ -263,15 +240,13 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 
 	public static class BotSessionLuaObject implements ILuaObject {
 		private final UUID uuid;
-		private final ChatterBot bot;
-		private final ChatterBotSession session;
+		private final CleverBotQuery session;
 		private final IComputerAccess computer;
 		private final TileEntityAIChatBox source;
 		private boolean removed = false;
 
-		public BotSessionLuaObject(final UUID uuid,final ChatterBot bot, final ChatterBotSession session,final IComputerAccess computer, TileEntityAIChatBox source) {
+		public BotSessionLuaObject(final UUID uuid,final CleverBotQuery session,final IComputerAccess computer, TileEntityAIChatBox source) {
 			this.uuid = uuid;
-			this.bot = bot;
 			this.session = session;
 			this.computer = computer;
 			this.source = source;
@@ -350,7 +325,9 @@ public class TileEntityAIChatBox extends MountedTileEntity {
 		// Just a normal thinking process. Haults the computer until it gets a reply (or errors out)
 		// Called from AIChatRequest
 		public String think(String message) throws Exception {
-			return session.think(message);
+			session.setPhrase(message);
+			session.sendRequest();
+			return session.getResponse();
 		}
 
 		// Check the entire list if there's a matching UUID inside it

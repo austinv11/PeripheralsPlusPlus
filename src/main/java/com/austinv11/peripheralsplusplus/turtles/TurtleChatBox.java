@@ -1,25 +1,40 @@
 package com.austinv11.peripheralsplusplus.turtles;
 
+import com.austinv11.collectiveframework.minecraft.utils.ModelManager;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
+import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.austinv11.peripheralsplusplus.utils.ModelUtil;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
+import org.apache.commons.lang3.tuple.Pair;
 
-public class TurtleChatBox implements ITurtleUpgrade {
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
 
-	@Override
-	public int getUpgradeID() {
-		return Reference.CHAT_BOX_UPGRADE;
-	}
+public class TurtleChatBox implements ITurtleUpgrade, ModelManager.ModelRegistrar {
+    @Nonnull
+    @Override
+    public ResourceLocation getUpgradeID() {
+        return new ResourceLocation(Reference.CHAT_BOX_UPGRADE);
+    }
 
-	@Override
+    @Override
+    public int getLegacyUpgradeID() {
+        return Reference.CHAT_BOX_UPGRADE_LEGACY;
+    }
+
+    @Override
 	public String getUnlocalisedAdjective() {
-		return Reference.MOD_ID.toLowerCase()+".turtleUpgrade.chatBox";
+		return Reference.MOD_ID + ".turtle_upgrade.chat_box";
 	}
 
 	@Override
@@ -29,7 +44,9 @@ public class TurtleChatBox implements ITurtleUpgrade {
 
 	@Override
 	public ItemStack getCraftingItem() {
-		return new ItemStack(ModBlocks.chatBox);
+    	if (Config.enableChatBox)
+			return new ItemStack(ModBlocks.CHAT_BOX);
+    	return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -37,21 +54,28 @@ public class TurtleChatBox implements ITurtleUpgrade {
 		return new TileEntityChatBox(turtle);
 	}
 
-	@Override
-	public TurtleCommandResult useTool(ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, int direction) {
-		return null;
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
-		return ModBlocks.chatBox.getIcon(1, 0);
-	}
+    @Nonnull
+    @Override
+    public TurtleCommandResult useTool(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side,
+                                       @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction) {
+        return TurtleCommandResult.failure();
+    }
 
 	@Override
 	public void update(ITurtleAccess turtle, TurtleSide side) {
 		IPeripheral peripheral = turtle.getPeripheral(side);
 		if (peripheral instanceof TileEntityChatBox)
-			((TileEntityChatBox)peripheral).updateEntity(true);
+			((TileEntityChatBox)peripheral).update(true);
+	}
+
+	@Nonnull
+	@Override
+	public Pair<IBakedModel, Matrix4f> getModel(@Nullable ITurtleAccess turtle, @Nonnull TurtleSide side) {
+		return ModelUtil.getTurtleUpgradeModel("turtle_chat_box", side);
+	}
+
+	@Override
+	public void registerModels(IRegistry<ModelResourceLocation, IBakedModel> registry) {
+		ModelUtil.registerTurtleUpgradeModels(registry, "turtle_chat_box");
 	}
 }

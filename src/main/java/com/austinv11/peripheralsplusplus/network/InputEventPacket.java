@@ -1,13 +1,13 @@
 package com.austinv11.peripheralsplusplus.network;
 
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.util.UUID;
 
@@ -53,7 +53,7 @@ public class InputEventPacket implements IMessage {
 
 		@Override
 		public IMessage onMessage(InputEventPacket message, MessageContext ctx) {
-			TileEntityAntenna antenna = TileEntityAntenna.antenna_registry.get(message.uuid);
+			TileEntityAntenna antenna = TileEntityAntenna.ANTENNA_REGISTRY.get(message.uuid);
 			if (antenna != null) {
 				for (IComputerAccess computer : antenna.computers.keySet())
 					computer.queueEvent(message.event, new Object[]{message.player, message.key, message.state});

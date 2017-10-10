@@ -8,10 +8,8 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.ChunkCoordinates;
-
-import java.util.List;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 
 public class PeripheralFeeder extends MountedPeripheral {
 
@@ -32,21 +30,24 @@ public class PeripheralFeeder extends MountedPeripheral {
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
+            throws LuaException, InterruptedException {
 		if (!Config.enableFeederTurtle)
 			throw new LuaException("Feeder Turtles have been disabled");
 		if (method == 0) {
 			ItemStack curItem = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot());
-			if (curItem == null || curItem.stackSize <= 0)
+			if (curItem.isEmpty() || curItem.getCount() <= 0)
 				return new Object[] {false};
-			ChunkCoordinates pos = turtle.getPosition();
-			for (EntityAnimal animal : (List<EntityAnimal>)turtle.getWorld().getEntitiesWithinAABB(EntityAnimal.class, AxisAlignedBB.getBoundingBox(pos.posX - 1.5D, pos.posY - 1.5D, pos.posZ - 1.5D, pos.posX + 1.5D, pos.posY + 1.5D, pos.posZ + 1.5D))) {
+			BlockPos pos = turtle.getPosition();
+			for (EntityAnimal animal : turtle.getWorld().getEntitiesWithinAABB(EntityAnimal.class,
+                    new AxisAlignedBB(pos.getX() - 1.5D, pos.getY() - 1.5D, pos.getZ() - 1.5D,
+                            pos.getX() + 1.5D, pos.getY() + 1.5D, pos.getZ() + 1.5D))) {
 				if (animal.getGrowingAge() == 0 && !animal.isInLove() && animal.isBreedingItem(curItem)) {
-					animal.setTarget(null);
-					animal.func_146082_f(null);//setting inLove to 600
-					curItem.stackSize--;
-					if (curItem.stackSize <= 0)
-						turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), null);
+					animal.setAttackTarget(null);
+					animal.setInLove(null);//setting inLove to 600
+					curItem.setCount(curItem.getCount() - 1);
+					if (curItem.getCount() <= 0)
+						turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), ItemStack.EMPTY);
 					else
 						turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), curItem);
 					return new Object[]{true};

@@ -1,36 +1,37 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.apiculture;
 
-public interface IBeeModifier {
+import javax.annotation.Nullable;
 
+public interface IBeeModifier {
 	/**
-	 * @param genome Genome of the bee this modifier is called for.
+	 * @param genome          Genome of the bee this modifier is called for.
 	 * @param currentModifier Current modifier.
 	 * @return Float used to modify the base territory.
 	 */
 	float getTerritoryModifier(IBeeGenome genome, float currentModifier);
 
 	/**
-	 * @param genome Genome of the bee this modifier is called for.
-	 * @param mate
+	 * @param genome          Genome of the bee this modifier is called for.
+	 * @param mate            Genome of the bee mate this modifier is called for.
 	 * @param currentModifier Current modifier.
 	 * @return Float used to modify the base mutation chance.
 	 */
 	float getMutationModifier(IBeeGenome genome, IBeeGenome mate, float currentModifier);
 
 	/**
-	 * @param genome Genome of the bee this modifier is called for.
+	 * @param genome          Genome of the bee this modifier is called for.
 	 * @param currentModifier Current modifier.
 	 * @return Float used to modify the life span of queens.
 	 */
-	float getLifespanModifier(IBeeGenome genome, IBeeGenome mate, float currentModifier);
+	float getLifespanModifier(IBeeGenome genome, @Nullable IBeeGenome mate, float currentModifier);
 
 	/**
-	 * @param genome Genome of the bee this modifier is called for.
+	 * @param genome          Genome of the bee this modifier is called for.
 	 * @param currentModifier Current modifier.
 	 * @return Float modifying the production speed of queens.
 	 */
@@ -47,7 +48,7 @@ public interface IBeeModifier {
 	 * @return Float modifying the chance for a swarmer queen to die off.
 	 */
 	float getGeneticDecay(IBeeGenome genome, float currentModifier);
-	
+
 	/**
 	 * @return Boolean indicating if housing can ignore rain
 	 */

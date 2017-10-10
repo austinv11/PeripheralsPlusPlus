@@ -8,7 +8,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 
-import net.minecraft.world.ChunkCoordIntPair;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
 import net.minecraftforge.common.ForgeChunkManager;
 
@@ -21,11 +21,11 @@ public class PeripheralChunkLoader extends MountedPeripheral {
 	private ForgeChunkManager.Ticket ticket;
 	private boolean attached = false;
 
-	private ChunkCoordIntPair pos;
+	private ChunkPos pos;
 
 	public PeripheralChunkLoader(ITurtleAccess turtle) {
 		this.turtle = turtle;
-		this.pos = new ChunkCoordIntPair(turtle.getPosition().posX >> 4, turtle.getPosition().posZ >> 4);
+		this.pos = new ChunkPos(turtle.getPosition());
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class PeripheralChunkLoader extends MountedPeripheral {
 	public void update() {
 		if (attached && !turtle.getWorld().isRemote) {
 			if (ticket == null || posChanged()) {
-				this.pos = new ChunkCoordIntPair(turtle.getPosition().posX >> 4, turtle.getPosition().posZ >> 4);
+				this.pos = new ChunkPos(turtle.getPosition());
 				updateTicket();
 			}
 		}
@@ -46,30 +46,32 @@ public class PeripheralChunkLoader extends MountedPeripheral {
 	@Override
 	public void detach(IComputerAccess computer) {
 		super.detach(computer);
-		ForgeChunkManager.releaseTicket(ticket);
+		synchronized (this) {
+			ForgeChunkManager.releaseTicket(ticket);
+		}
 		ticket = null;
 	}
 
 	public void updateTicket() {
 		ForgeChunkManager.releaseTicket(ticket);
 		ticket = ForgeChunkManager.requestTicket(PeripheralsPlusPlus.instance, turtle.getWorld(), ForgeChunkManager.Type.NORMAL);
-		for (ChunkCoordIntPair coordIntPair : getChunksInRadius(Config.chunkLoadingRadius)) {
+		for (ChunkPos coordIntPair : getChunksInRadius(Config.chunkLoadingRadius)) {
 			ForgeChunkManager.forceChunk(ticket, coordIntPair);
 		}
 	}
 
-	public ArrayList<ChunkCoordIntPair> getChunksInRadius(int radius) {
-		ArrayList<ChunkCoordIntPair> chunkList = new ArrayList<ChunkCoordIntPair>();
-		for (int chunkX = pos.chunkXPos - radius; chunkX <= pos.chunkXPos + radius; chunkX++) {
-			for (int chunkZ = pos.chunkZPos - radius; chunkZ <= pos.chunkZPos + radius; chunkZ++) {
-				chunkList.add(new ChunkCoordIntPair(chunkX, chunkZ));
+	public ArrayList<ChunkPos> getChunksInRadius(int radius) {
+		ArrayList<ChunkPos> chunkList = new ArrayList<>();
+		for (int chunkX = pos.getXStart() - radius; chunkX <= pos.getXStart() + radius; chunkX++) {
+			for (int chunkZ = pos.getZStart() - radius; chunkZ <= pos.getZStart() + radius; chunkZ++) {
+				chunkList.add(new ChunkPos(chunkX, chunkZ));
 			}
 		}
 		return chunkList;
 	}
 
 	public boolean posChanged() {
-		return !(new ChunkCoordIntPair(turtle.getPosition().posX >> 4, turtle.getPosition().posZ >> 4)).equals(pos);
+		return !(new ChunkPos(turtle.getPosition())).equals(pos);
 	}
 
 	@Override

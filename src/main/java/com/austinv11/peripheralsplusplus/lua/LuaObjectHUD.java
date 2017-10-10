@@ -10,6 +10,7 @@ import dan200.computercraft.api.lua.ILuaObject;
 import dan200.computercraft.api.lua.LuaException;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.util.ResourceLocation;
 
 import java.awt.*;
 import java.util.ArrayDeque;
@@ -56,7 +57,7 @@ public class LuaObjectHUD implements ILuaObject{
 					throw new LuaException("Not enough arguments");
 				if (!(arguments[0] instanceof String))
 					throw new LuaException("Bad argument #1 (expected string)");
-				MessageCommand.messageStacks.get(player.getDisplayName()).push((String) arguments[0]);
+				MessageCommand.messageStacks.get(player.getDisplayNameString()).push((String) arguments[0]);
 				break;
 			case 2:
 				if (arguments.length < 3)
@@ -115,7 +116,7 @@ public class LuaObjectHUD implements ILuaObject{
 				if (arguments.length > 36)
 					v = (int)(double)(Double)arguments[6];
 				DrawTextureCommand command = new DrawTextureCommand();
-				command.resource = (String)arguments[0];
+				command.resource = new ResourceLocation((String)arguments[0]);
 				command.x = (int)(double)(Double)arguments[1];
 				command.y = (int)(double)(Double)arguments[2];
 				command.u = u;
@@ -203,19 +204,19 @@ public class LuaObjectHUD implements ILuaObject{
 				return new Object[]{new Color((int)(double)(Double)arguments[0], (int)(double)(Double)arguments[1], (int)(double)(Double)arguments[2]).getRGB()};
 			case 8:
 				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(stackToArray(), uuid, false, isGui), (EntityPlayerMP) player);
-				MessageCommand.messageStacks.get(player.getDisplayName()).clear();
+				MessageCommand.messageStacks.get(player.getDisplayNameString()).clear();
 				renderStack.clear();
 				renderStack.add(messageCommand);
 				break;
 			case 9:
 				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(new HelmetCommand[0], uuid, false, isGui), (EntityPlayerMP) player);
-				MessageCommand.messageStacks.get(player.getDisplayName()).clear();
+				MessageCommand.messageStacks.get(player.getDisplayNameString()).clear();
 				renderStack.clear();
 				renderStack.add(messageCommand);
 				break;
 			case 10:
 				PeripheralsPlusPlus.NETWORK.sendTo(new CommandPacket(stackToArray(), uuid, true, isGui), (EntityPlayerMP) player);
-				MessageCommand.messageStacks.get(player.getDisplayName()).clear();
+				MessageCommand.messageStacks.get(player.getDisplayNameString()).clear();
 				renderStack.clear();
 				renderStack.add(messageCommand);
 				break;
@@ -223,7 +224,7 @@ public class LuaObjectHUD implements ILuaObject{
 				if (isGui)
 					PeripheralsPlusPlus.NETWORK.sendTo(new GuiPacket(false), (EntityPlayerMP) this.player);
 				else
-					return new Object[]{new LuaObjectHUD(this.player.getDisplayName(), this.uuid, true)};
+					return new Object[]{new LuaObjectHUD(this.player.getDisplayNameString(), this.uuid, true)};
 				break;
 			case 12:
 				PeripheralsPlusPlus.NETWORK.sendTo(new GuiPacket(true), (EntityPlayerMP) this.player);

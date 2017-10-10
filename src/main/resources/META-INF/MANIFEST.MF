@@ -1,4 +1,0 @@
-Manifest-Version: 1.0
-FMLAT: "ppp_at.cfg"
-FMLCorePlugin: "com.austinv11.peripheralsplusplus.asm.PeripheralsPlusPlusTransformerPlugin"
-FMLCorePluginContainsFMLMod: true

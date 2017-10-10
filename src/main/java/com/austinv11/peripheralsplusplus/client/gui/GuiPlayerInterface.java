@@ -6,16 +6,18 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import org.lwjgl.opengl.GL11;
 
 public class GuiPlayerInterface extends GuiContainer
 {
-    private ResourceLocation backgroundimage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" + "textures/gui/guiPlayerInterface.png");
+    private ResourceLocation backgroundimage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" +
+            "textures/gui/player_interface.png");
     private int sizeX, sizeY;
 
     public GuiPlayerInterface(EntityPlayer player, int x, int y, int z)
     {
-        super(new ContainerPlayerInterface(player, (IInventory) player.worldObj.getTileEntity(x, y, z), 176, 133));
+        super(new ContainerPlayerInterface(player, (IInventory) player.world.getTileEntity(new BlockPos(x, y, z)), 176, 133));
         sizeX = 176;
         sizeY = 133;
     }

@@ -7,6 +7,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleSide;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentData;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.item.EntityXPOrb;
@@ -14,8 +15,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 
 import java.util.List;
 import java.util.Random;
@@ -93,8 +94,18 @@ public class PeripheralXP extends MountedPeripheral {//Beware, a lot of the math
 
 	private int collect() {
 		int ret = 0;
-		Vec3 pos = Vec3.createVectorHelper(turtle.getPosition().posX,turtle.getPosition().posY,turtle.getPosition().posZ);
-		for (EntityXPOrb orb : (List<EntityXPOrb>)turtle.getWorld().getEntitiesWithinAABB(EntityXPOrb.class, AxisAlignedBB.getBoundingBox(pos.xCoord - COLLECT_RANGE, pos.yCoord - COLLECT_RANGE, pos.zCoord - COLLECT_RANGE, pos.xCoord + 1.0D + COLLECT_RANGE, pos.yCoord + 1.0D + COLLECT_RANGE, pos.zCoord + 1.0D + COLLECT_RANGE))) {
+		BlockPos pos = turtle.getPosition();
+        List<EntityXPOrb> entities = turtle.getWorld().getEntitiesWithinAABB(EntityXPOrb.class,
+                new AxisAlignedBB(
+                        pos.getX() - COLLECT_RANGE,
+                        pos.getY() - COLLECT_RANGE,
+                        pos.getZ() - COLLECT_RANGE,
+                        pos.getX() + 1 + COLLECT_RANGE,
+                        pos.getY() + 1 + COLLECT_RANGE,
+                        pos.getZ() + 1 + COLLECT_RANGE
+                )
+        );
+		for (EntityXPOrb orb : entities) {
 			ret += orb.getXpValue();
 			orb.setDead();
 		}
@@ -112,7 +123,8 @@ public class PeripheralXP extends MountedPeripheral {//Beware, a lot of the math
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
+            throws LuaException, InterruptedException {
 		if (!Config.enableXPTurtle)
 			throw new LuaException("XP Turtles have been disabled");
 		ItemStack slot;
@@ -125,19 +137,19 @@ public class PeripheralXP extends MountedPeripheral {//Beware, a lot of the math
 						throw new LuaException("Bad argument #1 (expected number)");
 					amount = (int)Math.floor((Double)arguments[0]);
 				}
-				if (slot == null)
+				if (slot.getCount() < 1)
 					return new Object[] {0};
-				amount = Math.min(amount, slot.stackSize);
+				amount = Math.min(amount, slot.getCount());
 				int recharge = 0;
-				if (slot.isItemEqual(new ItemStack(Items.experience_bottle))) {
+				if (slot.isItemEqual(new ItemStack(Items.EXPERIENCE_BOTTLE))) {
 					recharge = 3 + random.nextInt(5) + random.nextInt(5);
 				}
 				recharge *= amount;
 				addExperience(recharge);
 				if (recharge > 0) {
-					slot.stackSize -= amount;
-					if (slot.stackSize <= 0)
-						slot = null;
+				    slot.setCount(slot.getCount() - amount);
+					if (slot.getCount() <= 0)
+						slot = ItemStack.EMPTY;
 					turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), slot);
 				}
 				changed = true;
@@ -173,23 +185,23 @@ public class PeripheralXP extends MountedPeripheral {//Beware, a lot of the math
 					return new Object[] {false};
 				if (experienceLevel < levels)
 					return new Object[] {false};
-				List enchants = EnchantmentHelper.buildEnchantmentList(random, slot, levels);
-				if (enchants == null || enchants.isEmpty())
+				List enchants = EnchantmentHelper.buildEnchantmentList(random, slot, levels, true);
+				if (enchants.isEmpty())
 					return new Object[] {false};
 				ItemStack enchanted = slot.copy();
-				if (enchanted.isItemEqual(new ItemStack(Items.book))) {
-					enchanted = new ItemStack(Items.enchanted_book);
-					enchanted.stackTagCompound = new NBTTagCompound();
+				if (enchanted.isItemEqual(new ItemStack(Items.BOOK))) {
+					enchanted = new ItemStack(Items.ENCHANTED_BOOK);
+					enchanted.setTagCompound(new NBTTagCompound());
 					NBTTagList storedEnchantments = new NBTTagList();
 					NBTTagCompound enchantment = new NBTTagCompound();
 					EnchantmentData data = (EnchantmentData)enchants.get(0);
-					enchantment.setShort("id", (short)data.enchantmentobj.effectId);
+					enchantment.setShort("id", (short) Enchantment.getEnchantmentID(data.enchantment));
 					enchantment.setShort("lvl", (short)data.enchantmentLevel);
 					storedEnchantments.appendTag(enchantment);
-					enchanted.stackTagCompound.setTag("StoredEnchantments", storedEnchantments);
+					enchanted.getTagCompound().setTag("StoredEnchantments", storedEnchantments);
 				} else {
 					for (EnchantmentData data : (List<EnchantmentData>)enchants) {
-						enchanted.addEnchantment(data.enchantmentobj, data.enchantmentLevel);
+						enchanted.addEnchantment(data.enchantment, data.enchantmentLevel);
 					}
 				}
 				addLevels(-levels, true);

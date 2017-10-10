@@ -11,6 +11,7 @@ import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.oredict.OreDictionary;
 
 import java.util.HashMap;
@@ -41,8 +42,9 @@ public class TileEntityOreDictionary extends MountedTileEntity {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
+		return nbttagcompound;
 	}
 
 	@Override
@@ -68,77 +70,56 @@ public class TileEntityOreDictionary extends MountedTileEntity {
 		try {
 			if (method == 0) {
 				ItemStack slot = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot());
-				return new Object[]{Util.getEntries(slot)};
+				if (slot.isEmpty())
+					throw new LuaException("Empty slot");
+				return new Object[]{Util.getOreDictEntries(slot)};
 			} else if (method == 1) {
 				if (!(arguments.length > 0) || !(arguments[0] instanceof Double))
 					throw new LuaException("Bad argument #1 (expected number)");
 				if (!(arguments.length > 1) || !(arguments[1] instanceof Double))
 					throw new LuaException("Bad argument #2 (expected number)");
-				double arg1 = (Double) arguments[0];
-				double arg2 = (Double) arguments[1];
-				arg1--;
-				arg2--;
-				ItemStack slot = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot());
-				ItemStack stack1 = turtle.getInventory().getStackInSlot((int)arg1);
-				ItemStack stack2 = turtle.getInventory().getStackInSlot((int)arg2);
-				if (stack1 == null || stack2 == null)
+				int argSlot1 = ((int)(double)arguments[0]) - 1;
+				int argSlot2 = ((int)(double)arguments[1]) - 1;
+				if (argSlot1 == argSlot2)
+					return new Object[]{true};
+				ItemStack slot = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot()).copy();
+				ItemStack stack1 = turtle.getInventory().getStackInSlot(argSlot1).copy();
+				ItemStack stack2 = turtle.getInventory().getStackInSlot(argSlot2).copy();
+				if (stack1.isEmpty() || stack2.isEmpty())
 					throw new LuaException("One or more selected slots have nil items");
-				if (!Util.compare(stack1, stack2))
-					return new Object[]{false};
-				if (!Util.compare(stack1, slot) && slot != null)
+				if (!Util.compareItemStacksViaOreDict(stack1, stack2))
+					throw new LuaException("Stacks are not equivalent");
+				if (!Util.compareItemStacksViaOreDict(stack1, slot) && !slot.isEmpty())
 					throw new LuaException("The destination slot is incompatible");
-				int maxMoveSize = 0;
-				if (slot != null) {
-					maxMoveSize = slot.getMaxStackSize() - slot.stackSize;
-				}else {
-					maxMoveSize = stack1.getMaxStackSize() - stack1.stackSize;
+				// First slot is selected
+				if (argSlot1 == turtle.getSelectedSlot()) {
+					// Second slot to output/first
+					combineSlots(turtle.getSelectedSlot(), argSlot2);
+					return new Object[]{true};
 				}
-				int move1 = stack1.stackSize;
-				int move2 = stack2.stackSize;
-				if (move1 + move2 > maxMoveSize) {
-					if (move1 >= maxMoveSize)
-						move1 = maxMoveSize;
-					move2 = maxMoveSize - move1;
+				// Second slot is selected
+				else if (argSlot2 == turtle.getSelectedSlot()) {
+					// First slot to output/second
+					combineSlots(turtle.getSelectedSlot(), argSlot1);
 				}
-				stack1.stackSize = stack1.stackSize - move1;
-				stack2.stackSize = stack2.stackSize - move2;
-				if (slot != null) {
-					slot.stackSize = move1 + move2;
-					turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), slot.copy());
-					if (stack1.stackSize <= 0) {
-						turtle.getInventory().setInventorySlotContents((int) arg1, null);
-					}else {
-						turtle.getInventory().setInventorySlotContents((int) arg1, stack1.copy());
-					}
-					if (stack2.stackSize <= 0) {
-						turtle.getInventory().setInventorySlotContents((int) arg2, null);
-					}else {
-						turtle.getInventory().setInventorySlotContents((int) arg2, stack2.copy());
-					}
-				}else {
-					ItemStack newStack = new ItemStack(stack1.getItem());
-					newStack.stackSize = move1 + move2;
-					turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), newStack.copy());
-					if (stack1.stackSize <= 0) {
-						turtle.getInventory().setInventorySlotContents((int) arg1, null);
-					}else {
-						turtle.getInventory().setInventorySlotContents((int) arg1, stack1.copy());
-					}
-					if (stack2.stackSize <= 0) {
-						turtle.getInventory().setInventorySlotContents((int) arg2, null);
-					}else {
-						turtle.getInventory().setInventorySlotContents((int) arg2, stack2.copy());
-					}
+				// Neither slot is selected
+				else {
+					// First slot to output
+					combineSlots(turtle.getSelectedSlot(), argSlot1);
+					// Second slot to first slot
+					combineSlots(argSlot1, argSlot2);
+					// First slot to output
+					combineSlots(turtle.getSelectedSlot(), argSlot1);
 				}
 				return new Object[]{true};
 			} else if (method == 2) {
-				ItemStack slot = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot());
-				if (slot == null)
+				ItemStack slot = turtle.getInventory().getStackInSlot(turtle.getSelectedSlot()).copy();
+				if (slot.isEmpty())
 					throw new LuaException("Selected slot's item is nil");
 				ItemStack newStack = transmute(slot);
-				if (newStack == null || newStack.isItemEqual(slot))
+				if (newStack.isEmpty() || newStack.isItemEqual(slot))
 					return new Object[]{false};
-				newStack.stackSize = slot.stackSize;
+				newStack.setCount(slot.getCount());
 				turtle.getInventory().setInventorySlotContents(turtle.getSelectedSlot(), newStack);
 				return new Object[]{true};
 			} else if (method == 3) {
@@ -150,12 +131,32 @@ public class TileEntityOreDictionary extends MountedTileEntity {
 				double arg2 = (Double) arguments[1];
 				arg1--;
 				arg2--;
-				return new Object[]{Util.compare(turtle.getInventory().getStackInSlot((int) arg1), turtle.getInventory().getStackInSlot((int) arg2))};
+				return new Object[]{Util.compareItemStacksViaOreDict(turtle.getInventory().getStackInSlot((int) arg1), turtle.getInventory().getStackInSlot((int) arg2))};
 			}
 		}catch (Exception e) {
 			e.printStackTrace();
 		}
 		return new Object[0];
+	}
+
+	private void combineSlots(int outputSlotNum, int fillerSlotNum) {
+		ItemStack output = turtle.getInventory().getStackInSlot(outputSlotNum);
+		ItemStack filler = turtle.getInventory().getStackInSlot(fillerSlotNum);
+		int freeAmount = output.getMaxStackSize() -  output.getCount();
+		if (output.isEmpty()) {
+			output = filler.copy();
+			output.setCount(0);
+		}
+		if (filler.getCount() > freeAmount) {
+			output.setCount(output.getCount() + freeAmount);
+			filler.setCount(filler.getCount() - freeAmount);
+		}
+		else {
+			output.setCount(output.getCount() + filler.getCount());
+			filler.setCount(0);
+		}
+		turtle.getInventory().setInventorySlotContents(outputSlotNum, output);
+		turtle.getInventory().setInventorySlotContents(fillerSlotNum, filler);
 	}
 
 	@Override
@@ -178,32 +179,32 @@ public class TileEntityOreDictionary extends MountedTileEntity {
 	}
 
 	private ItemStack transmute(ItemStack item) {
-		HashMap<Integer, String> entries = Util.getEntries(item);
-		int i = 0;
-		boolean test = false;
-		for (String v : entries.values()) {
-			for (ItemStack stack : OreDictionary.getOres(v)) {
-				if (test)
+		HashMap<Integer, String> oreDictEntries = Util.getOreDictEntries(item);
+		boolean returnNextItem = false;
+		for (String oreDictName : oreDictEntries.values()) {
+			NonNullList<ItemStack> otherDictEntries = OreDictionary.getOres(oreDictName);
+			for (ItemStack stack : otherDictEntries) {
+				if (returnNextItem)
 					return stack.copy();
-				if (stack.isItemEqual(item)) {
-					test = true;
-				}
-				i++;
+				if (stack.isItemEqual(item))
+					returnNextItem = true;
 			}
-			if (test)
-				return OreDictionary.getOres(v).get(0).copy();
-			i = 0;
+			if (returnNextItem)
+				return otherDictEntries.get(0).copy();
 		}
-		return null;
+		return ItemStack.EMPTY;
 	}
 
-	public void blockActivated(EntityPlayer player) {
-		if (player.getHeldItem() != null) {
+	public boolean blockActivated(EntityPlayer player) {
+		if (!player.getHeldItemMainhand().isEmpty()) {
 			for (IComputerAccess computer : computers.keySet()) {
-				computer.queueEvent("oreDict", new Object[]{Util.getEntries(player.getHeldItem())});
+				computer.queueEvent("oreDict", new Object[]{Util.getOreDictEntries(player.getHeldItemMainhand())});
 			}
 			if (Config.oreDictionaryMessage)
-				ChatUtil.sendMessage(player.getDisplayName(), this, Util.getEntries(player.getHeldItem()).entrySet().toString(), 100, true);
+				ChatUtil.sendMessage(player.getDisplayNameString(), this,
+                        Util.getOreDictEntries(player.getHeldItemMainhand()).entrySet().toString(), 100, true);
+			return true;
 		}
+		return false;
 	}
 }

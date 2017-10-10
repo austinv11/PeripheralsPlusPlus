@@ -1,26 +1,27 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
+import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityChatBox;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockChatBox extends BlockPPP implements ITileEntityProvider {
+public class BlockChatBox extends BlockPppBase implements ITileEntityProvider {
 
 	public BlockChatBox() {
 		super();
-		this.setBlockName("chatBox");
+		this.setRegistryName(Reference.MOD_ID, "chat_box");
+		this.setUnlocalizedName("chat_box");
 	}
 
 	@Override
-	public TileEntity createNewTileEntity(World p_149915_1_, int p_149915_2_) {
+	public TileEntity createNewTileEntity(World world, int meta) {
 		return new TileEntityChatBox();
 	}
 
 	@Override
-	public boolean hasTileEntity(int metadata) {
+	public boolean hasTileEntity(IBlockState blockState) {
 		return true;
 	}
 

@@ -1,39 +1,47 @@
 package com.austinv11.peripheralsplusplus.client.models;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.client.IItemRenderer;
-import org.lwjgl.opengl.GL11;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ItemOverrideList;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.EnumFacing;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
-public class ItemRenderAntenna implements IItemRenderer {
+public class ItemRenderAntenna implements IBakedModel {
 
-	private TileEntity tileEntity;
-	private TileEntitySpecialRenderer renderer;
-
-	public ItemRenderAntenna(TileEntitySpecialRenderer renderer, TileEntity tileEntity) {
-		this.tileEntity = tileEntity;
-		this.renderer = renderer;
+	@Override
+	public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long rand) {
+		return null;
 	}
 
 	@Override
-	public boolean handleRenderType(ItemStack item, ItemRenderType type) {
-		return true;
+	public boolean isAmbientOcclusion() {
+		return false;
 	}
 
 	@Override
-	public boolean shouldUseRenderHelper(ItemRenderType type, ItemStack item, ItemRendererHelper helper) {
-		return true;
+	public boolean isGui3d() {
+		return false;
 	}
 
 	@Override
-	public void renderItem(ItemRenderType type, ItemStack item, Object... data) {
-		if (type == IItemRenderer.ItemRenderType.ENTITY)
-			GL11.glTranslatef(-0.5F, 0.0F, -0.5F);
-		tileEntity.blockMetadata = 0;
-		this.renderer.renderTileEntityAt(this.tileEntity, 0.0D, 0.0D, 0.0D, 0.0F);
+	public boolean isBuiltInRenderer() {
+		return false;
+	}
+
+	@Override
+	public TextureAtlasSprite getParticleTexture() {
+		return null;
+	}
+
+	@Override
+	public ItemOverrideList getOverrides() {
+		return null;
 	}
 }

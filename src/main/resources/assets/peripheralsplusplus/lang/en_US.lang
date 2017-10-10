@@ -1,63 +1,63 @@
 #Blocks
-tile.peripheralsplusplus:chatBox.name=Chat Box
-tile.peripheralsplusplus:aiChatBox.name=AI Chat Box
-tile.peripheralsplusplus:playerSensor.name=Player Sensor
-tile.peripheralsplusplus:rfCharger.name=Turtle Charger (RF)
-tile.peripheralsplusplus:oreDictionary.name=Ore Dictionary
-tile.peripheralsplusplus:beeAnalyzer.name=Bee Analyzer
-tile.peripheralsplusplus:treeAnalyzer.name=Tree Analyzer
-tile.peripheralsplusplus:butterflyAnalyzer.name=Butterfly Analyzer
-tile.peripheralsplusplus:teleporter.name=Turtle Teleporter
-tile.peripheralsplusplus:teleporterT2.name=Advanced Turtle Teleporter
-tile.peripheralsplusplus:environmentScanner.name=Environment Scanner
+tile.peripheralsplusplus:chat_box.name=Chat Box
+tile.peripheralsplusplus:ai_chat_box.name=AI Chat Box
+tile.peripheralsplusplus:player_sensor.name=Player Sensor
+tile.peripheralsplusplus:rf_charger.name=Turtle Charger (RF)
+tile.peripheralsplusplus:ore_dictionary.name=Ore Dictionary
+tile.peripheralsplusplus:analyzer_bee.name=Bee Analyzer
+tile.peripheralsplusplus:analyzer_tree.name=Tree Analyzer
+tile.peripheralsplusplus:analyzer_butterfly.name=Butterfly Analyzer
+tile.peripheralsplusplus:teleporter.tier.0.name=Turtle Teleporter
+tile.peripheralsplusplus:teleporter.tier.1.name=Advanced Turtle Teleporter
+tile.peripheralsplusplus:environment_scanner.name=Environment Scanner
 tile.peripheralsplusplus:speaker.name=Speaker
 tile.peripheralsplusplus:antenna.name=Antenna
-tile.peripheralsplusplus:peripheralContainer.name=Peripheral Container
-tile.peripheralsplusplus:meBridge.name=ME Bridge
-tile.peripheralsplusplus:noteBlock.name=Iron Note Block
+tile.peripheralsplusplus:peripheral_container.name=Peripheral Container
+tile.peripheralsplusplus:me_bridge.name=ME Bridge
+tile.peripheralsplusplus:note_block.name=Iron Note Block
 tile.peripheralsplusplus:turtle.name=Turtle
-tile.peripheralsplusplus:timeSensor.name=Time Sensor
-tile.peripheralsplusplus:interactiveSorter.name=Interactive Sorter
-tile.peripheralsplusplus:playerInterface.name=Player Interface
-tile.peripheralsplusplus:resupplyStation.name=Resupply Station
+tile.peripheralsplusplus:time_sensor.name=Time Sensor
+tile.peripheralsplusplus:interactive_sorter.name=Interactive Sorter
+tile.peripheralsplusplus:player_interface.name=Player Interface
+tile.peripheralsplusplus:resupply_station.name=Resupply Station
 
 #Items
-item.peripheralsplusplus:feederUpgrade.name=Feeder Upgrade
+item.peripheralsplusplus:feeder_upgrade.name=Feeder Upgrade
 item.peripheralsplusplus:satellite.name=Satellite
 item.peripheralsplusplus:rocket.name=Rocket
-item.peripheralsplusplus:ingotIron.name=Turtle Ingot
-item.peripheralsplusplus:dustRedstone.name=Computer Dust
+item.peripheralsplusplus:ingot_iron.name=Turtle Ingot
+item.peripheralsplusplus:dust_redstone.name=Computer Dust
 item.peripheralsplusplus:iphone.name=Pineapple UPhone
 item.peripheralsplusplus:tank.name=Fluid Tank
-item.peripheralsplusplus:smartHelmet.name=Smart Helmet
-item.peripheralsplusplus:nanoSwarm.name=Nano Bot Swarm
-item.peripheralsplusplus:chunkLoaderUpgrade.name=Chunk Loader
-item.peripheralsplusplus:permissionsCard.name=Permissions Card
-item.peripheralsplusplus:resupplyUpgrade.name=Resupply Upgrade
-item.peripheralsplusplus:motionDetector.name=Motion Detector
+item.peripheralsplusplus:smart_helmet.name=Smart Helmet
+item.peripheralsplusplus:nano_swarm.name=Nano Bot Swarm
+item.peripheralsplusplus:chunk_loader_upgrade.name=Chunk Loader
+item.peripheralsplusplus:permissions_card.name=Permissions Card
+item.peripheralsplusplus:resupply_upgrade.name=Resupply Upgrade
+item.peripheralsplusplus:motion_detector.name=Motion Detector
 
 #Creative Tab
 itemGroup.peripheralsplusplus=Peripherals++
 
 #Turtle adjectives
-peripheralsplusplus.turtleUpgrade.chatBox=Chatty
-peripheralsplusplus.turtleUpgrade.playerSensor=Player Noticing
-peripheralsplusplus.turtleUpgrade.compass=Navigational
-peripheralsplusplus.turtleUpgrade.xp=XP
-peripheralsplusplus.turtleUpgrade.barrel=Barrel
-peripheralsplusplus.turtleUpgrade.oreDictionary=Equivalence Checking
-peripheralsplusplus.turtleUpgrade.shears=Shearing
-peripheralsplusplus.turtleUpgrade.environmentScanner=Environmentalist
-peripheralsplusplus.turtleUpgrade.feeder=Feeding
-peripheralsplusplus.turtleUpgrade.speaker=Talkative
-peripheralsplusplus.turtleUpgrade.tank=Thirsty
-peripheralsplusplus.turtleUpgrade.note=Musical
-peripheralsplusplus.turtleUpgrade.signReader=Reading
-peripheralsplusplus.turtleUpgrade.garden=Gardening
-peripheralsplusplus.turtleUpgrade.ridable=Ridable
-peripheralsplusplus.turtleUpgrade.dispenser=Flinging
-peripheralsplusplus.turtleUpgrade.loader=Chunky
-peripheralsplusplus.turtleUpgrade.resupply=Supplied
+peripheralsplusplus.turtle_upgrade.chat_box=Chatty
+peripheralsplusplus.turtle_upgrade.player_sensor=Player Noticing
+peripheralsplusplus.turtle_upgrade.compass=Navigational
+peripheralsplusplus.turtle_upgrade.xp=XP
+peripheralsplusplus.turtle_upgrade.barrel=Barrel
+peripheralsplusplus.turtle_upgrade.ore_dictionary=Equivalence Checking
+peripheralsplusplus.turtle_upgrade.shears=Shearing
+peripheralsplusplus.turtle_upgrade.environment_scanner=Environmentalist
+peripheralsplusplus.turtle_upgrade.feeder=Feeding
+peripheralsplusplus.turtle_upgrade.speaker=Talkative
+peripheralsplusplus.turtle_upgrade.tank=Thirsty
+peripheralsplusplus.turtle_upgrade.note=Musical
+peripheralsplusplus.turtle_upgrade.sign_reader=Reading
+peripheralsplusplus.turtle_upgrade.garden=Gardening
+peripheralsplusplus.turtle_upgrade.ridable=Ridable
+peripheralsplusplus.turtle_upgrade.dispenser=Flinging
+peripheralsplusplus.turtle_upgrade.loader=Chunky
+peripheralsplusplus.turtle_upgrade.resupply=Supplied
 
 #GUIs
 peripheralsplusplus.inv.analyzer=Analyzer
@@ -90,6 +90,10 @@ peripheralsplusplus.chat.permCard.alreadySet=Already linked.
 peripheralsplusplus.chat.permCard.wrongOwner=You do not have permission to edit this card.
 peripheralsplusplus.chat.permCard.set=Permissions card linked to you.
 
+#Message
+peripheralsplusplus.message.upgrade.ridable_no_fuel=No fuel available to move
+peripheralsplusplus.message.upgrade.ridable_blocked=Movement blocked
+
 #Item Descriptions
 peripheralsplusplus.description.turtle.1=This one seems a little broken...
 peripheralsplusplus.description.turtle.2=You wonder why it doesn't do anything when you yell turtle.forward() at it...
@@ -103,25 +107,28 @@ peripheralsplusplus.description.turtle.9=If you ask it really nicely, it might w
 peripheralsplusplus.description.turtle.10=Remember, all turtles should be treated equally.
 
 #Lore Books
-peripheralsplusplus.lore.1.title=The Journey of the First Programmer; Volume 1
-peripheralsplusplus.lore.1.header=§lThe Fundamentals of the Moon§r
+peripheralsplusplus.lore.1.title=First Programmer; Volume 1
+peripheralsplusplus.lore.1.header=§lThe Journey of the First Programmer; Volume 1: The Fundamentals of the Moon§r
 peripheralsplusplus.lore.1.pg1=§lLog 1: §rToday I have discovered something...extraordinary. I have discovered that, in a closed environment, redstone can act as a processing matrix! Enabling me to create a computer! It will take a bit more research to discover how to interact with it, but I'm close...
 peripheralsplusplus.lore.1.pg2=§lLog 2: §rI was able to figure out a way to interact with the computer via a graphical user interface, doing this allowed me to create a native programming language! I shall call it 'Lua', Portuguese for 'Moon'.
 peripheralsplusplus.lore.1.pg3=§lLog 3: §r§oSo, how do I use Lua?§r, One might ask. It is quite simple really, a quick 'Hello World' program can be completed in a single line 'print("Hello World")', that's it! It is quite remarkable, really, how dynamic this language is.
 peripheralsplusplus.lore.1.pg4=§lLog 4: §rPlaying with computers are fun and all, but there must be more! If only I could figure out away for computers to interact with the world. Then, computers could be more than just a amusement, but a practicality!
-peripheralsplusplus.lore.2.title=The Journey of the First Programmer; Volume 2
-peripheralsplusplus.lore.2.header=§The Wrapping of Something Special§r
+peripheralsplusplus.lore.2.title=First Programmer; Volume 2
+peripheralsplusplus.lore.2.header=§lThe Journey of the First Programmer; Volume 2: The Wrapping of Something Special§r
 peripheralsplusplus.lore.2.pg1=§lLog 5: §rI have finally found a way around the issue of getting computers to interact with the world. Peripherals! How have I not thought of this sooner? I first had to lay the framework with the new peripheral library!
 peripheralsplusplus.lore.2.pg2=§lLog 6: §rMy first invention to make use of the concept of peripherals, the printer! Oh, such a sweet thing. Feed ink and paper in one end, have words written down on a page such as this one.
 peripheralsplusplus.lore.2.pg3=§lLog 7: §rNaturally, I couldn't stop at saving data in a physical medium. It was time for a method of saving data digitally. I found a way to do this through the use of a 'floppy disk'. A primitive but effective way for data storage.
 peripheralsplusplus.lore.2.pg4=§lLog 8: §rWhy stop at data storage? It was time to find a way to transport data from one point to another, without complicated setups using floppy disks. I was able to make a wired modem! Channeling the signal carrying properties of redstone.
 peripheralsplusplus.lore.2.pg5=§lLog 9: §rAfter studying the immense teleportation properties of endermen, I have determined that it's theoretically possible to teleport data utilizing the core of the endermen; the ender pearl.
 peripheralsplusplus.lore.2.pg6=§lLog 10: §rMy final peripheral is the 'monitor'. It is a way to visually interact with the world.
-peripheralsplusplus.lore.3.title=The Journey of the First Programmer; Volume 3
-peripheralsplusplus.lore.3.header=§lMine Turtle!§r
+peripheralsplusplus.lore.3.title=First Programmer; Volume 3
+peripheralsplusplus.lore.3.header=§lThe Journey of the First Programmer; Volume 3: Mine Turtle!§r
 peripheralsplusplus.lore.3.pg1=§lLog 11: §rTinkering with peripherals is fun and all, but there is one fundamental flaw, computers are stationary. After a few long years, I have found a way to condense the machinery necessary for a computer to function.
 peripheralsplusplus.lore.3.pg2=§lLog 12: §rIf you are reading this...You're doomed! Run while you still can, these turtles, as I have called them, have become sentient.
 peripheralsplusplus.lore.3.pg3=§lLog 13: §rNo matter what you do...just don't let go of your humanity. Emotion is what makes us different. Without that, we would just all be cybermen. §kDid you catch all my references? ;)
+
+#Villager
+entity.Villager.peripheralsplusplus.cc_upgrader=Upgrader
 
 #Damage Sources
 death.attack.peripheralsplusplus.nanobot=%1$s was destroyed from the inside out by nanobots
@@ -130,5 +137,123 @@ death.attack.peripheralsplusplus.nanobot=%1$s was destroyed from the inside out 
 peripheralsplusplus.nei.turtleRecipeHandler.name=Turtles
 
 #Pocket Computer Upgrades
-peripheralsplusplus.pocketUpgrade.motionDetector=Motion Sensing
-peripheralsplusplus.pocketUpgrade.peripheralContainer=Expanded
+peripheralsplusplus.pocket_upgrade.motion_detector=Motion Sensing
+peripheralsplusplus.pocket_upgrade.peripheral_container=Expanded
+
+#GUI Config Lang
+peripheralsplusplus.lang.config.AI Chat Box=AI Chat Box
+peripheralsplusplus.lang.config.AI Chat Box.enableAIChatBox=Enabled
+peripheralsplusplus.lang.config.AI Chat Box.cleverbotApiKey=Cleverbot API Key
+
+peripheralsplusplus.lang.config.Barrel Turtle=Barrel Turtle
+peripheralsplusplus.lang.config.Barrel Turtle.enableBarrelTurtle=Enabled
+
+peripheralsplusplus.lang.config.Chatbox=Chatbox
+peripheralsplusplus.lang.config.Chatbox.allowUnlimitedVertical=Unlimited Vertical
+peripheralsplusplus.lang.config.Chatbox.chatboxCommandPrefix=Command Prefix
+peripheralsplusplus.lang.config.Chatbox.enableChatBox=Enabled
+peripheralsplusplus.lang.config.Chatbox.logCoords=Log Coords
+peripheralsplusplus.lang.config.Chatbox.readRange=Read Range
+peripheralsplusplus.lang.config.Chatbox.sayRange=Say Range
+peripheralsplusplus.lang.config.Chatbox.sayRate=Say Rate
+
+peripheralsplusplus.lang.config.Chunky Turtle=Chunky Turtle
+peripheralsplusplus.lang.config.Chunky Turtle.chunkLoadingRadius=Chunk Loading Radius
+peripheralsplusplus.lang.config.Chunky Turtle.enableChunkyTurtle=Enabled
+
+peripheralsplusplus.lang.config.Environment Scanner=Environment Scanner
+peripheralsplusplus.lang.config.Environment Scanner.enableEnvironmentScanner=Enabled
+
+peripheralsplusplus.lang.config.Feeder Turtle=Feeder Turtle
+peripheralsplusplus.lang.config.Feeder Turtle.enableFeederTurtle=Enabled
+
+peripheralsplusplus.lang.config.Flinging Turtle=Flinging Turtle
+peripheralsplusplus.lang.config.Flinging Turtle.enableFlingingTurtle=Enabled
+
+peripheralsplusplus.lang.config.Forestry Analyzers=Forestry Analyzers
+peripheralsplusplus.lang.config.Forestry Analyzers.enableAnalyzers=Enabled
+
+peripheralsplusplus.lang.config.Gardening Turtle=Gardening Turtle
+peripheralsplusplus.lang.config.Gardening Turtle.enableGardeningTurtle=Enabled
+
+peripheralsplusplus.lang.config.Interactive Sorter=Interactive Sorter
+peripheralsplusplus.lang.config.Interactive Sorter.enableInteractiveSorter=Enabled
+
+peripheralsplusplus.lang.config.Iron Note Block=Iron Note Block
+peripheralsplusplus.lang.config.Iron Note Block.enableNoteBlock=Enabled
+peripheralsplusplus.lang.config.Iron Note Block.noteBlockRange=Audible Range
+
+peripheralsplusplus.lang.config.ME Bridge=ME Bridge
+peripheralsplusplus.lang.config.ME Bridge.enableMEBridge=Enabled
+
+peripheralsplusplus.lang.config.Motion Detector=Motion Detector
+peripheralsplusplus.lang.config.Motion Detector.enableMotionDetector=Enabled
+
+peripheralsplusplus.lang.config.Nano Bots=Nano Bots
+peripheralsplusplus.lang.config.Nano Bots.enableNanoBots=Enabled
+peripheralsplusplus.lang.config.Nano Bots.numberOfInstructions=Number of Instructions
+peripheralsplusplus.lang.config.Nano Bots.secondsBeforeReversal=Seconds Before Reversal
+
+peripheralsplusplus.lang.config.Navigational Turtle=Navigational Turtle
+peripheralsplusplus.lang.config.Navigational Turtle.enableNavigationTurtle=Enabled
+
+peripheralsplusplus.lang.config.Ore Dictionary=Ore Dictionary
+peripheralsplusplus.lang.config.Ore Dictionary.enableOreDictionary=Enabled
+peripheralsplusplus.lang.config.Ore Dictionary.oreDictionaryMessage=Enable Chat Message
+
+peripheralsplusplus.lang.config.Peripheral Container=Peripheral Container
+peripheralsplusplus.lang.config.Peripheral Container.enablePeripheralContainer=Enabled
+peripheralsplusplus.lang.config.Peripheral Container.maxNumberOfPeripherals=Max Peripherals
+
+peripheralsplusplus.lang.config.Player Interface=Player Interface
+peripheralsplusplus.lang.config.Player Interface.enableInterfacePermissions=Interface Permissions
+peripheralsplusplus.lang.config.Player Interface.enablePlayerInterface=Enabled
+
+peripheralsplusplus.lang.config.Player Sensor=Player Sensor
+peripheralsplusplus.lang.config.Player Sensor.additionalMethods=Additional Methods
+peripheralsplusplus.lang.config.Player Sensor.enablePlayerSensor=Enabled
+peripheralsplusplus.lang.config.Player Sensor.sensorRange=Range
+
+peripheralsplusplus.lang.config.RF Turtle Charger=RF Turtle Charger
+peripheralsplusplus.lang.config.RF Turtle Charger.enableRFCharger=Enabled
+peripheralsplusplus.lang.config.RF Turtle Charger.fuelRF=Turtle Fuel Point RF Value
+
+peripheralsplusplus.lang.config.RedPower-Like Turtles=RedPower-Like Turtles
+peripheralsplusplus.lang.config.RedPower-Like Turtles.enableRedPowerLikeTurtles=Enabled
+
+peripheralsplusplus.lang.config.Resupply Station=Resupply Station
+peripheralsplusplus.lang.config.Resupply Station.enableResupplyStation=Enabled
+
+peripheralsplusplus.lang.config.Ridable Turtle=Ridable Turtle
+peripheralsplusplus.lang.config.Ridable Turtle.enableRidableTurtle=Enabled
+peripheralsplusplus.lang.config.Ridable Turtle.fuelPerTurtleMovement=Fuel Use per Move
+
+peripheralsplusplus.lang.config.Shearing Turtle=Shearing Turtle
+peripheralsplusplus.lang.config.Shearing Turtle.enableShearTurtle=Enabled
+
+peripheralsplusplus.lang.config.Sign Reading Turtle=Sign Reading Turtle
+peripheralsplusplus.lang.config.Sign Reading Turtle.enableReaderTurtle=Enabled
+
+peripheralsplusplus.lang.config.Smart Helmet=Smart Helmet
+peripheralsplusplus.lang.config.Smart Helmet.enableSmartHelmet=Enabled
+
+peripheralsplusplus.lang.config.Speaker=Speaker
+peripheralsplusplus.lang.config.Speaker.enableSpeaker=Enabled
+peripheralsplusplus.lang.config.Speaker.speechRange=Range
+
+peripheralsplusplus.lang.config.Tank Turtle=Tank Turtle
+peripheralsplusplus.lang.config.Tank Turtle.enableTankTurtle=Enable
+peripheralsplusplus.lang.config.Tank Turtle.maxNumberOfMillibuckets=Capacity
+
+peripheralsplusplus.lang.config.Time Sensor=Time Sensor
+peripheralsplusplus.lang.config.Time Sensor.enableTimeSensor=Enabled
+
+peripheralsplusplus.lang.config.Turtle Teleporters=Turtle Teleporters
+peripheralsplusplus.lang.config.Turtle Teleporters.enableTurtleTeleporter=Enabled
+peripheralsplusplus.lang.config.Turtle Teleporters.teleporterPenalty=Teleporter Penalty
+
+peripheralsplusplus.lang.config.Villagers=Villagers
+peripheralsplusplus.lang.config.Villagers.enableVillagers=Enable
+
+peripheralsplusplus.lang.config.XP Turtle=XP Turtle
+peripheralsplusplus.lang.config.XP Turtle.enableXPTurtle=Enable

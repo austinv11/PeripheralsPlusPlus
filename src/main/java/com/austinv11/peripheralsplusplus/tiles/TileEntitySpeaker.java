@@ -7,7 +7,6 @@ import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
 import com.austinv11.peripheralsplusplus.utils.TranslateUtils;
 import com.gtranslate.Language;
-import cpw.mods.fml.common.network.NetworkRegistry;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -15,6 +14,7 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleSide;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 
 import java.util.HashMap;
 
@@ -53,26 +53,27 @@ public class TileEntitySpeaker extends MountedTileEntity {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
+		return nbttagcompound;
 	}
 
-	@Override
-	public void updateEntity() {
+	public void update() {
 		if (turtle != null) {
-			this.setWorldObj(turtle.getWorld());
-			this.xCoord = turtle.getPosition().posX;
-			this.yCoord = turtle.getPosition().posY;
-			this.zCoord = turtle.getPosition().posZ;
+			this.setWorld(turtle.getWorld());
+			this.setPos(turtle.getPosition());
 		}
-		if (worldObj != null)
-			id = worldObj.provider.dimensionId;
+		if (world != null)
+			id = world.provider.getDimension();
 		if (eventSubticker > 0)
 			eventSubticker--;
 		if (eventSubticker == 0 && eventTicker != 0)
 			eventTicker = 0;
 		if (packetInfo[0] != null) {
-			PeripheralsPlusPlus.NETWORK.sendToAllAround(new AudioPacket((String)packetInfo[1], (String)packetInfo[2], xCoord, yCoord, zCoord, id, side), new NetworkRegistry.TargetPoint(id, xCoord, yCoord, zCoord, (Double)packetInfo[3]));
+			PeripheralsPlusPlus.NETWORK.sendToAllAround(
+			        new AudioPacket((String)packetInfo[1], (String)packetInfo[2], getPos(), id, side),
+                    new NetworkRegistry.TargetPoint(id, getPos().getX(), getPos().getY(), getPos().getZ(),
+                            (Double)packetInfo[3]));
 			packetInfo[0] = null;
 		}
 	}
@@ -166,7 +167,9 @@ public class TileEntitySpeaker extends MountedTileEntity {
 			Float rate = arguments.length > 6 ? ((Double)arguments[6]).floatValue() : null;
 			Float volume = arguments.length > 7 ? ((Double)arguments[7]).floatValue() : null;
 			
-			PeripheralsPlusPlus.NETWORK.sendToAllAround(new SynthPacket(text, voice, pitch, pitchRange, pitchShift, rate, volume, xCoord, yCoord, zCoord, id, side), new NetworkRegistry.TargetPoint(id, xCoord, yCoord, zCoord, range));
+			PeripheralsPlusPlus.NETWORK.sendToAllAround(
+			        new SynthPacket(text, voice, pitch, pitchRange, pitchShift, rate, volume, getPos(), id, side),
+                    new NetworkRegistry.TargetPoint(id, getPos().getX(), getPos().getY(), getPos().getZ(), range));
 			
 			if (arguments.length > 8 && (Boolean) arguments[8])
 				context.pullEvent("synthComplete");

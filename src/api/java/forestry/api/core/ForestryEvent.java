@@ -1,15 +1,16 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.core;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import cpw.mods.fml.common.eventhandler.Event;
-
 import com.mojang.authlib.GameProfile;
+
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 import forestry.api.genetics.IAlleleSpecies;
 import forestry.api.genetics.IBreedingTracker;
@@ -24,7 +25,6 @@ public abstract class ForestryEvent extends Event {
 		public final GameProfile username;
 
 		private BreedingEvent(ISpeciesRoot root, GameProfile username, IBreedingTracker tracker) {
-			super();
 			this.root = root;
 			this.username = username;
 			this.tracker = tracker;
@@ -33,6 +33,7 @@ public abstract class ForestryEvent extends Event {
 
 	public static class SpeciesDiscovered extends BreedingEvent {
 		public final IAlleleSpecies species;
+
 		public SpeciesDiscovered(ISpeciesRoot root, GameProfile username, IAlleleSpecies species, IBreedingTracker tracker) {
 			super(root, username, tracker);
 			this.species = species;
@@ -41,7 +42,8 @@ public abstract class ForestryEvent extends Event {
 
 	public static class MutationDiscovered extends BreedingEvent {
 		public final IMutation allele;
-		public MutationDiscovered(ISpeciesRoot root, GameProfile username, IMutation allele,  IBreedingTracker tracker) {
+
+		public MutationDiscovered(ISpeciesRoot root, GameProfile username, IMutation allele, IBreedingTracker tracker) {
 			super(root, username, tracker);
 			this.allele = allele;
 		}
@@ -50,11 +52,26 @@ public abstract class ForestryEvent extends Event {
 	public static class SyncedBreedingTracker extends ForestryEvent {
 		public final IBreedingTracker tracker;
 		public final EntityPlayer player;
+
 		public SyncedBreedingTracker(IBreedingTracker tracker, EntityPlayer player) {
-			super();
 			this.tracker = tracker;
 			this.player = player;
 		}
+	}
 
+	/**
+	 * Posted before forestry registers all items and block.
+	 */
+	public static class PreInit extends ForestryEvent{
+		/**
+		 * The main mod instance for Forestry.
+		 */
+		public Object instance;
+		public final FMLPreInitializationEvent event;
+
+		public PreInit(Object instance, FMLPreInitializationEvent event) {
+			this.instance = instance;
+			this.event = event;
+		}
 	}
 }

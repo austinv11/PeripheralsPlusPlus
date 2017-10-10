@@ -1,30 +1,42 @@
 package com.austinv11.peripheralsplusplus.turtles;
 
+import com.austinv11.collectiveframework.minecraft.utils.ModelManager;
+import com.austinv11.collectiveframework.minecraft.utils.TextureManager;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.turtles.peripherals.PeripheralCompass;
-import com.austinv11.collectiveframework.minecraft.utils.IconManager;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.austinv11.peripheralsplusplus.utils.ModelUtil;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.*;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.client.renderer.block.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.IRegistry;
+import org.apache.commons.lang3.tuple.Pair;
 
-public class TurtleCompass implements ITurtleUpgrade, IconManager.IIconNeeded{
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.vecmath.Matrix4f;
 
-	private static IIcon icon;
+public class TurtleCompass implements ITurtleUpgrade, TextureManager.TextureRegistrar, ModelManager.ModelRegistrar {
+    @Nonnull
+    @Override
+    public ResourceLocation getUpgradeID() {
+        return new ResourceLocation(Reference.COMPASS_UPGRADE);
+    }
 
-	@Override
-	public int getUpgradeID() {
-		return Reference.COMPASS_UPGRADE;
-	}
+    @Override
+    public int getLegacyUpgradeID() {
+        return Reference.COMPASS_UPGRADE_LEGACY;
+    }
 
-	@Override
+    @Override
 	public String getUnlocalisedAdjective() {
-		return "peripheralsplusplus.turtleUpgrade.compass";
+		return "peripheralsplusplus.turtle_upgrade.compass";
 	}
 
 	@Override
@@ -35,8 +47,8 @@ public class TurtleCompass implements ITurtleUpgrade, IconManager.IIconNeeded{
 	@Override
 	public ItemStack getCraftingItem() {
 		if (Config.enableNavigationTurtle)
-			return new ItemStack(Items.compass);
-		return null;
+			return new ItemStack(Items.COMPASS);
+		return ItemStack.EMPTY;
 	}
 
 	@Override
@@ -44,22 +56,29 @@ public class TurtleCompass implements ITurtleUpgrade, IconManager.IIconNeeded{
 		return new PeripheralCompass(turtle);
 	}
 
-	@Override
-	public TurtleCommandResult useTool(ITurtleAccess turtle, TurtleSide side, TurtleVerb verb, int direction) {
-		return null;
-	}
-
-	@Override
-	public IIcon getIcon(ITurtleAccess turtle, TurtleSide side) {
-		return icon;
-	}
+    @Nonnull
+    @Override
+    public TurtleCommandResult useTool(@Nonnull ITurtleAccess turtle, @Nonnull TurtleSide side,
+                                       @Nonnull TurtleVerb verb, @Nonnull EnumFacing direction) {
+        return TurtleCommandResult.failure();
+    }
 
 	@Override
 	public void update(ITurtleAccess turtle, TurtleSide side) {}
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerIcons(IIconRegister register) {
-		icon = register.registerIcon(Reference.MOD_ID+":upgradeCompass");
-	}
+    @Nonnull
+    @Override
+    public Pair<IBakedModel, Matrix4f> getModel(@Nullable ITurtleAccess turtle, @Nonnull TurtleSide side) {
+        return ModelUtil.getTurtleUpgradeModel("turtle_compass", side);
+    }
+
+    @Override
+    public void registerModels(IRegistry<ModelResourceLocation, IBakedModel> registry) {
+        ModelUtil.registerTurtleUpgradeModels(registry, "turtle_compass");
+    }
+
+    @Override
+    public void registerTextures(TextureMap textureMap) {
+        textureMap.registerSprite(new ResourceLocation(Reference.MOD_ID, "blocks/upgrade_compass"));
+    }
 }

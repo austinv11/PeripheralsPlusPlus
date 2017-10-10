@@ -2,8 +2,8 @@ package com.austinv11.peripheralsplusplus.event.handler;
 
 import com.austinv11.peripheralsplusplus.network.RobotEventPacket;
 import com.austinv11.peripheralsplusplus.reference.Config;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;

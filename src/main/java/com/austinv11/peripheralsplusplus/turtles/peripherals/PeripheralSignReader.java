@@ -7,10 +7,13 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockSign;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.util.Facing;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+
+import java.util.ArrayList;
 
 public class PeripheralSignReader extends MountedPeripheral
 {
@@ -34,41 +37,29 @@ public class PeripheralSignReader extends MountedPeripheral
     public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
         if (!Config.enableReaderTurtle)
             throw new LuaException("Sign Reading Turtles have been disabled");
-        if (method == 0) {
-            int blockX = turtle.getPosition().posX+ Facing.offsetsXForSide[turtle.getDirection()];
-            int blockY = turtle.getPosition().posY+Facing.offsetsYForSide[turtle.getDirection()];
-            int blockZ = turtle.getPosition().posZ+Facing.offsetsZForSide[turtle.getDirection()];
+        switch (method) {
+            case 0:
+                return getSignText(turtle.getPosition().offset(turtle.getDirection()));
+            case 1:
+                return getSignText(turtle.getPosition().up());
+            case 2:
+                return getSignText(turtle.getPosition().down());
+        }
+        throw new LuaException();
+    }
 
-            Block blockFacing = turtle.getWorld().getBlock(blockX, blockY, blockZ);
-
-            if (blockFacing instanceof BlockSign) {
-                TileEntitySign tileEntitySign = (TileEntitySign) turtle.getWorld().getTileEntity(blockX, blockY, blockZ);
-                return new Object[] {Util.arrayToMap(tileEntitySign.signText)};
-            }
-        } else if (method == 1) {
-			int blockX = turtle.getPosition().posX;
-			int blockY = turtle.getPosition().posY+1;
-			int blockZ = turtle.getPosition().posZ;
-
-			Block blockFacing = turtle.getWorld().getBlock(blockX, blockY, blockZ);
-
-			if (blockFacing instanceof BlockSign) {
-				TileEntitySign tileEntitySign = (TileEntitySign) turtle.getWorld().getTileEntity(blockX, blockY, blockZ);
-				return new Object[] {Util.arrayToMap(tileEntitySign.signText)};
-			}
-		} else if (method == 2) {
-			int blockX = turtle.getPosition().posX;
-			int blockY = turtle.getPosition().posY-1;
-			int blockZ = turtle.getPosition().posZ;
-
-			Block blockFacing = turtle.getWorld().getBlock(blockX, blockY, blockZ);
-
-			if (blockFacing instanceof BlockSign) {
-				TileEntitySign tileEntitySign = (TileEntitySign) turtle.getWorld().getTileEntity(blockX, blockY, blockZ);
-				return new Object[]{Util.arrayToMap(tileEntitySign.signText)};
-			}
-		}
-        return new Object[0];
+    private Object[] getSignText(BlockPos pos) throws LuaException {
+        IBlockState blockFacing = turtle.getWorld().getBlockState(pos);
+        if (blockFacing.getBlock() instanceof BlockSign) {
+            TileEntitySign tileEntitySign = (TileEntitySign) turtle.getWorld().getTileEntity(pos);
+            if (tileEntitySign == null)
+                throw new LuaException("No sign found.");
+            ArrayList<String> lines = new ArrayList<>();
+            for (ITextComponent line : tileEntitySign.signText)
+                lines.add(line.getUnformattedText());
+            return new Object[] {Util.arrayToMap(lines.toArray())};
+        }
+        throw new LuaException("No sign found.");
     }
 
     @Override

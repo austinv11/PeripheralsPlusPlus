@@ -1,40 +1,56 @@
 package com.austinv11.peripheralsplusplus.smarthelmet;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.entity.RenderItem;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 public class DrawTextureCommand extends HelmetCommand {
 
-	public String resource;
+	public ResourceLocation resource;
 	public int x, y, u, v, width, height;
 
 	@SideOnly(Side.CLIENT)
 	@Override
 	public void call(Gui gui) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		int type = isItemLocation();
+		ItemType type = isItemLocation();
 		if (u == -1)
 			u = 0;
 		if (v == -1)
 			v = 0;
-		if (type == -1) {
+		if (type.equals(ItemType.NONE)) {
 			GL11.glEnable(GL11.GL_BLEND);
-			Minecraft.getMinecraft().getTextureManager().bindTexture(new ResourceLocation(resource));
+			Minecraft.getMinecraft().getTextureManager().bindTexture(resource);
 			gui.drawTexturedModalRect(x, y, u, v, width, height);
 			GL11.glDisable(GL11.GL_BLEND);
 		} else {
-			RenderItem render = new RenderItem();
-			ItemStack toRender = type == 1 ? new ItemStack((Block)Block.blockRegistry.getObject(resource)) : new ItemStack((Item)Item.itemRegistry.getObject(resource));
-			render.renderItemIntoGUI(Minecraft.getMinecraft().fontRenderer, Minecraft.getMinecraft().getTextureManager(), toRender, x, y);
+			ItemStack toRender = null;
+			switch (type) {
+                case ITEM:
+                    Item item = ForgeRegistries.ITEMS.getValue(resource);
+                    if (item == null)
+                        return;
+                    toRender = new ItemStack(item);
+                    break;
+                case BLOCK:
+                    Block block = ForgeRegistries.BLOCKS.getValue(resource);
+                    if (block == null)
+                        return;
+                    toRender = new ItemStack(block);
+                    break;
+            }
+            if (toRender != null)
+			    Minecraft.getMinecraft().getRenderItem().renderItemIntoGUI(toRender, x, y);
 		}
 	}
 
@@ -45,7 +61,7 @@ public class DrawTextureCommand extends HelmetCommand {
 
 	@Override
 	public void readFromNBT(NBTTagCompound tagCompound) {
-		resource = tagCompound.getString("resource");
+		resource = new ResourceLocation(tagCompound.getString("resource"));
 		x = tagCompound.getInteger("x");
 		y = tagCompound.getInteger("y");
 		u = tagCompound.getInteger("u");
@@ -56,7 +72,7 @@ public class DrawTextureCommand extends HelmetCommand {
 
 	@Override
 	public void writeToNBT(NBTTagCompound tagCompound) {
-		tagCompound.setString("resource", resource);
+		tagCompound.setString("resource", resource.toString());
 		tagCompound.setInteger("x", x);
 		tagCompound.setInteger("y", y);
 		tagCompound.setInteger("u", u);
@@ -65,15 +81,13 @@ public class DrawTextureCommand extends HelmetCommand {
 		tagCompound.setInteger("height", height);
 	}
 
-	//-1 for no
-	//0 for item
-	//1 for block
-	//Sorry for magic numbers :V
-	private int isItemLocation() {
-		if (Block.blockRegistry.getObject(resource) != null)
-			return 1;
-		if (Item.itemRegistry.getObject(resource) != null)
-			return 0;
-		return -1;
+	private ItemType isItemLocation() {
+		if (ForgeRegistries.BLOCKS.getValue(resource) != Blocks.AIR)
+			return ItemType.BLOCK;
+		if (ForgeRegistries.ITEMS.getValue(resource) != Items.AIR)
+			return ItemType.ITEM;
+		return ItemType.NONE;
 	}
+
+    private enum ItemType {ITEM, BLOCK, NONE}
 }

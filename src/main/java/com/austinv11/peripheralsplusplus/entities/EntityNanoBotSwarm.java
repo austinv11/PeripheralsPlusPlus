@@ -11,9 +11,9 @@ import net.minecraft.entity.projectile.EntityThrowable;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,13 +37,13 @@ public class EntityNanoBotSwarm extends EntityThrowable {
 	}
 	
 	@Override
-	protected void onImpact(MovingObjectPosition mop) {
-		if (!worldObj.isRemote) {
-			if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.ENTITY) {
+	protected void onImpact(RayTraceResult mop) {
+		if (!world.isRemote) {
+			if (mop.typeOfHit == RayTraceResult.Type.ENTITY) {
 				mop.entityHit.attackEntityFrom(new DamageSource(Reference.MOD_ID.toLowerCase()+".nanobots"), 0);
 				ItemNanoSwarm.addSwarmForEntity(this, mop.entityHit);
-			} else if (mop.typeOfHit == MovingObjectPosition.MovingObjectType.BLOCK) {
-				ItemStack stack = new ItemStack(ModItems.nanoSwarm);
+			} else if (mop.typeOfHit == RayTraceResult.Type.BLOCK) {
+				ItemStack stack = new ItemStack(ModItems.NANO_SWARM);
 				NBTHelper.setString(stack, "identifier", antennaIdentifier.toString());
 				List<String> info = new ArrayList<String>();
 				
@@ -55,10 +55,11 @@ public class EntityNanoBotSwarm extends EntityThrowable {
 				}
 				
 				NBTHelper.setInfo(stack, info);
-				ForgeDirection direction = ForgeDirection.getOrientation(mop.sideHit);
-				EntityItem entityItem = new EntityItem(this.worldObj, this.posX+direction.offsetX, this.posY+direction.offsetY,
-						this.posZ+direction.offsetZ, stack);
-				worldObj.spawnEntityInWorld(entityItem);
+				EnumFacing direction = mop.sideHit;
+				EntityItem entityItem = new EntityItem(this.world,
+						this.posX+direction.getFrontOffsetX(), this.posY+direction.getFrontOffsetY(),
+								this.posZ+direction.getFrontOffsetZ(), stack);
+				world.spawnEntity(entityItem);
 			}
 			this.setDead();
 		}

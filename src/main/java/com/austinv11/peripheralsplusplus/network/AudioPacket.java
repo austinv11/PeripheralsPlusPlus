@@ -4,32 +4,31 @@ import com.austinv11.collectiveframework.multithreading.SimpleRunnable;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.utils.TranslateUtils;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import dan200.computercraft.api.turtle.TurtleSide;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 import java.util.ArrayList;
 
 public class AudioPacket implements IMessage {
 
-	public String lang;
+    private BlockPos pos;
+    public String lang;
 	public String text;
-	public int x,y,z;
 	public TurtleSide side;
 
 	public AudioPacket() {}
 
-	public AudioPacket(String lang, String text, int x, int y, int z, int world, TurtleSide side) {
+	public AudioPacket(String lang, String text, BlockPos pos, int world, TurtleSide side) {
 		this.lang = lang;
 		this.text = text;
-		this.x = x;
-		this.y = y;
-		this.z = z;
+		this.pos = pos;
 		this.side = side;
 	}
 
@@ -38,9 +37,8 @@ public class AudioPacket implements IMessage {
 		NBTTagCompound tag = ByteBufUtils.readTag(buf);
 		lang = tag.getString("lang");
 		text = tag.getString("text");
-		x = tag.getInteger("x");
-		y = tag.getInteger("y");
-		z = tag.getInteger("z");
+        int[] posArray = tag.getIntArray("pos");
+		pos = new BlockPos(posArray[0], posArray[1], posArray[2]);
 		side = tag.getString("side").equals("null") ? null : TurtleSide.valueOf(tag.getString("side"));
 	}
 
@@ -49,9 +47,7 @@ public class AudioPacket implements IMessage {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setString("lang", lang);
 		tag.setString("text", text);
-		tag.setInteger("x", x);
-		tag.setInteger("y", y);
-		tag.setInteger("z", z);
+		tag.setIntArray("pos", new int[]{pos.getX(), pos.getY(), pos.getZ()});
 		tag.setString("side", side == null ? "null" : side.name());
 		ByteBufUtils.writeTag(buf, tag);
 	}
@@ -79,7 +75,9 @@ public class AudioPacket implements IMessage {
 							TranslateUtils.playAudio(message.text, message.lang);
 						else
 							playSplitAudio();
-						PeripheralsPlusPlus.NETWORK.sendToServer(new AudioResponsePacket(message.text, message.lang, message.x, message.y, message.z, Minecraft.getMinecraft().theWorld, message.side));
+						PeripheralsPlusPlus.NETWORK.sendToServer(
+								new AudioResponsePacket(message.text, message.lang, message.pos,
+										Minecraft.getMinecraft().world, message.side));
 					} catch (Exception e) {
 						e.printStackTrace();
 					} finally {

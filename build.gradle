@@ -10,10 +10,11 @@ buildscript {
             url = "https://oss.sonatype.org/content/repositories/snapshots/"
         }
         jcenter()
+        maven { url = "https://plugins.gradle.org/m2/" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.1'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
 }
 
@@ -25,9 +26,23 @@ repositories {
         name = "chickenbones"
         url = "http://chickenbones.net/maven"
     }
+    maven {
+        // location of the maven that hosts JEI files
+        name = "Progwml6 maven"
+        url = "http://dvs1.progwml6.com/files/maven"
+    }
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "modmaven.k-4u.nl"
+    }
+    maven {
+        name "JBoss"
+        url = "https://repository.jboss.org/nexus/content/repositories/releases/"
+    }
 }
 
-apply plugin: 'forge'
+apply plugin: 'net.minecraftforge.gradle.forge'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'maven-publish'
 
@@ -38,8 +53,9 @@ group= "com.austinv11.peripheralsplusplus" // http://maven.apache.org/guides/min
 archivesBaseName = "Peripherals++"
 
 minecraft {
-    version = "1.7.10-10.13.4.1558-1.7.10"
-    runDir = "eclipse"
+    version = "1.12.2-14.23.0.2491"
+    mappings = "snapshot_20170626"
+    runDir = "run"
     replace("@VERSION@",project.version)
 }
 
@@ -73,29 +89,22 @@ bintray {
     }
 }
 
+configurations {
+    compileBundle
+}
+
+ext.freettsVersion = "1.2.2"
 dependencies {
-    // you may put jars on which you depend on in ./libs
-    // or you may define them like so..
-    //compile "some.group:artifact:version:classifier"
-    //compile "some.group:artifact:version"
-      
-    // real examples
-    //compile 'com.mod-buildcraft:buildcraft:6.0.8:dev'  // adds buildcraft to the dev env
-    //compile 'com.googlecode.efficient-java-matrix-library:ejml:0.24' // adds ejml to the dev env
-
-    // Chatter library
-    // https://github.com/pierredavidbelanger/chatter-bot-api
-    // http://mavenbrowse.pauldoo.com/central/ca/pjer/chatter-bot-api/
-    // It's in the ./libs folder, but heres the maven link just in case
-    //compile "ca.pjer:chatter-bot-api:1.3.3"
-
-    // for more info...
-    // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
-    // http://www.gradle.org/docs/current/userguide/dependency_management.html
-    compile "com.austinv11.collectiveframework:CollectiveFramework:1.0.0-122:deobf"
-    compile "codechicken:NotEnoughItems:1.7.10-1.0.3.74:dev"
-	compile "codechicken:CodeChickenLib:1.7.10-1.1.1.99:dev"
-	compile "codechicken:CodeChickenCore:1.7.10-1.0.4.29:dev"
+    compile "codechicken:NotEnoughItems:1.12-2.4.0.231:deobf"
+	compile "codechicken:CodeChickenLib:1.12-3.1.3.313:deobf"
+    compileBundle "com.michaelwflaherty:cleverbotapi:1.0.2"
+    compileBundle "com.fasterxml.jackson.core:jackson-databind:2.9.1"
+    compileBundle "org.mobicents.external.freetts:cmulex:$freettsVersion"
+    compileBundle "org.mobicents.external.freetts:en_us:$freettsVersion"
+    compileBundle "org.mobicents.external.freetts:freetts:$freettsVersion"
+    compileBundle "org.mobicents.external.freetts:mbrola:$freettsVersion"
+    compileBundle "org.mobicents.external.freetts:cmu_us_kal:$freettsVersion"
+    configurations.compile.extendsFrom(configurations.compileBundle)
 }
 
 processResources
@@ -120,18 +129,20 @@ processResources
 
 jar {
     manifest {
-        attributes 'FMLAT': 'ppp_at.cfg',
-                'FMLCorePlugin': 'com.austinv11.peripheralsplusplus.asm.PeripheralsPlusPlusTransformerPlugin',
-                'FMLCorePluginContainsFMLMod': true
+        attributes 'FMLAT': 'ppp_at.cfg'
     }
-    from zipTree("libs/cmulex.jar")
-    from zipTree("libs/en_us.jar")
-    from zipTree("libs/freetts.jar")
-    from zipTree("libs/freetts-jsapi10.jar")
-    from zipTree("libs/mbrola.jar")
-    from zipTree("libs/cmu_us_kal.jar")
-    // Chatter library
-    from zipTree("libs/chatter-bot-api-1.3.3.jar")
+    for (Object depToBundle : configurations.compileBundle.collect()) {
+        if (depToBundle.isDirectory())
+            from depToBundle
+        else if (depToBundle.toString().contains("freetts-${freettsVersion}.jar"))
+            from(zipTree(depToBundle).matching {
+                exclude "de/dfki/lt/freetts/mbrola/**"
+            })
+        else
+            from(zipTree(depToBundle).matching {
+                exclude "META-INF/LICENSE", "META-INF/NOTICE"
+            })
+    }
 }
 
 idea { 
@@ -140,20 +151,12 @@ idea {
     } 
 }
 
-// add source jar
-task sourceJar(type: Jar) {
-    from sourceSets.main.allSource
-    classifier = 'source'
-}
-
 // deobf jars
 task deobfJar(type: Jar) {
     from sourceSets.main.output
     classifier = 'deobf'
     manifest {
-        attributes 'FMLAT': 'ppp_at.cfg',
-                'FMLCorePlugin': 'com.austinv11.peripheralsplusplus.asm.PeripheralsPlusPlusTransformerPlugin',
-                'FMLCorePluginContainsFMLMod': true
+        attributes 'FMLAT': 'ppp_at.cfg'
     }
 }
 

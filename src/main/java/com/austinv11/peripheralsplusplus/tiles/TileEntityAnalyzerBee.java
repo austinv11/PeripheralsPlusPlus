@@ -41,17 +41,19 @@ public class TileEntityAnalyzerBee extends TileEntityAnalyzer {
 	protected void addGenome(ItemStack stack, IGenome origGenome, HashMap<String,Object> ret) {
 		IBeeRoot root = (IBeeRoot) getRoot();
 		IBeeGenome genome = (IBeeGenome) origGenome;
-		ret.put("type", root.getType(stack).name());
-		ret.put("speciesPrimary", genome.getPrimary().getName());
-		ret.put("speciesSecondary", genome.getSecondary().getName());
+		ret.put("type", root.getType(stack) == null ? null : root.getType(stack).name());
+		ret.put("speciesPrimary", genome.getPrimary().getAlleleName());
+		ret.put("speciesSecondary", genome.getSecondary().getAlleleName());
 		ret.put("speed", genome.getSpeed());
 		ret.put("lifespan", genome.getLifespan());
 		ret.put("fertility", genome.getFertility());
-		ret.put("nocturnal", genome.getNocturnal());
-		ret.put("tolerantFlyer", genome.getTolerantFlyer());
+		ret.put("neverSleeps", genome.getNeverSleeps());
+		ret.put("toleratesRain", genome.getToleratesRain());
 		ret.put("caveDwelling", genome.getCaveDwelling());
 		ret.put("flower", genome.getFlowerProvider().getDescription());
-		ret.put("territory", Util.arrayToMap(genome.getTerritory()));
+		ret.put("flowering", genome.getFlowering());
+		ret.put("territory", Util.arrayToMap(new int[]{genome.getTerritory().getX(), genome.getTerritory().getZ(),
+                genome.getTerritory().getZ()}));
 		ret.put("effect", genome.getEffect().getUID());
 		ret.put("temperature", genome.getPrimary().getTemperature().toString());
 		ret.put("toleranceTemperature", genome.getToleranceTemp().toString());

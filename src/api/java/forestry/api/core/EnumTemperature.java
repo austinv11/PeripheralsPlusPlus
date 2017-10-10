@@ -1,31 +1,33 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.core;
 
-import net.minecraft.util.IIcon;
-import net.minecraft.world.biome.BiomeGenBase;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
-import net.minecraftforge.common.BiomeDictionary;
+import forestry.api.climate.IClimateState;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 /**
- *  Many things Forestry use temperature and humidity of a biome to determine whether they can or how they can work or spawn at a given location.
- * 
- *  This enum concerns temperature.
+ * Many things Forestry use temperature and humidity of a biome to determine whether they can or how they can work or spawn at a given location.
+ * <p>
+ * This enum concerns temperature.
  */
 public enum EnumTemperature {
 	NONE("None", "habitats/ocean"), ICY("Icy", "habitats/snow"), COLD("Cold", "habitats/taiga"),
 	NORMAL("Normal", "habitats/plains"), WARM("Warm", "habitats/jungle"), HOT("Hot", "habitats/desert"), HELLISH("Hellish", "habitats/nether");
 
+	public static EnumTemperature[] VALUES = values();
+	
 	public final String name;
 	public final String iconIndex;
 
-	private EnumTemperature(String name, String iconIndex) {
+	EnumTemperature(String name, String iconIndex) {
 		this.name = name;
 		this.iconIndex = iconIndex;
 	}
@@ -35,54 +37,45 @@ public enum EnumTemperature {
 	}
 
 	@SideOnly(Side.CLIENT)
-	public IIcon getIcon() {
+	public TextureAtlasSprite getSprite() {
 		return ForestryAPI.textureManager.getDefault(iconIndex);
-	}
-
-	/**
-	 * Determines if a given BiomeGenBase is of HELLISH temperature, since it is treated seperatly from actual temperature values.
-	 * Uses the BiomeDictionary.
-	 * @param biomeGen BiomeGenBase of the biome in question
-	 * @return true, if the BiomeGenBase is a Nether-type biome; false otherwise.
-	 */
-	public static boolean isBiomeHellish(BiomeGenBase biomeGen) {
-		return BiomeDictionary.isBiomeOfType(biomeGen, BiomeDictionary.Type.NETHER);
-	}
-
-	/**
-	 * Determines if a given biomeID is of HELLISH temperature, since it is treated seperatly from actual temperature values.
-	 * Uses the BiomeDictionary.
-	 * @param biomeID ID of the BiomeGenBase in question
-	 * @return true, if the biomeID is a Nether-type biome; false otherwise.
-	 */
-	public static boolean isBiomeHellish(int biomeID) {
-		return BiomeDictionary.isBiomeRegistered(biomeID) && BiomeDictionary.isBiomeOfType(BiomeGenBase.getBiome(biomeID), BiomeDictionary.Type.NETHER);
 	}
 
 	/**
 	 * Determines the EnumTemperature given a floating point representation of
 	 * Minecraft temperature. Hellish biomes are handled based on their biome
-	 * type - check isBiomeHellish.
+	 * type - check BiomeHelper.isBiomeHellish.
+	 *
 	 * @param rawTemp raw temperature value
 	 * @return EnumTemperature corresponding to value of rawTemp
 	 */
 	public static EnumTemperature getFromValue(float rawTemp) {
-		EnumTemperature value = EnumTemperature.ICY;
-
-		if (rawTemp >= 2.0f) {
-			value = EnumTemperature.HOT;
+		if (rawTemp > 1.00f) {
+			return HOT;
+		} else if (rawTemp > 0.85f) {
+			return WARM;
+		} else if (rawTemp > 0.35f) {
+			return NORMAL;
+		} else if (rawTemp > 0.0f) {
+			return COLD;
+		} else {
+			return ICY;
 		}
-		else if (rawTemp >= 0.95f) {
-			value = EnumTemperature.WARM;
-		}
-		else if (rawTemp >= 0.2f) {
-			value = EnumTemperature.NORMAL;
-		}
-		else if (rawTemp >= 0.05f) {
-			value = EnumTemperature.COLD;
-		}
-
-		return value;
 	}
 
+	public static EnumTemperature getFromBiome(Biome biome) {
+		if (BiomeHelper.isBiomeHellish(biome)) {
+			return HELLISH;
+		}
+		return getFromValue(biome.getTemperature());
+	}
+
+	public static EnumTemperature getFromBiome(Biome biome, World world, BlockPos pos) {
+		if (BiomeHelper.isBiomeHellish(biome)) {
+			return HELLISH;
+		}
+		IClimateState state = ForestryAPI.climateManager.getClimateState(world, pos);
+		float temperature = state.getTemperature();
+		return getFromValue(temperature);
+	}
 }

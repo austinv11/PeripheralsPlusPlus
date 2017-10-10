@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2013 AlgorithmX2
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -23,10 +23,13 @@
 
 package appeng.api.parts;
 
-import net.minecraftforge.common.util.ForgeDirection;
+
+import appeng.api.util.AEPartLocation;
+
 
 /**
- * Reports a selected part from th IPartHost
+ * Reports a selected part from the IPartHost
+ *
  */
 public class SelectedPart
 {
@@ -42,26 +45,28 @@ public class SelectedPart
 	public final IFacadePart facade;
 
 	/**
-	 * side the part is mounted too, or {@link ForgeDirection}.UNKNOWN for cables.
+	 * side the part is mounted too, or {@link AEPartLocation}.UNKNOWN for cables.
 	 */
-	public final ForgeDirection side;
+	public final AEPartLocation side;
 
-	public SelectedPart() {
+	public SelectedPart()
+	{
 		this.part = null;
 		this.facade = null;
-		this.side = ForgeDirection.UNKNOWN;
+		this.side = AEPartLocation.INTERNAL;
 	}
 
-	public SelectedPart(IPart part, ForgeDirection side) {
+	public SelectedPart( final IPart part, final AEPartLocation side )
+	{
 		this.part = part;
 		this.facade = null;
 		this.side = side;
 	}
 
-	public SelectedPart(IFacadePart facade, ForgeDirection side) {
+	public SelectedPart( final IFacadePart facade, final AEPartLocation side )
+	{
 		this.part = null;
 		this.facade = facade;
 		this.side = side;
 	}
-
 }

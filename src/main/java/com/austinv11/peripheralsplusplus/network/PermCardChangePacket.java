@@ -1,13 +1,12 @@
 package com.austinv11.peripheralsplusplus.network;
 
-import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 
 public class PermCardChangePacket implements IMessage
 {
@@ -42,8 +41,8 @@ public class PermCardChangePacket implements IMessage
         @Override
         public IMessage onMessage(PermCardChangePacket message, MessageContext ctx)
         {
-            ItemStack permCard = ctx.getServerHandler().playerEntity.getCurrentEquippedItem();
-            if (permCard != null) {
+            ItemStack permCard = ctx.getServerHandler().player.getHeldItemMainhand();
+            if (!permCard.isEmpty()) {
                 NBTTagCompound permCardTag = permCard.getTagCompound();
                 if (permCardTag != null) {
                     permCardTag.setBoolean("getStacks", message.canGetStacks);

@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2013 AlgorithmX2
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -23,11 +23,22 @@
 
 package appeng.api.features;
 
+
+import appeng.api.AEInjectable;
 import appeng.api.movable.IMovableRegistry;
 import appeng.api.networking.IGridCacheRegistry;
+import appeng.api.parts.IPartModels;
 import appeng.api.storage.ICellRegistry;
-import appeng.api.storage.IExternalStorageRegistry;
 
+
+/**
+ * @author AlgorithmX2
+ * @author thatsIch
+ * @author yueh
+ * @version rv5
+ * @since rv0
+ */
+@AEInjectable
 public interface IRegistryContainer
 {
 
@@ -40,12 +51,6 @@ public interface IRegistryContainer
 	 * Add new Grid Caches for use during run time, only use during loading phase.
 	 */
 	IGridCacheRegistry gridCache();
-
-	/**
-	 * Add additional storage bus handlers to improve interplay with mod blocks that contains special inventories that
-	 * function unlike vanilla chests. AE uses this internally for barrels, DSU's, quantum chests, AE Networks and more.
-	 */
-	IExternalStorageRegistry externalStorage();
 
 	/**
 	 * Add additional special comparison functionality, AE Uses this internally for Bees.
@@ -66,6 +71,16 @@ public interface IRegistryContainer
 	 * Manage grinder recipes via API
 	 */
 	IGrinderRegistry grinder();
+
+	/**
+	 * Manage inscriber recipes via API
+	 */
+	IInscriberRegistry inscriber();
+
+	/**
+	 * Manage charger via API
+	 */
+	IChargerRegistry charger();
 
 	/**
 	 * get access to the locatable registry
@@ -96,4 +111,9 @@ public interface IRegistryContainer
 	 * get access to the world-gen api.
 	 */
 	IWorldGen worldgen();
+
+	/**
+	 * Register your IPart models before using them.
+	 */
+	IPartModels partModels();
 }

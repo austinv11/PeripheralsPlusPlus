@@ -1,11 +1,11 @@
 {
   "modListVersion": 2,
   "modList": [{
-    "modid": "PeripheralsPlusPlus",
+    "modid": "peripheralsplusplus",
     "name": "Peripherals++",
     "description": "A psuedo-port of MiscPeripherals",
-    "version": "@VERSION@",
-    "mcversion": "1.7.10",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
     "url": "austinv11.com",
     "updateUrl": "",
     "authorList": ["austinv11"],
@@ -13,7 +13,7 @@
     "logoFile": "",
     "screenshots": [],
     "parent": "",
-    "requiredMods": ["Forge","ComputerCraft"],
+    "requiredMods": ["forge", "computercraft", "collectiveframework"],
     "dependencies": [],
     "dependants": [],
     "useDependencyInformation": false

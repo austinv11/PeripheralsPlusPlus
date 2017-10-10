@@ -1,35 +1,24 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.genetics;
 
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public interface IFlowerProvider {
-	/**
-	 * @param world
-	 * @param individual
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @return True if the block at the passed coordinates is a valid flower for the species.
-	 */
-	boolean isAcceptedFlower(World world, IIndividual individual, int x, int y, int z);
 
-	boolean isAcceptedPollinatable(World world, IPollinatable pollinatable);
+	boolean isAcceptedPollinatable(World world, ICheckPollinatable pollinatable);
 
 	/**
-	 * @param world
-	 * @param individual
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @return True if a flower was planted.
+	 * @return The unique type used for the IFlowerRegistry
+	 * @since Forestry 4.0.0
 	 */
-	boolean growFlower(World world, IIndividual individual, int x, int y, int z);
+	String getFlowerType();
 
 	/**
 	 * @return Short, human-readable identifier used in the beealyzer.
@@ -38,19 +27,9 @@ public interface IFlowerProvider {
 
 	/**
 	 * Allows the flower provider to affect the produce at the given location.
-	 * @param world
-	 * @param individual
-	 * @param x
-	 * @param y
-	 * @param z
-	 * @param products
+	 * If this flowerProvider does not affect the products, it should return the products unchanged.
+	 *
 	 * @return Array of itemstacks being the (modified or unmodified) produce.
 	 */
-	ItemStack[] affectProducts(World world, IIndividual individual, int x, int y, int z, ItemStack[] products);
-
-	/**
-	 * @return Array of itemstacks representing valid flowers for the flower provider. The first in the array is for use as an icon Return null or an empty
-	 *         array if the flower does not have an itemstack
-	 */
-	ItemStack[] getItemStacks();
+	NonNullList<ItemStack> affectProducts(World world, IIndividual individual, BlockPos pos, NonNullList<ItemStack> products);
 }

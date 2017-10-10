@@ -1,6 +1,5 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
-import com.austinv11.peripheralsplusplus.utils.Util;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import forestry.api.arboriculture.ITreeGenome;
 import forestry.api.genetics.IGenome;
@@ -47,10 +46,10 @@ public class TileEntityAnalyzerTree extends TileEntityAnalyzer {
 		ret.put("sappiness", genome.getSappiness());
 		ret.put("matures", genome.getMaturationTime());
 		ret.put("fruit", genome.getFruitProvider().getDescription());
-		ret.put("growth", genome.getGrowthProvider().getDescription());
 		ret.put("girth", genome.getGirth());
-		ret.put("plant", Util.EnumSetToMap(genome.getPlantTypes()));
 		ret.put("effect", genome.getEffect().getUID());
+		ret.put("decorativeLeaves", genome.getDecorativeLeaves().getDisplayName());
+		ret.put("matchesTemplateGenome", genome.matchesTemplateGenome());
 	}
 
 	@Override

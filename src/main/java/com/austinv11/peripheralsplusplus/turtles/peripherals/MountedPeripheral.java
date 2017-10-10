@@ -5,7 +5,7 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 
 public abstract class MountedPeripheral implements IPeripheral {
-	
+
 	public MountedPeripheral() {
 		super();
 	}

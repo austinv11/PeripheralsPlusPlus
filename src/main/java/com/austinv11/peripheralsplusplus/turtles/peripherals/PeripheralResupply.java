@@ -11,14 +11,16 @@ import dan200.computercraft.api.turtle.ITurtleAccess;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 public class PeripheralResupply extends MountedPeripheral {
 	
 	private ITurtleAccess turtle;
-	private ChunkCoordinates linkedStation;
+	private BlockPos linkedStation;
 	
 	public PeripheralResupply(ITurtleAccess turtle) {
 		this.turtle = turtle;
@@ -35,7 +37,8 @@ public class PeripheralResupply extends MountedPeripheral {
 	}
 	
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
+            throws LuaException, InterruptedException {
 		if (!Config.enableResupplyStation)
 			throw new LuaException("The resupply station has been disabled");
 		switch (method) {
@@ -51,21 +54,19 @@ public class PeripheralResupply extends MountedPeripheral {
 						throw new LuaException("Bad argument #2 (expected number)");
 					if (!(arguments[2] instanceof Double))
 						throw new LuaException("Bad argument #3 (expected number)");
-					linkedStation = new ChunkCoordinates(((Double)arguments[0]).intValue(), 
+					linkedStation = new BlockPos(((Double)arguments[0]).intValue(),
 							((Double)arguments[1]).intValue(), ((Double)arguments[2]).intValue());
 					return new Object[]{true};
 				}
-				ForgeDirection dir;
+                EnumFacing dir;
 				if (arguments[0] instanceof String)
-					dir = ForgeDirection.valueOf(((String) arguments[0]).toUpperCase());
+					dir = EnumFacing.valueOf(((String) arguments[0]).toUpperCase());
 				else
-					dir = ForgeDirection.getOrientation((int) (double) (Double) arguments[0]);
-				ChunkCoordinates newLink = new ChunkCoordinates(turtle.getPosition().posX+dir.offsetX, 
-						turtle.getPosition().posY+dir.offsetY, turtle.getPosition().posZ+dir.offsetZ);
+					dir = EnumFacing.getFront((int) (double) (Double) arguments[0]);
+				BlockPos newLink = turtle.getPosition().offset(dir);
 				World turtleWorld = turtle.getWorld();
-				if (!turtleWorld.blockExists(newLink.posX, newLink.posY, newLink.posZ) || turtleWorld.isAirBlock(newLink.posX,
-						newLink.posY, newLink.posZ) || !(turtleWorld.getBlock(newLink.posX, newLink.posY, newLink.posZ) 
-						instanceof BlockResupplyStation))
+				if (turtleWorld.isAirBlock(newLink) || !(turtleWorld.getBlockState(newLink).getBlock()
+                        instanceof BlockResupplyStation))
 					return new Object[]{false};
 				linkedStation = newLink;
 				return new Object[]{true};
@@ -74,9 +75,8 @@ public class PeripheralResupply extends MountedPeripheral {
 				if (linkedStation == null)
 					throw new LuaException("A station has not been linked!");
 				World world = turtle.getWorld();
-				if (!world.blockExists(linkedStation.posX, linkedStation.posY, linkedStation.posZ) || world.isAirBlock(linkedStation.posX,
-						linkedStation.posY, linkedStation.posZ) || !(world.getBlock(linkedStation.posX, linkedStation.posY, linkedStation.posZ)
-						instanceof BlockResupplyStation))
+				if (world.isAirBlock(linkedStation) || !(world.getBlockState(linkedStation).getBlock()
+                        instanceof BlockResupplyStation))
 					throw new LuaException("The linked station is nonexistant!");
 				if (arguments.length > 0 && !(arguments[0] instanceof Double))
 					throw new LuaException("Bad argument #1 (expected number)");
@@ -87,26 +87,27 @@ public class PeripheralResupply extends MountedPeripheral {
 				int slot = turtle.getSelectedSlot();
 				if (arguments.length > 0)
 					slot = ((Double)arguments[0]).intValue()-1;
-				String id = null;
+				ResourceLocation id;
 				if (arguments.length > 1 && arguments[1] instanceof String)
-					id = (String)arguments[1];
+					id = new ResourceLocation((String)arguments[1]);
 				else {
-					if (turtle.getInventory().getStackInSlot(slot) == null)
+					if (turtle.getInventory().getStackInSlot(slot).isEmpty())
 						return new Object[]{false};
 					if (turtle.getInventory().getStackInSlot(slot).getItem() instanceof ItemBlock) {
 						Block itemBlock = Block.getBlockFromItem(turtle.getInventory().getStackInSlot(slot).getItem());
-						id = Block.blockRegistry.getNameForObject(itemBlock);
+						id = ForgeRegistries.BLOCKS.getKey(itemBlock);
 					} else {
 						Item item = turtle.getInventory().getStackInSlot(slot).getItem();
-						id = Item.itemRegistry.getNameForObject(item);
+						id = ForgeRegistries.ITEMS.getKey(item);
 					}
 				}
-				int meta = arguments.length > 2 ? ((Double)arguments[2]).intValue() : turtle.getInventory().getStackInSlot(slot) == null ?
+				int meta = arguments.length > 2 ? ((Double)arguments[2]).intValue() :
+                        turtle.getInventory().getStackInSlot(slot).isEmpty() ?
 						0 : turtle.getInventory().getStackInSlot(slot).getItemDamage();
 				synchronized (this) {
-					TileEntityResupplyStation station = (TileEntityResupplyStation) world.getTileEntity(linkedStation.posX, 
-							linkedStation.posY, linkedStation.posZ);
-					return new Object[]{station.resupply(turtle, slot, id, meta)};
+					TileEntityResupplyStation station = (TileEntityResupplyStation) world.getTileEntity(linkedStation);
+					if (station != null)
+					    return new Object[]{station.resupply(turtle, slot, id, meta)};
 				}
 		}
 		return new Object[0];

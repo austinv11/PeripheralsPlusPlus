@@ -1,32 +1,39 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.circuits;
 
 import java.util.List;
 
-import net.minecraft.tileentity.TileEntity;
+import forestry.api.core.INbtWritable;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import forestry.api.core.INBTTagable;
-
-public interface ICircuitBoard extends INBTTagable {
-
+public interface ICircuitBoard extends INbtWritable {
+	@SideOnly(Side.CLIENT)
 	int getPrimaryColor();
 
+	@SideOnly(Side.CLIENT)
 	int getSecondaryColor();
 
+	@SideOnly(Side.CLIENT)
 	void addTooltip(List<String> list);
 
-	void onInsertion(TileEntity tile);
+	void onInsertion(Object tile);
 
-	void onLoad(TileEntity tile);
+	void onLoad(Object tile);
 
-	void onRemoval(TileEntity tile);
+	void onRemoval(Object tile);
 
-	void onTick(TileEntity tile);
-	
+	void onTick(Object tile);
+
 	ICircuit[] getCircuits();
+
+	/**
+	 * Specifies where a circuit can be used.
+	 */
+	ICircuitSocketType getSocketType();
 
 }
