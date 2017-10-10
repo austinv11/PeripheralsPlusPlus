@@ -5,13 +5,14 @@ import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.client.gui.GuiHelmet;
 import com.austinv11.peripheralsplusplus.items.ItemSmartHelmet;
 import com.austinv11.peripheralsplusplus.network.InputEventPacket;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
-import cpw.mods.fml.common.gameevent.InputEvent;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.InputEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -22,31 +23,56 @@ public class SmartHelmetHandler {
 
 	@SubscribeEvent
 	public void onClick(InputEvent.MouseInputEvent event) {
-		if (checkSmartHelmetStatus()) {
-			PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(UUID.fromString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getTagCompound().getString("identifier")), Mouse.getEventButton(), Mouse.getEventButtonState(), "mouseInput", Minecraft.getMinecraft().thePlayer.getDisplayName()));
-		}
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        Iterable<ItemStack> armor = player.getArmorInventoryList();
+        for (ItemStack armorPiece : armor) {
+            if (armorPiece.getItem() instanceof ItemSmartHelmet &&
+                    NBTHelper.hasTag(armorPiece, "identifier")) {
+                PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(
+                        UUID.fromString(armorPiece.getTagCompound().getString("identifier")),
+                        Mouse.getEventButton(),
+                        Mouse.getEventButtonState(),
+                        "mouseInput",
+                        player.getDisplayNameString()));
+                break;
+            }
+        }
 	}
 
 	@SubscribeEvent
 	public void onKeyPressed(InputEvent.KeyInputEvent event) {
-		if (checkSmartHelmetStatus()) {
-			PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(UUID.fromString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getTagCompound().getString("identifier")), Keyboard.getEventKey(), Keyboard.getEventKeyState(), "keyInput", Minecraft.getMinecraft().thePlayer.getDisplayName()));
-		}
+        EntityPlayer player = Minecraft.getMinecraft().player;
+        Iterable<ItemStack> armor = player.getArmorInventoryList();
+        for (ItemStack armorPiece : armor) {
+            if (armorPiece.getItem() instanceof ItemSmartHelmet &&
+                    NBTHelper.hasTag(armorPiece, "identifier")) {
+                PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(
+                        UUID.fromString(armorPiece.getTagCompound().getString("identifier")),
+                        Keyboard.getEventKey(),
+                        Keyboard.getEventKeyState(),
+                        "keyInput", player.getDisplayNameString()));
+                break;
+            }
+        }
 	}
 
 	@SubscribeEvent
 	public void onButtonClick(GuiScreenEvent.ActionPerformedEvent.Post event) {
-		if (event.gui instanceof GuiHelmet)
-			if (checkSmartHelmetStatus())
-				PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(UUID.fromString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getTagCompound().getString("identifier")), event.button.id, true, "buttonClicked", Minecraft.getMinecraft().thePlayer.getDisplayName()));
-	}
-
-	private boolean checkSmartHelmetStatus() {
-		ItemStack helmet = Minecraft.getMinecraft().thePlayer.getCurrentArmor(3);
-		if (helmet != null)
-			if (helmet.getItem() instanceof ItemSmartHelmet)
-				if (NBTHelper.hasTag(helmet, "identifier"))
-					return true;
-		return false;
+		if (event.getGui() instanceof GuiHelmet) {
+            EntityPlayer player = Minecraft.getMinecraft().player;
+            Iterable<ItemStack> armor = player.getArmorInventoryList();
+            for (ItemStack armorPiece : armor) {
+                if (armorPiece.getItem() instanceof ItemSmartHelmet &&
+                        NBTHelper.hasTag(armorPiece, "identifier")) {
+                    PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(
+                            UUID.fromString(armorPiece.getTagCompound().getString("identifier")),
+                            event.getButton().id,
+                            true,
+                            "buttonClicked",
+                            player.getDisplayNameString()));
+                    break;
+                }
+            }
+        }
 	}
 }

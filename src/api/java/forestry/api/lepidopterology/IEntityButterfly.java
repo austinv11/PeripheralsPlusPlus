@@ -1,14 +1,15 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.lepidopterology;
 
-import net.minecraft.entity.EntityCreature;
-import net.minecraft.entity.passive.IAnimals;
+import javax.annotation.Nullable;
 
 import forestry.api.genetics.IIndividual;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.passive.IAnimals;
 
 public interface IEntityButterfly extends IAnimals {
 
@@ -23,7 +24,12 @@ public interface IEntityButterfly extends IAnimals {
 	 */
 	EntityCreature getEntity();
 
+	@Nullable
 	IIndividual getPollen();
 
-	void setPollen(IIndividual pollen);
+	void setPollen(@Nullable IIndividual pollen);
+
+	boolean canMateWith(IEntityButterfly butterfly);
+
+	boolean canMate();
 }

@@ -1,0 +1,64 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "uvlock": true
+  },
+  "variants": {
+    "tier=0": [{
+      "y": 0,
+      "model": "peripheralsplusplus:teleporter_tier_one"
+    }],
+    "tier=1": [{
+      "y": 0,
+      "model": "peripheralsplusplus:teleporter_tier_two"
+    }],
+    "facing=north,tier=0": [{
+      "y": 0,
+      "model": "peripheralsplusplus:teleporter_tier_one"
+    }],
+    "facing=east,tier=0": [{
+      "y": 90,
+      "model": "peripheralsplusplus:teleporter_tier_one"
+    }],
+    "facing=south,tier=0": [{
+      "y": 180,
+      "model": "peripheralsplusplus:teleporter_tier_one"
+    }],
+    "facing=west,tier=0": [{
+      "y": 270,
+      "model": "peripheralsplusplus:teleporter_tier_one"
+    }],
+    "facing=up,tier=0": [{
+      "x": 270,
+      "model": "peripheralsplusplus:teleporter_tier_one"
+    }],
+    "facing=down,tier=0": [{
+      "x": 90,
+      "model": "peripheralsplusplus:teleporter_tier_one"
+    }],
+    "facing=north,tier=1": [{
+      "y": 0,
+      "model": "peripheralsplusplus:teleporter_tier_two"
+    }],
+    "facing=east,tier=1": [{
+      "y": 90,
+      "model": "peripheralsplusplus:teleporter_tier_two"
+    }],
+    "facing=south,tier=1": [{
+      "y": 180,
+      "model": "peripheralsplusplus:teleporter_tier_two"
+    }],
+    "facing=west,tier=1": [{
+      "y": 270,
+      "model": "peripheralsplusplus:teleporter_tier_two"
+    }],
+    "facing=up,tier=1": [{
+      "x": 270,
+      "model": "peripheralsplusplus:teleporter_tier_two"
+    }],
+    "facing=down,tier=1": [{
+      "x": 90,
+      "model": "peripheralsplusplus:teleporter_tier_two"
+    }]
+  }
+}

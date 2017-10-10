@@ -1,19 +1,24 @@
 package com.austinv11.peripheralsplusplus.client.models;
 
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import org.lwjgl.opengl.GL11;
 
 @SideOnly(Side.CLIENT)
 public class RenderNanoSwarm extends Render {
 	
 	protected ModelNanoBotSwarm model = new ModelNanoBotSwarm();
-	
-	@Override
+
+    public RenderNanoSwarm(RenderManager renderManager) {
+        super(renderManager);
+    }
+
+    @Override
 	public void doRender(Entity entity, double x, double y, double z, float yaw, float pitch) {
 		GL11.glPushMatrix();
 		this.bindEntityTexture(entity);
@@ -25,6 +30,6 @@ public class RenderNanoSwarm extends Render {
 	
 	@Override
 	protected ResourceLocation getEntityTexture(Entity entity) {
-		return new ResourceLocation(Reference.MOD_ID.toLowerCase()+":textures/models/nanoBotSwarm.png");
+		return new ResourceLocation(Reference.MOD_ID.toLowerCase()+":textures/models/nano_bot_swarm.png");
 	}
 }

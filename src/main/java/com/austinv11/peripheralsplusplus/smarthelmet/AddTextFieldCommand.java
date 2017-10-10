@@ -1,12 +1,12 @@
 package com.austinv11.peripheralsplusplus.smarthelmet;
 
 import com.austinv11.peripheralsplusplus.client.gui.GuiHelmet;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 //Gui only
 public class AddTextFieldCommand extends HelmetCommand {
@@ -19,9 +19,11 @@ public class AddTextFieldCommand extends HelmetCommand {
 	public void call(Gui gui) {
 		GuiHelmet screen = (GuiHelmet)gui;
 		if (message.equals("@NULL@")) {
-			screen.addTextField(id, new GuiTextField(Minecraft.getMinecraft().fontRenderer, x, y, width, height));
+			screen.addTextField(id, new GuiTextField(((GuiHelmet) gui).textFields.size(),
+                    Minecraft.getMinecraft().fontRenderer, x, y, width, height));
 		} else {
-			GuiTextField field = new GuiTextField(Minecraft.getMinecraft().fontRenderer, x, y, width, height);
+			GuiTextField field = new GuiTextField(((GuiHelmet) gui).textFields.size(),
+                    Minecraft.getMinecraft().fontRenderer, x, y, width, height);
 			field.setText(message);
 			screen.addTextField(id, field);
 		}

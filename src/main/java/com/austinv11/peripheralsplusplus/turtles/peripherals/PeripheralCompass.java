@@ -1,13 +1,11 @@
 package com.austinv11.peripheralsplusplus.turtles.peripherals;
 
-import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class PeripheralCompass extends MountedPeripheral {
 
@@ -32,7 +30,7 @@ public class PeripheralCompass extends MountedPeripheral {
 		if (method == 0) {
 			if (!Config.enableNavigationTurtle)
 				throw new LuaException("The compass upgrade has been disabled");
-			return new Object[]{ForgeDirection.getOrientation(turtle.getDirection()).name().toLowerCase()};
+			return new Object[]{turtle.getDirection().getName(), turtle.getDirection().ordinal()};
 		}
 		return new Object[0];
 	}

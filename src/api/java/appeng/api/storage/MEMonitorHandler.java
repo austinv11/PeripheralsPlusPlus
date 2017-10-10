@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2013 AlgorithmX2
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -23,136 +23,140 @@
 
 package appeng.api.storage;
 
-import appeng.api.config.AccessRestriction;
-import appeng.api.config.Actionable;
-import appeng.api.networking.security.BaseActionSource;
-import appeng.api.storage.data.IAEStack;
-import appeng.api.storage.data.IItemList;
-import com.google.common.collect.ImmutableList;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import com.google.common.collect.ImmutableList;
+
+import appeng.api.config.AccessRestriction;
+import appeng.api.config.Actionable;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.storage.data.IAEStack;
+import appeng.api.storage.data.IItemList;
+
+
 /**
  * Common implementation of a simple class that monitors injection/extraction of a inventory to send events to a list of
  * listeners.
- * 
- * @param <StackType>
+ *
+ * @param <T>
+ * @deprecated
+ *
+ * TODO: Needs to be redesigned to solve performance issues. Also should not be part of the API as class.
  */
-public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<StackType>
+@Deprecated
+public class MEMonitorHandler<T extends IAEStack<T>> implements IMEMonitor<T>
 {
 
-	private final IMEInventoryHandler<StackType> internalHandler;
-	private final IItemList<StackType> cachedList;
-	private final HashMap<IMEMonitorHandlerReceiver<StackType>, Object> listeners = new HashMap<IMEMonitorHandlerReceiver<StackType>, Object>();
+	private final IMEInventoryHandler<T> internalHandler;
+	private final IItemList<T> cachedList;
+	private final HashMap<IMEMonitorHandlerReceiver<T>, Object> listeners = new HashMap<>();
 
 	protected boolean hasChanged = true;
 
-	protected IMEInventoryHandler<StackType> getHandler()
+	public MEMonitorHandler( final IMEInventoryHandler<T> t )
 	{
-		return this.internalHandler;
-	}
-
-	protected Iterator<Entry<IMEMonitorHandlerReceiver<StackType>, Object>> getListeners()
-	{
-		return this.listeners.entrySet().iterator();
-	}
-
-	protected void postChangesToListeners( Iterable<StackType> changes, BaseActionSource src)
-	{
-		this.notifyListenersOfChange( changes, src );
-	}
-	
-	protected void notifyListenersOfChange(Iterable<StackType> diff, BaseActionSource src)
-	{
-		this.hasChanged = true;// need to update the cache.
-		Iterator<Entry<IMEMonitorHandlerReceiver<StackType>, Object>> i = this.getListeners();
-		while (i.hasNext())
-		{
-			Entry<IMEMonitorHandlerReceiver<StackType>, Object> o = i.next();
-			IMEMonitorHandlerReceiver<StackType> receiver = o.getKey();
-			if ( receiver.isValid( o.getValue() ) )
-				receiver.postChange( this, diff, src );
-			else
-				i.remove();
-		}
-	}
-
-	private StackType monitorDifference(IAEStack original, StackType leftOvers, boolean extraction, BaseActionSource src)
-	{
-		StackType diff = (StackType) original.copy();
-
-		if ( extraction )
-			diff.setStackSize( leftOvers == null ? 0 : -leftOvers.getStackSize() );
-		else if ( leftOvers != null )
-			diff.decStackSize( leftOvers.getStackSize() );
-
-		if ( diff.getStackSize() != 0 )
-			this.postChangesToListeners( ImmutableList.of( diff ), src );
-
-		return leftOvers;
-	}
-
-	public MEMonitorHandler(IMEInventoryHandler<StackType> t) {
 		this.internalHandler = t;
-		this.cachedList = (IItemList<StackType>) t.getChannel().createList();
+		this.cachedList = t.getChannel().createList();
 	}
 
-	public MEMonitorHandler(IMEInventoryHandler<StackType> t, StorageChannel chan) {
+	public MEMonitorHandler( final IMEInventoryHandler<T> t, final IStorageChannel<T> chan )
+	{
 		this.internalHandler = t;
-		this.cachedList = (IItemList<StackType>) chan.createList();
+		this.cachedList = chan.createList();
 	}
 
 	@Override
-	public void addListener(IMEMonitorHandlerReceiver<StackType> l, Object verificationToken)
+	public void addListener( final IMEMonitorHandlerReceiver<T> l, final Object verificationToken )
 	{
 		this.listeners.put( l, verificationToken );
 	}
 
 	@Override
-	public void removeListener(IMEMonitorHandlerReceiver<StackType> l)
+	public void removeListener( final IMEMonitorHandlerReceiver<T> l )
 	{
 		this.listeners.remove( l );
 	}
 
 	@Override
-	public StackType injectItems(StackType input, Actionable mode, BaseActionSource src)
+	public T injectItems( final T input, final Actionable mode, final IActionSource src )
 	{
-		if ( mode == Actionable.SIMULATE )
-			return this.getHandler().injectItems( input, mode, src );
-		return this.monitorDifference(input.copy(), this.getHandler().injectItems(input, mode, src), false, src);
-	}
-
-	@Override
-	public StackType extractItems(StackType request, Actionable mode, BaseActionSource src)
-	{
-		if ( mode == Actionable.SIMULATE )
-			return this.getHandler().extractItems( request, mode, src );
-		return this.monitorDifference(request.copy(), this.getHandler().extractItems(request, mode, src), true, src);
-	}
-
-	@Override
-	public IItemList<StackType> getStorageList()
-	{
-		if ( this.hasChanged )
+		if( mode == Actionable.SIMULATE )
 		{
-			this.hasChanged = false;
-			this.cachedList.resetStatus();
-			return this.getAvailableItems( this.cachedList );
+			return this.getHandler().injectItems( input, mode, src );
+		}
+		return this.monitorDifference( input.copy(), this.getHandler().injectItems( input, mode, src ), false, src );
+	}
+
+	protected IMEInventoryHandler<T> getHandler()
+	{
+		return this.internalHandler;
+	}
+
+	private T monitorDifference( final T original, final T leftOvers, final boolean extraction, final IActionSource src )
+	{
+		final T diff = original.copy();
+
+		if( extraction )
+		{
+			diff.setStackSize( leftOvers == null ? 0 : -leftOvers.getStackSize() );
+		}
+		else if( leftOvers != null )
+		{
+			diff.decStackSize( leftOvers.getStackSize() );
 		}
 
-		return this.cachedList;
+		if( diff.getStackSize() != 0 )
+		{
+			this.postChangesToListeners( ImmutableList.of( diff ), src );
+		}
+
+		return leftOvers;
 	}
 
-	@Override
-	public IItemList<StackType> getAvailableItems(IItemList out)
+	protected void postChangesToListeners( final Iterable<T> changes, final IActionSource src )
 	{
-		return this.getHandler().getAvailableItems( out );
+		this.notifyListenersOfChange( changes, src );
+	}
+
+	protected void notifyListenersOfChange( final Iterable<T> diff, final IActionSource src )
+	{
+		this.hasChanged = true;// need to update the cache.
+		final Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> i = this.getListeners();
+		while( i.hasNext() )
+		{
+			final Entry<IMEMonitorHandlerReceiver<T>, Object> o = i.next();
+			final IMEMonitorHandlerReceiver<T> receiver = o.getKey();
+			if( receiver.isValid( o.getValue() ) )
+			{
+				receiver.postChange( this, diff, src );
+			}
+			else
+			{
+				i.remove();
+			}
+		}
+	}
+
+	protected Iterator<Entry<IMEMonitorHandlerReceiver<T>, Object>> getListeners()
+	{
+		return this.listeners.entrySet().iterator();
 	}
 
 	@Override
-	public StorageChannel getChannel()
+	public T extractItems( final T request, final Actionable mode, final IActionSource src )
+	{
+		if( mode == Actionable.SIMULATE )
+		{
+			return this.getHandler().extractItems( request, mode, src );
+		}
+		return this.monitorDifference( request.copy(), this.getHandler().extractItems( request, mode, src ), true, src );
+	}
+
+	@Override
+	public IStorageChannel<T> getChannel()
 	{
 		return this.getHandler().getChannel();
 	}
@@ -164,15 +168,34 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	}
 
 	@Override
-	public boolean isPrioritized(StackType input)
+	public IItemList<T> getStorageList()
+	{
+		if( this.hasChanged )
+		{
+			this.hasChanged = false;
+			this.cachedList.resetStatus();
+			return this.getAvailableItems( this.cachedList );
+		}
+
+		return this.cachedList;
+	}
+
+	@Override
+	public boolean isPrioritized( final T input )
 	{
 		return this.getHandler().isPrioritized( input );
 	}
 
 	@Override
-	public boolean canAccept(StackType input)
+	public boolean canAccept( final T input )
 	{
 		return this.getHandler().canAccept( input );
+	}
+
+	@Override
+	public IItemList<T> getAvailableItems( final IItemList<T> out )
+	{
+		return this.getHandler().getAvailableItems( out );
 	}
 
 	@Override
@@ -188,7 +211,7 @@ public class MEMonitorHandler<StackType extends IAEStack> implements IMEMonitor<
 	}
 
 	@Override
-	public boolean validForPass(int i)
+	public boolean validForPass( final int i )
 	{
 		return this.getHandler().validForPass( i );
 	}

@@ -1,0 +1,18 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "textures": {
+      "all": "minecraft:blocks/iron_block"
+    },
+    "model": "minecraft:iron_block",
+    "uvlock": true
+  },
+  "variants": {
+    "facing=north": [{}],
+    "facing=east": [{}],
+    "facing=south": [{}],
+    "facing=west": [{}],
+    "facing=up": [{}],
+    "facing=down": [{}]
+  }
+}

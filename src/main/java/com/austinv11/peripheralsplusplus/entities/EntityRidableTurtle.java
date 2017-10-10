@@ -1,251 +1,228 @@
 package com.austinv11.peripheralsplusplus.entities;
 
+import com.austinv11.collectiveframework.language.translation.TranslationException;
+import com.austinv11.collectiveframework.minecraft.utils.MinecraftTranslator;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.network.RidableTurtlePacket;
 import com.austinv11.peripheralsplusplus.reference.Config;
-import com.austinv11.peripheralsplusplus.turtles.TurtleRidable;
 import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
+import dan200.computercraft.api.lua.ILuaContext;
+import dan200.computercraft.api.lua.LuaException;
+import dan200.computercraft.api.peripheral.IComputerAccess;
+import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleAnimation;
-import dan200.computercraft.api.turtle.TurtleSide;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ChunkCoordinates;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
 import org.lwjgl.input.Keyboard;
 
-public class EntityRidableTurtle extends Entity {
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-	private ITurtleAccess turtle = null;
-	private int queuedActionCode = -1;
-	private int tick = 0;
-	private boolean canPerformAction = true;
-	private int[] turtleLastPos;
+public class EntityRidableTurtle extends MountedEntity {
+
+	private long lastUpdateTime = 0;
+	private ITurtleAccess turtle;
 
 	public EntityRidableTurtle(World world) {
 		super(world);
-		this.setSize(1, 1);
+		setSize(1, 1);
 	}
 
 	@Override
 	protected void entityInit() {}
 
 	@Override
-	protected void readEntityFromNBT(NBTTagCompound nbtTagCompound) {
-		turtleLastPos = nbtTagCompound.getIntArray("turtleLastPos");
-	}
+	protected void readEntityFromNBT(NBTTagCompound nbtTagCompound) {}
 
 	@Override
-	protected void writeEntityToNBT(NBTTagCompound nbtTagCompound) {
-		if (turtle != null)
-			nbtTagCompound.setIntArray("turtleLastPos", new int[]{turtle.getPosition().posX, turtle.getPosition().posY,
-				turtle.getPosition().posZ});
-	}
-
-	@Override
-	public void setPositionAndRotation2(double x, double y, double z, float pitch, float yaw, int par) {
-		this.setPosition(x, y, z);
-		this.setRotation(pitch, yaw);
-	}
+	protected void writeEntityToNBT(NBTTagCompound nbtTagCompound) {}
 
 	@Override
 	public boolean canBeCollidedWith() {
-		return this.worldObj.isRemote && (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) ||
+		return this.world.isRemote && (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) ||
 				playerIsHoldingRideEnablingItem());
 	}
 
 	private boolean playerIsHoldingRideEnablingItem() {
-		if (!this.worldObj.isRemote) {
+		if (!this.world.isRemote) {
 			return false;
 		}
-		ItemStack item = Minecraft.getMinecraft().thePlayer.getHeldItem();
-		return item != null && (item.isItemEqual(new ItemStack(Items.carrot_on_a_stick)) || item.isItemEqual(new ItemStack(Items.stick)));
+		ItemStack item = Minecraft.getMinecraft().player.getHeldItemMainhand();
+		return !item.isEmpty() && (item.isItemEqual(new ItemStack(Items.CARROT_ON_A_STICK)) ||
+				item.isItemEqual(new ItemStack(Items.STICK)));
 	}
 
 	@Override
-	public boolean interactFirst(EntityPlayer player) {
-		if (this.riddenByEntity != null && this.riddenByEntity instanceof EntityPlayer &&
-				this.riddenByEntity != player) {
-			return true;
-		} else if (this.riddenByEntity != null && this.riddenByEntity != player) {
+	public boolean processInitialInteract(EntityPlayer player, EnumHand hand) {
+		if (!hand.equals(EnumHand.MAIN_HAND))
 			return false;
-		} else {
-			if (!this.worldObj.isRemote) {
-				player.mountEntity(this);
-			}
+		if (this.isBeingRidden() && this.getControllingPassenger() instanceof EntityPlayer &&
+				this.getControllingPassenger() != player)
+			return true;
+		else if (this.isBeingRidden() && this.getControllingPassenger() != player)
+			return false;
+		else {
+			if (!this.world.isRemote)
+				player.startRiding(this);
 			return true;
 		}
 	}
 
 	@Override
 	public void onUpdate() {
-		checkRemove();
-		checkMovementQueue();
+		super.onUpdate();
+		if (!isTurtleInWorld()) {
+			world.removeEntity(this);
+			return;
+		}
 		checkPlayerMovementRequest();
-		checkLocation();
-		updateTick();
 	}
 
-	private void checkRemove() {
-		if (turtleLastPos != null) {
-			try {
-				TileEntity turtleTile = this.worldObj.getTileEntity(turtleLastPos[0], turtleLastPos[1], turtleLastPos[2]);
-				this.turtle = ReflectionHelper.getTurtle(turtleTile);
-			} catch (Exception ignored) {}
-			turtleLastPos = null;
+	public void update(ITurtleAccess turtle) {
+		setTurtle(turtle);
+		setWorld(turtle.getWorld());
+		moveToTurtlePosition();
+	}
+
+	/**
+	 * Checks if the turtle is in the world
+	 * @return false if the check fails
+	 */
+	private boolean isTurtleInWorld() {
+		if (world.isRemote)
+			return true;
+		if (turtle == null)
+			return false;
+		TileEntity tileEntity = world.getTileEntity(turtle.getPosition());
+		if (tileEntity == null)
+			return false;
+		try {
+			ITurtleAccess worldTurtle = ReflectionHelper.getTurtle(tileEntity);
+			if (worldTurtle == null)
+				return false;
+		} catch (Exception e) {
+			return false;
 		}
-		if (!this.worldObj.isRemote && ((turtle == null || !isTurleInWorld()) || !turtleHasUpgrade())) {
-			this.worldObj.removeEntity(this);
-		}
+		return true;
 	}
 
-    private boolean turtleHasUpgrade()
-    {
-        return this.turtle.getUpgrade(TurtleSide.Left) instanceof TurtleRidable || this.turtle.getUpgrade(TurtleSide.Right) instanceof TurtleRidable;
-    }
-
-	private boolean isTurleInWorld() {
-		TileEntity turtleTile = this.worldObj.getTileEntity(turtle.getPosition().posX, turtle.getPosition().posY, turtle.getPosition().posZ);
-		return turtleTile != null;
-	}
-
-	private void updateTick() {
-		if (canPerformAction) {
+	private void moveToTurtlePosition() {
+		if (world.isRemote || turtle == null)
 			return;
-		}
-		if (tick < 10) { // ~.5 second
-			tick++;
-		} else {
-			tick = 0;
-			canPerformAction = true;
-		}
+		Vec3d pos = new Vec3d(turtle.getPosition()).addVector(0.5, 0, 0.5);
+		posX = pos.x;
+		posY = pos.y;
+		posZ = pos.z;
+		prevPosX = posX;
+		prevPosY = posY;
+		prevPosZ = posZ;
 	}
 
-	private void checkLocation() {
-		if (this.worldObj.isRemote || turtle == null || turtle.getPosition().equals(new ChunkCoordinates(
-				(int)Math.floor(this.posX), (int)Math.floor(this.posY), (int)Math.floor(this.posZ)))) {
-			return;
-		}
-		this.setPosition(turtle.getPosition().posX + 0.5, turtle.getPosition().posY, turtle.getPosition().posZ + 0.5);
-	}
-
-	private void checkMovementQueue() {
-		if ((!canPerformAction) || this.worldObj.isRemote || queuedActionCode < 0
-				|| queuedActionCode > RidableTurtlePacket.MovementCode.values().length - 1 || turtle == null) {
-			return;
-		}
-		RidableTurtlePacket.MovementCode which = RidableTurtlePacket.MovementCode.values()[queuedActionCode];
-		switch (which) {
+	public boolean tryMove(MovementCode action) {
+		boolean canPerformAction = System.currentTimeMillis() - lastUpdateTime > 500;
+		if ((!canPerformAction) || this.world.isRemote || turtle == null)
+			return false;
+		switch (action) {
 			case FORWARD:
-				moveTurtle(0);
+			case DESCEND:
+			case ASCEND:
+				moveTurtle(action, turtle);
 				break;
 			case TURN_LEFT:
-				turnTurtle("left");
+			case TURN_RIGHT:
+				turnTurtle(action, turtle);
+				break;
+		}
+		lastUpdateTime = System.currentTimeMillis();
+		return true;
+	}
+
+	private void turnTurtle(MovementCode turnTo, ITurtleAccess turtle) {
+		switch (turnTo) {
+			case TURN_LEFT:
+				turtle.setDirection(turtle.getDirection().rotateYCCW());
+				turtle.playAnimation(TurtleAnimation.TurnLeft);
 				break;
 			case TURN_RIGHT:
-				turnTurtle("right");
+				turtle.setDirection(turtle.getDirection().rotateY());
+				turtle.playAnimation(TurtleAnimation.TurnRight);
 				break;
-			case DESCEND:
-				moveTurtle(1);
-				break;
-			case ASCEND:
-				moveTurtle(2);
-				break;
-		}
-		queuedActionCode = -1;
-		canPerformAction = false;
-	}
-
-	private void turnTurtle(String turnTo) {
-		int[] directions = {2, 5, 3, 4};
-		int index = 0;
-		for (int i = 0; i < directions.length; i++) {
-			if (directions[i] == turtle.getDirection()) {
-				index = i;
-				break;
-			}
-		}
-		if (turnTo.equalsIgnoreCase("left")) {
-			index--;
-		} else {
-			index++;
-		}
-		if (index < 0) {
-			index = directions.length - 1;
-		}
-		if (index >= directions.length) {
-			index = 0;
-		}
-		turtle.setDirection(directions[index]);
-		if (turnTo.equalsIgnoreCase("left")) {
-			turtle.playAnimation(TurtleAnimation.TurnLeft);
-		} else {
-			turtle.playAnimation(TurtleAnimation.TurnRight);
 		}
 	}
 
-	private void moveTurtle(int direction) {
-		int x = turtle.getPosition().posX;
-		int y = turtle.getPosition().posY;
-		int z = turtle.getPosition().posZ;
+	private void moveTurtle(MovementCode direction, ITurtleAccess turtle) {
+		int x = turtle.getPosition().getX();
+		int y = turtle.getPosition().getY();
+		int z = turtle.getPosition().getZ();
 		TurtleAnimation animation = TurtleAnimation.None;
 		switch (direction) {
-			case 0: // Forward
+			case FORWARD:
 				switch (turtle.getDirection()) {
-					case 2: // North
+					case NORTH:
 						z--;
 						break;
-					case 5: // East
+					case EAST:
 						x++;
 						break;
-					case 3: // South
+					case SOUTH:
 						z++;
 						break;
-					case 4: // West
+					case WEST:
 						x--;
 						break;
 				}
 				animation = TurtleAnimation.MoveForward;
 				break;
-			case 1: // Descend
+			case DESCEND:
 				y--;
 				animation = TurtleAnimation.MoveDown;
 				break;
-			case 2: // Ascend
+			case ASCEND:
 				y++;
 				animation = TurtleAnimation.MoveUp;
 				break;
 		}
-		if (this.worldObj.isAirBlock(x, y, z) && (turtle.getFuelLevel() >= Config.fuelPerTurtleMovement || !turtle.isFuelNeeded())) {
+		if (this.world.isAirBlock(new BlockPos(x, y, z)) &&
+				(turtle.getFuelLevel() >= Config.fuelPerTurtleMovement || !turtle.isFuelNeeded())) {
+			turtle.teleportTo(turtle.getWorld(), new BlockPos(x, y, z));
 			turtle.playAnimation(animation);
-			turtle.teleportTo(turtle.getWorld(), x, y, z);
 			turtle.consumeFuel(Config.fuelPerTurtleMovement);
 		}
 	}
 
 	private void checkPlayerMovementRequest() {
-		if (this.worldObj.isRemote && this.riddenByEntity != null &&
-				this.riddenByEntity == Minecraft.getMinecraft().thePlayer) {
+		if (this.world.isRemote && this.getControllingPassenger() != null &&
+				this.getControllingPassenger() == Minecraft.getMinecraft().player) {
 			if (Keyboard.isKeyDown(Keyboard.KEY_W)) { // TODO Forge keybinds
-				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(this.getEntityId(),
-						RidableTurtlePacket.MovementCode.FORWARD.code, this.dimension));
+				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(getPersistentID(),
+					MovementCode.FORWARD, dimension));
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_D)) {
-				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(this.getEntityId(),
-						RidableTurtlePacket.MovementCode.TURN_RIGHT.code, this.dimension));
+				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(getPersistentID(),
+						MovementCode.TURN_RIGHT, this.dimension));
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_A)) {
-				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(this.getEntityId(),
-						RidableTurtlePacket.MovementCode.TURN_LEFT.code, this.dimension));
+				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(getPersistentID(),
+						MovementCode.TURN_LEFT, this.dimension));
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_S)) {
-				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(this.getEntityId(),
-						RidableTurtlePacket.MovementCode.DESCEND.code, this.dimension));
+				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(getPersistentID(),
+						MovementCode.DESCEND, this.dimension));
 			} else if (Keyboard.isKeyDown(Keyboard.KEY_X)) {
-				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(this.getEntityId(),
-						RidableTurtlePacket.MovementCode.ASCEND.code, this.dimension));
+				PeripheralsPlusPlus.NETWORK.sendToServer(new RidableTurtlePacket(getPersistentID(),
+						MovementCode.ASCEND, this.dimension));
 			}
 		}
 	}
@@ -254,15 +231,162 @@ public class EntityRidableTurtle extends Entity {
 		this.turtle = turtle;
 	}
 
-	public void queueAction(int movementCode) {
-		if (canPerformAction) {
-			this.queuedActionCode = movementCode;
-		}
+	@Nullable
+	@Override
+	public Entity getControllingPassenger() {
+		return getPassengers().size() > 0 ? getPassengers().get(0) : null;
 	}
 
-	public boolean canMoveUp() {
-		return (this.worldObj.isAirBlock(turtle.getPosition().posX, turtle.getPosition().posY + 1,
-				turtle.getPosition().posZ) && (turtle.getFuelLevel() >= Config.fuelPerTurtleMovement
-				|| !turtle.isFuelNeeded()));
+	@Override
+	public boolean canRiderInteract() {
+		return true;
+	}
+
+	@Override
+	public void onEntityUpdate() {
+		super.onEntityUpdate();
+	}
+
+	@Override
+	public void onKillCommand() {
+		// Ignore
+	}
+
+	@Override
+	public boolean startRiding(Entity entityIn, boolean force) {
+		return false;
+	}
+
+	@Override
+	protected void doBlockCollisions() {
+		// Ignore
+	}
+
+	@Override
+	public void applyEntityCollision(Entity entityIn) {
+		// Ignore
+	}
+
+	@Override
+	public String getType() {
+		return "ridable";
+	}
+
+	@Override
+	public String[] getMethodNames() {
+		return new String[] {
+				/*
+				getEntity()
+				Returns an object with details of the current entity riding the turtle
+					[name string, type name, UUID]
+				 */
+				"getEntity",
+				/*
+				mountNearbyEntity()/mountNearestEntity()/mount()
+				Mounts the nearest entity found on top of the turtle
+				Returns false if no entity could be mounted
+				 */
+				"mountNearbyEntity", "mountNearestEntity", "mount",
+				/*
+				Unmounts the current entity riding the turtle
+				 */
+				"unmount",
+				/*
+				Moves the turtle up, ignoring the ridable turtle entity
+				 */
+				"up"
+		};
+	}
+
+	@Override
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+		if (!Config.enableRidableTurtle)
+			throw new LuaException("Ridable turtles have been disabled.");
+		switch (method) {
+			case 0:
+				return getEntityRidingTurtle();
+			case 1:
+			case 2:
+			case 3:
+				return mountNearbyEntity();
+			case 4:
+				return unmountCurrentEntity();
+			case 5:
+				return moveTurtleUp();
+		}
+		return new Object[0];
+	}
+
+	private Object[] moveTurtleUp() {
+		String failMessage = "";
+		try {
+			if (!turtle.getWorld().isAirBlock(turtle.getPosition().up()))
+				failMessage = MinecraftTranslator.translateToLocal(
+						"peripheralsplusplus.message.upgrade.ridable_blocked");
+			if (turtle.getFuelLevel() < Config.fuelPerTurtleMovement && turtle.isFuelNeeded())
+				failMessage = MinecraftTranslator.translateToLocal(
+						"peripheralsplusplus.message.upgrade.ridable_no_fuel");
+		}
+		catch (TranslationException | IOException e) {
+			failMessage = "Unknown error: " + e.getMessage();
+		}
+		if (failMessage.isEmpty())
+			return new Object[]{tryMove(MovementCode.ASCEND)};
+		else
+			return new Object[]{false, failMessage};
+	}
+
+	private Object[] unmountCurrentEntity() {
+		Entity passenger = getControllingPassenger();
+		if (passenger != null)
+			passenger.dismountRidingEntity();
+		return new Object[]{true};
+	}
+
+	private Object[] mountNearbyEntity() {
+		List entities = getNearbyEntities(turtle, 1, 2, Entity.class);
+		Entity entity = null;
+		for (Object ent : entities) {
+			if (((Entity)ent).isEntityAlive() && !(ent instanceof EntityRidableTurtle)) {
+				entity = (Entity) ent;
+				break;
+			}
+		}
+		if (entity == null || getControllingPassenger() != null)
+			return new Object[]{false};
+		return new Object[]{entity.startRiding(this, true)};
+	}
+
+	public static List getNearbyEntities(ITurtleAccess turtle, int radiusStart, int radiusEnd, Class entityType) {
+		World world = turtle.getWorld();
+		AxisAlignedBB bb = new AxisAlignedBB(
+				turtle.getPosition().getX() - radiusStart, turtle.getPosition().getY() - radiusStart,
+				turtle.getPosition().getZ() - radiusStart, turtle.getPosition().getX() + radiusEnd,
+				turtle.getPosition().getY() + radiusEnd, turtle.getPosition().getZ() + radiusEnd);
+		return world.getEntitiesWithinAABB(entityType, bb);
+	}
+
+	private Object[] getEntityRidingTurtle() {
+		Entity ridingEntity = getControllingPassenger();
+		Map<String, Object> map = new HashMap<>();
+		if (ridingEntity != null) {
+			map.put("name", ridingEntity instanceof EntityPlayer ?
+					((EntityPlayer) ridingEntity).getDisplayNameString() :
+					EntityList.getEntityString(ridingEntity));
+			map.put("type", ridingEntity.getClass().getSimpleName());
+			map.put("uuid", ridingEntity instanceof EntityPlayer ?
+					((EntityPlayer) ridingEntity).getGameProfile().getId().toString() :
+					ridingEntity.getUniqueID().toString());
+		}
+		return new Object[]{map};
+	}
+
+	@Override
+	public boolean equals(IPeripheral other) {
+		return other == this;
+	}
+
+	public enum MovementCode {
+		FORWARD, TURN_LEFT, TURN_RIGHT, ASCEND, DESCEND
 	}
 }

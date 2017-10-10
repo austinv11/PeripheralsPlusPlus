@@ -4,25 +4,26 @@ import com.austinv11.collectiveframework.minecraft.utils.Colors;
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.lua.LuaObjectPeripheralWrap;
+import com.austinv11.peripheralsplusplus.recipe.ContainedPeripheral;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraft.block.Block;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ITickable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TileEntityPeripheralContainer extends MountedNetworkedTileEntity {
-
-	private List<Block> blocksContained = new ArrayList<Block>();
-	private List<IPeripheral> peripheralsContained = new ArrayList<IPeripheral>();
+public class TileEntityPeripheralContainer extends MountedNetworkedTileEntity implements ITickable {
+	private List<ContainedPeripheral> peripheralsContained = new ArrayList<>();
 	public static String publicName = "peripheralContainer";
 	private  String name = "tileEntityPeripheralContainer";
 	private boolean needsUpdate = false;
@@ -38,27 +39,27 @@ public class TileEntityPeripheralContainer extends MountedNetworkedTileEntity {
 	@Override
 	public void readFromNBT(NBTTagCompound nbttagcompound) {
 		super.readFromNBT(nbttagcompound);
-		int[] ids = nbttagcompound.getIntArray("ids");
-		for (int id : ids)
-			addPeripheral(Block.getBlockById(id));
-		for (IPeripheral p : peripheralsContained) {
-			NBTTagCompound tag = nbttagcompound.getCompoundTag(p.getType());
-			((TileEntity) p).readFromNBT(tag);
+		if (nbttagcompound.hasKey("peripherals")) {
+			NBTBase peripheralsBase = nbttagcompound.getTag("peripherals");
+			if (!(peripheralsBase instanceof NBTTagList))
+				return;
+			NBTTagList peripherals = (NBTTagList) peripheralsBase;
+			for (NBTBase peripheralBase : peripherals) {
+				if (!(peripheralBase instanceof NBTTagCompound))
+					continue;
+				addPeripheral(new ContainedPeripheral((NBTTagCompound) peripheralBase));
+			}
 		}
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
-		int[] ids = new int[blocksContained.size()];
-		for (int i = 0; i < ids.length; i++)
-			ids[i] = Block.getIdFromBlock(blocksContained.get(i));
-		nbttagcompound.setIntArray("ids", ids);
-		for (IPeripheral p : peripheralsContained) {
-			NBTTagCompound tag = new NBTTagCompound();
-			((TileEntity) p).writeToNBT(tag);
-			nbttagcompound.setTag(p.getType(), tag);
-		}
+		NBTTagList peripherals = new NBTTagList();
+		for (ContainedPeripheral peripheral : peripheralsContained)
+			peripherals.appendTag(peripheral.toNbt());
+		nbttagcompound.setTag("peripherals", peripherals);
+		return nbttagcompound;
 	}
 
 	@Override
@@ -72,13 +73,14 @@ public class TileEntityPeripheralContainer extends MountedNetworkedTileEntity {
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
+			throws LuaException, InterruptedException {
 		if (!Config.enablePeripheralContainer)
 			throw new LuaException("Peripheral Containers have been disabled");
 		if (method == 0) {
 			HashMap<Integer, String> returnVals = new HashMap<Integer,String>();
 			for (int i = 0; i < peripheralsContained.size(); i++)
-				returnVals.put(i+1, peripheralsContained.get(i).getType());
+				returnVals.put(i+1, peripheralsContained.get(i).getPeripheral().getType());
 			return new Object[]{returnVals};
 		}else if (method == 1) {
 			if (arguments.length < 1)
@@ -96,78 +98,81 @@ public class TileEntityPeripheralContainer extends MountedNetworkedTileEntity {
 	}
 
 	@Override
-	public void updateEntity() {
-		for (IPeripheral te : peripheralsContained) {
-			((TileEntity) te).updateEntity();
+	public void update() {
+		for (ContainedPeripheral peripheral : peripheralsContained) {
+		    if (!(peripheral.getPeripheral() instanceof ITickable))
+		        continue;
+			((ITickable) peripheral.getPeripheral()).update();
 			if (needsUpdate) {
-				worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-				((TileEntity) te).setWorldObj(worldObj);
-				((TileEntity) te).xCoord = xCoord;
-				((TileEntity) te).yCoord = yCoord;
-				((TileEntity) te).zCoord = zCoord;
+			    world.markAndNotifyBlock(
+			            getPos(),
+                        world.getChunkFromBlockCoords(getPos()),
+                        world.getBlockState(getPos()),
+                        world.getBlockState(pos),
+                        2);
+			    if (!(peripheral.getPeripheral() instanceof TileEntity))
+			        continue;
+				((TileEntity) peripheral.getPeripheral()).setWorld(world);
+                ((TileEntity) peripheral.getPeripheral()).setPos(getPos());
 			}
 		}
 	}
 
-	public void addPeripheral(Block peripheral) {
-		blocksContained.add(peripheral);
-		TileEntity peripheral_ = peripheral.createTileEntity(worldObj, 0);
-		peripheralsContained.add((IPeripheral)peripheral_);
+	public void addPeripheral(ContainedPeripheral peripheral) {
+		if (peripheral.getPeripheral() == null)
+			return;
+		peripheralsContained.add(peripheral);
 		markDirty();
-		if (worldObj != null) {
-			worldObj.markBlockForUpdate(xCoord, yCoord, zCoord);
-			peripheral_.setWorldObj(worldObj);
-			peripheral_.xCoord = xCoord;
-			peripheral_.yCoord = yCoord;
-			peripheral_.zCoord = zCoord;
+		if (world != null) {
+            world.markAndNotifyBlock(
+                    getPos(),
+                    world.getChunkFromBlockCoords(getPos()),
+                    world.getBlockState(getPos()),
+                    world.getBlockState(pos),
+                    2);
+            if (peripheral.getPeripheral() instanceof TileEntity) {
+				((TileEntity) peripheral.getPeripheral()).setWorld(world);
+				((TileEntity) peripheral.getPeripheral()).setPos(getPos());
+			}
 		} else
 			needsUpdate = true;
 	}
 
-	public List<Block> getBlocksContained() {
-		return blocksContained;
-	}
-
-	private IPeripheral getPeripheralByName(String peripheral) {
-		for (IPeripheral p_ : peripheralsContained)
-			if (p_.getType().equals(peripheral))
-				return p_;
+	private IPeripheral getPeripheralByName(String name) {
+		for (ContainedPeripheral peripheral : peripheralsContained)
+			if (peripheral.getPeripheral().getType().equals(name))
+				return peripheral.getPeripheral();
 		return null;
 	}
 
 	@Override
 	public void attach(IComputerAccess computer) {
-		for (IPeripheral p : peripheralsContained)
-			p.attach(computer);
+		for (ContainedPeripheral peripheral : peripheralsContained)
+			peripheral.getPeripheral().attach(computer);
 		super.attach(computer);
 	}
 
 	@Override
 	public void detach(IComputerAccess computer) {
-		for (IPeripheral p : peripheralsContained)
-			p.detach(computer);
+		for (ContainedPeripheral peripheral : peripheralsContained)
+			peripheral.getPeripheral().detach(computer);
 		super.detach(computer);
 	}
 
 	@Override
 	public void invalidate() {
 		super.invalidate();
-		if (!worldObj.isRemote) {
-			ItemStack drop = new ItemStack(ModBlocks.peripheralContainer);
-			if (peripheralsContained.size() > 0) {
-				NBTTagCompound tag = new NBTTagCompound();
-				this.writeToNBT(tag);
-				drop.stackTagCompound = tag;
-				List<String> text = new ArrayList<String>();
-				text.add(Colors.RESET.toString()+Colors.UNDERLINE+"Contained Peripherals:");
-				for (int id : NBTHelper.getIntArray(drop, "ids")) {
-					Block peripheral = Block.getBlockById(id);
-					IPeripheral iPeripheral = (IPeripheral) peripheral.createTileEntity(null, 0);
-					text.add(Colors.RESET+iPeripheral.getType());
-				}
-				NBTHelper.setInfo(drop, text);
-			}
-			worldObj.spawnEntityInWorld(new EntityItem(worldObj, xCoord, yCoord+1, zCoord, drop.copy()));
-		}
+		if (world.isRemote)
+			return;
+		ItemStack container = new ItemStack(ModBlocks.PERIPHERAL_CONTAINER);
+		NBTTagCompound tag = new NBTTagCompound();
+		writeToNBT(tag);
+		container.setTagCompound(tag);
+		List<String> text = new ArrayList<>();
+		text.add(Colors.RESET.toString() + Colors.UNDERLINE + "Contained Peripherals:");
+		for (ContainedPeripheral peripheral : peripheralsContained)
+			text.add(Colors.RESET + peripheral.getBlockResourceLocation().toString());
+		NBTHelper.addInfo(container, text);
+		world.spawnEntity(new EntityItem(world, getPos().getX(), getPos().getY(), getPos().getZ(), container.copy()));
 	}
 }

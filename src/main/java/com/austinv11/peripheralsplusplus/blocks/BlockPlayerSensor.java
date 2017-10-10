@@ -1,17 +1,23 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
+import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityPlayerSensor;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockPlayerSensor extends BlockPPP implements ITileEntityProvider {
+public class BlockPlayerSensor extends BlockPppBase implements ITileEntityProvider {
 
 	public BlockPlayerSensor() {
 		super();
-		this.setBlockName("playerSensor");
+        this.setRegistryName(Reference.MOD_ID, "player_sensor");
+        this.setUnlocalizedName("player_sensor");
 	}
 
 	@Override
@@ -19,15 +25,11 @@ public class BlockPlayerSensor extends BlockPPP implements ITileEntityProvider {
 		return new TileEntityPlayerSensor();
 	}
 
-	@Override
-	public boolean hasTileEntity(int metadata) {
-		return true;
-	}
-
-	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int meta, float hitX, float hitY, float hitZ) {
-		if (Config.enablePlayerSensor)
-			((TileEntityPlayerSensor)world.getTileEntity(x,y,z)).blockActivated(player.getDisplayName());
-		return true;
-	}
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand,
+                                    EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (Config.enablePlayerSensor)
+            ((TileEntityPlayerSensor)world.getTileEntity(pos)).blockActivated(player.getDisplayNameString());
+        return true;
+    }
 }

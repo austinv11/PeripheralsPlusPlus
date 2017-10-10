@@ -1,20 +1,21 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.mail;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
+import forestry.api.core.INbtWritable;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
-import forestry.api.core.INBTTagable;
+public interface ILetter extends IInventory, INbtWritable {
 
-public interface ILetter extends IInventory, INBTTagable {
-
-	ItemStack[] getPostage();
+	NonNullList<ItemStack> getPostage();
 
 	void setProcessed(boolean flag);
 
@@ -28,9 +29,10 @@ public interface ILetter extends IInventory, INBTTagable {
 
 	boolean hasRecipient();
 
-	void setRecipient(IMailAddress address);
+	void setRecipient(@Nullable IMailAddress address);
 
-	IMailAddress[] getRecipients();
+	@Nullable
+	IMailAddress getRecipient();
 
 	String getRecipientString();
 
@@ -46,11 +48,11 @@ public interface ILetter extends IInventory, INBTTagable {
 
 	void invalidatePostage();
 
-	ItemStack[] getAttachments();
+	NonNullList<ItemStack> getAttachments();
 
 	void addAttachment(ItemStack itemstack);
 
-	void addAttachments(ItemStack[] itemstacks);
+	void addAttachments(NonNullList<ItemStack> itemstacks);
 
 	int countAttachments();
 

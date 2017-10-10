@@ -8,21 +8,21 @@ import com.austinv11.peripheralsplusplus.network.TextFieldInputEventPacket;
 import com.austinv11.peripheralsplusplus.smarthelmet.AddButtonCommand;
 import com.austinv11.peripheralsplusplus.smarthelmet.AddTextFieldCommand;
 import com.austinv11.peripheralsplusplus.smarthelmet.HelmetCommand;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.UUID;
 
-@SideOnly(Side.CLIENT)
 public class GuiHelmet extends GuiScreen {
 
 	public static HashMap<UUID,ArrayDeque<HelmetCommand>> renderStack = new HashMap<UUID,ArrayDeque<HelmetCommand>>();
@@ -31,18 +31,23 @@ public class GuiHelmet extends GuiScreen {
 	@Override
 	public void drawScreen(int mouseX, int mouseY, float renderPartialTicks) {
 		GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
-		if (Minecraft.getMinecraft().thePlayer.getCurrentArmor(3) != null && Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getItem() instanceof ItemSmartHelmet)
-			if (NBTHelper.hasTag(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3), "identifier")) {
-				UUID uuid = UUID.fromString(NBTHelper.getString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3), "identifier"));
+		EntityPlayer player = Minecraft.getMinecraft().player;
+		Iterable<ItemStack> armor = player.getArmorInventoryList();
+		for (ItemStack itemStack : armor) {
+			if (itemStack.getItem() instanceof ItemSmartHelmet &&
+					NBTHelper.hasTag(itemStack, "identifier")) {
+				UUID uuid = UUID.fromString(NBTHelper.getString(itemStack, "identifier"));
 				if (renderStack.containsKey(uuid)) {
-					ArrayDeque<HelmetCommand> commands = new ArrayDeque<HelmetCommand>(renderStack.get(uuid));
+					ArrayDeque<HelmetCommand> commands = new ArrayDeque<>(renderStack.get(uuid));
 					while (!commands.isEmpty()) {
 						HelmetCommand command = commands.poll();
-						if (!(command instanceof AddTextFieldCommand) && !(command instanceof AddButtonCommand))
+						if (!(command instanceof AddTextFieldCommand) &&
+								!(command instanceof AddButtonCommand))
 							command.call(this);
 					}
 				}
 			}
+		}
 		super.drawScreen(mouseX, mouseY, renderPartialTicks);
 		for (GuiTextField text : textFields.values())
 			text.drawTextBox();
@@ -53,11 +58,14 @@ public class GuiHelmet extends GuiScreen {
 		super.initGui();
 		textFields.clear();
 		buttonList.clear();
-		if (Minecraft.getMinecraft().thePlayer.getCurrentArmor(3) != null && Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getItem() instanceof ItemSmartHelmet)
-			if (NBTHelper.hasTag(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3), "identifier")) {
-				UUID uuid = UUID.fromString(NBTHelper.getString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3), "identifier"));
+		EntityPlayer player = Minecraft.getMinecraft().player;
+		Iterable<ItemStack> armor = player.getArmorInventoryList();
+		for (ItemStack itemStack : armor) {
+			if (itemStack.getItem() instanceof ItemSmartHelmet &&
+					NBTHelper.hasTag(itemStack, "identifier")) {
+				UUID uuid = UUID.fromString(NBTHelper.getString(itemStack, "identifier"));
 				if (renderStack.containsKey(uuid)) {
-					ArrayDeque<HelmetCommand> commands = new ArrayDeque<HelmetCommand>(renderStack.get(uuid));
+					ArrayDeque<HelmetCommand> commands = new ArrayDeque<>(renderStack.get(uuid));
 					while (!commands.isEmpty()) {
 						HelmetCommand command = commands.poll();
 						if (command instanceof AddTextFieldCommand || command instanceof AddButtonCommand)
@@ -65,6 +73,7 @@ public class GuiHelmet extends GuiScreen {
 					}
 				}
 			}
+		}
 	}
 
 	@Override
@@ -72,8 +81,10 @@ public class GuiHelmet extends GuiScreen {
 		return false;
 	}
 
-	public void addButton(GuiButton button) {
+	@Override
+	public GuiButton addButton(GuiButton button) {
 		buttonList.add(button);
+		return button;
 	}
 
 	public void addTextField(int id, GuiTextField field) {
@@ -81,11 +92,24 @@ public class GuiHelmet extends GuiScreen {
 	}
 
 	@Override
-	protected void mouseClicked(int x, int y, int mouseEvent) {
+	protected void mouseClicked(int x, int y, int mouseEvent) throws IOException {
 		super.mouseClicked(x, y, mouseEvent);
 		for (GuiTextField text : textFields.values())
 			text.mouseClicked(x, y, mouseEvent);
-		PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(UUID.fromString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getTagCompound().getString("identifier")), Mouse.getEventButton(), Mouse.getEventButtonState(), "mouseInput", Minecraft.getMinecraft().thePlayer.getDisplayName()));
+		EntityPlayer player = Minecraft.getMinecraft().player;
+		Iterable<ItemStack> armor = player.getArmorInventoryList();
+		for (ItemStack armorPiece : armor) {
+			if (armorPiece.getItem() instanceof ItemSmartHelmet &&
+					NBTHelper.hasTag(armorPiece, "identifier")) {
+				PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(
+						UUID.fromString(armorPiece.getTagCompound().getString("identifier")),
+						Mouse.getEventButton(),
+						Mouse.getEventButtonState(),
+						"mouseInput",
+						Minecraft.getMinecraft().player.getDisplayNameString()));
+				break;
+			}
+		}
 	}
 
 	@Override
@@ -96,11 +120,28 @@ public class GuiHelmet extends GuiScreen {
 	}
 
 	@Override
-	protected void keyTyped(char eventChar, int eventKey) {
+	protected void keyTyped(char eventChar, int eventKey) throws IOException {
 		super.keyTyped(eventChar, eventKey);
-		for (GuiTextField text : textFields.values())
-			if (text.textboxKeyTyped(eventChar, eventKey))
-				PeripheralsPlusPlus.NETWORK.sendToServer(new TextFieldInputEventPacket(UUID.fromString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getTagCompound().getString("identifier")), eventChar+"", text.getText(), "textboxEntry", Minecraft.getMinecraft().thePlayer.getDisplayName()));
-		PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(UUID.fromString(Minecraft.getMinecraft().thePlayer.getCurrentArmor(3).getTagCompound().getString("identifier")), Keyboard.getEventKey(), Keyboard.getEventKeyState(), "keyInput", Minecraft.getMinecraft().thePlayer.getDisplayName()));
+		EntityPlayer player = Minecraft.getMinecraft().player;
+		Iterable<ItemStack> armor = player.getArmorInventoryList();
+		for (ItemStack armorPiece : armor) {
+			if (armorPiece.getItem() instanceof ItemSmartHelmet &&
+					NBTHelper.hasTag(armorPiece, "identifier")) {
+				for (GuiTextField text : textFields.values())
+					if (text.textboxKeyTyped(eventChar, eventKey))
+						PeripheralsPlusPlus.NETWORK.sendToServer(new TextFieldInputEventPacket(
+								UUID.fromString(armorPiece.getTagCompound().getString("identifier")),
+								eventChar+"",
+								text.getText(),
+								"textboxEntry",
+								player.getDisplayNameString()));
+				PeripheralsPlusPlus.NETWORK.sendToServer(new InputEventPacket(
+						UUID.fromString(armorPiece.getTagCompound().getString("identifier")),
+						Keyboard.getEventKey(),
+						Keyboard.getEventKeyState(),
+						"keyInput",
+						player.getDisplayNameString()));
+			}
+		}
 	}
 }

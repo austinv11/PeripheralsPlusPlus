@@ -1,9 +1,9 @@
 package com.austinv11.peripheralsplusplus.items;
 
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
-import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
+import com.austinv11.peripheralsplusplus.capabilities.nano.CapabilityNanoBot;
+import com.austinv11.peripheralsplusplus.capabilities.nano.NanoBotHolder;
 import com.austinv11.peripheralsplusplus.entities.EntityNanoBotSwarm;
-import com.austinv11.peripheralsplusplus.entities.NanoProperties;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAntenna;
 import net.minecraft.block.BlockDispenser;
@@ -13,11 +13,12 @@ import net.minecraft.dispenser.IPosition;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.UUID;
 
 public class ItemNanoSwarm extends ItemPPP {
@@ -25,45 +26,52 @@ public class ItemNanoSwarm extends ItemPPP {
 	public ItemNanoSwarm() {
 		super();
 		this.setMaxStackSize(16);
-		this.setUnlocalizedName("nanoSwarm");
+		this.setRegistryName("nano_swarm");
+		this.setUnlocalizedName("nano_swarm");
 	}
 	
 	@Override
-	public ItemStack onItemRightClick(ItemStack stack, World world, EntityPlayer player) {
-		if (NBTHelper.hasTag(stack, "identifier")) {
+	public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
+		if (NBTHelper.hasTag(player.getHeldItem(hand), "identifier")) {
 			if (!world.isRemote) {
 				EntityNanoBotSwarm swarm = new EntityNanoBotSwarm(world, player);
-				swarm.antennaIdentifier = UUID.fromString(NBTHelper.getString(stack, "identifier"));
-				if (NBTHelper.hasTag(stack, "label"))
-					swarm.label = NBTHelper.getString(stack, "label");
-				world.spawnEntityInWorld(swarm);
+				swarm.antennaIdentifier = UUID.fromString(NBTHelper.getString(player.getHeldItem(hand),
+						"identifier"));
+				if (NBTHelper.hasTag(player.getHeldItem(hand), "label"))
+					swarm.label = NBTHelper.getString(player.getHeldItem(hand), "label");
+				swarm.setHeadingFromThrower(player, player.rotationPitch, player.rotationYaw,
+						0, 1.1f, 6);
+				world.spawnEntity(swarm);
 			}
-			stack.stackSize--;
+			player.getHeldItem(hand).setCount(player.getHeldItem(hand).getCount() - 1);
+			return new ActionResult<>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
 		}
-		return stack;
+		return new ActionResult<>(EnumActionResult.FAIL, player.getHeldItem(hand));
 	}
 	
 	public static void addSwarmForEntity(EntityNanoBotSwarm swarm, Entity hit) {
-		if (TileEntityAntenna.antenna_registry.containsKey(swarm.antennaIdentifier)) {
-			TileEntityAntenna antenna = TileEntityAntenna.antenna_registry.get(swarm.antennaIdentifier);
-			if (!antenna.associatedEntities.contains(hit)) {
-				antenna.associatedEntities.add(hit);
-			}
-			NanoProperties properties = (NanoProperties)hit.getExtendedProperties(NanoProperties.IDENTIFIER);
-			properties.numOfBots += Config.numberOfInstructions;
-			properties.antennaID = swarm.antennaIdentifier;
+		if (TileEntityAntenna.ANTENNA_REGISTRY.containsKey(swarm.antennaIdentifier)) {
+			TileEntityAntenna antenna = TileEntityAntenna.ANTENNA_REGISTRY.get(swarm.antennaIdentifier);
+			antenna.registerEntity(hit);
+			NanoBotHolder properties = hit.getCapability(CapabilityNanoBot.INSTANCE, null);
+			if (properties == null)
+				return;
+			properties.setBots(properties.getBots() + Config.numberOfInstructions);
+			properties.setAntenna(swarm.antennaIdentifier);
 		}
 	}
 	
 	public static boolean doInstruction(UUID identifier, Entity performer) {
 		if (!performer.isDead)
-			if (TileEntityAntenna.antenna_registry.containsKey(identifier)) {
-				TileEntityAntenna antenna = TileEntityAntenna.antenna_registry.get(identifier);
-				if (antenna.associatedEntities.contains(performer)) {
-					NanoProperties properties = (NanoProperties)performer.getExtendedProperties(NanoProperties.IDENTIFIER);
-					properties.numOfBots--;
-					if (properties.numOfBots == 0)
-						antenna.associatedEntities.remove(performer);
+			if (TileEntityAntenna.ANTENNA_REGISTRY.containsKey(identifier)) {
+				TileEntityAntenna antenna = TileEntityAntenna.ANTENNA_REGISTRY.get(identifier);
+				if (antenna.isEntityRegistered(performer)) {
+					NanoBotHolder properties = performer.getCapability(CapabilityNanoBot.INSTANCE, null);
+					if (properties == null)
+						return false;
+					properties.setBots(properties.getBots() - 1);
+					if (properties.getBots() <= 0)
+						antenna.removeEntity(performer);
 					return true;
 				}
 			}
@@ -71,35 +79,29 @@ public class ItemNanoSwarm extends ItemPPP {
 	}
 	
 	public static class BehaviorNanoSwarm extends BehaviorDefaultDispenseItem { //Copied mostly from BehaviorProjectileDispense
-		
+
+		@Override
 		public ItemStack dispenseStack(IBlockSource blockSource, ItemStack stack) {
 			if (NBTHelper.hasTag(stack, "identifier")) {
 				World world = blockSource.getWorld();
-				IPosition iposition = BlockDispenser.func_149939_a(blockSource);
-				EnumFacing enumfacing = BlockDispenser.func_149937_b(blockSource.getBlockMetadata());
+				IPosition iposition = BlockDispenser.getDispensePosition(blockSource);
+				EnumFacing enumfacing = blockSource.getBlockState().getValue(BlockDispenser.FACING);
 				EntityNanoBotSwarm iprojectile = new EntityNanoBotSwarm(world, iposition.getX(), iposition.getY(), iposition.getZ());
 				iprojectile.antennaIdentifier = UUID.fromString(NBTHelper.getString(stack, "identifier"));
 				if (NBTHelper.hasTag(stack, "label"))
 					iprojectile.label = NBTHelper.getString(stack, "label");
-				iprojectile.setThrowableHeading((double) enumfacing.getFrontOffsetX(), (double) ((float) enumfacing.getFrontOffsetY()+0.1F), (double) enumfacing.getFrontOffsetZ(), this.func_82500_b(), this.func_82498_a());
-				world.spawnEntityInWorld(iprojectile);
+				iprojectile.setThrowableHeading(
+						enumfacing.getFrontOffsetX(),
+						enumfacing.getFrontOffsetY() + 0.1f,
+						enumfacing.getFrontOffsetZ(),
+						1.1f,
+						6);
+				world.spawnEntity(iprojectile);
 				stack.splitStack(1);
 			} else {
 				return super.dispenseStack(blockSource, stack);
 			}
 			return stack;
-		}
-		
-		protected void playDispenseSound(IBlockSource blockSource) {
-			blockSource.getWorld().playAuxSFX(1002, blockSource.getXInt(), blockSource.getYInt(), blockSource.getZInt(), 0);
-		}
-		
-		protected float func_82498_a() {
-			return 6.0F;
-		}
-		
-		protected float func_82500_b() {
-			return 1.1F;
 		}
 	}
 }

@@ -5,16 +5,20 @@ import com.austinv11.collectiveframework.utils.StringUtils;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.SharedMonsterAttributes;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.oredict.OreDictionary;
 
@@ -76,7 +80,7 @@ public class Util {
 		return map;
 	}
 
-	public static HashMap<Integer, String> getEntries(ItemStack stack) {
+	public static HashMap<Integer, String> getOreDictEntries(ItemStack stack) {
 		int[] ids = OreDictionary.getOreIDs(stack);
 		HashMap<Integer, String> entries = new HashMap<Integer,String>();
 		for (int i = 0; i < ids.length; i++) {
@@ -85,10 +89,10 @@ public class Util {
 		return entries;
 	}
 
-	public static boolean compare(ItemStack stack1, ItemStack stack2) {
-		if (!(stack1 == null || stack2 == null))
-			for (String key : getEntries(stack1).values()) {
-				if (getEntries(stack2).containsValue(key))
+	public static boolean compareItemStacksViaOreDict(ItemStack stack1, ItemStack stack2) {
+		if (!stack1.isEmpty() && !stack2.isEmpty())
+			for (String key : getOreDictEntries(stack1).values()) {
+				if (getOreDictEntries(stack2).containsValue(key))
 					return true;
 			}
 		return false;
@@ -97,10 +101,16 @@ public class Util {
 	public static NBTTagCompound writeToBookNBT(String title, String author, List<String> pageText) {
 		NBTTagCompound tag = new NBTTagCompound();
 		tag.setString("author", author);
-		tag.setString("title", StatCollector.translateToLocal(title));
+		String titleTranslated = I18n.translateToLocal(title);
+		if (titleTranslated.length() > 32)
+			titleTranslated = titleTranslated.substring(0, 29) + "...";
+		tag.setString("title", titleTranslated);
 		NBTTagList list = new NBTTagList();
-		for (String s : pageText)
-			list.appendTag(new NBTTagString(StatCollector.translateToLocal(s)));
+		for (String s : pageText) {
+			JsonObject page = new JsonObject();
+			page.addProperty("text", I18n.translateToLocal(s));
+			list.appendTag(new NBTTagString(page.toString()));
+		}
 		tag.setTag("pages", list);
 		return tag;
 	}
@@ -109,11 +119,11 @@ public class Util {
 		return writeToBookNBT(title, Reference.MOD_NAME, pageText);
 	}
 
-	public static double getDamageAttribute(ItemStack item) {
+	public static double getDamageAttribute(EntityEquipmentSlot slot, ItemStack item) {
 		double val = 0;
-		Multimap multimap = item.getItem().getAttributeModifiers(item);
-		if (multimap.containsKey(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName()))
-			for (Object o : multimap.get(SharedMonsterAttributes.attackDamage.getAttributeUnlocalizedName()))
+		Multimap multimap = item.getItem().getAttributeModifiers(slot, item);
+		if (multimap.containsKey(SharedMonsterAttributes.ATTACK_DAMAGE.getName()))
+			for (Object o : multimap.get(SharedMonsterAttributes.ATTACK_DAMAGE.getName()))
 				if (o instanceof AttributeModifier) {
 					val = ((AttributeModifier) o).getAmount();
 					break;
@@ -146,9 +156,11 @@ public class Util {
 	}
 
 	public static EntityPlayer getPlayer(String ign) {
-		List<EntityPlayer> players = MinecraftServer.getServer().getConfigurationManager().playerEntityList;
+		List<EntityPlayer> players = new ArrayList<>();
+		for (WorldServer worldServer : DimensionManager.getWorlds())
+			players.addAll(worldServer.playerEntities);
 		for (EntityPlayer p : players) {
-			if (p.getDisplayName().equalsIgnoreCase(ign))
+			if (p.getDisplayNameString().equalsIgnoreCase(ign))
 				return p;
 		}
 		return null;
@@ -162,14 +174,23 @@ public class Util {
 	}
 	
 	public static List<String> getPlayers(World world) {
-		List<String> list = new ArrayList<String>();
-		if (world != null) {
-			for (EntityPlayer player : (Iterable<EntityPlayer>) world.playerEntities)
-				list.add(player.getDisplayName());
-		}else {
-			for (String player : MinecraftServer.getServer().getAllUsernames())
-				list.add(player);
-		}
+		List<String> list = new ArrayList<>();
+		if (world != null)
+			for (EntityPlayer player : world.playerEntities)
+				list.add(player.getDisplayNameString());
+		else
+			for (WorldServer worldServer : DimensionManager.getWorlds())
+				for (EntityPlayer player : worldServer.playerEntities)
+					list.add(player.getDisplayNameString());
 		return list;
+	}
+
+	public static Entity getEntityFromId(UUID entityId) {
+		for (WorldServer worldServer : DimensionManager.getWorlds()) {
+			Entity entity = worldServer.getEntityFromUuid(entityId);
+			if (entity != null)
+				return entity;
+		}
+		return null;
 	}
 }

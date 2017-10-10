@@ -9,19 +9,19 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.block.Block;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ISidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.*;
-import net.minecraft.util.MathHelper;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 public class TileEntityInteractiveSorter extends MountedTileEntityInventory {
@@ -61,9 +61,9 @@ public class TileEntityInteractiveSorter extends MountedTileEntityInventory {
 			return new Object[]{getItemInfo(getStackInSlot(0))};
 			
 		} else if (method == 1) {
-			if (getStackInSlot(0) == null)
+			if (getStackInSlot(0).isEmpty())
 				return new Object[]{false};
-			ForgeDirection dir;
+			EnumFacing dir;
 			if (arguments.length < 1)
 				throw new LuaException("Too few arguments");
 			if (!(arguments[0] instanceof String) && !(arguments[0] instanceof Double))
@@ -71,44 +71,47 @@ public class TileEntityInteractiveSorter extends MountedTileEntityInventory {
 			if (arguments.length > 1 && !(arguments[1] instanceof Double))
 				throw new LuaException("Bad argument #2 (expected number)");
 			if (arguments[0] instanceof String)
-				dir = ForgeDirection.valueOf(((String) arguments[0]).toUpperCase());
+				dir = EnumFacing.valueOf(((String) arguments[0]).toUpperCase());
 			else
-				dir = ForgeDirection.getOrientation((int) (double) (Double) arguments[0]);
-			int amount = arguments.length > 1 ? MathHelper.clamp_int((int) (double) (Double) arguments[1], 0, getStackInSlot(0).stackSize) : getStackInSlot(0).stackSize;
-			if (!isInventoryOnSide(dir)) {
-				WorldUtils.spawnItemInWorld(new Location(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ, worldObj), 
+				dir = EnumFacing.getFront((int) (double) (Double) arguments[0]);
+			int amount = arguments.length > 1 ? MathHelper.clamp((int) (double) (Double) arguments[1], 0,
+					getStackInSlot(0).getCount()) : getStackInSlot(0).getCount();
+			IInventory inventory = TileEntityMEBridge.getInventoryForSide(world, getPos(), dir);
+			if (inventory == null) {
+				BlockPos pos = getPos().offset(dir);
+				WorldUtils.spawnItemInWorld(new Location(pos.getX(), pos.getY(), pos.getZ(), world),
 						getStackInSlot(0).splitStack(amount));
 				markDirty();
 				return new Object[]{true};
 			}
-			IInventory inventory = getInventoryForSide(dir);
-			int oldSize = getStackInSlot(0).stackSize;
+
+			int oldSize = getStackInSlot(0).getCount();
 			int[] slots = inventory instanceof ISidedInventory ? 
-					((ISidedInventory) inventory).getAccessibleSlotsFromSide(dir.getOpposite().flag) : getDefaultSlots(inventory);
+					((ISidedInventory) inventory).getSlotsForFace(dir.getOpposite()) : getDefaultSlots(inventory);
 			int currentSlot = 0;
-			while (getStackInSlot(0) != null && getStackInSlot(0).stackSize > oldSize-amount && currentSlot < slots.length) {
-				if (inventory.getStackInSlot(slots[currentSlot]) == null) {
+			while (!getStackInSlot(0).isEmpty() && getStackInSlot(0).getCount() > oldSize-amount && currentSlot < slots.length) {
+				if (inventory.getStackInSlot(slots[currentSlot]).isEmpty()) {
 					inventory.setInventorySlotContents(slots[currentSlot], getStackInSlot(0));
-					setInventorySlotContents(0, null);
+					setInventorySlotContents(0, ItemStack.EMPTY);
 				} else {
 					if (!inventory.getStackInSlot(slots[currentSlot]).isItemEqual(getStackInSlot(0))) {
 						currentSlot++;
 						continue;
 					}
-					int transferred = MathHelper.clamp_int(inventory.getStackInSlot(slots[currentSlot]).stackSize+amount,
-							getStackInSlot(0).stackSize, getStackInSlot(0).getMaxStackSize());
+					int transferred = MathHelper.clamp(inventory.getStackInSlot(slots[currentSlot]).getCount()+amount,
+							getStackInSlot(0).getCount(), getStackInSlot(0).getMaxStackSize());
 					
-					getStackInSlot(0).stackSize -= transferred;
-					inventory.getStackInSlot(0).stackSize += transferred;
+					getStackInSlot(0).setCount(getStackInSlot(0).getCount() - transferred);
+					inventory.getStackInSlot(0).setCount(inventory.getStackInSlot(0).getCount() + transferred);
 				}
 				inventory.markDirty();
 				markDirty();
 				currentSlot++;
 			}
-			return new Object[]{getStackInSlot(0) == null || getStackInSlot(0).stackSize != oldSize};
+			return new Object[]{getStackInSlot(0).isEmpty() || getStackInSlot(0).getCount() != oldSize};
 			
 		} else if (method == 2) {
-			ForgeDirection dir;
+			EnumFacing dir;
 			if (arguments.length < 1)
 				throw new LuaException("Too few arguments");
 			if (!(arguments[0] instanceof String) && !(arguments[0] instanceof Double))
@@ -118,28 +121,28 @@ public class TileEntityInteractiveSorter extends MountedTileEntityInventory {
 			if (arguments.length > 2 && !(arguments[2] instanceof Double))
 				throw new LuaException("Bad argument #3 (expected number)");
 			if (arguments[0] instanceof String)
-				dir = ForgeDirection.valueOf(((String) arguments[0]).toUpperCase());
+				dir = EnumFacing.valueOf(((String) arguments[0]).toUpperCase());
 			else
-				dir = ForgeDirection.getOrientation((int) (double) (Double) arguments[0]);
-			if (!isInventoryOnSide(dir))
+				dir = EnumFacing.getFront(((int) (double) (Double) arguments[0]));
+			IInventory inventory = TileEntityMEBridge.getInventoryForSide(world, getPos(), dir);
+			if (inventory == null)
 				throw new LuaException("Block is not a valid inventory");
-			IInventory inventory = getInventoryForSide(dir);
 			int slots[] = inventory instanceof ISidedInventory ? 
-					((ISidedInventory) inventory).getAccessibleSlotsFromSide(dir.getOpposite().flag) : getDefaultSlots(inventory);
+					((ISidedInventory) inventory).getSlotsForFace(dir.getOpposite()) : getDefaultSlots(inventory);
 			int slot = -1;
 			if (arguments.length > 2) {
 				slot = getNearestSlot((int)(double)(Double)arguments[2], slots);
-				if (inventory.getStackInSlot(slot) == null)
+				if (inventory.getStackInSlot(slot).isEmpty())
 					return new Object[]{false};
 			} else {
 				for (int slot1 : slots)
-					if (getStackInSlot(0) == null) {
-						if (inventory.getStackInSlot(slot1) != null) {
+					if (getStackInSlot(0).isEmpty()) {
+						if (!inventory.getStackInSlot(slot1).isEmpty()) {
 							slot = slot1;
 							break;
 						}
 					} else {
-						if (inventory.getStackInSlot(slot1) != null) {
+						if (!inventory.getStackInSlot(slot1).isEmpty()) {
 							if (inventory.getStackInSlot(slot1).isItemEqual(getStackInSlot(0))) {
 								slot = slot1;
 								break;
@@ -149,35 +152,35 @@ public class TileEntityInteractiveSorter extends MountedTileEntityInventory {
 			}
 			if (slot == -1)
 				return new Object[]{false};
-			int amount = arguments.length > 1 ? MathHelper.clamp_int((int) (double) (Double) arguments[1], 0, 
-					inventory.getStackInSlot(slot).stackSize) : inventory.getStackInSlot(slot).stackSize;
+			int amount = arguments.length > 1 ? MathHelper.clamp((int) (double) (Double) arguments[1], 0,
+					inventory.getStackInSlot(slot).getCount()) : inventory.getStackInSlot(slot).getCount();
 			int transferred;
-			if (getStackInSlot(0) != null) {
-				transferred = MathHelper.clamp_int(getStackInSlot(0).stackSize+amount,
-						getStackInSlot(0).stackSize, getStackInSlot(0).getMaxStackSize());
-				getStackInSlot(0).stackSize += transferred;
-				inventory.getStackInSlot(slot).stackSize -= transferred;
+			if (!getStackInSlot(0).isEmpty()) {
+				transferred = MathHelper.clamp(getStackInSlot(0).getCount()+amount,
+						getStackInSlot(0).getCount(), getStackInSlot(0).getMaxStackSize());
+				getStackInSlot(0).setCount(getStackInSlot(0).getCount() + transferred);
+				inventory.getStackInSlot(slot).setCount(inventory.getStackInSlot(slot).getCount() - transferred);
 			} else {
 				transferred = amount;
 				setInventorySlotContents(0, inventory.getStackInSlot(slot).splitStack(transferred));
 			}
-			if (inventory.getStackInSlot(slot) != null && inventory.getStackInSlot(slot).stackSize < 1)
-				inventory.setInventorySlotContents(slot, null);
+			if (!inventory.getStackInSlot(slot).isEmpty() && inventory.getStackInSlot(slot).getCount() < 1)
+				inventory.setInventorySlotContents(slot, ItemStack.EMPTY);
 			inventory.markDirty();
 			markDirty();
 			return new Object[]{true};
 			
 		} else if (method == 3) {
-			ForgeDirection dir;
+			EnumFacing dir;
 			if (arguments.length < 1)
 				throw new LuaException("Too few arguments");
 			if (!(arguments[0] instanceof String) && !(arguments[0] instanceof Double))
 				throw new LuaException("Bad argument #1 (expected string or number)");
 			if (arguments[0] instanceof String)
-				dir = ForgeDirection.valueOf(((String) arguments[0]).toUpperCase());
+				dir = EnumFacing.valueOf(((String) arguments[0]).toUpperCase());
 			else
-				dir = ForgeDirection.getOrientation((int) (double) (Double) arguments[0]);
-			return new Object[]{isInventoryOnSide(dir)};
+				dir = EnumFacing.getFront((int) (double) (Double) arguments[0]);
+			return new Object[]{TileEntityMEBridge.getInventoryForSide(world, getPos(), dir) != null};
 		}
 		return new Object[0];
 	}
@@ -203,30 +206,6 @@ public class TileEntityInteractiveSorter extends MountedTileEntityInventory {
 		return array;
 	}
 	
-	private boolean isInventoryOnSide(ForgeDirection dir) {
-		if (!worldObj.isAirBlock(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ)) {
-			Block block = worldObj.getBlock(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ);
-			if (block instanceof BlockContainer || block instanceof IInventory)
-				return true;
-			if (block.hasTileEntity(worldObj.getBlockMetadata(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ))) {
-				return worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ) instanceof IInventory;
-			}
-		}
-		return false;
-	}
-	
-	private IInventory getInventoryForSide(ForgeDirection dir) {
-		if (!worldObj.isAirBlock(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ)) {
-			Block block = worldObj.getBlock(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ);
-			if (block instanceof IInventory) {
-				return (IInventory) block;
-			}
-			if (block instanceof BlockContainer && block.hasTileEntity(worldObj.getBlockMetadata(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ)))
-				return (IInventory)worldObj.getTileEntity(xCoord+dir.offsetX, yCoord+dir.offsetY, zCoord+dir.offsetZ);
-		}
-		return null;
-	}
-	
 	@Override
 	public boolean equals(IPeripheral other) {
 		return other == this;
@@ -247,29 +226,25 @@ public class TileEntityInteractiveSorter extends MountedTileEntityInventory {
 	@Override
 	public void setInventorySlotContents(int slot, ItemStack stack) {
 		super.setInventorySlotContents(slot, stack);
-		if (stack != null && stack.stackSize > 0 && slot == 0)
+		if (!stack.isEmpty() && stack.getCount() > 0 && slot == 0)
 			for (IComputerAccess computer : computers)
 				computer.queueEvent("itemReady", null);
 	}
 	
 	private HashMap<String, Object> getItemInfo(ItemStack stack) {
-		if (stack == null)
+		if (stack.isEmpty())
 			return null;
 		HashMap<String, Object> map = new HashMap<String, Object>();
-		map.put("amount", stack.stackSize);
-		String id;
-		int numId;
+		map.put("amount", stack.getCount());
+		ResourceLocation id;
 		if (stack.getItem() instanceof ItemBlock) {
 			Block block = Block.getBlockFromItem(stack.getItem());
-			id = Block.blockRegistry.getNameForObject(block);
-			numId = Block.blockRegistry.getIDForObject(block);
+			id = ForgeRegistries.BLOCKS.getKey(block);
 		} else {
-			id = Item.itemRegistry.getNameForObject(stack.getItem());
-			numId = Item.itemRegistry.getIDForObject(stack.getItem());
+			id = ForgeRegistries.ITEMS.getKey(stack.getItem());
 		}
 		map.put("stringId", id);
-		map.put("numericalId", numId);
-		map.put("oreDictionaryEntries", Util.getEntries(stack));
+		map.put("oreDictionaryEntries", Util.getOreDictEntries(stack));
 		map.put("meta", stack.getItemDamage());
 		map.put("name", stack.getDisplayName());
 		if (stack.hasTagCompound()) 
@@ -279,12 +254,10 @@ public class TileEntityInteractiveSorter extends MountedTileEntityInventory {
 	}
 	
 	private HashMap<String, Object> convertNBTToMap(NBTTagCompound tag) {
-		HashMap<String, Object> nbtMap = new HashMap<String, Object>();
-		Iterator iterator = tag.func_150296_c().iterator();
-		while (iterator.hasNext()) {
-			String key = (String)iterator.next();
-			NBTBase nbtBase = tag.getTag(key);
-			nbtMap.put(key, getObjectForNBT(nbtBase.copy()));
+		HashMap<String, Object> nbtMap = new HashMap<>();
+		for (Object key : tag.getKeySet()) {
+			NBTBase nbtBase = tag.getTag((String) key);
+			nbtMap.put((String) key, getObjectForNBT(nbtBase.copy()));
 		}
 		return nbtMap;
 	}
@@ -298,35 +271,35 @@ public class TileEntityInteractiveSorter extends MountedTileEntityInventory {
 			
 			case 1:
 				NBTTagByte tagByte = (NBTTagByte)nbtBase;
-				return tagByte.func_150290_f();
+				return tagByte.getByte();
 			
 			case 2:
 				NBTTagShort tagShort = (NBTTagShort)nbtBase;
-				return tagShort.func_150289_e();
+				return tagShort.getShort();
 				
 			case 3:
 				NBTTagInt tagInt = (NBTTagInt)nbtBase;
-				return tagInt.func_150287_d();
+				return tagInt.getInt();
 				
 			case 4:
 				NBTTagLong tagLong = (NBTTagLong)nbtBase;
-				return tagLong.func_150291_c();
+				return tagLong.getLong();
 				
 			case 5:
 				NBTTagFloat tagFloat = (NBTTagFloat)nbtBase;
-				return tagFloat.func_150288_h();
+				return tagFloat.getFloat();
 				
 			case 6:
 				NBTTagDouble tagDouble = (NBTTagDouble)nbtBase;
-				return tagDouble.func_150286_g();
+				return tagDouble.getDouble();
 				
 			case 7:
 				NBTTagByteArray tagByteArray = (NBTTagByteArray)nbtBase;
-				return Util.arrayToMap(tagByteArray.func_150292_c());
+				return Util.arrayToMap(tagByteArray.getByteArray());
 				
 			case 8:
 				NBTTagString tagString = (NBTTagString)nbtBase;
-				return tagString.func_150285_a_();
+				return tagString.getString();
 				
 			case 9:
 				NBTTagList tagList = (NBTTagList)nbtBase;
@@ -341,7 +314,7 @@ public class TileEntityInteractiveSorter extends MountedTileEntityInventory {
 				
 			case 11:
 				NBTTagIntArray tagIntArray = (NBTTagIntArray)nbtBase;
-				return Util.arrayToMap(tagIntArray.func_150302_c());
+				return Util.arrayToMap(tagIntArray.getIntArray());
 				
 			default:
 				return null;

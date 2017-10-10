@@ -4,18 +4,17 @@ import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.network.PermCardChangePacket;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import com.austinv11.peripheralsplusplus.tiles.containers.ContainerEmpty;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.text.translation.I18n;
 import org.lwjgl.opengl.GL11;
 
 public class GuiPermCard extends GuiScreen
 {
     private ItemStack permCard;
-    private ResourceLocation backgroundimage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" + "textures/gui/guiPermCard.png");
+    private ResourceLocation backgroundimage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" +
+            "textures/gui/perm_card.png");
     private int sizeX, sizeY;
     private boolean canGetStacks, canWithdraw, canDeposit;
 
@@ -42,11 +41,11 @@ public class GuiPermCard extends GuiScreen
         drawTexturedModalRect(x + 10, y + 40, this.canGetStacks ? 0 : 9, 166, 9, 9);
         drawTexturedModalRect(x + 10, y + 60, this.canWithdraw ? 0 : 9, 166, 9, 9);
         drawTexturedModalRect(x + 10, y + 80, this.canDeposit ? 0 : 9, 166, 9, 9);
-        fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.permCard"), x + 22, y + 5, 0x313131);
-        fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.permCard.perms"), x + 32, y + 20, 0x313131);
-        fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.permCard.get"), x + 25, y + 40, 0x313131);
-        fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.permCard.withdraw"), x + 25, y + 60, 0x313131);
-        fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.permCard.deposit"), x + 25, y + 80, 0x313131);
+        fontRenderer.drawString(I18n.translateToLocal("peripheralsplusplus.inv.permCard"), x + 22, y + 5, 0x313131);
+        fontRenderer.drawString(I18n.translateToLocal("peripheralsplusplus.inv.permCard.perms"), x + 32, y + 20, 0x313131);
+        fontRenderer.drawString(I18n.translateToLocal("peripheralsplusplus.inv.permCard.get"), x + 25, y + 40, 0x313131);
+        fontRenderer.drawString(I18n.translateToLocal("peripheralsplusplus.inv.permCard.withdraw"), x + 25, y + 60, 0x313131);
+        fontRenderer.drawString(I18n.translateToLocal("peripheralsplusplus.inv.permCard.deposit"), x + 25, y + 80, 0x313131);
     }
 
     @Override

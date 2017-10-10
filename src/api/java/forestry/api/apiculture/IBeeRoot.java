@@ -1,35 +1,33 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.apiculture;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
+import com.mojang.authlib.GameProfile;
+import forestry.api.genetics.IAllele;
+import forestry.api.genetics.ISpeciesRoot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import com.mojang.authlib.GameProfile;
-
-import forestry.api.core.IStructureLogic;
-import forestry.api.genetics.IAllele;
-import forestry.api.genetics.ISpeciesRoot;
+import javax.annotation.Nullable;
+import java.util.List;
 
 public interface IBeeRoot extends ISpeciesRoot {
 
 	/**
-	 * @return true if passed item is a Forestry bee. Equal to getType(ItemStack stack) != EnumBeeType.NONE
+	 * @return true if passed item is a Forestry bee. Equal to getType(ItemStack stack) != null
 	 */
 	@Override
 	boolean isMember(ItemStack stack);
 
 	/**
-	 * @return {@link IBee} pattern parsed from the passed stack's nbt data.
+	 * @return {@link IBee} pattern parsed from the passed stack's nbt data. Null if the ItemStack is not a valid member.
 	 */
 	@Override
+	@Nullable
 	IBee getMember(ItemStack stack);
 
 	@Override
@@ -49,16 +47,20 @@ public interface IBeeRoot extends ISpeciesRoot {
 	IBeeGenome templateAsGenome(IAllele[] templateActive, IAllele[] templateInactive);
 
 	/* BREEDING TRACKER */
+
 	/**
-	 * @param world
 	 * @return {@link IApiaristTracker} associated with the passed world.
 	 */
-	IApiaristTracker getBreedingTracker(World world, GameProfile player);
+	@Override
+	IApiaristTracker getBreedingTracker(World world, @Nullable GameProfile player);
 
 	/* BEE SPECIFIC */
+
 	/**
-	 * @return type of bee encoded on the itemstack. EnumBeeType.NONE if it isn't a bee.
+	 * @return type of bee encoded on the itemstack. null if it isn't a bee.
 	 */
+	@Nullable
+	@Override
 	EnumBeeType getType(ItemStack stack);
 
 	/**
@@ -72,57 +74,61 @@ public interface IBeeRoot extends ISpeciesRoot {
 	boolean isMated(ItemStack stack);
 
 	/**
-	 * @param genome
-	 *            Valid {@link IBeeGenome}
+	 * @param genome Valid {@link IBeeGenome}
 	 * @return {@link IBee} from the passed genome
 	 */
-	IBee getBee(World world, IBeeGenome genome);
+	IBee getBee(IBeeGenome genome);
 
 	/**
 	 * Creates an IBee suitable for a queen containing the necessary second genome for the mate.
-	 * 
-	 * @param genome
-	 *            Valid {@link IBeeGenome}
-	 * @param mate
-	 *            Valid {@link IBee} representing the mate.
+	 *
+	 * @param genome Valid {@link IBeeGenome}
+	 * @param mate   Valid {@link IBee} representing the mate.
 	 * @return Mated {@link IBee} from the passed genomes.
 	 */
 	IBee getBee(World world, IBeeGenome genome, IBee mate);
 
 	/* TEMPLATES */
+
 	@Override
-	ArrayList<IBee> getIndividualTemplates();
+	List<IBee> getIndividualTemplates();
 
 	/* MUTATIONS */
 	@Override
-	Collection<IBeeMutation> getMutations(boolean shuffle);
+	List<IBeeMutation> getMutations(boolean shuffle);
 
 	/* GAME MODE */
 	void resetBeekeepingMode();
 
-	ArrayList<IBeekeepingMode> getBeekeepingModes();
+	List<IBeekeepingMode> getBeekeepingModes();
 
 	IBeekeepingMode getBeekeepingMode(World world);
 
+	@Nullable
 	IBeekeepingMode getBeekeepingMode(String name);
 
 	void registerBeekeepingMode(IBeekeepingMode mode);
 
-	void setBeekeepingMode(World world, String name);
+	void setBeekeepingMode(World world, IBeekeepingMode mode);
 
 	/* MISC */
+
 	/**
-	 * @param housing
-	 *            Object implementing IBeeHousing.
-	 * @return IBeekeepingLogic
+	 * Creates beekeepingLogic for a housing.
+	 * Should be used when the housing is created, see IBeekeepingLogic
 	 */
 	IBeekeepingLogic createBeekeepingLogic(IBeeHousing housing);
 
 	/**
-	 * TileEntities wanting to function as alveary components need to implement structure logic for validation.
-	 * 
-	 * @return IStructureLogic for alvearies.
+	 * Combines multiple modifiers from an IBeeHousing into one.
+	 * Stays up to date with changes to the housing's modifiers.
 	 */
-	IStructureLogic createAlvearyStructureLogic(IAlvearyComponent structure);
+	IBeeModifier createBeeHousingModifier(IBeeHousing housing);
+
+	/**
+	 * Combines multiple listeners from an IBeeHousing into one.
+	 * Stays up to date with changes to the housing's listeners.
+	 */
+	IBeeListener createBeeHousingListener(IBeeHousing housing);
 
 }

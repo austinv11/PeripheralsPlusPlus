@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
+import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityAnalyzerBee;
 import net.minecraft.block.Block;
 import net.minecraft.tileentity.TileEntity;
@@ -10,7 +11,8 @@ public class BlockAnalyzerBee extends BlockAnalyzer {
 	
 	public BlockAnalyzerBee() {
 		super();
-		this.setBlockName("beeAnalyzer");
+		this.setRegistryName(Reference.MOD_ID, "analyzer_bee");
+		this.setUnlocalizedName("analyzer_bee");
 	}
 
 	@Override
@@ -19,6 +21,6 @@ public class BlockAnalyzerBee extends BlockAnalyzer {
 	}
 
 	public Block getBlock(){
-		return ModBlocks.beeAnalyzer;
+		return ModBlocks.ANALYZER_BEE;
 	}
 }

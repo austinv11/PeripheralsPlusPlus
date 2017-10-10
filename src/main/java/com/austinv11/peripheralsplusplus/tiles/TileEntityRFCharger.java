@@ -1,19 +1,27 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
-import cofh.api.energy.EnergyStorage;
-import cofh.api.energy.IEnergyReceiver;
+
 import com.austinv11.collectiveframework.minecraft.tiles.NetworkedTileEntity;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
 import dan200.computercraft.api.turtle.ITurtleAccess;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.energy.IEnergyStorage;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TileEntityRFCharger extends NetworkedTileEntity implements IEnergyReceiver {
+public class TileEntityRFCharger extends NetworkedTileEntity implements IEnergyStorage, ITickable {
 	private EnergyStorage storage = new EnergyStorage(80000);//Leadstone Capacitor
 
 	public static String publicName = "rfCharger";
@@ -30,27 +38,30 @@ public class TileEntityRFCharger extends NetworkedTileEntity implements IEnergyR
 	@Override
 	public void readFromNBT(NBTTagCompound nbttagcompound) {
 		super.readFromNBT(nbttagcompound);
-		storage.readFromNBT(nbttagcompound);
+		if (nbttagcompound.hasKey("capacity")) {
+            int capacity = nbttagcompound.getInteger("capacity");
+            int energy = nbttagcompound.getInteger("energy");
+            storage = new EnergyStorage(capacity, capacity, capacity, energy);
+        }
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
-		storage.writeToNBT(nbttagcompound);
+		nbttagcompound.setInteger("capacity", storage.getMaxEnergyStored());
+		nbttagcompound.setInteger("energy", storage.getEnergyStored());
+		return nbttagcompound;
 	}
 
 	@Override
-	public void updateEntity() {
-		if (!getWorldObj().isRemote) {
+	public void update() {
+		if (!getWorld().isRemote) {
 			List<ITurtleAccess> turtles = new ArrayList<ITurtleAccess>(6);
-			ForgeDirection[] dirs = {ForgeDirection.DOWN, ForgeDirection.EAST, ForgeDirection.NORTH, ForgeDirection.SOUTH, ForgeDirection.UP, ForgeDirection.WEST};
-			for (int i = 0; i < 6; i++) {
-				int x = this.xCoord+dirs[i].offsetX;
-				int y = this.yCoord+dirs[i].offsetY;
-				int z = this.zCoord+dirs[i].offsetZ;
-				if (!getWorldObj().blockExists(x, y, z))
+			for (EnumFacing direction : EnumFacing.values()) {
+			    BlockPos pos = getPos().offset(direction);
+				if (getWorld().isAirBlock(pos))
 					continue;
-				TileEntity te = getWorldObj().getTileEntity(x, y, z);
+				TileEntity te = getWorld().getTileEntity(pos);
 				if (te != null) {
 					try {
 						ITurtleAccess turtle = ReflectionHelper.getTurtle(te);
@@ -78,23 +89,51 @@ public class TileEntityRFCharger extends NetworkedTileEntity implements IEnergyR
 		return 0;
 	}
 
-	@Override
-	public int receiveEnergy(ForgeDirection from, int maxReceive, boolean simulate) {
-		return storage.receiveEnergy(maxReceive, simulate);
+    @Override
+    public int receiveEnergy(int maxReceive, boolean simulate) {
+        return storage.receiveEnergy(maxReceive, simulate);
+    }
+
+    @Override
+    public int extractEnergy(int maxExtract, boolean simulate) {
+        return storage.extractEnergy(maxExtract, simulate);
+    }
+
+    @Override
+    public int getEnergyStored() {
+        return storage.getEnergyStored();
+    }
+
+    @Override
+    public int getMaxEnergyStored() {
+        return storage.getMaxEnergyStored();
+    }
+
+    @Override
+    public boolean canExtract() {
+        return storage.canExtract();
+    }
+
+    @Override
+    public boolean canReceive() {
+        return storage.canReceive();
+    }
+
+	public void showFuel(EntityPlayer player) {
+		player.sendMessage(new TextComponentString(String.format("Energy: %d/%dRF",
+				getEnergyStored(), getMaxEnergyStored())));
 	}
 
 	@Override
-	public int getEnergyStored(ForgeDirection from) {
-		return storage.getEnergyStored();
+	public boolean hasCapability(Capability<?> capability, @Nullable EnumFacing facing) {
+		return capability.equals(CapabilityEnergy.ENERGY) || super.hasCapability(capability, facing);
 	}
 
+	@Nullable
 	@Override
-	public int getMaxEnergyStored(ForgeDirection from) {
-		return storage.getMaxEnergyStored();
-	}
-
-	@Override
-	public boolean canConnectEnergy(ForgeDirection from) {
-		return true;
+	public <T> T getCapability(Capability<T> capability, @Nullable EnumFacing facing) {
+		if (hasCapability(capability, facing))
+			return CapabilityEnergy.ENERGY.cast(this);
+		return super.getCapability(capability, facing);
 	}
 }

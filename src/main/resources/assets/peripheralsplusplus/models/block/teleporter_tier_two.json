@@ -1,0 +1,8 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "top": "peripheralsplusplus:blocks/teleporter",
+    "front": "peripheralsplusplus:blocks/teleporter_front_tier_two",
+    "side": "peripheralsplusplus:blocks/teleporter"
+  }
+}

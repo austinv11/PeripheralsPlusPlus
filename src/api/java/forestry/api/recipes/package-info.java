@@ -1,8 +1,14 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
-@API(apiVersion="2.0", owner="ForestryAPI|core", provides="ForestryAPI|recipes")
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+@API(apiVersion = "5.4.0", owner = "ForestryAPI|core", provides = "ForestryAPI|recipes")
 package forestry.api.recipes;
-import cpw.mods.fml.common.API;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
+import mcp.MethodsReturnNonnullByDefault;
+import net.minecraftforge.fml.common.API;

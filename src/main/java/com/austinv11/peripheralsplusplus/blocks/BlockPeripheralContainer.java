@@ -1,30 +1,27 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
-import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
+import com.austinv11.peripheralsplusplus.recipe.ContainedPeripheral;
+import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityPeripheralContainer;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
-import net.minecraft.block.Block;
 import net.minecraft.block.ITileEntityProvider;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class BlockPeripheralContainer extends BlockPPP implements ITileEntityProvider {
-
-//	BlockSnapshot blockSnapshot;
+public class BlockPeripheralContainer extends BlockPppBase implements ITileEntityProvider {
 
 	public BlockPeripheralContainer() {
 		super();
-		this.setBlockName("peripheralContainer");
+		this.setRegistryName(Reference.MOD_ID, "peripheral_container");
+		this.setUnlocalizedName("peripheral_container");
 	}
 
 	@Override
@@ -32,56 +29,29 @@ public class BlockPeripheralContainer extends BlockPPP implements ITileEntityPro
 		return new TileEntityPeripheralContainer();
 	}
 
-	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack) {
-		int[] ids = NBTHelper.getIntArray(itemStack, "ids");
-		Block[] blocks = new Block[ids.length];
-		for (int i = 0; i < ids.length; i++)
-			blocks[i] = Block.getBlockById(ids[i]);
-		TileEntityPeripheralContainer ent = (TileEntityPeripheralContainer)world.getTileEntity(x,y,z);
-		for (Block block : blocks)
-			ent.addPeripheral(block);
-	}
+    @Override
+    public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer,
+                                ItemStack itemStack) {
+        NBTTagCompound tag = itemStack.getTagCompound();
+        if (tag == null || !tag.hasKey("peripherals"))
+            return;
+        NBTBase peripheralsBase = tag.getTag("peripherals");
+        if (!(peripheralsBase instanceof NBTTagList))
+            return;
+        NBTTagList peripherals = (NBTTagList) peripheralsBase;
+        for (NBTBase peripheralBase : peripherals) {
+            if (!(peripheralBase instanceof NBTTagCompound))
+                continue;
+            ContainedPeripheral peripheral = new ContainedPeripheral((NBTTagCompound) peripheralBase);
+            TileEntity container = world.getTileEntity(pos);
+            if (container != null && container instanceof TileEntityPeripheralContainer)
+                ((TileEntityPeripheralContainer)container).addPeripheral(peripheral);
+        }
+    }
 
-//	@Override
-//	public void onBlockHarvested(World world, int x, int y, int z, int meta, EntityPlayer player) {
-//		blockSnapshot = BlockSnapshot.getBlockSnapshot(world, x, y, z);
-//	}
+    @Override
+    public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state,
+                         int fortune) {
 
-	@Override
-	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune) {
-		ArrayList<ItemStack> drops = new ArrayList<ItemStack>();
-//		TileEntity te = blockSnapshot.getTileEntity();
-//		NBTTagCompound tag = new NBTTagCompound();
-//		te.writeToNBT(tag);
-//		ItemStack drop = new ItemStack(ModBlocks.peripheralContainer);
-//		drop.stackTagCompound = tag;
-//		List<String> text = new ArrayList<String>();
-//		text.add(Reference.Colors.RESET+Reference.Colors.UNDERLINE+"Contained Peripherals:");
-//		for (int id : NBTHelper.getIntArray(drop, "ids")) {
-//			Block peripheral = Block.getBlockById(id);
-//			IPeripheral iPeripheral = (IPeripheral)peripheral.createTileEntity(null, 0);
-//			text.add(Reference.Colors.RESET+iPeripheral.getType());
-//		}
-//		NBTHelper.setInfo(drop, text);
-		return drops;
-	}
-
-	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
-		TileEntityPeripheralContainer te = (TileEntityPeripheralContainer)world.getTileEntity(x,y,z);
-		List<Block> contained = te.getBlocksContained();
-		if (contained.size() >= side+1)
-			return contained.get(side).getIcon(side, 0);
-		else
-			return blockIcon;
-	}
-
-//	@Override
-//	@SideOnly(Side.CLIENT)
-//	public IIcon getIcon(int side, int meta) {
-//		ForgeDirection dir = ForgeDirection.getOrientation(side);
-//		return dir == ForgeDirection.DOWN || dir == ForgeDirection.UP ? this.blockIcon : this.frontIcon;
-//	}
+    }
 }

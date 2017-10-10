@@ -8,24 +8,23 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
 import dan200.computercraft.api.turtle.TurtleSide;
 import net.minecraft.block.Block;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemBucket;
+import net.minecraft.block.BlockLiquid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.fluids.*;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 
 import java.util.HashMap;
 
 public class PeripheralTank extends MountedPeripheral {
 
+	private static final int TRANSFER_AMOUNT = 1000;
 	private ITurtleAccess turtle;
 	private TurtleSide side;
 	private FluidTank fluidTank = new FluidTank(Config.maxNumberOfMillibuckets);
-	private boolean doUpdate = false;
 
 	public PeripheralTank(ITurtleAccess turtle, TurtleSide side) {
 		this.turtle = turtle;
@@ -34,9 +33,7 @@ public class PeripheralTank extends MountedPeripheral {
 		if (!turtle.getWorld().isRemote) {
 			NBTTagCompound turtleTag = turtle.getUpgradeNBTData(side);
 			NBTTagCompound tankData = turtleTag.getCompoundTag("TankData");
-			if (tankData != null) {
-				fluidTank.readFromNBT(tankData);
-			}
+            fluidTank = fluidTank.readFromNBT(tankData);
 		}
 
 	}
@@ -48,317 +45,178 @@ public class PeripheralTank extends MountedPeripheral {
 
 	@Override
 	public String[] getMethodNames() {
-		return new String[] {"getFluid", "fill", "drain", "empty", "emptyUp", "emptyDown", "suck", "suckUp", "suckDown"};
+		return new String[] {"getFluid", "fill", "drain", "place", "placeUp", "placeDown", "suck", "suckUp", "suckDown"};
 	}
 
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
-		ForgeDirection dir;
-		int posX, posY, posZ;
-		try {
-			switch (method) {
-				// "getFluid": Return information about the fluid within the tank
-				case 0:
-					if (fluidTank.getFluid() != null) {
-						HashMap<String, Object> map = new HashMap<String, Object>();
-						map.put("amount", fluidTank.getFluidAmount());            //
-						map.put("name", fluidTank.getFluid().getLocalizedName()); // Add appropriate information to return map
-						map.put("id", fluidTank.getFluid().getFluidID());         //
-						return new Object[]{map};
-					}
-					break;
-				// "fill": Move fluid from internal tank to container in specified slot / currently selected slot
-				// Returns amount of fluid moved
-				case 1:
-					int fillSlot; // The slot that contains the container
-					// If a slot is specified, check that it is valid and set it. If none is specified, use the currently selected slot
-					if (arguments.length > 1) {
-						if (arguments[0] instanceof Double) {
-							fillSlot = (int) (double) (Double) arguments[0];
-						} else {
-							throw new LuaException("Bad argument #1 (expected number)");
-						}
-					} else {
-						fillSlot = turtle.getSelectedSlot();
-					}
-
-					// Get the item in that slot and check that it is a valid container
-					ItemStack fillStack = turtle.getInventory().getStackInSlot(fillSlot);
-					if (fillStack.getItem() instanceof ItemBucket) {
-						// Check that the container is empty
-						if (((ItemBucket) fillStack.getItem()).isFull != Blocks.air) {
-							return new Object[]{0};
-						}
-
-						// Check that there is fluid to fill with
-						if (fluidTank.getFluid() == null) {
-							return new Object[]{0};
-						}
-
-						// Find a slot to put the full bucket in.
-						if (fillStack.stackSize > 1) {
-							int emptySlot = getFirstEmptySlotIndex(turtle.getInventory());
-							if (emptySlot == -1) {
-								return new Object[]{0};
-							}
-							turtle.getInventory().decrStackSize(fillSlot, 1);
-							fillSlot = emptySlot;
-						}
-
-						// Move the fluid
-						if (fluidTank.getFluid().getFluid().getBlock() == Blocks.water) {
-							turtle.getInventory().setInventorySlotContents(fillSlot, new ItemStack(Items.water_bucket));
-						} else if (fluidTank.getFluid().getFluid().getBlock() == Blocks.lava) {
-							turtle.getInventory().setInventorySlotContents(fillSlot, new ItemStack(Items.lava_bucket));
-						}
-						fluidTank.drain(1000, true);
-
-						doUpdate = true;
-						return new Object[]{1000};
-					} else if (fillStack.getItem() instanceof IFluidContainerItem) {
-						try {
-							IFluidContainerItem containerItem = (IFluidContainerItem) fillStack.getItem();
-							// Check that there is fluid to fill with
-							if (fluidTank.getFluid() == null) {
-								return new Object[]{0};
-							}
-
-							// Check that the fluids are equal
-							if (!fluidTank.getFluid().isFluidEqual(containerItem.getFluid(fillStack))) {
-								// Make sure that the container is not empty.
-								if (containerItem.getFluid(fillStack) != null) {
-									return new Object[]{0};
-								}
-							}
-
-							// Check that there is room in the container
-							if (containerItem.getFluid(fillStack) != null && containerItem.getFluid(fillStack).amount + 1000 > containerItem.getCapacity(fillStack)) {
-								return new Object[]{0};
-							}
-
-							containerItem.fill(fillStack, new FluidStack(fluidTank.getFluid(), 1000), true);
-							fluidTank.drain(1000, true);
-
-							doUpdate = true;
-							return new Object[]{1000};
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
-					}
-					return new Object[]{0};
-				// "drain": Moves fluid from container in specified slot to internal tank
-				// Returns amount of fluid moved
-				case 2:
-					try {
-						int drainSlot; // The slot that contains the container
-						// If a slot is specified, check that it is valid and set it. If none is specified, use the currently selected slot
-						if (arguments.length > 1) {
-							if (arguments[0] instanceof Double) {
-								drainSlot = (int) (double) (Double) arguments[0];
-							} else {
-								throw new LuaException("Bad argument #1 (expected number)");
-							}
-						} else {
-							drainSlot = turtle.getSelectedSlot();
-						}
-
-						// Get the item in that slot and check that it is a valid container
-						ItemStack drainStack = turtle.getInventory().getStackInSlot(drainSlot);
-						if (!(drainStack.getItem() instanceof ItemBucket) && !(drainStack.getItem() instanceof IFluidContainerItem)) {
-							return new Object[]{0};
-						}
-
-						// Check that the fluid in the container matches the fluid in the internal tank
-						if (fluidTank.getFluid() != null) {
-							// Determine if the fluids match. Retrieve the container fluid based on type because people dumb and don't register their containers
-							boolean matches = fluidTank.getFluid().isFluidEqual(drainStack.getItem() instanceof ItemBucket ? FluidContainerRegistry.getFluidForFilledItem(drainStack) : ((IFluidContainerItem) drainStack.getItem()).getFluid(drainStack));
-							if (!matches) {
-								return new Object[]{0};
-							}
-						}
-
-						// Check that there is room for the fluid
-						if (fluidTank.getFluidAmount() + 1000 > fluidTank.getCapacity()) {
-							return new Object[]{0};
-						}
-
-						// Move the fluid
-						// Retrieve the fluid based on type because people dumb and don't register their containers
-						FluidStack fluidStack;
-						if (drainStack.getItem() instanceof ItemBucket) {
-							if (FluidContainerRegistry.getFluidForFilledItem(drainStack) == null) {
-								return new Object[] {0};
-							}
-							fluidStack = new FluidStack(FluidContainerRegistry.getFluidForFilledItem(drainStack), 1000);
-						} else {
-							fluidStack = new FluidStack(((IFluidContainerItem) drainStack.getItem()).getFluid(drainStack), 1000);
-						}
-						fluidTank.fill(fluidStack, true);
-
-						if (drainStack.getItem() instanceof ItemBucket) {
-							turtle.getInventory().setInventorySlotContents(drainSlot, new ItemStack(Items.bucket));
-						} else {
-							IFluidContainerItem containerItem = (IFluidContainerItem) drainStack.getItem();
-							containerItem.drain(drainStack, 1000, true);
-						}
-
-						doUpdate = true;
-						return new Object[]{1000};
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				case 3:
-				case 4:
-				case 5:
-					// "empty[dir]" Places a block of the fluid in the internal tank in the world.
-					// Returns the amount of fluid emptied (always either 0 or 1000 for now)
-					if (arguments.length > 0 && !(arguments[0] instanceof Double))
-						throw new LuaException("Bad argument #1 (expected number)");
-
-					// Get the correct direction relative to the turtle depending on the method executed
-					dir = method == 3 ? ForgeDirection.getOrientation(turtle.getDirection()) : method == 4 ? ForgeDirection.UP : ForgeDirection.DOWN;
-					posX = turtle.getPosition().posX + dir.offsetX; //
-					posY = turtle.getPosition().posY + dir.offsetY; // Get the position of the block from the direction
-					posZ = turtle.getPosition().posZ + dir.offsetZ; //
-					// Check that the block where the turtle is trying to place the fluid is air
-					if (turtle.getWorld().isAirBlock(posX, posY, posZ)) {
-						if (fluidTank.getFluid() != null) {
-							if (fluidTank.getFluid().getFluid().canBePlacedInWorld()) {
-								Block fluidBlock = fluidTank.getFluid().getFluid().getBlock();
-								turtle.getWorld().setBlock(posX, posY, posZ, getFlowingBlock(fluidBlock)); // Place the flowing version of the fluid
-								fluidTank.drain(1000, true);
-
-								doUpdate = true;
-								return new Object[]{1000};
-							}
-						}
-					} else if (turtle.getWorld().getTileEntity(posX, posY, posZ) instanceof IFluidHandler) {
-						IFluidHandler fluidHandler = (IFluidHandler) turtle.getWorld().getTileEntity(posX, posY, posZ);
-
-						// Check that the fluids are the same
-						if (fluidHandler.getTankInfo(dir.getOpposite())[0].fluid != null) {
-							if (!fluidTank.getFluid().isFluidEqual(fluidHandler.getTankInfo(dir.getOpposite())[0].fluid)) {
-								return new Object[]{0};
-							}
-
-							if (fluidHandler.getTankInfo(dir.getOpposite())[0].fluid.amount + 1000 > fluidHandler.getTankInfo(dir.getOpposite())[0].capacity) {
-								return new Object[] {0};
-							}
-						}
-
-						if (fluidTank.getFluidAmount() - 1000 < 0) {
-							return new Object[]{0};
-						}
-
-						fluidHandler.fill(dir.getOpposite(), new FluidStack(fluidTank.getFluid().getFluid(), 1000), true);
-						fluidTank.drain(1000, true);
-
-						doUpdate = true;
-						return new Object[]{1000};
-					}
-					return new Object[] {0};
-				case 6:
-				case 7:
-				case 8:
-					// "suck[dir]" Takes a block of fluid from the world into the internal tank
-					// Returns the amount of fluid moved (always either 0 or 1000 for now)
-					if (arguments.length > 0 && !(arguments[0] instanceof Double))
-						throw new LuaException("Bad argument #1 (expected number)");
-
-					// Get the correct direction relative to the turtle depending on the method executed
-					dir = method == 6 ? ForgeDirection.getOrientation(turtle.getDirection()) : method == 7 ? ForgeDirection.UP : ForgeDirection.DOWN;
-					posX = turtle.getPosition().posX + dir.offsetX; //
-					posY = turtle.getPosition().posY + dir.offsetY; // Get the position of the block from the direction
-					posZ = turtle.getPosition().posZ + dir.offsetZ; //
-
-					Block block = turtle.getWorld().getBlock(posX, posY, posZ);
-					// Check that there is fluid in the specified space
-					if (turtle.getWorld().isAnyLiquid(AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ))) {
-						// We can only pick up the source versions of the block.
-						if (turtle.getWorld().getBlockMetadata(posX, posY, posZ) != 0) {
-							return new Object[]{0};
-						}
-						// Check that the fluid being taken is equal to the fluid in the internal tank (if there is any)
-						if (fluidTank.getFluid() != null) {
-							if (!fluidTank.getFluid().isFluidEqual(new FluidStack(FluidRegistry.lookupFluidForBlock(block), 0))) {
-								return new Object[]{0};
-							}
-						}
-
-						// Check that there is room for the fluid
-						if (fluidTank.getFluidAmount() + 1000 <= fluidTank.getCapacity()) {
-							// Move the fluid
-							fluidTank.fill(new FluidStack(FluidRegistry.lookupFluidForBlock(block), 1000), true);
-							turtle.getWorld().setBlock(posX, posY, posZ, Blocks.air);
-
-							doUpdate = true;
-							return new Object[]{1000};
-						}
-					} else if (turtle.getWorld().getTileEntity(posX, posY, posZ) instanceof IFluidHandler) {
-						IFluidHandler fluidHandler = (IFluidHandler) turtle.getWorld().getTileEntity(posX, posY, posZ);
-
-						if (fluidHandler.getTankInfo(dir.getOpposite())[0].fluid == null) {
-							return new Object[] {0};
-						}
-
-						// Check that the fluids are the same
-						if (fluidTank.getFluid() != null) {
-							if (!fluidHandler.getTankInfo(dir.getOpposite())[0].fluid.isFluidEqual(fluidTank.getFluid())) {
-								return new Object[]{0};
-							}
-						}
-
-						if (fluidHandler.getTankInfo(dir.getOpposite())[0].fluid.amount - 1000 < 0 && fluidTank.getFluidAmount() + 1000 <= fluidTank.getCapacity()) {
-							return new Object[]{0};
-						}
-
-						fluidTank.fill(new FluidStack(fluidHandler.getTankInfo(dir.getOpposite())[0].fluid.getFluid(), 1000), true);
-						fluidHandler.drain(dir.getOpposite(), 1000, true);
-
-						doUpdate = true;
-						return new Object[]{1000};
-					}
-					return new Object[]{0};
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
+			throws LuaException, InterruptedException {
+		switch (method) {
+			// "getFluid": Return information about the fluid within the tank
+			case 0:
+				return getFluid();
+			// "fill": Move fluid from internal tank to container in specified slot / currently selected slot
+			// Returns amount of fluid moved
+			case 1:
+				return fill(getFirstArgumentAsSlot(arguments));
+			// "drain": Moves fluid from container in specified slot to internal tank
+			// Returns amount of fluid moved
+			case 2:
+				return drain(getFirstArgumentAsSlot(arguments));
+			// "empty[dir]" Places a block of the fluid from the internal tank in the world.
+			// Returns the amount of fluid emptied (always either 0 or 1000 for now)
+			case 3:
+			case 4:
+			case 5:
+				return emptyToWorld(getMethodIdAsDirection(method));
+			// "suck[dir]" Takes a block of fluid from the world into the internal tank
+			// Returns the amount of fluid moved (always either 0 or 1000 for now)
+			case 6:
+			case 7:
+			case 8:
+				return suckFromWorld(getMethodIdAsDirection(method));
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
+		throw new LuaException("Unhandled method");
+	}
+
+	private EnumFacing getMethodIdAsDirection(int method) throws LuaException {
+		switch (method) {
+			case 3: // forward
+			case 6:
+				return turtle.getDirection();
+			case 4: // up
+			case 7:
+				return EnumFacing.UP;
+			case 5: // down
+			case 8:
+				return EnumFacing.DOWN;
+			default:
+				throw new LuaException("Unhandled method direction mapping: " + method);
+		}
+	}
+
+	private Object[] suckFromWorld(EnumFacing direction) throws LuaException {
+		BlockPos pos = turtle.getPosition().offset(direction);
+		// Ensure the block is a fluid that can be manipulated
+		IFluidHandler fluidHandler = FluidUtil.getFluidHandler(turtle.getWorld(), pos,
+				direction.getOpposite());
+		if (fluidHandler == null)
+			throw new LuaException("Block is not a fluid block");
+		// Move to tank
+		FluidStack fluidStack = FluidUtil.tryFluidTransfer(fluidTank, fluidHandler, TRANSFER_AMOUNT,
+				true);
+		if (fluidStack == null)
+			return new Object[]{0};
+		saveTankDataToTurtle();
+		// Remove from world
+		Block block = turtle.getWorld().getBlockState(pos).getBlock();
+		if (block instanceof IFluidBlock || block instanceof BlockLiquid)
+			turtle.getWorld().setBlockToAir(pos);
+		return new Object[]{fluidStack.amount};
+	}
+
+	private Object[] emptyToWorld(EnumFacing direction) {
+		// Try the empty
+		boolean placed = FluidUtil.tryPlaceFluid(null,
+				turtle.getWorld(),
+				turtle.getPosition().offset(direction),
+				fluidTank,
+				fluidTank.getFluid());
+		int amount = 0;
+		// Placed in world
+		if (placed) {
+			amount = 1000; // Amount of a bucket
+			saveTankDataToTurtle();
+		}
+		// Space was not clear. Try to put into a fluid handler
+		else {
+			BlockPos pos = turtle.getPosition().offset(direction);
+			// Ensure the block is a fluid handler
+			IFluidHandler fluidHandler = FluidUtil.getFluidHandler(turtle.getWorld(), pos,
+					direction.getOpposite());
+			if (fluidHandler != null) {
+				FluidStack transferResult = FluidUtil.tryFluidTransfer(fluidHandler, fluidTank,
+						TRANSFER_AMOUNT, true);
+				if (transferResult != null) {
+					amount = transferResult.amount;
+					saveTankDataToTurtle();
+				}
+			}
+		}
+		return new Object[]{amount};
+	}
+
+	private int getFirstArgumentAsSlot(Object[] arguments) throws LuaException {
+		int drainSlot; // The slot that contains the container
+		// If a slot is specified, check that it is valid and set it. If none is specified, use the currently selected slot
+		if (arguments.length > 1) {
+			if (arguments[0] instanceof Double) {
+				drainSlot = (int) (double) (Double) arguments[0];
+				if (drainSlot < 1 || drainSlot > turtle.getInventory().getSizeInventory())
+					throw new LuaException("Slot index out of bounds");
+			} else {
+				throw new LuaException("Bad argument #1 (expected number)");
+			}
+		} else {
+			drainSlot = turtle.getSelectedSlot();
+		}
+		return drainSlot;
+	}
+
+	private Object[] drain(int drainSlot) throws LuaException {
+		ItemStack drainStack = turtle.getInventory().getStackInSlot(drainSlot);
+		FluidStack drainFluidStack = FluidUtil.getFluidContained(drainStack);
+		IFluidHandlerItem drainFluidHandler = FluidUtil.getFluidHandler(drainStack);
+		if (drainFluidStack == null || drainFluidHandler == null || drainFluidStack.amount <= 0)
+			throw new LuaException("Item does not contain fluid");
+		if (fluidTank.getFluid() != null && !fluidTank.getFluid().isFluidEqual(drainFluidStack))
+			throw new LuaException("Fluid types do not match");
+		FluidStack transfer = FluidUtil.tryFluidTransfer(fluidTank, drainFluidHandler, Config.maxNumberOfMillibuckets,
+				true);
+		if (transfer == null)
+			return new Object[]{0};
+		turtle.getInventory().setInventorySlotContents(drainSlot, drainFluidHandler.getContainer());
+		saveTankDataToTurtle();
+		return new Object[]{transfer.amount};
+	}
+
+	private Object[] fill(int fillSlot) throws LuaException {
+		ItemStack fillStack = turtle.getInventory().getStackInSlot(fillSlot);
+		FluidStack fillFluidStack = FluidUtil.getFluidContained(fillStack);
+		IFluidHandlerItem fillFluidHandler = FluidUtil.getFluidHandler(fillStack);
+		if (fillFluidHandler == null)
+			throw new LuaException("Item cannot contain fluid");
+		if (fluidTank.getFluid() == null)
+			throw new LuaException("Internal tank does not contain fluid");
+		if (fillFluidStack != null && !fluidTank.getFluid().equals(fillFluidStack))
+			throw new LuaException("Fluid types do not match");
+		FluidStack transfer = FluidUtil.tryFluidTransfer(fillFluidHandler, fluidTank, Config.maxNumberOfMillibuckets,
+				true);
+		if (transfer == null)
+			return new Object[]{0};
+		turtle.getInventory().setInventorySlotContents(fillSlot, fillFluidHandler.getContainer());
+		saveTankDataToTurtle();
+		return new Object[]{transfer.amount};
+	}
+
+	private Object[] getFluid() {
+		if (fluidTank.getFluid() != null) {
+			HashMap<String, Object> map = new HashMap<>();
+			map.put("amount", fluidTank.getFluidAmount());
+			map.put("name", fluidTank.getFluid().getLocalizedName());
+			map.put("id", fluidTank.getFluid().getFluid().getName());
+			map.put("registered", FluidRegistry.isFluidRegistered(fluidTank.getFluid().getFluid()));
+			return new Object[]{map};
 		}
 		return new Object[0];
 	}
 
-	public void update() {
-		if (doUpdate) {
-			NBTTagCompound newTag = new NBTTagCompound();
-			NBTTagCompound turtleTag = turtle.getUpgradeNBTData(side);
-			fluidTank.writeToNBT(newTag);
-			turtleTag.setTag("TankData", newTag);
-			turtle.updateUpgradeNBTData(side);
-			doUpdate = false;
-		}
-	}
-
-	/**
-	 * Gets the flowing version of a fluid block. Only vanilla liquids are two separate blocks.
-	 * @param staticBlock The static version of the fluid (water or lava)
-	 * @return The flowing version (flowing_water or flowing_lava). If the staticBlock is neither, then it is a forge fluid which is already the flowing version.
-	 */
-	private Block getFlowingBlock(Block staticBlock) {
-		if (staticBlock == Blocks.water) {
-			return Blocks.flowing_water;
-		} else if (staticBlock == Blocks.lava) {
-			return Blocks.flowing_lava;
-		}
-		return staticBlock;
-	}
-
-	// Finds the first empty slot in the given inventory.
-	private int getFirstEmptySlotIndex(IInventory inv) {
-		for (int slot = 0; slot < inv.getSizeInventory(); slot++) {
-			if (inv.getStackInSlot(slot) == null) {
-				return slot;
-			}
-		}
-		return -1;
+	private void saveTankDataToTurtle() {
+		NBTTagCompound newTag = new NBTTagCompound();
+		NBTTagCompound turtleTag = turtle.getUpgradeNBTData(side);
+		fluidTank.writeToNBT(newTag);
+		turtleTag.setTag("TankData", newTag);
+		turtle.updateUpgradeNBTData(side);
 	}
 
 	@Override

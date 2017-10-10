@@ -1,34 +1,43 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.arboriculture;
 
-import java.util.ArrayList;
+import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 import com.mojang.authlib.GameProfile;
 
 import forestry.api.genetics.IAllele;
 import forestry.api.genetics.IChromosome;
-import forestry.api.genetics.IIndividual;
-import forestry.api.genetics.ISpeciesRoot;
+import forestry.api.genetics.IFruitFamily;
+import forestry.api.genetics.ISpeciesRootPollinatable;
 
-public interface ITreeRoot extends ISpeciesRoot {
+public interface ITreeRoot extends ISpeciesRootPollinatable {
 
 	@Override
 	boolean isMember(ItemStack itemstack);
 
 	@Override
+	@Nullable
 	ITree getMember(ItemStack itemstack);
 
 	@Override
 	ITree getMember(NBTTagCompound compound);
+
+	@Override
+	ITree templateAsIndividual(IAllele[] template);
+
+	@Override
+	ITree templateAsIndividual(IAllele[] templateActive, IAllele[] templateInactive);
 
 	@Override
 	ITreeGenome templateAsGenome(IAllele[] template);
@@ -37,15 +46,16 @@ public interface ITreeRoot extends ISpeciesRoot {
 	ITreeGenome templateAsGenome(IAllele[] templateActive, IAllele[] templateInactive);
 
 	/**
-	 * @param world
 	 * @return {@link IArboristTracker} associated with the passed world.
 	 */
 	@Override
-	IArboristTracker getBreedingTracker(World world, GameProfile player);
+	IArboristTracker getBreedingTracker(World world, @Nullable GameProfile player);
 
 	/* TREE SPECIFIC */
+
 	/**
 	 * Register a leaf tick handler.
+	 *
 	 * @param handler the {@link ILeafTickHandler} to register.
 	 */
 	void registerLeafTickHandler(ILeafTickHandler handler);
@@ -53,21 +63,18 @@ public interface ITreeRoot extends ISpeciesRoot {
 	Collection<ILeafTickHandler> getLeafTickHandlers();
 
 	/**
-	 * @return type of tree encoded on the itemstack. EnumBeeType.NONE if it isn't a tree.
+	 * @return type of tree encoded on the itemstack. EnumGermlingType.NONE if it isn't a tree.
 	 */
+	@Nullable
+	@Override
 	EnumGermlingType getType(ItemStack stack);
 
-	ITree getTree(World world, int x, int y, int z);
+	@Nullable
+	ITree getTree(World world, BlockPos pos);
 
 	ITree getTree(World world, ITreeGenome genome);
 
-	boolean plantSapling(World world, ITree tree, GameProfile owner, int x, int y, int z);
-
-	// decorative=true for creative and player-placed leaves. No decay, pollination, or drops.
-	boolean setLeaves(World world, IIndividual tree, GameProfile owner, int x, int y, int z, boolean decorative);
-
-	// set normal leaves created as worldgen
-	boolean setLeaves(World world, IIndividual tree, GameProfile owner, int x, int y, int z);
+	boolean plantSapling(World world, ITree tree, GameProfile owner, BlockPos pos);
 
 	@Override
 	IChromosome[] templateAsChromosomes(IAllele[] template);
@@ -75,25 +82,28 @@ public interface ITreeRoot extends ISpeciesRoot {
 	@Override
 	IChromosome[] templateAsChromosomes(IAllele[] templateActive, IAllele[] templateInactive);
 
-	boolean setFruitBlock(World world, IAlleleFruit allele, float sappiness, short[] indices, int x, int y, int z);
+	boolean setFruitBlock(World world, ITreeGenome genome, IAlleleFruit allele, float sappiness, BlockPos pos);
 
 	/* GAME MODE */
-	ArrayList<ITreekeepingMode> getTreekeepingModes();
+	List<ITreekeepingMode> getTreekeepingModes();
 
 	ITreekeepingMode getTreekeepingMode(World world);
 
+	@Nullable
 	ITreekeepingMode getTreekeepingMode(String name);
 
 	void registerTreekeepingMode(ITreekeepingMode mode);
 
-	void setTreekeepingMode(World world, String name);
+	void setTreekeepingMode(World world, ITreekeepingMode mode);
 
 	/* TEMPLATES */
+
 	@Override
-	ArrayList<ITree> getIndividualTemplates();
+	List<ITree> getIndividualTemplates();
 
 	/* MUTATIONS */
 	@Override
-	Collection<ITreeMutation> getMutations(boolean shuffle);
+	List<ITreeMutation> getMutations(boolean shuffle);
 
+	Collection<IFruitProvider> getFruitProvidersForFruitFamily(IFruitFamily fruitFamily);
 }

@@ -3,39 +3,40 @@ package com.austinv11.peripheralsplusplus.items;
 import com.austinv11.peripheralsplusplus.client.models.ModelSmartHelmet;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import cpw.mods.fml.client.registry.RenderingRegistry;
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.model.ModelBiped;
-import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.ISpecialArmor;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+
+import javax.annotation.Nullable;
 
 public class ItemSmartHelmet extends ItemArmor implements ISpecialArmor {
 	
-	public ItemSmartHelmet(ArmorMaterial material, int renderIndex, int armorType) {
+	public ItemSmartHelmet(ArmorMaterial material, int renderIndex, EntityEquipmentSlot armorType) {
 		super(material, renderIndex, armorType);
 		this.setCreativeTab(CreativeTabPPP.PPP_TAB);
-		this.setUnlocalizedName("smartHelmet");
+		this.setUnlocalizedName("smart_helmet");
+		this.setRegistryName(Reference.MOD_ID, "smart_helmet");
 	}
 
 	public ItemSmartHelmet() {
-		this(ArmorMaterial.IRON, FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT ? RenderingRegistry.addNewArmourRendererPrefix("smartHelmet") : 0, 0);
+	    this(ArmorMaterial.IRON, 0, EntityEquipmentSlot.HEAD);
 	}
 
-	@SideOnly(Side.CLIENT)
+	@Nullable
 	@Override
-	public String getArmorTexture(ItemStack itemstack, Entity entity, int slot, String type) {
-		if (itemstack.getItem() instanceof ItemSmartHelmet){
-			return Reference.MOD_ID.toLowerCase()+":textures/models/armor/smartHelmet.png";
+	public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
+		if (stack.getItem() instanceof ItemSmartHelmet){
+			return Reference.MOD_ID.toLowerCase()+":textures/models/armor/smart_helmet.png";
 		}
-		return super.getArmorTexture(itemstack, entity, slot, type);
+		return super.getArmorTexture(stack, entity, slot, type);
 	}
 
 	@Override
@@ -48,11 +49,7 @@ public class ItemSmartHelmet extends ItemArmor implements ISpecialArmor {
 		return String.format("item.%s%s", Reference.MOD_ID.toLowerCase()+":", getUnwrappedUnlocalizedName(super.getUnlocalizedName()));
 	}
 
-	@SideOnly(Side.CLIENT)
-	@Override
-	public void registerIcons(IIconRegister iconRegister){//Sets the icon
-		itemIcon = iconRegister.registerIcon(String.format("%s", getUnwrappedUnlocalizedName(this.getUnlocalizedName())));
-	}
+
 
 	protected String getUnwrappedUnlocalizedName(String unlocalizedName){//Removes the "item." from the item name
 		return unlocalizedName.substring(unlocalizedName.indexOf(".")+1);
@@ -72,10 +69,11 @@ public class ItemSmartHelmet extends ItemArmor implements ISpecialArmor {
 	public void damageArmor(EntityLivingBase entity, ItemStack stack, DamageSource source, int damage, int slot) {}
 
 	@SideOnly(Side.CLIENT)
+	@Nullable
 	@Override
-	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, int armorSlot) {
+	public ModelBiped getArmorModel(EntityLivingBase entityLiving, ItemStack itemStack, EntityEquipmentSlot armorSlot, ModelBiped _default) {
 		if (itemStack.getItem() instanceof ItemSmartHelmet)
 			return new ModelSmartHelmet();
-		return super.getArmorModel(entityLiving, itemStack, armorSlot);
+		return super.getArmorModel(entityLiving, itemStack, armorSlot, _default);
 	}
 }

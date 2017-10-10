@@ -2,113 +2,145 @@ package com.austinv11.peripheralsplusplus.recipe;
 
 import com.austinv11.collectiveframework.minecraft.utils.Colors;
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
-import com.austinv11.collectiveframework.utils.ArrayUtils;
 import com.austinv11.peripheralsplusplus.blocks.BlockPeripheralContainer;
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.InventoryCrafting;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagList;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public class ContainerRecipe implements IRecipe {
-	
-	private static Block[] blacklist = new Block[]{ModBlocks.antenna};
-	
-	@Override
+	private final ResourceLocation group;
+	private ResourceLocation name;
+
+    public ContainerRecipe(ResourceLocation group) {
+        super();
+		this.group = group;
+    }
+
+    @Override
 	public boolean matches(InventoryCrafting craftingInventory, World world) {
-		boolean hasContainer = false;
-		boolean hasPeripheral = false;
-		int numOfPeripherals = 0;
-		int numOfContained = 0;
-		ItemStack container = new ItemStack(ModBlocks.peripheralContainer);
-		for (int i = 0; i < craftingInventory.getSizeInventory(); i++)
-			if (craftingInventory.getStackInSlot(i) != null) {
-				if (!(craftingInventory.getStackInSlot(i).getItem() instanceof ItemBlock))
-					return false;
-				else {
-					Block block = Block.getBlockFromItem(craftingInventory.getStackInSlot(i).getItem());
-					if (block instanceof BlockPeripheralContainer && hasContainer)
-						return false;
-					else if (block instanceof BlockPeripheralContainer) {
-						hasContainer = true;
-						container = craftingInventory.getStackInSlot(i);
-					} else if (ArrayUtils.indexOf(blacklist, block) == -1) {
-						return false;
-					} else if (block instanceof IPeripheralProvider) {
-						hasPeripheral = true;
-						numOfPeripherals++;
-					}
-				}
+		ItemStack container = getPeripheralContainer(craftingInventory);
+		if (container.isEmpty())
+			return false;
+		List<ContainedPeripheral> peripherals = getPeripherals(craftingInventory);
+		if (peripherals.size() == 0)
+			return false;
+		int items = 0;
+		for (int itemStack = 0; itemStack < craftingInventory.getSizeInventory(); itemStack++)
+			if (!craftingInventory.getStackInSlot(itemStack).isEmpty())
+				items++;
+		if (items != peripherals.size() + 1)
+			return false;
+		NBTTagList contained = getContainedPeripherals(container);
+		return contained.tagCount() + peripherals.size() <= Config.maxNumberOfPeripherals;
+	}
+
+	private NBTTagList getContainedPeripherals(ItemStack container) {
+		NBTTagList tagList = new NBTTagList();
+		if (container.getTagCompound() != null && container.getTagCompound()
+				.hasKey(ModBlocks.PERIPHERAL_CONTAINER.getRegistryName().toString())) {
+			NBTBase idTag = container.getTagCompound()
+					.getTag(ModBlocks.PERIPHERAL_CONTAINER.getRegistryName().toString());
+			if (!(idTag instanceof NBTTagList))
+				return tagList;
+			return (NBTTagList)idTag;
+		}
+		return tagList;
+	}
+
+	private ItemStack getPeripheralContainer(InventoryCrafting inventory) {
+		ItemStack returnStack = ItemStack.EMPTY;
+		for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+			ItemStack itemStack = inventory.getStackInSlot(slot).copy();
+			if (Block.getBlockFromItem(itemStack.getItem()) instanceof BlockPeripheralContainer) {
+				if (itemStack.getCount() != 1 || !returnStack.isEmpty())
+					return ItemStack.EMPTY;
+				returnStack = itemStack.copy();
 			}
-		numOfContained = container.stackTagCompound == null || container.stackTagCompound.hasNoTags() ? 0 : NBTHelper.getIntArray(container, "ids").length;
-		return hasContainer && hasPeripheral && (numOfContained+numOfPeripherals <= Config.maxNumberOfPeripherals);
+		}
+		return returnStack;
 	}
 
 	@Override
 	public ItemStack getCraftingResult(InventoryCrafting craftingInventory) {
-		HashMap<Integer,IPeripheral> map = new HashMap<Integer,IPeripheral>();
-		ItemStack base = new ItemStack(ModBlocks.peripheralContainer);
-		for (int i = 0; i < craftingInventory.getSizeInventory(); i++)
-			if (craftingInventory.getStackInSlot(i) != null)
-				if (Block.getBlockFromItem(craftingInventory.getStackInSlot(i).getItem()) instanceof IPeripheralProvider && !(Block.getBlockFromItem(craftingInventory.getStackInSlot(i).getItem()) instanceof BlockPeripheralContainer)) {
-					TileEntity ent = Block.getBlockFromItem(craftingInventory.getStackInSlot(i).getItem()).createTileEntity(null, 0);
-					if (ent != null && ent instanceof IPeripheral)
-						map.put(Block.getIdFromBlock(Block.getBlockFromItem(craftingInventory.getStackInSlot(i).getItem())), (IPeripheral)ent);
-				}else if (Block.getBlockFromItem(craftingInventory.getStackInSlot(i).getItem()) instanceof BlockPeripheralContainer)
-					base.stackTagCompound = craftingInventory.getStackInSlot(i).stackTagCompound == null ? null : (NBTTagCompound) craftingInventory.getStackInSlot(i).stackTagCompound.copy();
-		List<String> text = new ArrayList<String>();
-		if (base.stackTagCompound == null || base.stackTagCompound.hasNoTags() || !base.stackTagCompound.hasKey("ids")) {
-			NBTHelper.setIntArray(base, "ids", setToArray(map.keySet()));
-			text.add(Colors.RESET.toString()+Colors.UNDERLINE+"Contained Peripherals:");
-			for (IPeripheral p : map.values())
-				text.add(Colors.RESET+p.getType());
-			NBTHelper.addInfo(base, text);
-		} else {
-			text.add(Colors.RESET.toString()+Colors.UNDERLINE+"Contained Peripherals:");
-			int[] ids = NBTHelper.getIntArray(base, "ids");
-			int[] newIds = new int[ids.length+map.size()];
-			for (int j = 0; j < ids.length+map.size(); j++)
-				newIds[j] = j >= ids.length ? (Integer)map.keySet().toArray()[j-ids.length] : ids[j];
-			NBTHelper.setIntArray(base, "ids", newIds);
-			for (int id : newIds) {
-				Block peripheral = Block.getBlockById(id);
-				IPeripheral iPeripheral = (IPeripheral)peripheral.createTileEntity(null, 0);
-				text.add(Colors.RESET+iPeripheral.getType());
-			}
-			NBTHelper.setInfo(base, text);
+		ItemStack container = getPeripheralContainer(craftingInventory);
+		List<ContainedPeripheral> peripherals = getPeripherals(craftingInventory);
+		NBTTagList contained = getContainedPeripherals(container);
+		List<String> text = new ArrayList<>();
+		if (contained.tagCount() == 0)
+			text.add(Colors.RESET.toString() + Colors.UNDERLINE + "Contained Peripherals:");
+		for (ContainedPeripheral peripheral : peripherals) {
+			contained.appendTag(peripheral.toNbt());
+			text.add(Colors.RESET + peripheral.getBlockResourceLocation().toString());
 		}
-		return base;
+		NBTHelper.setTag(container, ModBlocks.PERIPHERAL_CONTAINER.getRegistryName().toString(), contained);
+		NBTHelper.addInfo(container, text);
+		return container;
 	}
 
-	private int[] setToArray(Set<Integer> c) {
-		int[] array = new int[c.size()];
-		int i = 0;
-		for (int j : c) {
-			array[i] = j;
-			i++;
+	private List<ContainedPeripheral> getPeripherals(InventoryCrafting inventory) {
+		List<ContainedPeripheral> peripherals = new ArrayList<>();
+		for (int slot = 0; slot < inventory.getSizeInventory(); slot++) {
+			ItemStack itemStack = inventory.getStackInSlot(slot).copy();
+			// FIXME handle multi-blocks
+			// The "crafting" recipe may need to be changed to an in world method to make use of the peripheral provider
+			// interfaces. A possibility may just be creating a fake world, placing the block, and requesting peripheral
+			// providers to check that world in the check/create methods of the crafting recipe.
+			if (itemStack.getMetadata() != 0)
+				continue;
+			if (itemStack.getCount() != 1)
+				continue;
+			Block block = Block.getBlockFromItem(itemStack.getItem());
+			IPeripheral peripheral = ContainedPeripheral.getPeripheralForBlock(block);
+			if (peripheral == null)
+				continue;
+			ResourceLocation name = ForgeRegistries.BLOCKS.getKey(block);
+			peripherals.add(new ContainedPeripheral(name, peripheral));
 		}
-		return array;
+		return peripherals;
 	}
 
 	@Override
-	public int getRecipeSize() {
-		return 9;
-	}
+    public boolean canFit(int width, int height) {
+        return true;
+    }
 
 	@Override
 	public ItemStack getRecipeOutput() {
-		return new ItemStack(ModBlocks.peripheralContainer);
+		return new ItemStack(ModBlocks.PERIPHERAL_CONTAINER);
+	}
+
+    @Override
+    public IRecipe setRegistryName(ResourceLocation name) {
+	    this.name = name;
+        return this;
+    }
+
+    @Nullable
+    @Override
+    public ResourceLocation getRegistryName() {
+        return name;
+    }
+
+    @Override
+    public Class<IRecipe> getRegistryType() {
+        return IRecipe.class;
+    }
+
+	@Override
+	public String getGroup() {
+		return group.toString();
 	}
 }

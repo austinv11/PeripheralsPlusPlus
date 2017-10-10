@@ -1,52 +1,39 @@
 package com.austinv11.peripheralsplusplus.creativetab;
 
 import com.austinv11.peripheralsplusplus.init.ModBlocks;
+import com.austinv11.peripheralsplusplus.init.ModPeripherals;
 import com.austinv11.peripheralsplusplus.reference.Reference;
-import cpw.mods.fml.common.registry.GameRegistry;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.austinv11.peripheralsplusplus.utils.TurtleUtil;
+import dan200.computercraft.api.pocket.IPocketUpgrade;
 import dan200.computercraft.api.turtle.ITurtleUpgrade;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-
-import java.util.LinkedList;
-import java.util.List;
+import net.minecraft.util.NonNullList;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class CreativeTabPPP {
-
-	public static final List<ITurtleUpgrade> upgrades = new LinkedList<ITurtleUpgrade>();
 
 	public static final CreativeTabs PPP_TAB = new CreativeTabs(Reference.MOD_ID.toLowerCase()) {
 
 		@SideOnly(Side.CLIENT)
 		@Override
-		public Item getTabIconItem() {
-			return Item.getItemFromBlock(ModBlocks.chatBox);
+		public ItemStack getTabIconItem() {
+			return new ItemStack(Item.getItemFromBlock(ModBlocks.CHAT_BOX));
 		}
 
 		@SideOnly(Side.CLIENT)
 		@Override
-		public void displayAllReleventItems(List list) {
-			super.displayAllReleventItems(list);
-			ItemStack base = GameRegistry.findItemStack("ComputerCraft", "CC-TurtleExpanded", 1);
-			if (base != null) {
-				for (ITurtleUpgrade upgrade : upgrades) {
-					ItemStack upg1 = base.copy();
-					upg1.stackTagCompound = new NBTTagCompound();
-					upg1.stackTagCompound.setShort("leftUpgrade", (short) upgrade.getUpgradeID());
-					list.add(upg1);
-				}
+		public void displayAllRelevantItems(NonNullList<ItemStack> list) {
+			super.displayAllRelevantItems(list);
+			for (ITurtleUpgrade upgrade : ModPeripherals.TURTLE_UPGRADES) {
+				list.add(TurtleUtil.getTurtle(false, upgrade));
+				list.add(TurtleUtil.getTurtle(true, upgrade));
 			}
-			ItemStack base2 = GameRegistry.findItemStack("ComputerCraft", "CC-TurtleAdvanced", 1);
-			if (base2 == null)
-				return;
-			for (ITurtleUpgrade upgrade : upgrades) {
-				ItemStack upg1 = base2.copy();
-				upg1.stackTagCompound = new NBTTagCompound();
-				upg1.stackTagCompound.setShort("leftUpgrade", (short) upgrade.getUpgradeID());
-				list.add(upg1);
+			for (IPocketUpgrade pocketUpgrade : ModPeripherals.POCKET_UPGRADES) {
+				list.add(TurtleUtil.getPocket(false, pocketUpgrade));
+				list.add(TurtleUtil.getPocket(true, pocketUpgrade));
 			}
 		}
 	};

@@ -1,11 +1,11 @@
 package com.austinv11.peripheralsplusplus.smarthelmet;
 
 import com.austinv11.peripheralsplusplus.client.gui.GuiHelmet;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 //Gui only
 public class AddButtonCommand extends HelmetCommand {

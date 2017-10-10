@@ -1,11 +1,12 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.apiculture;
 
-import forestry.api.genetics.AlleleManager;
+import java.util.Locale;
+
 import forestry.api.genetics.IAllele;
 import forestry.api.genetics.IAlleleArea;
 import forestry.api.genetics.IAlleleBoolean;
@@ -18,7 +19,7 @@ import forestry.api.genetics.ISpeciesRoot;
 
 /**
  * Enum representing the order of chromosomes in a bee's genome and what they control.
- * 
+ *
  * @author SirSengir
  */
 public enum EnumBeeChromosome implements IChromosomeType {
@@ -43,14 +44,9 @@ public enum EnumBeeChromosome implements IChromosomeType {
 	 */
 	TEMPERATURE_TOLERANCE(IAlleleTolerance.class),
 	/**
-	 * Slightly incorrectly named. If true, a naturally dirunal bee can work during the night. If true, a naturally nocturnal bee can work during the day.
+	 * If true, a naturally diurnal bee can work during the night. If true, a naturally nocturnal bee can work during the day.
 	 */
-	NOCTURNAL(IAlleleBoolean.class),
-	/**
-	 * Not used / superseded by fixed values for the species. Probably going to be replaced with a boolean for FIRE_RESIST.
-	 */
-	@Deprecated
-	HUMIDITY(IAllele.class),
+	NEVER_SLEEPS(IAlleleBoolean.class),
 	/**
 	 * Humidity difference to its native supported one the bee can tolerate.
 	 */
@@ -58,7 +54,7 @@ public enum EnumBeeChromosome implements IChromosomeType {
 	/**
 	 * If true the bee can work during rain.
 	 */
-	TOLERANT_FLYER(IAlleleBoolean.class),
+	TOLERATES_RAIN(IAlleleBoolean.class),
 	/**
 	 * If true, the bee can work without a clear view of the sky.
 	 */
@@ -79,25 +75,25 @@ public enum EnumBeeChromosome implements IChromosomeType {
 	 * Determines the bee's effect.
 	 */
 	EFFECT(IAlleleBeeEffect.class);
-	
-	Class<? extends IAllele> clss;
-	
-	EnumBeeChromosome(Class<? extends IAllele> clss) {
-		this.clss = clss;
+
+	private final Class<? extends IAllele> alleleClass;
+
+	EnumBeeChromosome(Class<? extends IAllele> alleleClass) {
+		this.alleleClass = alleleClass;
 	}
 
 	@Override
 	public Class<? extends IAllele> getAlleleClass() {
-		return clss;
+		return alleleClass;
 	}
 
 	@Override
 	public String getName() {
-		return this.toString().toLowerCase();
+		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
 
 	@Override
 	public ISpeciesRoot getSpeciesRoot() {
-		return AlleleManager.alleleRegistry.getSpeciesRoot("rootBees");
+		return BeeManager.beeRoot;
 	}
 }

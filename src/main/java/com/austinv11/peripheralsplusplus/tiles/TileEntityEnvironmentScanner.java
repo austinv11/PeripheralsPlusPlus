@@ -1,6 +1,7 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
 import com.austinv11.peripheralsplusplus.reference.Config;
+import com.austinv11.peripheralsplusplus.utils.ReflectionHelper;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
@@ -36,23 +37,26 @@ public class TileEntityEnvironmentScanner extends MountedTileEntity {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
+		return nbttagcompound;
 	}
 
-	@Override
-	public void updateEntity() {
-		if (worldObj != null) {
-			isRaining = worldObj.isRaining();
-			biome = worldObj.getBiomeGenForCoords(xCoord, zCoord).biomeName;
-			temp = worldObj.getBiomeGenForCoords(xCoord, zCoord).getTempCategory().name();
-			isSnow = worldObj.getBiomeGenForCoords(xCoord, zCoord).getEnableSnow();
+	public void update() {
+		if (world != null) {
+			isRaining = world.isRaining();
+			biome = world.getBiome(getPos()).getBiomeName();
+			temp = world.getBiome(getPos()).getTempCategory().name();
+			isSnow = world.getBiome(getPos()).getEnableSnow();
 		}
 		if (turtle != null) {
-			this.setWorldObj(turtle.getWorld());
-			this.xCoord = turtle.getPosition().posX;
-			this.zCoord = turtle.getPosition().posZ;
+			this.setWorld(turtle.getWorld());
+			this.setPos(turtle.getPosition());
 		}
+		else
+			try {
+				turtle = ReflectionHelper.getTurtle(this);
+			} catch (Exception ignore) {}
 	}
 
 	@Override

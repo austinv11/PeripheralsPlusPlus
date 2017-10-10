@@ -3,12 +3,12 @@ package com.austinv11.peripheralsplusplus.event.handler;
 import com.austinv11.collectiveframework.minecraft.utils.Colors;
 import com.austinv11.collectiveframework.minecraft.utils.NBTHelper;
 import com.austinv11.peripheralsplusplus.items.ItemBlockPeripheralContainer;
-import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,11 +17,12 @@ public class PeripheralContainerHandler {
 
 	@SubscribeEvent
 	public void onInteract(PlayerInteractEvent event) {
-		if (event.action == PlayerInteractEvent.Action.RIGHT_CLICK_AIR)
-			if (event.entityPlayer.getCurrentEquippedItem() != null && event.entityPlayer.getCurrentEquippedItem().getItem() instanceof ItemBlockPeripheralContainer) {
-				InventoryPlayer inv = event.entityPlayer.inventory;
-				List<String> text = new ArrayList<String>();
-				ItemStack stack = event.entityPlayer.getCurrentEquippedItem();
+		if (event instanceof PlayerInteractEvent.RightClickEmpty)
+			if (!event.getEntityPlayer().getHeldItemMainhand().isEmpty() &&
+					event.getEntityPlayer().getHeldItemMainhand().getItem() instanceof ItemBlockPeripheralContainer) {
+				InventoryPlayer inv = event.getEntityPlayer().inventory;
+				List<String> text = new ArrayList<>();
+				ItemStack stack = event.getEntityPlayer().getHeldItemMainhand();
 				NBTHelper.removeInfo(stack);
 				text.add(Colors.RESET.toString()+Colors.UNDERLINE+"Contained Peripherals:");
 				int[] ids = NBTHelper.getIntArray(stack, "ids");
@@ -33,7 +34,8 @@ public class PeripheralContainerHandler {
 						NBTHelper.setIntArray(stack, "ids", newIds);
 						for (int id : newIds) {
 							Block peripheral = Block.getBlockById(id);
-							IPeripheral iPeripheral = (IPeripheral) peripheral.createTileEntity(null, 0);
+							IPeripheral iPeripheral = (IPeripheral) peripheral.createTileEntity(event.getWorld(),
+									peripheral.getDefaultState());
 							text.add(Colors.RESET+iPeripheral.getType());
 						}
 						if (text.size() > 1)

@@ -1,18 +1,20 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.arboriculture;
 
-public enum EnumGermlingType {
-	SAPLING("sapling"), BLOSSOM("blossom"), POLLEN("pollen"), GERMLING("germling"), NONE("none");
+import forestry.api.genetics.ISpeciesType;
+
+public enum EnumGermlingType implements ISpeciesType {
+	SAPLING("sapling"), POLLEN("pollen");
 
 	public static final EnumGermlingType[] VALUES = values();
-	
-	String name;
 
-	private EnumGermlingType(String name) {
+	private final String name;
+
+	EnumGermlingType(String name) {
 		this.name = name;
 	}
 

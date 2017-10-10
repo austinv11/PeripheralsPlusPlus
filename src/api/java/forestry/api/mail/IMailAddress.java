@@ -6,20 +6,15 @@
 package forestry.api.mail;
 
 import com.mojang.authlib.GameProfile;
-import forestry.api.core.INBTTagable;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.world.World;
+import forestry.api.core.INbtWritable;
 
-public interface IMailAddress extends INBTTagable {
+public interface IMailAddress extends INbtWritable {
 
 	EnumAddressee getType();
+
 	String getName();
 
 	boolean isValid();
 
-	boolean isPlayer();
-	boolean isTrader();
-
-	boolean isClientPlayer(World world);
 	GameProfile getPlayerProfile();
 }

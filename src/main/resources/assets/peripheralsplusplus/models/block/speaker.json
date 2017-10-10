@@ -1,0 +1,8 @@
+{
+  "parent": "block/orientable",
+  "textures": {
+    "top": "peripheralsplusplus:blocks/chat_box",
+    "front": "peripheralsplusplus:blocks/speaker",
+    "side": "peripheralsplusplus:blocks/chat_box"
+  }
+}

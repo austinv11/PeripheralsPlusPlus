@@ -1,17 +1,17 @@
 package com.austinv11.peripheralsplusplus.blocks;
 
+import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityTimeSensor;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
 import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
 
-public class BlockTimeSensor extends BlockPPP implements ITileEntityProvider {
+public class BlockTimeSensor extends BlockPppBase implements ITileEntityProvider {
 
 	public BlockTimeSensor() {
 		super();
-		this.setBlockName("timeSensor");
+		this.setRegistryName(Reference.MOD_ID, "time_sensor");
+		this.setUnlocalizedName("time_sensor");
 	}
 
 	@Override

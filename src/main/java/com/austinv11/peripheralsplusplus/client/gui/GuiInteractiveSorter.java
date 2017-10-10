@@ -6,7 +6,8 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.StatCollector;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraft.world.World;
 import org.lwjgl.opengl.GL11;
 
@@ -16,10 +17,12 @@ public class GuiInteractiveSorter extends GuiContainer {
 	private EntityPlayer player;
 	private World world;
 	private int sizeX, sizeY;
-	private ResourceLocation backgroundimage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" + "textures/gui/guiAnalyzer.png");
+	private ResourceLocation backgroundimage = new ResourceLocation(Reference.MOD_ID.toLowerCase() + ":" +
+			"textures/gui/analyzer.png");
 	
 	public GuiInteractiveSorter(EntityPlayer player, World world, int x, int y, int z) {
-		super(new ContainerInteractiveSorter(player, (IInventory)world.getTileEntity(x,y,z), 176, 166));
+		super(new ContainerInteractiveSorter(player, (IInventory)world.getTileEntity(new BlockPos(x, y, z)),
+				176, 166));
 		this.x = x;
 		this.y = y;
 		this.z = z;
@@ -36,7 +39,7 @@ public class GuiInteractiveSorter extends GuiContainer {
 		int x = (width - sizeX) / 2;
 		int y = (height - sizeY) / 2;
 		drawTexturedModalRect(x, y, 0, 0, sizeX, sizeY);
-		fontRendererObj.drawString(StatCollector.translateToLocal("peripheralsplusplus.inv.interactiveSorter"), x+42, y+3, 0x313131);
+		fontRenderer.drawString(I18n.translateToLocal(Reference.MOD_ID + ".inv.interactiveSorter"), x+42, y+3, 0x313131);
 	}
 	
 	@Override

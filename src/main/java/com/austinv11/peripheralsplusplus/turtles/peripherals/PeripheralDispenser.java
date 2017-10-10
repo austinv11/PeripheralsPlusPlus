@@ -6,13 +6,17 @@ import dan200.computercraft.api.lua.LuaException;
 import dan200.computercraft.api.peripheral.IComputerAccess;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import dan200.computercraft.api.turtle.ITurtleAccess;
+import net.minecraft.block.BlockDirectional;
 import net.minecraft.block.BlockDispenser;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.dispenser.IBehaviorDispenseItem;
 import net.minecraft.dispenser.IBlockSource;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
 
 public class PeripheralDispenser extends MountedPeripheral {
 	
@@ -33,20 +37,27 @@ public class PeripheralDispenser extends MountedPeripheral {
 	}
 	
 	@Override
-	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
+	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments)
+            throws LuaException, InterruptedException {
 		if (!Config.enableFlingingTurtle)
 			throw new LuaException("Flinging turtles have been disabled");
 		if (arguments.length > 0 && !(arguments[0] instanceof Double))
 			throw new LuaException("Bad argument #1 (expected number)");
 		int slot = 1;
-		int direction;
-		if (method == 1)
-			direction = ForgeDirection.DOWN.flag; //Why these are reversed, idk. Dispensers be dum
-		else if (method == 2)
-			direction = ForgeDirection.UP.flag;
-		else
-			direction = turtle.getDirection();
-		turtle.getDirection();
+		EnumFacing direction;
+		switch (method) {
+			case 0:
+				direction = turtle.getDirection();
+				break;
+			case 1:
+				direction = EnumFacing.UP;
+				break;
+			case 2:
+				direction = EnumFacing.DOWN;
+				break;
+			default:
+				throw new LuaException("Unhandled method");
+		}
 		if (arguments.length > 0)
 			slot += (int)(double)(Double)arguments[0];
 		else
@@ -54,12 +65,12 @@ public class PeripheralDispenser extends MountedPeripheral {
 		
 		synchronized (this) {
 			ItemStack stack = turtle.getInventory().getStackInSlot(slot);
-			if (stack != null) {
-				IBehaviorDispenseItem behavior = (IBehaviorDispenseItem) BlockDispenser.dispenseBehaviorRegistry.getObject(stack.getItem());
-				if (behavior != IBehaviorDispenseItem.itemDispenseBehaviorProvider) {
+			if (!stack.isEmpty()) {
+				IBehaviorDispenseItem behavior = BlockDispenser.DISPENSE_BEHAVIOR_REGISTRY.getObject(stack.getItem());
+				if (behavior != IBehaviorDispenseItem.DEFAULT_BEHAVIOR) {
 					BlockSourceTurtle blockSource = new BlockSourceTurtle(direction);
 					ItemStack newStack = behavior.dispense(blockSource, stack);
-					turtle.getInventory().setInventorySlotContents(slot, newStack.stackSize == 0 ? null : newStack);
+					turtle.getInventory().setInventorySlotContents(slot, newStack);
 					turtle.getInventory().markDirty();
 				}
 			}
@@ -74,50 +85,40 @@ public class PeripheralDispenser extends MountedPeripheral {
 	
 	public class BlockSourceTurtle implements IBlockSource {
 		
-		public int direction;
+		public EnumFacing direction;
 		
-		public BlockSourceTurtle(int direction) {
+		public BlockSourceTurtle(EnumFacing direction) {
 			this.direction = direction;
 		}
 		
 		@Override
 		public double getX() {
-			return turtle.getPosition().posX;
+			return turtle.getPosition().getX();
 		}
 		
 		@Override
 		public double getY() {
-			return turtle.getPosition().posY;
+			return turtle.getPosition().getY();
 		}
 		
 		@Override
 		public double getZ() {
-			return turtle.getPosition().posZ;
+			return turtle.getPosition().getZ();
 		}
-		
+
 		@Override
-		public int getXInt() {
-			return turtle.getPosition().posX;
+		public BlockPos getBlockPos() {
+			return turtle.getPosition();
 		}
-		
+
 		@Override
-		public int getYInt() {
-			return turtle.getPosition().posY;
-		}
-		
-		@Override
-		public int getZInt() {
-			return turtle.getPosition().posZ;
-		}
-		
-		@Override
-		public int getBlockMetadata() {
-			return direction;
+		public IBlockState getBlockState() {
+			return Blocks.DISPENSER.getDefaultState().withProperty(BlockDirectional.FACING, direction);
 		}
 		
 		@Override
 		public TileEntity getBlockTileEntity() {
-			return getWorld().getTileEntity(getXInt(), getYInt(), getZInt());
+			return getWorld().getTileEntity(turtle.getPosition());
 		}
 		
 		@Override

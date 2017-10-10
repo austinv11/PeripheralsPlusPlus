@@ -1,5 +1,6 @@
 package com.austinv11.peripheralsplusplus.tiles;
 
+import com.austinv11.collectiveframework.minecraft.reference.ModIds;
 import com.austinv11.peripheralsplusplus.reference.Config;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -11,6 +12,7 @@ import forestry.api.genetics.IIndividual;
 import forestry.api.genetics.ISpeciesRoot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraftforge.fml.common.Loader;
 
 import java.util.HashMap;
 
@@ -22,12 +24,12 @@ public abstract class TileEntityAnalyzer extends MountedTileEntityInventory {
 		super();
 		this.invName = "Analyzer";
 	}
-	
+
 	@Override
 	public int getSize() {
 		return 1;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -40,8 +42,9 @@ public abstract class TileEntityAnalyzer extends MountedTileEntityInventory {
 	}
 
 	@Override
-	public void writeToNBT(NBTTagCompound nbttagcompound) {
+	public NBTTagCompound writeToNBT(NBTTagCompound nbttagcompound) {
 		super.writeToNBT(nbttagcompound);
+		return nbttagcompound;
 	}
 
 	@Override
@@ -58,6 +61,8 @@ public abstract class TileEntityAnalyzer extends MountedTileEntityInventory {
 	public Object[] callMethod(IComputerAccess computer, ILuaContext context, int method, Object[] arguments) throws LuaException, InterruptedException {
 		if (!Config.enableAnalyzers)
 			throw new LuaException("Analyzers have been disabled");
+		if (!Loader.isModLoaded(ModIds.FORESTRY))
+			throw new LuaException("Forestry is not installed");
 		switch (method) {
 			case 0:
 				ISpeciesRoot root = getRoot();
@@ -65,7 +70,7 @@ public abstract class TileEntityAnalyzer extends MountedTileEntityInventory {
 				if (stack == null || !root.isMember(stack))
 					return new Object[] {false};
 				IIndividual individual = root.getMember(stack);
-				if (!individual.isAnalyzed())
+				if (individual == null || !individual.isAnalyzed())
 					return new Object[] {null};
 				HashMap<String, Object> ret = new HashMap<String, Object>();
 				addGenome(stack, individual.getGenome(), ret);

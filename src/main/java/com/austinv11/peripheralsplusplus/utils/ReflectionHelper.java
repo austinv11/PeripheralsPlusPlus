@@ -19,7 +19,9 @@ public class ReflectionHelper {
 		if (te instanceof ITurtleAccess)
 			return (ITurtleAccess) te;
 		Class teClass = te.getClass();
-		if (teClass.getName().equals("dan200.computercraft.shared.turtle.blocks.TileTurtleExpanded") || teClass.getName().equals("dan200.computercraft.shared.turtle.blocks.TileTurtleAdvanced") || teClass.getName().equals("dan200.computercraft.shared.turtle.blocks.TileTurtle")) {
+		if (teClass.getName().equals("dan200.computercraft.shared.turtle.blocks.TileTurtleExpanded") ||
+				teClass.getName().equals("dan200.computercraft.shared.turtle.blocks.TileTurtleAdvanced") ||
+				teClass.getName().equals("dan200.computercraft.shared.turtle.blocks.TileTurtle")) {
 			Method getAccess = teClass.getMethod("getAccess", new Class[0]);
 			ITurtleAccess turtle = (ITurtleAccess)getAccess.invoke(te, new Object[0]);
 			if (turtle != null)

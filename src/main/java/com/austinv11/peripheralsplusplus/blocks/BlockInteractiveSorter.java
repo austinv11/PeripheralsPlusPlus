@@ -4,26 +4,22 @@ import com.austinv11.peripheralsplusplus.PeripheralsPlusPlus;
 import com.austinv11.peripheralsplusplus.creativetab.CreativeTabPPP;
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityInteractiveSorter;
-import com.google.common.collect.Lists;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
-import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumBlockRenderType;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-
-import java.util.ArrayList;
 
 public class BlockInteractiveSorter extends BlockContainerPPP {
 	
 	public BlockInteractiveSorter() {
-		super(Material.rock);
-		this.setBlockName("interactiveSorter");
+		super(Material.ROCK);
+		this.setRegistryName(Reference.MOD_ID, "interactive_sorter");
+		this.setUnlocalizedName("interactive_sorter");
 		this.setCreativeTab(CreativeTabPPP.PPP_TAB);
 		this.setHardness(4f);
 	}
@@ -32,14 +28,21 @@ public class BlockInteractiveSorter extends BlockContainerPPP {
 	public TileEntity createNewTileEntity(World world, int meta) {
 		return new TileEntityInteractiveSorter();
 	}
-	
+
+    @Override
+    public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player,
+                                    EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        if (!world.isRemote) {
+            TileEntity te = world.getTileEntity(pos);
+            if (te != null)
+                player.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.INTERACTIVE_SORTER.ordinal(), world,
+                        pos.getX(), pos.getY(), pos.getZ());
+        }
+        return true;
+    }
+
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int meta, float hitX, float hitY, float hitZ){
-		TileEntity te = world.getTileEntity(x, y, z);
-		if (!world.isRemote) {
-			if (te != null)
-				player.openGui(PeripheralsPlusPlus.instance, Reference.GUIs.INTERACTIVE_SORTER.ordinal(), world, x, y, z);
-		}
-		return true;
+	public EnumBlockRenderType getRenderType(IBlockState state) {
+		return EnumBlockRenderType.MODEL;
 	}
 }

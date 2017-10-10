@@ -16,16 +16,11 @@ public class ContainerAnalyzer extends Container {
 	public ContainerAnalyzer(EntityPlayer player, IInventory inv, int xSize, int ySize) {
 		this.player = player;
 		this.inv = inv;
-		inv.openInventory();
+		inv.openInventory(player);
 		layout(xSize,ySize);
 	}
 
 	protected void layout(int xSize, int ySize) {
-		//for (int invRow = 0; invRow < inv.amountOfRows(); invRow++) {
-		//	for (int invCol = 0; invCol < inv.amountOfColumns(); invCol++) {
-				//addSlotToContainer(inv, invCol+row*column, 12+invCol*18,8+invRow*18);
-		//	}
-		//}
 		addSlotToContainer(new Slot(inv,0,slotX,slotY));
 		int leftCol = (xSize - 162) / 2 + 1;
 		for (int playerInvRow = 0; playerInvRow < 3; playerInvRow++) {
@@ -40,27 +35,8 @@ public class ContainerAnalyzer extends Container {
 
 	@Override
 	public ItemStack transferStackInSlot(EntityPlayer p_82846_1_, int p_82846_2_) {
-		/*ItemStack itemstack = null;
-		Slot slot = (Slot) inventorySlots.get(p_82846_2_);
-		if (slot != null && slot.getHasStack()) {
-			ItemStack itemstack1 = slot.getStack();
-			itemstack = itemstack1.copy();
-			if (p_82846_2_ < inventorySlots.size()) {
-				if (!mergeItemStack(itemstack1, 0, inventorySlots.size(), false)) {
-					return null;
-				}
-			} else if (!mergeItemStack(itemstack1, 0, 1, true)) {
-				return null;
-			}
-			if (itemstack1.stackSize == 0) {
-				slot.putStack(null);
-			} else {
-				slot.onSlotChanged();
-			}
-		}
-		return itemstack;*/
-		ItemStack var2 = null;
-		Slot var3 = (Slot)this.inventorySlots.get(p_82846_2_);
+		ItemStack var2 = ItemStack.EMPTY;
+		Slot var3 = this.inventorySlots.get(p_82846_2_);
 
 		if (var3 != null && var3.getHasStack()) {
 			ItemStack var4 = var3.getStack();
@@ -68,11 +44,11 @@ public class ContainerAnalyzer extends Container {
 
 			if (p_82846_2_ < 1) {
 				if (!this.mergeItemStack(var4, 1, this.inventorySlots.size(), true)) {
-					return null;
+					return ItemStack.EMPTY;
 				}
-			} else if (!this.mergeItemStack(var4, 0, 1, false)) return null;
+			} else if (!this.mergeItemStack(var4, 0, 1, false)) return ItemStack.EMPTY;
 
-			if (var4.stackSize == 0) var3.putStack((ItemStack)null);
+			if (var4.getCount() == 0) var3.putStack(ItemStack.EMPTY);
 			else var3.onSlotChanged();
 		}
 
@@ -80,7 +56,7 @@ public class ContainerAnalyzer extends Container {
 	}
 
 	@Override
-	public boolean canInteractWith(EntityPlayer p_75145_1_) {
-		return inv.isUseableByPlayer(p_75145_1_);
+	public boolean canInteractWith(EntityPlayer player) {
+		return inv.isUsableByPlayer(player);
 	}
 }

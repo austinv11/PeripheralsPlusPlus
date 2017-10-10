@@ -1,21 +1,16 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.genetics;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-
 import com.mojang.authlib.GameProfile;
-
 import forestry.api.core.EnumHumidity;
 import forestry.api.core.EnumTemperature;
-import forestry.api.core.IIconProvider;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
 
 /**
  * Basic species allele.
@@ -35,14 +30,14 @@ public interface IAlleleSpecies extends IAllele {
 	/**
 	 * Binomial name of the species sans genus ("Apis"). Returning "humboldti" will have the bee species flavour name be "Apis humboldti". Feel free to use fun
 	 * names or return null.
-	 * 
+	 *
 	 * @return flavour text (may be null)
 	 */
 	String getBinomial();
 
 	/**
 	 * Authority for the binomial name, e.g. "Sengir" on species of base Forestry.
-	 * 
+	 *
 	 * @return flavour text (may be null)
 	 */
 	String getAuthority();
@@ -53,29 +48,27 @@ public interface IAlleleSpecies extends IAllele {
 	IClassification getBranch();
 
 	/* RESEARCH */
+
 	/**
 	 * Complexity determines the difficulty researching a species. The values of primary and secondary are
 	 * added together (and rounded) to determine the amount of pairs needed for successful research.
+	 *
 	 * @return Values between 3 - 11 are useful.
 	 */
 	int getComplexity();
 
 	/**
-	 * @param itemstack
 	 * @return A float signifying the chance for the passed itemstack to yield a research success.
 	 */
 	float getResearchSuitability(ItemStack itemstack);
 
 	/**
-	 * @param world
-	 * @param gameProfile
-	 * @param individual
-	 * @param bountyLevel
-	 * @return Array of itemstacks representing the bounty for this research success.
+	 * @return itemstacks representing the bounty for this research success.
 	 */
-	ItemStack[] getResearchBounty(World world, GameProfile gameProfile, IIndividual individual, int bountyLevel);
+	NonNullList<ItemStack> getResearchBounty(World world, GameProfile gameProfile, IIndividual individual, int bountyLevel);
 
 	/* CLIMATE */
+
 	/**
 	 * @return Preferred temperature
 	 */
@@ -87,6 +80,7 @@ public interface IAlleleSpecies extends IAllele {
 	EnumHumidity getHumidity();
 
 	/* MISC */
+
 	/**
 	 * @return true if the species icon should have a glowing effect.
 	 */
@@ -103,13 +97,10 @@ public interface IAlleleSpecies extends IAllele {
 	boolean isCounted();
 
 	/* APPEARANCE */
+
 	/**
 	 * @param renderPass Render pass to get the colour for.
 	 * @return Colour to use for the render pass.
 	 */
-	int getIconColour(int renderPass);
-
-	@SideOnly(Side.CLIENT)
-	IIconProvider getIconProvider();
-
+	int getSpriteColour(int renderPass);
 }

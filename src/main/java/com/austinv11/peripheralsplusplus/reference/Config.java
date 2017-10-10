@@ -2,8 +2,11 @@ package com.austinv11.peripheralsplusplus.reference;
 
 import com.austinv11.collectiveframework.minecraft.config.Description;
 
-@com.austinv11.collectiveframework.minecraft.config.Config(fileName = "PeripheralsPlusPlus.cfg", exclude = {"enableAPIs", "ENABLE_CONFIG_MESSAGE"})
+@com.austinv11.collectiveframework.minecraft.config.Config(fileName = "PeripheralsPlusPlus.cfg",
+		exclude = {"enableAPIs", "ENABLE_CONFIG_MESSAGE", "INSTANCE"})
 public class Config {
+
+	public static final Config INSTANCE = new Config();
 	
 	private static final String ENABLE_CONFIG_MESSAGE = "If disabled, the recipe will be disabled and the current peripherals would cease to work";
 	
@@ -109,12 +112,6 @@ public class Config {
 	@Description(category = "Smart Helmet", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableSmartHelmet = true;
 	
-	@Description(category = "Iron Note Block", comment = ENABLE_CONFIG_MESSAGE)
-	public static boolean enableNoteBlock = true;
-	
-	@Description(category = "Iron Note Block", comment = "Audible range for the noteblock")
-	public static double noteBlockRange = 16;
-	
 	@Description(category = "Sign Reading Turtle", comment = ENABLE_CONFIG_MESSAGE)
 	public static boolean enableReaderTurtle = true;
 	
@@ -165,4 +162,7 @@ public class Config {
 
     @Description(category = "Player Interface", comment = "If disabled, the peripheral will require no permission cards to function and will be allowed to access all inventories regardless of permissions.")
     public static boolean enableInterfacePermissions = true;
+
+    @Description(category = "AI Chat Box", comment = "Cleverbot API key. This needs to be set (on the server if not playing single player) to use the service.")
+	public static String cleverbotApiKey = "";
 }

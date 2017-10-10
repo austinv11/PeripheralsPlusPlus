@@ -2,29 +2,32 @@ package com.austinv11.peripheralsplusplus.blocks;
 
 import com.austinv11.peripheralsplusplus.reference.Reference;
 import com.austinv11.peripheralsplusplus.tiles.TileEntityTeleporter;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import dan200.computercraft.api.peripheral.IPeripheral;
-import dan200.computercraft.api.peripheral.IPeripheralProvider;
-import net.minecraft.block.BlockPistonBase;
 import net.minecraft.block.ITileEntityProvider;
-import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.block.properties.PropertyInteger;
+import net.minecraft.block.state.BlockStateContainer;
+import net.minecraft.block.state.IBlockState;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.world.IBlockAccess;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
-public class BlockTeleporter extends BlockPPP implements ITileEntityProvider {
-
-	public IIcon frontIcon;
+public class BlockTeleporter extends BlockPppDirectional implements ITileEntityProvider {
+	public static final PropertyInteger TIER = PropertyInteger.create("tier", 0, 1);
 
 	public BlockTeleporter() {
 		super();
-		this.setBlockName("teleporter");
+		this.setDefaultState(this.blockState.getBaseState()
+				.withProperty(FACING, EnumFacing.NORTH)
+				.withProperty(TIER, 0));
+		this.setRegistryName(Reference.MOD_ID, "teleporter");
+		this.setUnlocalizedName("teleporter");
 	}
 
 	@Override
@@ -33,44 +36,50 @@ public class BlockTeleporter extends BlockPPP implements ITileEntityProvider {
 	}
 
 	@Override
-	public boolean hasTileEntity(int metadata) {
-		return true;
+	protected BlockStateContainer createBlockState() {
+		return new BlockStateContainer(this, FACING, TIER);
 	}
 
 	@Override
-	public void onBlockPlacedBy(World world, int x, int y, int z, EntityLivingBase entity, ItemStack itemStack) {
-		int direction = BlockPistonBase.determineOrientation(world, x, y, z, entity);
-		world.setBlockMetadataWithNotify(x, y, z, direction, 2);
-	}
-
-	@SideOnly(Side.CLIENT)
-	@Override
-	public IIcon getIcon(IBlockAccess world, int x, int y, int z, int side) {
-		return (side == world.getBlockMetadata(x, y, z)) ? this.frontIcon : this.blockIcon;
+	public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer,
+								ItemStack stack) {
+		worldIn.setBlockState(pos,
+				state.withProperty(FACING, EnumFacing.getDirectionFromEntityLiving(pos, placer))
+						.withProperty(TIER, stack.getItemDamage()), 2);
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public IIcon getIcon(int side, int meta) {
-		if (side == 1)
-			return this.frontIcon;
-		return this.blockIcon;
+	public int getMetaFromState(IBlockState state) {
+		return (state.getValue(FACING).getIndex() << 1) | state.getValue(TIER);
 	}
 
 	@Override
-	public boolean onBlockActivated(World world, int x, int y, int z, EntityPlayer player, int meta, float hitX, float hitY, float hitZ) {
-		TileEntityTeleporter tp = (TileEntityTeleporter)world.getTileEntity(x,y,z);
-		if (player.getCurrentEquippedItem() == null || !player.getCurrentEquippedItem().isItemEqual(new ItemStack(Items.repeater)))
+	public IBlockState getStateFromMeta(int meta) {
+		return getDefaultState().withProperty(FACING, EnumFacing.getFront(meta >> 1))
+				.withProperty(TIER, meta & 1);
+	}
+
+	@Override
+	public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player,
+									EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+		TileEntityTeleporter tp = (TileEntityTeleporter)world.getTileEntity(pos);
+		if (tp == null)
+			return false;
+		if (player.getHeldItem(hand).isEmpty() || !player.getHeldItem(hand).isItemEqual(new ItemStack(Items.REPEATER)))
 			return false;
 		if (!world.isRemote)
-			tp.blockActivated(player);
+			tp.blockActivated(player, hand);
 		return true;
 	}
 
 	@Override
-	@SideOnly(Side.CLIENT)
-	public void registerBlockIcons(IIconRegister iconRegister){//Registers the block icon(s)
-		blockIcon = iconRegister.registerIcon(String.format("%s", getUnwrappedUnlocalizedName(this.getUnlocalizedName())));
-		frontIcon = iconRegister.registerIcon(Reference.MOD_ID.toLowerCase()+":teleporterFront");
+	public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
+		for (int tier : TIER.getAllowedValues())
+			list.add(new ItemStack(this, 1, tier));
+	}
+
+	@Override
+	public int damageDropped(IBlockState state) {
+		return state.getValue(TIER);
 	}
 }

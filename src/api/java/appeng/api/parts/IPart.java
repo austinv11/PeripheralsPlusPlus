@@ -1,18 +1,18 @@
 /*
  * The MIT License (MIT)
- * 
+ *
  * Copyright (c) 2013 AlgorithmX2
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
  * this software and associated documentation files (the "Software"), to deal in
  * the Software without restriction, including without limitation the rights to
  * use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
  * the Software, and to permit persons to whom the Software is furnished to do so,
  * subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
  * FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
@@ -23,27 +23,38 @@
 
 package appeng.api.parts;
 
-import appeng.api.networking.IGridNode;
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Random;
+
+import javax.annotation.Nonnull;
+
 import io.netty.buffer.ByteBuf;
-import net.minecraft.client.renderer.RenderBlocks;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIcon;
-import net.minecraft.util.Vec3;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Random;
+import appeng.api.networking.IGridNode;
+import appeng.api.util.AECableType;
+import appeng.api.util.AEColor;
+import appeng.api.util.AEPartLocation;
 
-public interface IPart extends IBoxProvider
+
+public interface IPart extends IBoxProvider, ICustomCableConnection
 {
 
 	/**
@@ -61,50 +72,14 @@ public interface IPart extends IBoxProvider
 	ItemStack getItemStack(PartItemStack type);
 
 	/**
-	 * render item form for inventory, or entity.
-	 *
-	 * GL Available
-	 *
-	 * @param rh       helper
-	 * @param renderer renderer
+	 * Render dynamic portions of this part, as part of the cable bus TESR. This part has to return true for
+	 * {@link #requireDynamicRender()} in order for
+	 * this method to be called.
 	 */
-	@SideOnly(Side.CLIENT)
-	void renderInventory(IPartRenderHelper rh, RenderBlocks renderer);
-
-	/**
-	 * render world renderer ( preferred )
-	 *
-	 * GL is NOT Available
-	 *
-	 * @param x x coord
-	 * @param y y coord
-	 * @param z z coord
-	 * @param rh helper
-	 * @param renderer renderer
-	 */
-	@SideOnly(Side.CLIENT)
-	void renderStatic(int x, int y, int z, IPartRenderHelper rh, RenderBlocks renderer);
-
-	/**
-	 * render TESR.
-	 *
-	 * GL Available
-	 *
-	 * @param x x coord
-	 * @param y y coord
-	 * @param z z coord
-	 * @param rh helper
-	 * @param renderer renderer
-	 */
-	@SideOnly(Side.CLIENT)
-	void renderDynamic(double x, double y, double z, IPartRenderHelper rh, RenderBlocks renderer);
-
-	/**
-	 * @return the Block sheet icon used when rendering the breaking particles, return null to use the ItemStack
-	 * texture.
-	 */
-	@SideOnly(Side.CLIENT)
-	IIcon getBreakingTexture();
+	@SideOnly( Side.CLIENT )
+	default void renderDynamic(double x, double y, double z, float partialTicks, int destroyStage)
+	{
+	}
 
 	/**
 	 * return true only if your part require dynamic rendering, must be consistent.
@@ -155,7 +130,7 @@ public interface IPart extends IBoxProvider
 	/**
 	 * a block around the bus's host has been changed.
 	 */
-	void onNeighborChanged();
+	void onNeighborChanged(IBlockAccess w, BlockPos pos, BlockPos neighbor);
 
 	/**
 	 * @return output redstone on facing side
@@ -228,7 +203,7 @@ public interface IPart extends IBoxProvider
 	 * @param host part side
 	 * @param tile tile entity of part
 	 */
-	void setPartHostInfo(ForgeDirection side, IPartHost host, TileEntity tile);
+	void setPartHostInfo(AEPartLocation side, IPartHost host, TileEntity tile);
 
 	/**
 	 * Called when you right click the part, very similar to Block.onActivateBlock
@@ -238,7 +213,7 @@ public interface IPart extends IBoxProvider
 	 *
 	 * @return if your activate method performed something.
 	 */
-	boolean onActivate(EntityPlayer player, Vec3 pos);
+	boolean onActivate(EntityPlayer player, EnumHand hand, Vec3d pos);
 
 	/**
 	 * Called when you right click the part, very similar to Block.onActivateBlock
@@ -248,7 +223,7 @@ public interface IPart extends IBoxProvider
 	 *
 	 * @return if your activate method performed something, you should use false unless you really need it.
 	 */
-	boolean onShiftActivate(EntityPlayer player, Vec3 pos);
+	boolean onShiftActivate(EntityPlayer player, EnumHand hand, Vec3d pos);
 
 	/**
 	 * Add drops to the items being dropped into the world, if your item stores its contents when wrenched use the
@@ -260,20 +235,20 @@ public interface IPart extends IBoxProvider
 	void getDrops(List<ItemStack> drops, boolean wrenched);
 
 	/**
-	 * @return 0 - 8, reasonable default 3-4, this controls the cable connection to the node.
+	 * @return 0 - 8, reasonable default 3-4, this controls the cable connection to the node. -1 to render connection
+	 * yourself.
 	 */
-	int cableConnectionRenderTo();
+	@Override
+	public float getCableConnectionLength(AECableType cable);
 
 	/**
 	 * same as Block.randomDisplayTick, for but parts.
 	 *
 	 * @param world world of block
-	 * @param x x coord of block
-	 * @param y y coord of block
-	 * @param z z coord of block
+	 * @param pos location of block
 	 * @param r random
 	 */
-	void randomDisplayTick(World world, int x, int y, int z, Random r);
+	void randomDisplayTick(World world, BlockPos pos, Random r);
 
 	/**
 	 * Called when placed in the world by a player, this happens before addWorld.
@@ -282,7 +257,7 @@ public interface IPart extends IBoxProvider
 	 * @param held held item
 	 * @param side placing side
 	 */
-	void onPlacement(EntityPlayer player, ItemStack held, ForgeDirection side);
+	void onPlacement(EntityPlayer player, EnumHand hand, ItemStack held, AEPartLocation side);
 
 	/**
 	 * Used to determine which parts can be placed on what cables.
@@ -292,5 +267,62 @@ public interface IPart extends IBoxProvider
 	 * @return true if the part can be placed on this support.
 	 */
 	boolean canBePlacedOn(BusSupport what);
+
+	/**
+	 * This method is used when a chunk is rebuilt to determine how this part should be rendered. The returned models
+	 * should represent the
+	 * part oriented north. They will be automatically rotated to match the part's actual orientation. Tint indices 1-4
+	 * can be used in the
+	 * models to access the parts color.
+	 *
+	 * <dl>
+	 * <dt>Tint Index 1</dt>
+	 * <dd>The {@link AEColor#blackVariant dark variant color} of the cable that this part is attached to.</dd>
+	 * <dt>Tint Index 2</dt>
+	 * <dd>The {@link AEColor#mediumVariant color} of the cable that this part is attached to.</dd>
+	 * <dt>Tint Index 3</dt>
+	 * <dd>The {@link AEColor#whiteVariant bright variant color} of the cable that this part is attached to.</dd>
+	 * <dt>Tint Index 4</dt>
+	 * <dd>A color variant that is between the cable's {@link AEColor#mediumVariant color} and its
+	 * {@link AEColor#whiteVariant bright variant}.</dd>
+	 * </dl>
+	 *
+	 * <b>Important:</b> All models must have been registered via the {@link IPartModels} API before use.
+	 */
+	@Nonnull
+	default IPartModel getStaticModels()
+	{
+		return new IPartModel()
+		{
+		};
+	}
+
+	/**
+	 * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be
+	 * forwarded to parts on the appropriate
+	 * side.
+	 *
+	 * @see TileEntity#hasCapability(Capability, EnumFacing)
+	 *
+	 * @return True if your part has the requested capability.
+	 */
+	default boolean hasCapability(Capability<?> capabilityClass)
+	{
+		return false;
+	}
+
+	/**
+	 * Implement this method if your part exposes capabilitys. Any requests for capabilities on the cable bus will be
+	 * forwarded to parts on the appropriate
+	 * side.
+	 *
+	 * @see TileEntity#getCapability(Capability, EnumFacing)
+	 *
+	 * @return The capability or null.
+	 */
+	default <T> T getCapability(Capability<T> capabilityClass)
+	{
+		return null;
+	}
 
 }

@@ -1,13 +1,16 @@
 package com.austinv11.peripheralsplusplus.network;
 
-import cpw.mods.fml.common.network.ByteBufUtils;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.network.ByteBufUtils;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
+import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
+import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ParticlePacket implements IMessage {
 
@@ -58,15 +61,16 @@ public class ParticlePacket implements IMessage {
 
 	public static class ParticlePacketHandler implements IMessageHandler<ParticlePacket, IMessage> {
 
+		@SideOnly(Side.CLIENT)
 		@Override
 		public IMessage onMessage(final ParticlePacket message, MessageContext ctx) {
-			Runnable noteThread = new Runnable() {
-				@Override
-				public void run() {
-					World world = Minecraft.getMinecraft().theWorld;
-					world.spawnParticle(message.name, message.x, message.y, message.z, message.xVel, message.yVel, message.zVel);
-				}
-			};
+			Runnable noteThread = () -> {
+                World world = Minecraft.getMinecraft().world;
+                EnumParticleTypes particle = EnumParticleTypes.getByName(message.name);
+                if (particle != null)
+                world.spawnParticle(particle, message.x, message.y, message.z, message.xVel, message.yVel,
+                        message.zVel);
+            };
 			noteThread.run();
 			return null;
 		}

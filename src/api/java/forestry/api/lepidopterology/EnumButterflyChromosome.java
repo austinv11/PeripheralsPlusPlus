@@ -1,13 +1,13 @@
 /*******************************************************************************
  * Copyright 2011-2014 SirSengir
- * 
+ *
  * This work (the API) is licensed under the "MIT" License, see LICENSE.txt for details.
  ******************************************************************************/
 package forestry.api.lepidopterology;
 
-import forestry.api.genetics.AlleleManager;
+import java.util.Locale;
+
 import forestry.api.genetics.IAllele;
-import forestry.api.genetics.IAlleleArea;
 import forestry.api.genetics.IAlleleBoolean;
 import forestry.api.genetics.IAlleleFloat;
 import forestry.api.genetics.IAlleleFlowers;
@@ -69,30 +69,27 @@ public enum EnumButterflyChromosome implements IChromosomeType {
 	 * Extra effect to surroundings. (?)
 	 */
 	EFFECT(IAlleleButterflyEffect.class),
-	/**
-	 * Not used yet
-	 */
-	TERRITORY(IAlleleArea.class),
-	;
-	
-	Class<? extends IAllele> clss;
-	
-	EnumButterflyChromosome(Class<? extends IAllele> clss) {
-		this.clss = clss;
+
+	COCOON(IAlleleButterflyCocoon.class);
+
+	private final Class<? extends IAllele> alleleClass;
+
+	EnumButterflyChromosome(Class<? extends IAllele> alleleClass) {
+		this.alleleClass = alleleClass;
 	}
 
 	@Override
 	public Class<? extends IAllele> getAlleleClass() {
-		return clss;
+		return alleleClass;
 	}
 
 	@Override
 	public String getName() {
-		return this.toString().toLowerCase();
+		return this.toString().toLowerCase(Locale.ENGLISH);
 	}
 
 	@Override
 	public ISpeciesRoot getSpeciesRoot() {
-		return AlleleManager.alleleRegistry.getSpeciesRoot("rootButterflies");
+		return ButterflyManager.butterflyRoot;
 	}
 }
