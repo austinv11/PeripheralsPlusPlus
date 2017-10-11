@@ -3,6 +3,8 @@ PeripheralsPlusPlus [![Build Status](https://drone.io/github.com/austinv11/Perip
 
 ![Logo](http://puu.sh/fB9TB/66231fda96.png)
 
+# Deprecated! See https://github.com/rolandoislas/PeripheralsPlusOne
+
 A pseudo-port of miscperipherals, with other stuff as well!
 
 Visit the [wiki](https://github.com/austinv11/PeripheralsPlusPlus/wiki)!
