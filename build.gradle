@@ -87,7 +87,7 @@ dependencies {
     // https://github.com/pierredavidbelanger/chatter-bot-api
     // http://mavenbrowse.pauldoo.com/central/ca/pjer/chatter-bot-api/
     // It's in the ./libs folder, but heres the maven link just in case
-    //compile "ca.pjer:chatter-bot-api:1.3.3"
+    //compile "ca.pjer:chatter-bot-api:1.4.2"
 
     // for more info...
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
@@ -131,7 +131,7 @@ jar {
     from zipTree("libs/mbrola.jar")
     from zipTree("libs/cmu_us_kal.jar")
     // Chatter library
-    from zipTree("libs/chatter-bot-api-1.3.3.jar")
+    from zipTree("libs/chatter-bot-api-1.4.2.jar")
 }
 
 idea { 
